@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "build/esm",
+    "target": "es2021",
+    "module": "es2015",
+    /* Needed with module: es2015 or else stuff breaks. */
+    "moduleResolution": "node",
+    /* Enable strict type checking. */
+    "strict": true,
+    /* Enable interop with dependencies using different module systems. */
+    "esModuleInterop": true,
+    /* Emit .d.ts files. */
+    "declaration": true,
+    /* Emit sourcemap files. */
+    "sourceMap": true
+    /* Don't turn on importHelpers, so we can avoid tslib dependency. */
+  },
+  "include": ["src"]
+}
