@@ -1,16 +1,16 @@
 {
-  "name": "TODO",
+  "name": "articulated",
   "version": "0.1.0",
   "description": "TODO",
   "author": "Matthew Weidner",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/mweidner037/TODO/issues"
+    "url": "https://github.com/mweidner037/articulated/issues"
   },
-  "homepage": "https://github.com/mweidner037/TODO#readme",
+  "homepage": "https://github.com/mweidner037/articulated#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/mweidner037/TODO.git"
+    "url": "git+https://github.com/mweidner037/articulated.git"
   },
   "keywords": [
     "TODO"

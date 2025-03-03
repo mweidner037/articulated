@@ -19,12 +19,7 @@ interface ListElement {
   isDeleted: boolean;
 }
 
-// TODO:
-// - compare ids (maybe deleted)
-// - get id just before/after another id (maybe deleted)
-// Both can be accomplished with a list that ignores deleted status, eventually in log(n) time.
-
-export class IdListStrawman {
+export class IdList {
   private readonly state: ListElement[];
   private _length: number;
 
@@ -210,7 +205,7 @@ export class IdListStrawman {
   //   bunchId: string
   // ): Array<{ id: ElementId; index: number; isDeleted: boolean }>;
 
-  // Iterators
+  // Iterators and views
 
   *[Symbol.iterator](): IterableIterator<ElementId> {
     for (const elt of this.state) {
@@ -220,6 +215,14 @@ export class IdListStrawman {
 
   values() {
     return this[Symbol.iterator]();
+  }
+
+  private _knownView?: IdListKnownView;
+  knownView(): IdListKnownView {
+    if (this._knownView === undefined) {
+      this._knownView = new IdListKnownView(this, this.state);
+    }
+    return this._knownView;
   }
 
   // Save and load
@@ -273,4 +276,66 @@ export class IdListStrawman {
       if (!isDeleted) this._length += length;
     }
   }
+}
+
+// TODO: name. Also update in other places.
+export class IdListKnownView {
+  /**
+   * Internal use only. Access `.knownView` on an IdList instead.
+   */
+  constructor(readonly list: IdList, private readonly state: ListElement[]) {}
+
+  // Mutators omitted - mutate this.list instead.
+
+  // Accessors
+
+  /**
+   *
+   * @param index
+   * @returns
+   * @throws If index is not in [0, this.length).
+   */
+  at(index: number): ElementId {
+    if (!(Number.isInteger(index) && 0 <= index && index < this.length)) {
+      throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
+    }
+
+    return this.state[index].id;
+  }
+
+  hasAt(index: number): boolean {
+    if (!(Number.isInteger(index) && 0 <= index && index < this.length)) {
+      throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
+    }
+
+    return !this.state[index].isDeleted;
+  }
+
+  /**
+   *
+   * @param id
+   * @param bias
+   * @returns -1 if id is not known.
+   */
+  indexOf(id: ElementId): number {
+    return this.state.findIndex((elt) => equalsId(elt.id, id));
+  }
+
+  get length(): number {
+    return this.state.length;
+  }
+
+  // Iterators
+
+  *[Symbol.iterator](): IterableIterator<ElementId> {
+    for (const elt of this.state) {
+      yield elt.id;
+    }
+  }
+
+  values() {
+    return this[Symbol.iterator]();
+  }
+
+  // Save that ignores deleted? For e.g. making an actual IdList like this one.
 }
