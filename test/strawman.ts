@@ -50,10 +50,19 @@ export class IdList {
   private readonly state: ListElement[];
   private _length: number;
 
-  // TODO: Allow importing starting state? E.g. iterable of ids.
   constructor() {
     this.state = [];
     this._length = 0;
+  }
+
+  static from(state: Iterable<{ id: ElementId; isDeleted: boolean }>) {
+    const list = new IdList();
+    for (const { id, isDeleted } of state) {
+      // Clone to prevent aliasing.
+      list.state.push({ id, isDeleted });
+      list._length++;
+    }
+    return list;
   }
 
   // TODO: bulk insertAfter/Before.
