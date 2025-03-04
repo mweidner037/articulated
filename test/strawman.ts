@@ -7,16 +7,43 @@ export function equalsId(a: ElementId, b: ElementId) {
   return a.counter === b.counter && a.bunchId === b.bunchId;
 }
 
+export function expandIds(startId: ElementId, count: number): ElementId[] {
+  const ans: ElementId[] = [];
+  for (let i = 0; i < count; i++) {
+    ans.push({ bunchId: startId.bunchId, counter: startId.counter + i });
+  }
+  return ans;
+}
+
 export type SavedIdList = Array<{
   bunchId: string;
   startCounter: number;
-  length: number;
+  count: number;
   isDeleted: boolean;
 }>;
 
 interface ListElement {
   id: ElementId;
   isDeleted: boolean;
+}
+
+function expandElements(
+  startId: ElementId,
+  isDeleted: boolean,
+  count: number
+): ListElement[] {
+  if (!(Number.isSafeInteger(count) && count >= 0)) {
+    throw new Error(`Invalid count: ${count}`);
+  }
+
+  const ans: ListElement[] = [];
+  for (let i = 0; i < count; i++) {
+    ans.push({
+      id: { bunchId: startId.bunchId, counter: startId.counter + i },
+      isDeleted,
+    });
+  }
+  return ans;
 }
 
 export class IdList {
@@ -29,14 +56,17 @@ export class IdList {
     this._length = 0;
   }
 
+  // TODO: bulk insertAfter/Before.
+  // Should bulk insertBefore insert in reverse order? Probably not.
   /**
    *
    * @param before
    * @param newId
+   * @param count Set to bulk-insert sequential ids in the same bunch, starting at newId.
    * @throws If before is not known.
    * @throws If newId is already known.
    */
-  insertAfter(before: ElementId, newId: ElementId) {
+  insertAfter(before: ElementId, newId: ElementId, count = 1) {
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
@@ -45,11 +75,11 @@ export class IdList {
     if (index === -1) {
       throw new Error("before is not known");
     }
-    this.state.splice(index + 1, 0, { id: newId, isDeleted: false });
-    this._length++;
+    this.state.splice(index + 1, 0, ...expandElements(newId, false, count));
+    this._length += count;
   }
 
-  insertBefore(after: ElementId, newId: ElementId) {
+  insertBefore(after: ElementId, newId: ElementId, count = 1) {
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
@@ -58,8 +88,9 @@ export class IdList {
     if (index === -1) {
       throw new Error("after is not known");
     }
-    this.state.splice(index, 0, { id: newId, isDeleted: false });
-    this._length++;
+    // We insert left-to-right even though it's insertBefore.
+    this.state.splice(index, 0, ...expandElements(newId, false, count));
+    this._length += count;
   }
 
   /**
@@ -235,7 +266,7 @@ export class IdList {
         const current = ans[ans.length - 1];
         if (
           id.bunchId === current.bunchId &&
-          id.counter === current.startCounter + current.length &&
+          id.counter === current.startCounter + current.count &&
           isDeleted === current.isDeleted
         ) {
           break;
@@ -245,7 +276,7 @@ export class IdList {
       ans.push({
         bunchId: id.bunchId,
         startCounter: id.counter,
-        length: 1,
+        count: 1,
         isDeleted,
       });
     }
@@ -262,18 +293,18 @@ export class IdList {
     this.state.length = 0;
     this._length = 0;
 
-    for (const { bunchId, startCounter, length, isDeleted } of savedState) {
-      if (!(Number.isInteger(length) && length >= 0)) {
-        throw new Error(`Invalid length: ${length}`);
+    for (const { bunchId, startCounter, count, isDeleted } of savedState) {
+      if (!(Number.isInteger(count) && count >= 0)) {
+        throw new Error(`Invalid length: ${count}`);
       }
 
-      for (let i = 0; i < length; i++) {
+      for (let i = 0; i < count; i++) {
         this.state.push({
           id: { bunchId, counter: startCounter + i },
           isDeleted,
         });
       }
-      if (!isDeleted) this._length += length;
+      if (!isDeleted) this._length += count;
     }
   }
 }
