@@ -49,7 +49,7 @@ export class IdList {
     for (const { id, isDeleted } of state) {
       // Clone to prevent aliasing.
       list.state.push({ id, isDeleted });
-      list._length++;
+      if (!isDeleted) list._length++;
     }
     return list;
   }
@@ -346,7 +346,8 @@ export class IdList {
           id.counter === current.startCounter + current.count &&
           isDeleted === current.isDeleted
         ) {
-          break;
+          current.count++;
+          continue;
         }
       }
 
