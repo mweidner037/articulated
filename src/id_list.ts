@@ -11,7 +11,7 @@ interface ListElement {
  *
  * An IdList helps you assign a unique immutable id to each element of a list, such
  * as a todo-list or a text document (= list of characters). That way, you can keep track
- * of those elements even as their indices change due to insert/delete operations
+ * of those elements even as their (array) indices change due to insert/delete operations
  * earlier in the list.
  *
  * Any id that has been inserted into an IdList remains **known** to that list indefinitely,
