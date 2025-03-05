@@ -20,3 +20,10 @@ Setup and package versions should be current as of Feb 19 2023.
 ## TODO
 
 - Replace this README.
+
+*
+* Unlike a [list CRDT](TODO), an IdList does not handle replication or enforce
+* consistent ordering. It is a local data structure that you are free to mutate
+* however you like, including inserting ids in whatever list order you like.
+* You can implement eventually consistent collaborative lists on top of local IdLists
+* using [server reconciliation](TODO).

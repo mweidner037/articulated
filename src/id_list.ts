@@ -9,14 +9,23 @@ interface ListElement {
 /**
  * A list of ElementIds.
  *
- * TODO
+ * An IdList helps you assign a unique immutable id to each element of a list, such
+ * as a todo-list or a text document (= list of characters). That way, you can keep track
+ * of those elements even as their indices change due to insert/delete operations
+ * earlier in the list.
  *
- * TODO: known vs present/deleted. Delete vs uninsert.
+ * Any id that has been inserted into an IdList remains **known** to that list indefinitely,
+ * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
+ * merely marks an id as deleted (not present); it remains in memory as a "tombstone".
+ * This is useful in collaborative settings, since another user might instruct you to
+ * call `insertAfter(before, newId)` when you have already deleted `before` locally.
+ * If that is not a concern and you truly want to make an id no longer known, instead
+ * call {@link uninsert}.
  *
- *
- * Indexed access only considers present ids. Known but deleted ids are skipped.
- * Likewise for length, default iterators. Saved states remember everything.
- * Use {@link knownIds} to consider all known ids regardless of isDeleted status.
+ * See {@link ElementId} for advice on generating ElementIds. IdList is optimized for
+ * the case where sequential ElementIds often have the same bunchId and sequential counters.
+ * However, you are not required to order ids in this way - it is okay if future edits
+ * cause such ids to be separated, partially deleted, or even reordered.
  */
 export class IdList {
   private readonly state: ListElement[];
