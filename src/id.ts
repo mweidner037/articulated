@@ -3,7 +3,7 @@
  *
  * ElementIds are conceptually the same as UUIDs (or nanoids, etc.).
  * However, when a single thread generates a series of ElementIds, you are
- * allowed to optimize by generating a single UUID/nanoid/etc. and using that as the "bunch id"
+ * allowed to optimize by generating a single UUID/nanoid/etc. and using that as the "bunchId"
  * for a "bunch" of elements, with varying `counter`.
  * The resulting ElementIds compress better than a set of UUIDs, but they are
  * still globally unique, even if another thread/user/device generates ElementIds concurrently.
