@@ -25,6 +25,8 @@ function expandElements(
   return ans;
 }
 
+// TODO: verify that counters are safe integers.
+
 export class IdList {
   private readonly state: ListElement[];
   private _length: number;
@@ -160,7 +162,7 @@ export class IdList {
    * @throws If index is not in [0, this.length).
    */
   at(index: number): ElementId {
-    if (!(Number.isInteger(index) && 0 <= index && index < this.length)) {
+    if (!(Number.isSafeInteger(index) && 0 <= index && index < this.length)) {
       throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
     }
 
@@ -297,7 +299,7 @@ export class IdList {
     this._length = 0;
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
-      if (!(Number.isInteger(count) && count >= 0)) {
+      if (!(Number.isSafeInteger(count) && count >= 0)) {
         throw new Error(`Invalid length: ${count}`);
       }
 
@@ -334,7 +336,7 @@ export class AllIdView {
    * @throws If index is not in [0, this.length).
    */
   at(index: number): ElementId {
-    if (!(Number.isInteger(index) && 0 <= index && index < this.length)) {
+    if (!(Number.isSafeInteger(index) && 0 <= index && index < this.length)) {
       throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
     }
 
