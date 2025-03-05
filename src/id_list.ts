@@ -16,6 +16,7 @@ interface ListElement {
  *
  * Indexed access only considers present ids. Known but deleted ids are skipped.
  * Likewise for length, default iterators. Saved states remember everything.
+ * Use {@link knownIds} to consider all known ids regardless of isDeleted status.
  */
 export class IdList {
   private readonly state: ListElement[];
@@ -304,17 +305,17 @@ export class IdList {
     return IdList.from(this.state);
   }
 
-  private _allIdView?: AllIdView;
+  private _knownIds?: KnownIdView;
 
   /**
-   * Returns a live-updating view of this list that treats all known ids as present.
-   * That is, it ignores isDeleted status when computing list indices.
+   * A live-updating view of this list that treats all known ids as present.
+   * That is, it ignores isDeleted status when computing list indices or iterating.
    */
-  allIdView(): AllIdView {
-    if (this._allIdView === undefined) {
-      this._allIdView = new AllIdView(this, this.state);
+  get knownIds(): KnownIdView {
+    if (this._knownIds === undefined) {
+      this._knownIds = new KnownIdView(this, this.state);
     }
-    return this._allIdView;
+    return this._knownIds;
   }
 
   // Save and load
@@ -380,9 +381,9 @@ export class IdList {
  *
  * To mutate, call methods on the original IdList (`this.list`).
  */
-export class AllIdView {
+export class KnownIdView {
   /**
-   * Internal use only. Use {@link IdList.allIdView} instead.
+   * Internal use only. Use {@link IdList.knownIds} instead.
    */
   constructor(readonly list: IdList, private readonly state: ListElement[]) {}
 
