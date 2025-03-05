@@ -25,8 +25,6 @@ function expandElements(
   return ans;
 }
 
-// TODO: verify that counters are safe integers.
-
 export class IdList {
   private readonly state: ListElement[];
   private _length: number;
@@ -55,6 +53,8 @@ export class IdList {
     return list;
   }
 
+  // TODO: ability to insert into an empty list / at the beginning of the list!
+
   /**
    *
    * @param before
@@ -63,29 +63,42 @@ export class IdList {
    * @throws If before is not known.
    * @throws If newId is already known.
    */
-  insertAfter(before: ElementId, newId: ElementId, count = 1) {
+  insertAfter(before: ElementId | null, newId: ElementId, count = 1) {
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
 
-    const index = this.state.findIndex((elt) => equalsId(elt.id, before));
-    if (index === -1) {
-      throw new Error("before is not known");
+    let index: number;
+    if (before === null) {
+      // -1 so index + 1 is 0: insert at the beginning of the list.
+      index = -1;
+    } else {
+      index = this.state.findIndex((elt) => equalsId(elt.id, before));
+      if (index === -1) {
+        throw new Error("before is not known");
+      }
     }
+
     this.state.splice(index + 1, 0, ...expandElements(newId, false, count));
     this._length += count;
   }
 
-  insertBefore(after: ElementId, newId: ElementId, count = 1) {
+  insertBefore(after: ElementId | null, newId: ElementId, count = 1) {
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
 
-    const index = this.state.findIndex((elt) => equalsId(elt.id, after));
-    if (index === -1) {
-      throw new Error("after is not known");
+    let index: number;
+    if (after === null) {
+      index = this.state.length;
+    } else {
+      index = this.state.findIndex((elt) => equalsId(elt.id, after));
+      if (index === -1) {
+        throw new Error("after is not known");
+      }
     }
-    // We insert left-to-right even though it's insertBefore.
+
+    // We insert the bunch from left-to-right even though it's insertBefore.
     this.state.splice(index, 0, ...expandElements(newId, false, count));
     this._length += count;
   }
@@ -210,28 +223,9 @@ export class IdList {
     throw new Error("id is not known");
   }
 
-  // /**
-  //  * ids don't need to be in list order, but it will be more efficient if they are.
-  //  *
-  //  * @param ids
-  //  * @returns index: where it would be if present (bias="right");
-  //  * in same order as you provide them, skipping non-existent ids.
-  //  * TODO: easier way to see which ones exist?
-  //  */
-  // describe(
-  //   ids: ElementId[]
-  // ): Array<{ id: ElementId; index: number; isDeleted: boolean }> {}
-
   get length(): number {
     return this._length;
   }
-
-  // /**
-  //  * in same order as counters, skipping non-existent ids.
-  //  */
-  // describeBunch(
-  //   bunchId: string
-  // ): Array<{ id: ElementId; index: number; isDeleted: boolean }>;
 
   // Iterators and views
 
