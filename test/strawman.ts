@@ -65,8 +65,15 @@ export class IdList {
     return list;
   }
 
-  // TODO: bulk insertAfter/Before.
-  // Should bulk insertBefore insert in reverse order? Probably not.
+  static fromIds(ids: Iterable<ElementId>) {
+    const list = new IdList();
+    for (const id of ids) {
+      list.state.push({ id, isDeleted: false });
+      list._length++;
+    }
+    return list;
+  }
+
   /**
    *
    * @param before
@@ -257,12 +264,20 @@ export class IdList {
     return this[Symbol.iterator]();
   }
 
-  private _knownView?: IdListKnownView;
-  knownView(): IdListKnownView {
-    if (this._knownView === undefined) {
-      this._knownView = new IdListKnownView(this, this.state);
+  valuesWithDeleted(): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
+    return this.state.values();
+  }
+
+  clone(): IdList {
+    return IdList.from(this.state);
+  }
+
+  private _allIdView?: AllIdView;
+  allIdView(): AllIdView {
+    if (this._allIdView === undefined) {
+      this._allIdView = new AllIdView(this, this.state);
     }
-    return this._knownView;
+    return this._allIdView;
   }
 
   // Save and load
@@ -318,10 +333,14 @@ export class IdList {
   }
 }
 
-// TODO: name. Also update in other places.
-export class IdListKnownView {
+/**
+ * View of an IdList that treats all known ids as present.
+ *
+ * To mutate, call methods on the original IdList (this.list).
+ */
+export class AllIdView {
   /**
-   * Internal use only. Access `.knownView` on an IdList instead.
+   * Internal use only. Access `.allIdView` on an IdList instead.
    */
   constructor(readonly list: IdList, private readonly state: ListElement[]) {}
 
@@ -341,14 +360,6 @@ export class IdListKnownView {
     }
 
     return this.state[index].id;
-  }
-
-  hasAt(index: number): boolean {
-    if (!(Number.isInteger(index) && 0 <= index && index < this.length)) {
-      throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
-    }
-
-    return !this.state[index].isDeleted;
   }
 
   /**
