@@ -1,7 +1,7 @@
 {
   "name": "articulated",
   "version": "0.1.0",
-  "description": "TODO",
+  "description": "A TypeScript library for managing stable element identifiers in mutable lists",
   "author": "Matthew Weidner",
   "license": "MIT",
   "bugs": {
@@ -13,7 +13,9 @@
     "url": "git+https://github.com/mweidner037/articulated.git"
   },
   "keywords": [
-    "TODO"
+    "list",
+    "UUID",
+    "CRDT"
   ],
   "main": "build/commonjs/index.js",
   "browser": "build/esm/index.js",

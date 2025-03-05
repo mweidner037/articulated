@@ -3,6 +3,5 @@
   "compilerOptions": {
     "rootDir": "."
   },
-  // TODO: add other dev folders, e.g., benchmarks
   "include": ["src", "test"]
 }
