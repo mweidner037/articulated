@@ -1,10 +1,34 @@
 import { ElementId, equalsId } from "./id";
 import { SavedIdList } from "./saved_id_list";
 
-interface ListElement {
-  readonly id: ElementId;
+interface LeafNode {
+  readonly bunchId: string;
+  readonly startCounter: number;
+  readonly count: number;
   readonly isDeleted: boolean;
 }
+
+class InnerNodeInner {
+  constructor(
+    readonly children: readonly InnerNode[],
+    readonly size: number,
+    readonly knownSize: number
+  ) {}
+}
+
+class InnerNodeLeaf {
+  constructor(
+    readonly children: readonly LeafNode[],
+    readonly size: number,
+    readonly knownSize: number
+  ) {}
+}
+
+type InnerNode = InnerNodeInner | InnerNodeLeaf;
+
+// TODO:
+// - Move helper methods to functions, for minification.
+// - Combine at/indexOf with KnownId versions, for easier modification & smaller code.
 
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
@@ -34,10 +58,7 @@ export class IdList {
   /**
    * Internal - construct an IdList using a static method (e.g. `IdList.new`).
    */
-  private constructor(
-    private readonly state: ListElement[],
-    readonly length: number
-  ) {}
+  private constructor(private readonly root: InnerNode) {}
 
   /**
    * Constructs an empty list.
@@ -45,7 +66,7 @@ export class IdList {
    * To begin with a non-empty list, use {@link IdList.from} or {@link IdList.fromIds}.
    */
   static new() {
-    return new this([], 0);
+    return new this(new InnerNodeLeaf([], 0, 0));
   }
 
   /**
@@ -240,9 +261,9 @@ export class IdList {
    * Compare to {@link isKnown}.
    */
   has(id: ElementId): boolean {
-    const elt = this.state.find((elt) => equalsId(elt.id, id));
-    if (elt === undefined) return false;
-    return !elt.isDeleted;
+    const located = locate(id, this.root);
+    if (located === null) return false;
+    return !located[1].isDeleted;
   }
 
   /**
@@ -251,7 +272,11 @@ export class IdList {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return this.state.some((elt) => equalsId(elt.id, id));
+    return locate(id, this.root) !== null;
+  }
+
+  get length() {
+    return this.root.size;
   }
 
   /**
@@ -265,14 +290,37 @@ export class IdList {
     }
 
     let remaining = index;
-    for (const elt of this.state) {
-      if (!elt.isDeleted) {
-        if (remaining === 0) return elt.id;
-        remaining--;
+    let curParent = this.root;
+    // eslint-disable-next-line no-constant-condition
+    recurse: while (true) {
+      if (curParent instanceof InnerNodeInner) {
+        for (const child of curParent.children) {
+          if (remaining < child.size) {
+            // Recurse.
+            curParent = child;
+            continue recurse;
+          } else {
+            remaining -= child.size;
+          }
+        }
+      } else {
+        for (const child of curParent.children) {
+          if (!child.isDeleted) {
+            if (remaining < child.count) {
+              // Found it.
+              return {
+                bunchId: child.bunchId,
+                counter: child.startCounter + remaining,
+              };
+            } else {
+              remaining -= child.count;
+            }
+          }
+        }
       }
-    }
 
-    throw new Error("Internal error");
+      throw new Error("Internal error");
+    }
   }
 
   /**
@@ -287,15 +335,30 @@ export class IdList {
    * @throws If `id` is not known.
    */
   indexOf(id: ElementId, bias: "none" | "left" | "right" = "none"): number {
+    const located = locate(id, this.root);
+    if (located === null) throw new Error("id is not known");
+    const path = located[0];
+
     /**
      * The number of present ids less than id.
      * Equivalently, the index id would have if present.
      */
     let index = 0;
-    for (const elt of this.state) {
-      if (equalsId(elt.id, id)) {
-        // Found it.
-        if (elt.isDeleted) {
+
+    let curParent = this.root;
+    for (const childIndex of path) {
+      if (curParent instanceof InnerNodeInner) {
+        for (let i = 0; i < childIndex; i++) {
+          index += curParent.children[i].size;
+        }
+        curParent = curParent.children[childIndex];
+      } else {
+        for (let i = 0; i < childIndex; i++) {
+          const child = curParent.children[i];
+          if (!child.isDeleted) index += child.count;
+        }
+        const idLeaf = curParent.children[childIndex];
+        if (idLeaf.isDeleted) {
           switch (bias) {
             case "none":
               return -1;
@@ -304,12 +367,13 @@ export class IdList {
             case "right":
               return index;
           }
-        } else return index;
+        } else {
+          return index + (id.counter - idLeaf.startCounter);
+        }
       }
-      if (!elt.isDeleted) index++;
     }
 
-    throw new Error("id is not known");
+    throw new Error("Internal error");
   }
 
   // Iterators and views
@@ -317,10 +381,8 @@ export class IdList {
   /**
    * Iterates over all present ids in the list.
    */
-  *[Symbol.iterator](): IterableIterator<ElementId> {
-    for (const elt of this.state) {
-      if (!elt.isDeleted) yield elt.id;
-    }
+  [Symbol.iterator](): IterableIterator<ElementId> {
+    return iterateNode(this.root, false);
   }
 
   /**
@@ -334,7 +396,7 @@ export class IdList {
    * Iterates over all __known__ ids in the list, indicating which are deleted.
    */
   valuesWithDeleted(): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
-    return this.state.values();
+    return iterateWithDeletedNode(this.root);
   }
 
   private _knownIds?: KnownIdView;
@@ -345,7 +407,7 @@ export class IdList {
    */
   get knownIds(): KnownIdView {
     if (this._knownIds === undefined) {
-      this._knownIds = new KnownIdView(this, this.state);
+      this._knownIds = new KnownIdView(this, this.root);
     }
     return this._knownIds;
   }
@@ -359,30 +421,9 @@ export class IdList {
    * See {@link SavedIdList} for a description of the save format.
    */
   save(): SavedIdList {
-    const ans: SavedIdList = [];
-
-    for (const { id, isDeleted } of this.state) {
-      if (ans.length !== 0) {
-        const current = ans[ans.length - 1];
-        if (
-          id.bunchId === current.bunchId &&
-          id.counter === current.startCounter + current.count &&
-          isDeleted === current.isDeleted
-        ) {
-          current.count++;
-          continue;
-        }
-      }
-
-      ans.push({
-        bunchId: id.bunchId,
-        startCounter: id.counter,
-        count: 1,
-        isDeleted,
-      });
-    }
-
-    return ans;
+    const acc: SavedIdList = [];
+    saveNode(this.root, acc);
+    return acc;
   }
 
   /**
@@ -426,7 +467,7 @@ export class KnownIdView {
   /**
    * Internal use only. Use {@link IdList.knownIds} instead.
    */
-  constructor(readonly list: IdList, private readonly state: ListElement[]) {}
+  constructor(readonly list: IdList, private readonly root: InnerNode) {}
 
   // Mutators are omitted - mutate this.list instead.
 
@@ -444,14 +485,70 @@ export class KnownIdView {
       throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
     }
 
-    return this.state[index].id;
+    let remaining = index;
+    let curParent = this.root;
+    // eslint-disable-next-line no-constant-condition
+    recurse: while (true) {
+      if (curParent instanceof InnerNodeInner) {
+        for (const child of curParent.children) {
+          if (remaining < child.knownSize) {
+            // Recurse.
+            curParent = child;
+            continue recurse;
+          } else {
+            remaining -= child.knownSize;
+          }
+        }
+      } else {
+        for (const child of curParent.children) {
+          if (remaining < child.count) {
+            // Found it.
+            return {
+              bunchId: child.bunchId,
+              counter: child.startCounter + remaining,
+            };
+          } else {
+            remaining -= child.count;
+          }
+        }
+      }
+
+      throw new Error("Internal error");
+    }
   }
 
   /**
    * Returns the index of `id` in this view, or -1 if it is not known.
    */
   indexOf(id: ElementId): number {
-    return this.state.findIndex((elt) => equalsId(elt.id, id));
+    const located = locate(id, this.root);
+    if (located === null) throw new Error("id is not known");
+    const path = located[0];
+
+    /**
+     * The number of present ids less than id.
+     * Equivalently, the index id would have if present.
+     */
+    let index = 0;
+
+    let curParent = this.root;
+    for (const childIndex of path) {
+      if (curParent instanceof InnerNodeInner) {
+        for (let i = 0; i < childIndex; i++) {
+          index += curParent.children[i].knownSize;
+        }
+        curParent = curParent.children[childIndex];
+      } else {
+        for (let i = 0; i < childIndex; i++) {
+          const child = curParent.children[i];
+          if (!child.isDeleted) index += child.count;
+        }
+        const idLeaf = curParent.children[childIndex];
+        return index + (id.counter - idLeaf.startCounter);
+      }
+    }
+
+    throw new Error("Internal error");
   }
 
   /**
@@ -460,7 +557,7 @@ export class KnownIdView {
    * Equivalently, the number of known ids in `this.list`.
    */
   get length(): number {
-    return this.state.length;
+    return this.root.knownSize;
   }
 
   // Iterators
@@ -468,10 +565,8 @@ export class KnownIdView {
   /**
    * Iterates over all ids in this view, i.e., all known ids in `this.list`.
    */
-  *[Symbol.iterator](): IterableIterator<ElementId> {
-    for (const elt of this.state) {
-      yield elt.id;
-    }
+  [Symbol.iterator](): IterableIterator<ElementId> {
+    return iterateNode(this.root, false);
   }
 
   /**
@@ -482,21 +577,102 @@ export class KnownIdView {
   }
 }
 
-function expandElements(
-  startId: ElementId,
-  isDeleted: boolean,
-  count: number
-): ListElement[] {
-  if (!(Number.isSafeInteger(count) && count >= 0)) {
-    throw new Error(`Invalid count: ${count}`);
+function locate(
+  id: ElementId,
+  root: InnerNode
+): [path: number[], leaf: LeafNode] | null {
+  // TODO: Optimize with separate RBTree maps.
+  const located = locateInner(id, root);
+  if (located === null) return null;
+  else {
+    located[0].reverse();
+    return located;
   }
+}
 
-  const ans: ListElement[] = [];
-  for (let i = 0; i < count; i++) {
-    ans.push({
-      id: { bunchId: startId.bunchId, counter: startId.counter + i },
-      isDeleted,
-    });
+function locateInner(
+  id: ElementId,
+  node: InnerNode
+): [pathReversed: number[], leaf: LeafNode] | null {
+  if (node instanceof InnerNodeInner) {
+    for (let i = 0; i < node.children.length; i++) {
+      const childLocated = locateInner(id, node.children[i]);
+      if (childLocated !== null) {
+        childLocated[0].push(i);
+        return childLocated;
+      }
+    }
+  } else {
+    for (let i = 0; i < node.children.length; i++) {
+      const child = node.children[i];
+      if (
+        child.bunchId === id.bunchId &&
+        child.startCounter <= id.counter &&
+        id.counter < child.startCounter + child.count
+      ) {
+        return [[i], child];
+      }
+    }
   }
-  return ans;
+  return null;
+}
+
+function* iterateNode(
+  node: InnerNode,
+  includeDeleted: boolean
+): IterableIterator<ElementId> {
+  if (node instanceof InnerNodeInner) {
+    for (const child of node.children) {
+      yield* iterateNode(child, includeDeleted);
+    }
+  } else {
+    for (const child of node.children) {
+      if (includeDeleted || !child.isDeleted) {
+        for (let i = 0; i < child.count; i++) {
+          yield { bunchId: child.bunchId, counter: child.startCounter + i };
+        }
+      }
+    }
+  }
+}
+
+function* iterateWithDeletedNode(
+  node: InnerNode
+): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
+  if (node instanceof InnerNodeInner) {
+    for (const child of node.children) {
+      yield* iterateWithDeletedNode(child);
+    }
+  } else {
+    for (const child of node.children) {
+      for (let i = 0; i < child.count; i++) {
+        yield {
+          id: { bunchId: child.bunchId, counter: child.startCounter + i },
+          isDeleted: child.isDeleted,
+        };
+      }
+    }
+  }
+}
+
+// Note: This assumes that nodes are already fully merged with neighbors.
+// TODO: Test '' in save() outputs.
+function saveNode(node: InnerNode, acc: SavedIdList) {
+  if (node instanceof InnerNodeInner) {
+    for (const child of node.children) {
+      saveNode(child, acc);
+    }
+  } else {
+    // TODO: Push the whole children array directly?
+    // Only if we trust consumers to respect readonly and we trust
+    // ourselves to not add additional properties to LeafNode.
+    for (const child of node.children) {
+      acc.push({
+        bunchId: child.bunchId,
+        startCounter: child.startCounter,
+        count: child.count,
+        isDeleted: child.isDeleted,
+      });
+    }
+  }
 }
