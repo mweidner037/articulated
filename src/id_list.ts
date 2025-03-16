@@ -110,6 +110,8 @@ export class IdList {
       }
     }
 
+    if (count === 0) return this;
+
     return new IdList(
       this.state
         .slice(0, index + 1)
@@ -151,6 +153,8 @@ export class IdList {
         throw new Error("after is not known");
       }
     }
+
+    if (count === 0) return this;
 
     // We insert the bunch from left-to-right even though it's insertBefore.
     return new IdList(
@@ -390,7 +394,11 @@ export class IdList {
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
       if (!(Number.isSafeInteger(count) && count >= 0)) {
-        throw new Error(`Invalid length: ${count}`);
+        throw new Error(`Invalid count: ${count}`);
+      }
+      // Negative counters are okay, but they must be integral.
+      if (!Number.isSafeInteger(startCounter)) {
+        throw new Error(`Invalid startCounter: ${startCounter}`);
       }
 
       for (let i = 0; i < count; i++) {

@@ -1,5 +1,5 @@
 import { assert, expect } from "chai";
-import { ElementId, equalsId, expandIds, IdList } from "../src";
+import { ElementId, equalsId, expandIds, IdList, SavedIdList } from "../src";
 
 describe("ElementId utilities", () => {
   describe("equalsId", () => {
@@ -162,6 +162,7 @@ describe("IdList", () => {
 
       list = list.insertAfter(null, id);
       expect(() => (list = list.insertAfter(null, id))).to.throw();
+      expect(() => (list = list.insertBefore(null, id))).to.throw();
     });
 
     it("should throw when inserting after an ID that is not known", () => {
@@ -170,6 +171,40 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertAfter(id1, id2))).to.throw();
+    });
+
+    it("should throw when inserting before an ID that is not known", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+
+      expect(() => (list = list.insertBefore(id1, id2))).to.throw();
+    });
+
+    it("should throw on bulk insertAfter with an invalid count", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      expect(() => (list = list.insertAfter(null, id, -7))).to.throw();
+      expect(() => (list = list.insertAfter(null, id, 3.5))).to.throw();
+      expect(() => (list = list.insertAfter(null, id, NaN))).to.throw();
+
+      // Bulk insert 0 is okay (no-op).
+      const newList = list.insertAfter(null, id, 0);
+      expect(newList).to.equal(list);
+    });
+
+    it("should throw on bulk insertBefore with an invalid count", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      expect(() => (list = list.insertBefore(null, id, -7))).to.throw();
+      expect(() => (list = list.insertBefore(null, id, 3.5))).to.throw();
+      expect(() => (list = list.insertBefore(null, id, NaN))).to.throw();
+
+      // Bulk insert 0 is okay (no-op).
+      const newList = list.insertBefore(null, id, 0);
+      expect(newList).to.equal(list);
     });
   });
 
@@ -363,9 +398,18 @@ describe("IdList", () => {
       expect(equalsId(knownIds[1], id2)).to.be.true;
       expect(equalsId(knownIds[2], id3)).to.be.true;
     });
+
+    it("should throw when accessing an out-of-bounds index", () => {
+      const knownIds = list.knownIds;
+      expect(() => knownIds.at(-1)).to.throw();
+      expect(() => knownIds.at(4)).to.throw();
+
+      // Out of bounds in list but not knownIds.
+      expect(() => knownIds.at(2)).to.be.ok;
+    });
   });
 
-  describe("persistence", () => {
+  describe("save and load", () => {
     it("should save and load a list state", () => {
       let list = IdList.new();
 
@@ -423,6 +467,64 @@ describe("IdList", () => {
 
       // Check that the new list has all 100 elements
       expect(newList.length).to.equal(100);
+    });
+
+    it("should throw when loading an invalid saved state", () => {
+      const savedState1: SavedIdList = [
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: -1,
+          isDeleted: false,
+        },
+      ];
+      expect(() => IdList.load(savedState1)).to.throw();
+
+      const savedState2: SavedIdList = [
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 7.5,
+          isDeleted: false,
+        },
+      ];
+      expect(() => IdList.load(savedState2)).to.throw();
+
+      const savedState3: SavedIdList = [
+        {
+          bunchId: "abc",
+          startCounter: -0.5,
+          count: 5,
+          isDeleted: false,
+        },
+      ];
+      expect(() => IdList.load(savedState3)).to.throw();
+
+      // 0 count is ignored but okay.
+      const savedState4: SavedIdList = [
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 0,
+          isDeleted: false,
+        },
+      ];
+      expect([...IdList.load(savedState4)]).to.deep.equal([]);
+
+      // Negative counters are okay.
+      const savedState5: SavedIdList = [
+        {
+          bunchId: "abc",
+          startCounter: -1,
+          count: 3,
+          isDeleted: false,
+        },
+      ];
+      expect([...IdList.load(savedState5)]).to.deep.equal([
+        { bunchId: "abc", counter: -1 },
+        { bunchId: "abc", counter: 0 },
+        { bunchId: "abc", counter: 1 },
+      ]);
     });
   });
 });
