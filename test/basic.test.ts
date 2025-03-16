@@ -52,7 +52,7 @@ describe("ElementId utilities", () => {
 describe("IdList", () => {
   describe("constructor and static factory methods", () => {
     it("should create an empty list with default constructor", () => {
-      const list = new IdList();
+      const list = IdList.new();
       expect(list.length).to.equal(0);
     });
 
@@ -97,21 +97,21 @@ describe("IdList", () => {
 
   describe("insert operations", () => {
     it("should insert at the beginning with insertAfter(null)", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
+      list = list.insertAfter(null, id);
       expect(list.length).to.equal(1);
       expect(equalsId(list.at(0), id)).to.be.true;
     });
 
     it("should insert after a specific element", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
-      list.insertAfter(null, id1);
-      list.insertAfter(id1, id2);
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
 
       expect(list.length).to.equal(2);
       expect(equalsId(list.at(0), id1)).to.be.true;
@@ -119,12 +119,12 @@ describe("IdList", () => {
     });
 
     it("should insert at the end with insertBefore(null)", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
-      list.insertAfter(null, id1);
-      list.insertBefore(null, id2);
+      list = list.insertAfter(null, id1);
+      list = list.insertBefore(null, id2);
 
       expect(list.length).to.equal(2);
       expect(equalsId(list.at(0), id1)).to.be.true;
@@ -132,12 +132,12 @@ describe("IdList", () => {
     });
 
     it("should insert before a specific element", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
-      list.insertAfter(null, id1);
-      list.insertBefore(id1, id2);
+      list = list.insertAfter(null, id1);
+      list = list.insertBefore(id1, id2);
 
       expect(list.length).to.equal(2);
       expect(equalsId(list.at(0), id2)).to.be.true;
@@ -145,10 +145,10 @@ describe("IdList", () => {
     });
 
     it("should bulk insert multiple elements", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const startId: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, startId, 3);
+      list = list.insertAfter(null, startId, 3);
 
       expect(list.length).to.equal(3);
       expect(equalsId(list.at(0), { bunchId: "abc", counter: 1 })).to.be.true;
@@ -157,52 +157,52 @@ describe("IdList", () => {
     });
 
     it("should throw when inserting an ID that is already known", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
-      expect(() => list.insertAfter(null, id)).to.throw();
+      list = list.insertAfter(null, id);
+      expect(() => (list = list.insertAfter(null, id))).to.throw();
     });
 
     it("should throw when inserting after an ID that is not known", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
-      expect(() => list.insertAfter(id1, id2)).to.throw();
+      expect(() => (list = list.insertAfter(id1, id2))).to.throw();
     });
   });
 
   describe("delete operations", () => {
     it("should mark an element as deleted", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
+      list = list.insertAfter(null, id);
       expect(list.length).to.equal(1);
 
-      list.delete(id);
+      list = list.delete(id);
       expect(list.length).to.equal(0);
       expect(list.has(id)).to.be.false;
       expect(list.isKnown(id)).to.be.true;
     });
 
     it("should do nothing when deleting an unknown ID", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.delete(id);
+      list = list.delete(id);
       expect(list.length).to.equal(0);
       expect(list.isKnown(id)).to.be.false;
     });
 
     it("should do nothing when deleting an already deleted ID", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
-      list.delete(id);
-      list.delete(id); // Second delete should do nothing
+      list = list.insertAfter(null, id);
+      list = list.delete(id);
+      list = list.delete(id); // Second delete should do nothing
 
       expect(list.length).to.equal(0);
       expect(list.isKnown(id)).to.be.true;
@@ -211,60 +211,37 @@ describe("IdList", () => {
 
   describe("undelete operations", () => {
     it("should restore a deleted element", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
-      list.delete(id);
-      list.undelete(id);
+      list = list.insertAfter(null, id);
+      list = list.delete(id);
+      list = list.undelete(id);
 
       expect(list.length).to.equal(1);
       expect(list.has(id)).to.be.true;
     });
 
     it("should throw when undeleting an unknown ID", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      expect(() => list.undelete(id)).to.throw();
+      expect(() => (list = list.undelete(id))).to.throw();
     });
 
     it("should do nothing when undeleting an already present ID", () => {
-      const list = new IdList();
+      let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
-      list.insertAfter(null, id);
-      list.undelete(id); // Should do nothing
+      list = list.insertAfter(null, id);
+      list = list.undelete(id); // Should do nothing
 
       expect(list.length).to.equal(1);
       expect(list.has(id)).to.be.true;
     });
   });
 
-  describe("uninsert operations", () => {
-    it("should completely remove an element", () => {
-      const list = new IdList();
-      const id: ElementId = { bunchId: "abc", counter: 1 };
-
-      list.insertAfter(null, id);
-      list.uninsert(id);
-
-      expect(list.length).to.equal(0);
-      expect(list.isKnown(id)).to.be.false;
-      expect(() =>
-        list.insertAfter(id, { bunchId: "abc", counter: 2 })
-      ).to.throw();
-    });
-
-    it("should do nothing when uninserting an unknown ID", () => {
-      const list = new IdList();
-      const id: ElementId = { bunchId: "abc", counter: 1 };
-
-      list.uninsert(id);
-      expect(list.length).to.equal(0);
-      expect(list.isKnown(id)).to.be.false;
-    });
-  });
+  // TODO: Test immutability.
 
   describe("accessor operations", () => {
     let list: IdList;
@@ -273,11 +250,11 @@ describe("IdList", () => {
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = new IdList();
-      list.insertAfter(null, id1);
-      list.insertAfter(id1, id2);
-      list.insertAfter(id2, id3);
-      list.delete(id2); // Delete the middle element
+      list = IdList.new();
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+      list = list.delete(id2); // Delete the middle element
     });
 
     it("should get an element by index", () => {
@@ -320,11 +297,11 @@ describe("IdList", () => {
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = new IdList();
-      list.insertAfter(null, id1);
-      list.insertAfter(id1, id2);
-      list.insertAfter(id2, id3);
-      list.delete(id2); // Delete the middle element
+      list = IdList.new();
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+      list = list.delete(id2); // Delete the middle element
     });
 
     it("should iterate over present elements", () => {
@@ -356,11 +333,11 @@ describe("IdList", () => {
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = new IdList();
-      list.insertAfter(null, id1);
-      list.insertAfter(id1, id2);
-      list.insertAfter(id2, id3);
-      list.delete(id2); // Delete the middle element
+      list = IdList.new();
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+      list = list.delete(id2); // Delete the middle element
     });
 
     it("should include deleted elements in its view", () => {
@@ -388,38 +365,19 @@ describe("IdList", () => {
     });
   });
 
-  describe("cloning", () => {
-    it("should create an independent copy", () => {
-      const list = new IdList();
-      const id1: ElementId = { bunchId: "abc", counter: 1 };
-      const id2: ElementId = { bunchId: "def", counter: 1 };
-
-      list.insertAfter(null, id1);
-      list.insertAfter(id1, id2);
-
-      const clone = list.clone();
-      expect(clone.length).to.equal(2);
-
-      // Modifying original should not affect clone
-      list.delete(id1);
-      expect(list.length).to.equal(1);
-      expect(clone.length).to.equal(2);
-    });
-  });
-
   describe("persistence", () => {
     it("should save and load a list state", () => {
-      const list = new IdList();
+      let list = IdList.new();
 
       // Insert a sequential bunch
       const startId: ElementId = { bunchId: "abc", counter: 1 };
-      list.insertAfter(null, startId, 5);
+      list = list.insertAfter(null, startId, 5);
 
       // Delete one of them
-      list.delete({ bunchId: "abc", counter: 3 });
+      list = list.delete({ bunchId: "abc", counter: 3 });
 
       // Insert another element
-      list.insertAfter(
+      list = list.insertAfter(
         { bunchId: "abc", counter: 5 },
         { bunchId: "def", counter: 1 }
       );
@@ -428,8 +386,7 @@ describe("IdList", () => {
       const savedState = list.save();
 
       // Create a new list and load the state
-      const newList = new IdList();
-      newList.load(savedState);
+      const newList = IdList.load(savedState);
 
       // Check that the new list has the same state
       expect(newList.length).to.equal(5);
@@ -443,11 +400,11 @@ describe("IdList", () => {
     });
 
     it("should handle compression of sequential IDs", () => {
-      const list = new IdList();
+      let list = IdList.new();
 
       // Insert a large sequential bunch
       const startId: ElementId = { bunchId: "abc", counter: 1 };
-      list.insertAfter(null, startId, 100);
+      list = list.insertAfter(null, startId, 100);
 
       // Save the state - this should be highly compressed
       const savedState = list.save();
@@ -462,8 +419,7 @@ describe("IdList", () => {
       });
 
       // Create a new list and load the state
-      const newList = new IdList();
-      newList.load(savedState);
+      const newList = IdList.load(savedState);
 
       // Check that the new list has all 100 elements
       expect(newList.length).to.equal(100);

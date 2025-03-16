@@ -2,12 +2,12 @@ import { ElementId, equalsId } from "./id";
 import { SavedIdList } from "./saved_id_list";
 
 interface ListElement {
-  id: ElementId;
-  isDeleted: boolean;
+  readonly id: ElementId;
+  readonly isDeleted: boolean;
 }
 
 /**
- * A list of ElementIds.
+ * A list of ElementIds, as a persistent (immutable) data structure.
  *
  * An IdList helps you assign a unique immutable id to each element of a list, such
  * as a todo-list or a text document (= list of characters). That way, you can keep track
@@ -16,11 +16,14 @@ interface ListElement {
  *
  * Any id that has been inserted into an IdList remains **known** to that list indefinitely,
  * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
- * merely marks an id as deleted (not present); it remains in memory as a "tombstone".
+ * merely marks an id as deleted (= not present); it remains in memory as a "tombstone".
  * This is useful in collaborative settings, since another user might instruct you to
  * call `insertAfter(before, newId)` when you have already deleted `before` locally.
- * If that is not a concern and you truly want to make an id no longer known, instead
- * call {@link uninsert}.
+ *
+ * To enable easy and efficient rollbacks, such as in a
+ * [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
+ * architecture, IdList is a persistent (immutable) data structure. Mutating methods
+ * return a new IdList, sharing memory with the old IdList where possible.
  *
  * See {@link ElementId} for advice on generating ElementIds. IdList is optimized for
  * the case where sequential ElementIds often have the same bunchId and sequential counters.
@@ -28,30 +31,35 @@ interface ListElement {
  * cause such ids to be separated, partially deleted, or even reordered.
  */
 export class IdList {
-  private readonly state: ListElement[];
-  private _length: number;
+  /**
+   * Internal - construct an IdList using a static method (e.g. `IdList.new`).
+   */
+  private constructor(
+    private readonly state: ListElement[],
+    readonly length: number
+  ) {}
 
   /**
    * Constructs an empty list.
    *
    * To begin with a non-empty list, use {@link IdList.from} or {@link IdList.fromIds}.
    */
-  constructor() {
-    this.state = [];
-    this._length = 0;
+  static new() {
+    return new this([], 0);
   }
 
   /**
    * Constructs a list with the given known ids and their isDeleted status, in list order.
    */
-  static from(state: Iterable<{ id: ElementId; isDeleted: boolean }>) {
-    const list = new IdList();
-    for (const { id, isDeleted } of state) {
+  static from(knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>) {
+    const state: ListElement[] = [];
+    let length = 0;
+    for (const { id, isDeleted } of knownIds) {
       // Clone to prevent aliasing.
-      list.state.push({ id, isDeleted });
-      if (!isDeleted) list._length++;
+      state.push({ id, isDeleted });
+      if (!isDeleted) length++;
     }
-    return list;
+    return new this(state, length);
   }
 
   /**
@@ -62,16 +70,19 @@ export class IdList {
    * in future insertAfter/insertBefore operations.
    */
   static fromIds(ids: Iterable<ElementId>) {
-    const list = new IdList();
+    const state: ListElement[] = [];
+    let length = 0;
     for (const id of ids) {
-      list.state.push({ id, isDeleted: false });
-      list._length++;
+      state.push({ id, isDeleted: false });
+      length++;
     }
-    return list;
+    return new this(state, length);
   }
 
   /**
    * Inserts `newId` immediately after the given id (`before`), which may be deleted.
+   * A new IdList is returned and the current list remains unchanged.
+   *
    * All ids to the right of `before` are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
    *
@@ -99,12 +110,21 @@ export class IdList {
       }
     }
 
-    this.state.splice(index + 1, 0, ...expandElements(newId, false, count));
-    this._length += count;
+    return new IdList(
+      this.state
+        .slice(0, index + 1)
+        .concat(
+          expandElements(newId, false, count),
+          this.state.slice(index + 1)
+        ),
+      this.length + count
+    );
   }
 
   /**
    * Inserts `newId` immediately before the given id (`after`), which may be deleted.
+   * A new IdList is returned and the current list remains unchanged.
+   *
    * All ids to the right of `after`, plus `after` itself, are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
    *
@@ -133,30 +153,19 @@ export class IdList {
     }
 
     // We insert the bunch from left-to-right even though it's insertBefore.
-    this.state.splice(index, 0, ...expandElements(newId, false, count));
-    this._length += count;
+    return new IdList(
+      this.state
+        .slice(0, index)
+        .concat(expandElements(newId, false, count), this.state.slice(index)),
+      this.length + count
+    );
   }
 
   /**
-   * Un-inserts `id` from the list, making it no longer known or present in this list.
+   * Marks `id` as deleted from this list.
+   * A new IdList is returned and the current list remains unchanged.
    *
-   * Typically, you instead want to call {@link delete}, which marks `id` as deleted while
-   * it remains known. That way, you can reference `id` in future insertAfter/insertBefore
-   * operations, including ones sent concurrently by other devices.
-   *
-   * If `id` is already not known, this method does nothing.
-   */
-  uninsert(id: ElementId) {
-    const index = this.state.findIndex((elt) => equalsId(elt.id, id));
-    if (index !== -1) {
-      this.state.splice(index, 1);
-      this._length--;
-    }
-  }
-
-  /**
-   * Marks `id` as deleted from this list. The id remains known (a "tombstone").
-   *
+   * The id remains known (a "tombstone").
    * Because `id` is still known, you can reference it in future insertAfter/insertBefore
    * operations, including ones sent concurrently by other devices.
    * However, it does occupy space in memory (compressed in common cases).
@@ -167,30 +176,54 @@ export class IdList {
    * If `id` is already deleted or not known, this method does nothing.
    */
   delete(id: ElementId) {
-    const elt = this.state.find((elt) => equalsId(elt.id, id));
-    if (elt !== undefined && !elt.isDeleted) {
-      elt.isDeleted = true;
-      this._length--;
+    const index = this.state.findIndex((elt) => equalsId(elt.id, id));
+    if (index != -1) {
+      const elt = this.state[index];
+      if (!elt.isDeleted) {
+        return new IdList(
+          this.state
+            .slice(0, index)
+            .concat(
+              [{ id: elt.id, isDeleted: true }],
+              this.state.slice(index + 1)
+            ),
+          this.length - 1
+        );
+      }
     }
+
+    return this;
   }
 
   /**
    * Un-marks `id` as deleted from this list, making it present again.
-   * This is an exact inverse to {@link delete}.
+   * A new IdList is returned and the current list remains unchanged.
+   *
+   * This method is an exact inverse to {@link delete}.
    *
    * If `id` is already present, this method does nothing.
    *
    * @throws If `id` is not known.
    */
   undelete(id: ElementId) {
-    const elt = this.state.find((elt) => equalsId(elt.id, id));
-    if (elt === undefined) {
+    const index = this.state.findIndex((elt) => equalsId(elt.id, id));
+    if (index == -1) {
       throw new Error("id is not known");
     }
+    const elt = this.state[index];
     if (elt.isDeleted) {
-      elt.isDeleted = false;
-      this._length++;
+      return new IdList(
+        this.state
+          .slice(0, index)
+          .concat(
+            [{ id: elt.id, isDeleted: false }],
+            this.state.slice(index + 1)
+          ),
+        this.length + 1
+      );
     }
+
+    return this;
   }
 
   // Accessors
@@ -275,13 +308,6 @@ export class IdList {
     throw new Error("id is not known");
   }
 
-  /**
-   * The length of the list.
-   */
-  get length(): number {
-    return this._length;
-  }
-
   // Iterators and views
 
   /**
@@ -307,17 +333,10 @@ export class IdList {
     return this.state.values();
   }
 
-  /**
-   * Returns an independent copy of this list, including known but deleted ids.
-   */
-  clone(): IdList {
-    return IdList.from(this.state);
-  }
-
   private _knownIds?: KnownIdView;
 
   /**
-   * A live-updating view of this list that treats all known ids as present.
+   * A view of this list that treats all known ids as present.
    * That is, it ignores isDeleted status when computing list indices or iterating.
    */
   get knownIds(): KnownIdView {
@@ -363,11 +382,11 @@ export class IdList {
   }
 
   /**
-   * Loads a saved state returned by {@link save}, __overwriting__ the current state of this list.
+   * Loads a saved state returned by {@link save}.
    */
-  load(savedState: SavedIdList) {
-    this.state.length = 0;
-    this._length = 0;
+  static load(savedState: SavedIdList) {
+    const state: ListElement[] = [];
+    let length = 0;
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
       if (!(Number.isSafeInteger(count) && count >= 0)) {
@@ -375,21 +394,25 @@ export class IdList {
       }
 
       for (let i = 0; i < count; i++) {
-        this.state.push({
+        state.push({
           id: { bunchId, counter: startCounter + i },
           isDeleted,
         });
       }
-      if (!isDeleted) this._length += count;
+      if (!isDeleted) length += count;
     }
+
+    return new IdList(state, length);
   }
 }
 
 /**
- * A live-updating view of an IdList that treats all known ids as present.
+ * A view of an IdList that treats all known ids as present.
  * That is, this class ignores the underlying list's isDeleted status when computing list indices.
+ * Access using {@link IdList.knownIds}.
  *
- * To mutate, call methods on the original IdList (`this.list`).
+ * Like IdList, KnownIdView is immutable. To mutate, use a mutating method on the original IdList
+ * and access the returned list's `knownIds`.
  */
 export class KnownIdView {
   /**
