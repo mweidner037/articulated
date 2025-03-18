@@ -383,7 +383,7 @@ export class IdList {
   has(id: ElementId): boolean {
     const located = locate(id, this.root);
     if (located === null) return false;
-    return !located[1].isDeleted;
+    return !located[0].node.isDeleted;
   }
 
   /**
@@ -457,7 +457,6 @@ export class IdList {
   indexOf(id: ElementId, bias: "none" | "left" | "right" = "none"): number {
     const located = locate(id, this.root);
     if (located === null) throw new Error("id is not known");
-    const path = located[0];
 
     /**
      * The number of present ids less than id.
@@ -465,35 +464,39 @@ export class IdList {
      */
     let index = 0;
 
-    let curParent = this.root;
-    for (const childIndex of path) {
-      if (curParent instanceof InnerNodeInner) {
-        for (let i = 0; i < childIndex; i++) {
-          index += curParent.children[i].size;
-        }
-        curParent = curParent.children[childIndex];
-      } else {
-        for (let i = 0; i < childIndex; i++) {
-          const child = curParent.children[i];
-          if (!child.isDeleted) index += child.count;
-        }
-        const idLeaf = curParent.children[childIndex];
-        if (idLeaf.isDeleted) {
-          switch (bias) {
-            case "none":
-              return -1;
-            case "left":
-              return index - 1;
-            case "right":
-              return index;
-          }
-        } else {
-          return index + (id.counter - idLeaf.startCounter);
-        }
+    // Lesser siblings of parent, grandparent, etc.
+    for (let i = 1; i < located.length; i++) {
+      const parent = (
+        i === located.length - 1 ? this.root : located[i + 1].node
+      ) as InnerNodeInner;
+      for (let c = 0; c < located[i].indexInParent; c++) {
+        index += parent.children[c].size;
       }
     }
 
-    throw new Error("Internal error");
+    // Siblings of id's leaf.
+    const leafParent = (
+      located.length === 1 ? this.root : located[1].node
+    ) as InnerNodeLeaf;
+    for (let c = 0; c < located[0].indexInParent; c++) {
+      const child = leafParent.children[c];
+      if (!child.isDeleted) index += child.count;
+    }
+
+    // id's index with leaf.
+    const idLeaf = leafParent.children[located[0].indexInParent];
+    if (idLeaf.isDeleted) {
+      switch (bias) {
+        case "none":
+          return -1;
+        case "left":
+          return index - 1;
+        case "right":
+          return index;
+      }
+    } else {
+      return index + (id.counter - idLeaf.startCounter);
+    }
   }
 
   // Iterators and views
@@ -643,7 +646,6 @@ export class KnownIdView {
   indexOf(id: ElementId): number {
     const located = locate(id, this.root);
     if (located === null) throw new Error("id is not known");
-    const path = located[0];
 
     /**
      * The number of present ids less than id.
@@ -651,24 +653,28 @@ export class KnownIdView {
      */
     let index = 0;
 
-    let curParent = this.root;
-    for (const childIndex of path) {
-      if (curParent instanceof InnerNodeInner) {
-        for (let i = 0; i < childIndex; i++) {
-          index += curParent.children[i].knownSize;
-        }
-        curParent = curParent.children[childIndex];
-      } else {
-        for (let i = 0; i < childIndex; i++) {
-          const child = curParent.children[i];
-          if (!child.isDeleted) index += child.count;
-        }
-        const idLeaf = curParent.children[childIndex];
-        return index + (id.counter - idLeaf.startCounter);
+    // Lesser siblings of parent, grandparent, etc.
+    for (let i = 1; i < located.length; i++) {
+      const parent = (
+        i === located.length - 1 ? this.root : located[i + 1].node
+      ) as InnerNodeInner;
+      for (let c = 0; c < located[i].indexInParent; c++) {
+        index += parent.children[c].knownSize;
       }
     }
 
-    throw new Error("Internal error");
+    // Siblings of id's leaf.
+    const leafParent = (
+      located.length === 1 ? this.root : located[1].node
+    ) as InnerNodeLeaf;
+    for (let c = 0; c < located[0].indexInParent; c++) {
+      const child = leafParent.children[c];
+      index += child.count;
+    }
+
+    // id's index with leaf.
+    const idLeaf = leafParent.children[located[0].indexInParent];
+    return index + (id.counter - idLeaf.startCounter);
   }
 
   /**
@@ -697,28 +703,28 @@ export class KnownIdView {
   }
 }
 
+/**
+ * Returns the path from id's leaf node to the root, or null if id is not found.
+ *
+ * The path contains each node and its index in its parent's node, starting with id's
+ * LeafNode and ending at a child of the root.
+ */
 function locate(
   id: ElementId,
-  root: InnerNode
-): [path: number[], leaf: LeafNode] | null {
-  // TODO: Optimize with separate RBTree maps.
-  const located = locateInner(id, root);
-  if (located === null) return null;
-  else {
-    located[0].reverse();
-    return located;
-  }
-}
-
-function locateInner(
-  id: ElementId,
   node: InnerNode
-): [pathReversed: number[], leaf: LeafNode] | null {
+):
+  | [
+      { node: LeafNode; indexInParent: number },
+      // Index 1 will be an InnerNodeLeaf if it exists.
+      ...{ node: InnerNode; indexInParent: number }[]
+    ]
+  | null {
   if (node instanceof InnerNodeInner) {
     for (let i = 0; i < node.children.length; i++) {
-      const childLocated = locateInner(id, node.children[i]);
+      const child = node.children[i];
+      const childLocated = locate(id, child);
       if (childLocated !== null) {
-        childLocated[0].push(i);
+        childLocated.push({ node: child, indexInParent: i });
         return childLocated;
       }
     }
@@ -730,28 +736,11 @@ function locateInner(
         child.startCounter <= id.counter &&
         id.counter < child.startCounter + child.count
       ) {
-        return [[i], child];
+        return [{ node: child, indexInParent: i }];
       }
     }
   }
   return null;
-}
-
-// TODO: Could optimize this if we returned all nodes in the path.
-function successor(
-  path: number[],
-  root: InnerNode
-): [path: number[], leaf: LeafNode] | null {
-  // let indexToChange = -1;
-  // let curParent = root;
-  // for (const childIndex of path) {
-  //   if (childIndex + 1 === curParent.children.length) break;
-  //   indexToChange++;
-  //   curParent = curParent.children[childIndex] as InnerNode;
-  // }
-  // if (indexToChange === -1) return null;
-  // // Find the first descendant of the changed index.
-  // const newPath = path.slice(0, indexToChange).push(path[indexToChange] + 1);
 }
 
 function* iterateNode(
