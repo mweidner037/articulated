@@ -137,28 +137,96 @@ export class IdList {
       throw new Error("newId is already known");
     }
 
-    let index: number;
     if (before === null) {
-      // -1 so index + 1 is 0: insert at the beginning of the list.
-      index = -1;
-    } else {
-      index = this.state.findIndex((elt) => equalsId(elt.id, before));
-      if (index === -1) {
-        throw new Error("before is not known");
-      }
+      if (count === 0) return this;
+
+      // TODO
+      throw new Error("Unimplemented");
     }
 
+    const located = locate(before, this.root);
+    if (located === null) {
+      throw new Error("before is not known");
+    }
     if (count === 0) return this;
+    const [path, leaf] = located;
 
-    return new IdList(
-      this.state
-        .slice(0, index + 1)
-        .concat(
-          expandElements(newId, false, count),
-          this.state.slice(index + 1)
-        ),
-      this.length + count
-    );
+    if (before.counter === leaf.startCounter + leaf.count - 1) {
+      // Inserting at the end of leaf.
+      if (
+        leaf.bunchId === newId.bunchId &&
+        leaf.startCounter + leaf.count === newId.counter &&
+        !leaf.isDeleted
+      ) {
+        // Extending leaf.
+        return this.replaceLeaf(path, { ...leaf, count: leaf.count + count });
+      } else {
+        // Inserting a new leaf afterwards.
+        path[path.length - 1]++;
+        return this.replaceLeaf(path, leaf, {
+          bunchId: newId.bunchId,
+          startCounter: newId.counter,
+          count,
+          isDeleted: false,
+        });
+      }
+    } else {
+      // We need to split leaf.
+      return this.replaceLeaf(
+        path,
+        { ...leaf, count: before.counter + 1 - leaf.startCounter },
+        {
+          bunchId: newId.bunchId,
+          startCounter: newId.counter,
+          count,
+          isDeleted: false,
+        },
+        {
+          ...leaf,
+          startCounter: before.counter + 1,
+          count: leaf.count - (before.counter + 1 - leaf.startCounter),
+        }
+      );
+    }
+  }
+
+  /**
+   * Replaces the leaf at the given path with newLeaves, which must have at least one leaf.
+   *
+   * Returns a proper BTree with updated sizes.
+   */
+  private replaceLeaf(path: number[], ...newLeaves: LeafNode[]): IdList {
+    // TODO: locate should give us the ancestors to use here.
+    const ancestors: InnerNodeInner[] = [this.root] as InnerNodeInner[];
+    for (let i = 0; i < path.length - 1; i++) {
+      ancestors.push(
+        ancestors[ancestors.length - 1].children[path[i]] as InnerNodeInner
+      );
+    }
+    const parent = ancestors.pop()! as InnerNode as InnerNodeLeaf;
+    const pathLast = path[path.length - 1];
+
+    let curNewNode: InnerNode = {
+      ...parent,
+      children: [
+        ...parent.children.slice(0, pathLast),
+        ...newLeaves,
+        ...parent.children.slice(pathLast + 1),
+      ],
+    };
+    for (let i = path.length - 2; i >= 0; i--) {
+      const newChildren = ancestors[i].children.slice();
+      newChildren[path[i]] = curNewNode;
+      // TODO: update sizes.
+      curNewNode = {
+        ...ancestors[i],
+        children: newChildren,
+      };
+    }
+
+    // TODO: Fix BTree properties.
+
+    return new IdList(curNewNode);
   }
 
   /**
@@ -231,10 +299,8 @@ export class IdList {
     let newLeaves: LeafNode[] = [];
     if (beforeCount > 0) {
       newLeaves.push({
-        bunchId: leaf.bunchId,
-        startCounter: leaf.startCounter,
+        ...leaf,
         count: beforeCount,
-        isDeleted: leaf.isDeleted,
       });
     }
     newLeaves.push({
