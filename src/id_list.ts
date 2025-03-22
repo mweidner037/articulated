@@ -1,5 +1,5 @@
 import { SparseIndices } from "sparse-array-rled";
-import { ElementId, equalsId } from "./id";
+import { ElementId } from "./id";
 import { SavedIdList } from "./saved_id_list";
 
 interface LeafNode {
@@ -390,55 +390,13 @@ export class IdList {
     const located = locate(id, this.root);
     if (located === null) return this;
 
-    const [path, leaf] = located;
-    if (leaf.isDeleted) return this;
+    const leaf = located[0].node;
+    if (!leaf.present.has(id.counter)) return this;
 
-    const beforeCount = id.counter - leaf.startCounter;
-    const afterCount = leaf.startCounter + leaf.count - (id.counter + 1);
+    const newPresent = leaf.present.clone();
+    newPresent.delete(id.counter);
 
-    let newList: IdList = this;
-    let newLeaves: LeafNode[] = [];
-    if (beforeCount > 0) {
-      newLeaves.push({
-        ...leaf,
-        count: beforeCount,
-      });
-    }
-    newLeaves.push({
-      bunchId: id.bunchId,
-      startCounter: id.counter,
-      count: 1,
-      isDeleted: true,
-    });
-    if (afterCount > 0) {
-      newLeaves.push({
-        bunchId: leaf.bunchId,
-        startCounter: id.counter + 1,
-        count: afterCount,
-        isDeleted: leaf.isDeleted,
-      });
-    }
-
-    if (beforeCount === 0) {
-    }
-
-    const index = this.state.findIndex((elt) => equalsId(elt.id, id));
-    if (index != -1) {
-      const elt = this.state[index];
-      if (!elt.isDeleted) {
-        return new IdList(
-          this.state
-            .slice(0, index)
-            .concat(
-              [{ id: elt.id, isDeleted: true }],
-              this.state.slice(index + 1)
-            ),
-          this.length - 1
-        );
-      }
-    }
-
-    return this;
+    return this.replaceLeaf(located, { ...leaf, present: newPresent });
   }
 
   /**
@@ -452,24 +410,16 @@ export class IdList {
    * @throws If `id` is not known.
    */
   undelete(id: ElementId) {
-    const index = this.state.findIndex((elt) => equalsId(elt.id, id));
-    if (index == -1) {
-      throw new Error("id is not known");
-    }
-    const elt = this.state[index];
-    if (elt.isDeleted) {
-      return new IdList(
-        this.state
-          .slice(0, index)
-          .concat(
-            [{ id: elt.id, isDeleted: false }],
-            this.state.slice(index + 1)
-          ),
-        this.length + 1
-      );
-    }
+    const located = locate(id, this.root);
+    if (located === null) return this;
 
-    return this;
+    const leaf = located[0].node;
+    if (leaf.present.has(id.counter)) return this;
+
+    const newPresent = leaf.present.clone();
+    newPresent.set(id.counter);
+
+    return this.replaceLeaf(located, { ...leaf, present: newPresent });
   }
 
   /**
