@@ -9,19 +9,35 @@ interface LeafNode {
 }
 
 class InnerNodeInner {
-  constructor(
-    readonly children: readonly InnerNode[],
-    readonly size: number,
-    readonly knownSize: number
-  ) {}
+  readonly size: number;
+  readonly knownSize: number;
+
+  constructor(readonly children: readonly InnerNode[]) {
+    let size = 0;
+    let knownSize = 0;
+    for (const child of children) {
+      size += child.size;
+      knownSize += child.knownSize;
+    }
+    this.size = size;
+    this.knownSize = knownSize;
+  }
 }
 
 class InnerNodeLeaf {
-  constructor(
-    readonly children: readonly LeafNode[],
-    readonly size: number,
-    readonly knownSize: number
-  ) {}
+  readonly size: number;
+  readonly knownSize: number;
+
+  constructor(readonly children: readonly LeafNode[]) {
+    let size = 0;
+    let knownSize = 0;
+    for (const child of children) {
+      if (!child.isDeleted) size += child.count;
+      knownSize += child.count;
+    }
+    this.size = size;
+    this.knownSize = knownSize;
+  }
 }
 
 type InnerNode = InnerNodeInner | InnerNodeLeaf;
@@ -72,7 +88,7 @@ export class IdList {
    * To begin with a non-empty list, use {@link IdList.from} or {@link IdList.fromIds}.
    */
   static new() {
-    return new this(new InnerNodeLeaf([], 0, 0));
+    return new this(new InnerNodeLeaf([]));
   }
 
   /**
@@ -149,18 +165,14 @@ export class IdList {
       if (this.root.children.length === 0) {
         // Insert the first leaf as a child of root.
         return new IdList(
-          new InnerNodeLeaf(
-            [
-              {
-                bunchId: newId.bunchId,
-                startCounter: newId.counter,
-                count,
-                isDeleted: false,
-              },
-            ],
-            count,
-            count
-          )
+          new InnerNodeLeaf([
+            {
+              bunchId: newId.bunchId,
+              startCounter: newId.counter,
+              count,
+              isDeleted: false,
+            },
+          ])
         );
       } else {
         // Insert before the first known id.
@@ -243,18 +255,14 @@ export class IdList {
       if (this.root.children.length === 0) {
         // Insert the first leaf as a child of root.
         return new IdList(
-          new InnerNodeLeaf(
-            [
-              {
-                bunchId: newId.bunchId,
-                startCounter: newId.counter,
-                count,
-                isDeleted: false,
-              },
-            ],
-            count,
-            count
-          )
+          new InnerNodeLeaf([
+            {
+              bunchId: newId.bunchId,
+              startCounter: newId.counter,
+              count,
+              isDeleted: false,
+            },
+          ])
         );
       } else {
         // Insert after the first known id.
@@ -416,9 +424,10 @@ export class IdList {
   }
 
   /**
-   * Replaces the leaf at the given path with newLeaves, which must be nonempty.
-   *
+   * Replaces the leaf at the given path with newLeaves.
    * Returns a proper BTree with updated sizes.
+   *
+   * newLeaves.length must be in [1, B].
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     return new IdList(replaceNode(located, this.root, newLeaves, 0));
@@ -814,9 +823,7 @@ function locate(id: ElementId, node: InnerNode): Located | null {
 /**
  * Replace located[i].node with newNodes. root is effectively located[located.length].node.
  *
- * TODO: Guarantee newNodes.length is s.t. you never need to split a node more than once
- * for BTree-ness. Falls back on replaceLeaf req. Also require length >= 1 so we are
- * okay not shrinking the BTree.
+ * newNodes.length must be in [1, B].
  */
 function replaceNode(
   located: Located,
@@ -833,26 +840,15 @@ function replaceNode(
     .concat(newNodes, parent.children.slice(indexInParent + 1));
 
   // TODO: BTree-ness - split newChildren if too large.
-  // Turns code below into node-building funcs so we can call it twice.
-
-  if (i === 0) {
-    const asLeaves = newChildren as LeafNode[];
-    let size = 0;
-    let knownSize = 0;
-    for (const leaf of asLeaves) {
-      if (!leaf.isDeleted) size += leaf.count;
-      knownSize += leaf.count;
-    }
-    return new InnerNodeLeaf(asLeaves, size, knownSize);
+  const newParent =
+    i === 0
+      ? new InnerNodeLeaf(newChildren as LeafNode[])
+      : new InnerNodeInner(newChildren as InnerNode[]);
+  if (i === located.length - 1) {
+    // Replaces root.
+    return newParent;
   } else {
-    const asInner = newChildren as InnerNode[];
-    let size = 0;
-    let knownSize = 0;
-    for (const inner of asInner) {
-      size += inner.size;
-      knownSize += inner.knownSize;
-    }
-    return new InnerNodeInner(asInner, size, knownSize);
+    return replaceNode(located, root, [newParent], i + 1);
   }
 }
 
