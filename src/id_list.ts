@@ -48,6 +48,17 @@ type Located = [
   ...{ node: InnerNode; indexInParent: number }[]
 ];
 
+/**
+ * The B+Tree's branching factor, i.e., the max number of children of a node.
+ *
+ * Note that our B+Tree has no keys - in particular, no keys in internal nodes.
+ *
+ * Wiki B+Tree: "B+ trees can also be used for data stored in RAM.
+ * In this case a reasonable choice for block size would be the size of [the] processor's cache line."
+ * (64 bytes) / (8 byte pointer) = 8.
+ */
+const M = 8;
+
 // TODO:
 // - Move helper methods to functions, for minification.
 // - Combine at/indexOf with KnownId versions, for easier modification & smaller code.
@@ -427,7 +438,7 @@ export class IdList {
    * Replaces the leaf at the given path with newLeaves.
    * Returns a proper BTree with updated sizes.
    *
-   * newLeaves.length must be in [1, B].
+   * newLeaves.length must be in [1, M].
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     return new IdList(replaceNode(located, this.root, newLeaves, 0));
@@ -823,7 +834,7 @@ function locate(id: ElementId, node: InnerNode): Located | null {
 /**
  * Replace located[i].node with newNodes. root is effectively located[located.length].node.
  *
- * newNodes.length must be in [1, B].
+ * newNodes.length must be in [1, M].
  */
 function replaceNode(
   located: Located,
@@ -839,16 +850,33 @@ function replaceNode(
     .slice(0, indexInParent)
     .concat(newNodes, parent.children.slice(indexInParent + 1));
 
-  // TODO: BTree-ness - split newChildren if too large.
-  const newParent =
-    i === 0
-      ? new InnerNodeLeaf(newChildren as LeafNode[])
-      : new InnerNodeInner(newChildren as InnerNode[]);
-  if (i === located.length - 1) {
-    // Replaces root.
-    return newParent;
+  if (newChildren.length > M) {
+    const split = Math.floor(newChildren.length / 2);
+    const newParents = [
+      newChildren.slice(0, split),
+      newChildren.slice(split),
+    ].map((children) =>
+      i === 0
+        ? new InnerNodeLeaf(children as LeafNode[])
+        : new InnerNodeInner(children as InnerNode[])
+    );
+    if (i === located.length - 1) {
+      // newParents replace root. We need a new root to hold them.
+      return new InnerNodeInner(newParents);
+    } else {
+      return replaceNode(located, root, newParents, i + 1);
+    }
   } else {
-    return replaceNode(located, root, [newParent], i + 1);
+    const newParent =
+      i === 0
+        ? new InnerNodeLeaf(newChildren as LeafNode[])
+        : new InnerNodeInner(newChildren as InnerNode[]);
+    if (i === located.length - 1) {
+      // Replaces root.
+      return newParent;
+    } else {
+      return replaceNode(located, root, [newParent], i + 1);
+    }
   }
 }
 
