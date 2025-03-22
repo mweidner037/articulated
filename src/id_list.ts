@@ -26,6 +26,12 @@ class InnerNodeLeaf {
 
 type InnerNode = InnerNodeInner | InnerNodeLeaf;
 
+type Located = [
+  { node: LeafNode; indexInParent: number },
+  // Index 1 will be an InnerNodeLeaf if it exists.
+  ...{ node: InnerNode; indexInParent: number }[]
+];
+
 // TODO:
 // - Move helper methods to functions, for minification.
 // - Combine at/indexOf with KnownId versions, for easier modification & smaller code.
@@ -410,49 +416,12 @@ export class IdList {
   }
 
   /**
-   * Replaces the leaf at the given path with newLeaves, which must have at least one leaf.
+   * Replaces the leaf at the given path with newLeaves, which must be nonempty.
    *
    * Returns a proper BTree with updated sizes.
    */
-  private replaceLeaf(
-    located: [
-      { node: LeafNode; indexInParent: number },
-      // Index 1 will be an InnerNodeLeaf if it exists.
-      ...{ node: InnerNode; indexInParent: number }[]
-    ],
-    ...newLeaves: LeafNode[]
-  ): IdList {
-    // TODO: locate should give us the ancestors to use here.
-    const ancestors: InnerNodeInner[] = [this.root] as InnerNodeInner[];
-    for (let i = 0; i < path.length - 1; i++) {
-      ancestors.push(
-        ancestors[ancestors.length - 1].children[path[i]] as InnerNodeInner
-      );
-    }
-    const parent = ancestors.pop()! as InnerNode as InnerNodeLeaf;
-    const pathLast = path[path.length - 1];
-
-    let curNewNode: InnerNode = {
-      ...parent,
-      children: [
-        ...parent.children.slice(0, pathLast),
-        ...newLeaves,
-        ...parent.children.slice(pathLast + 1),
-      ],
-    };
-    for (let i = path.length - 2; i >= 0; i--) {
-      const newChildren = ancestors[i].children.slice();
-      newChildren[path[i]] = curNewNode;
-      // TODO: update sizes.
-      curNewNode = {
-        ...ancestors[i],
-        children: newChildren,
-      };
-    }
-
-    // TODO: Fix BTree properties.
-
-    return new IdList(curNewNode);
+  private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
+    return new IdList(replaceNode(located, this.root, newLeaves, 0));
   }
 
   // Accessors
@@ -817,16 +786,7 @@ function lastId(node: InnerNode): ElementId {
  * The path contains each node and its index in its parent's node, starting with id's
  * LeafNode and ending at a child of the root.
  */
-function locate(
-  id: ElementId,
-  node: InnerNode
-):
-  | [
-      { node: LeafNode; indexInParent: number },
-      // Index 1 will be an InnerNodeLeaf if it exists.
-      ...{ node: InnerNode; indexInParent: number }[]
-    ]
-  | null {
+function locate(id: ElementId, node: InnerNode): Located | null {
   if (node instanceof InnerNodeInner) {
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i];
@@ -849,6 +809,51 @@ function locate(
     }
   }
   return null;
+}
+
+/**
+ * Replace located[i].node with newNodes. root is effectively located[located.length].node.
+ *
+ * TODO: Guarantee newNodes.length is s.t. you never need to split a node more than once
+ * for BTree-ness. Falls back on replaceLeaf req. Also require length >= 1 so we are
+ * okay not shrinking the BTree.
+ */
+function replaceNode(
+  located: Located,
+  root: InnerNode,
+  newNodes: InnerNode[] | LeafNode[],
+  i: number
+): InnerNode {
+  const parent =
+    i === located.length - 1 ? root : (located[i + 1].node as InnerNode);
+  const indexInParent = located[i].indexInParent;
+  // Copy-on-write version of parent.children.splice(indexInParent, 1, ...newNodes)
+  const newChildren = parent.children
+    .slice(0, indexInParent)
+    .concat(newNodes, parent.children.slice(indexInParent + 1));
+
+  // TODO: BTree-ness - split newChildren if too large.
+  // Turns code below into node-building funcs so we can call it twice.
+
+  if (i === 0) {
+    const asLeaves = newChildren as LeafNode[];
+    let size = 0;
+    let knownSize = 0;
+    for (const leaf of asLeaves) {
+      if (!leaf.isDeleted) size += leaf.count;
+      knownSize += leaf.count;
+    }
+    return new InnerNodeLeaf(asLeaves, size, knownSize);
+  } else {
+    const asInner = newChildren as InnerNode[];
+    let size = 0;
+    let knownSize = 0;
+    for (const inner of asInner) {
+      size += inner.size;
+      knownSize += inner.knownSize;
+    }
+    return new InnerNodeInner(asInner, size, knownSize);
+  }
 }
 
 function* iterateNode(
