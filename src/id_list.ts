@@ -613,28 +613,79 @@ export class IdList {
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
-    const state: ListElement[] = [];
-    let length = 0;
+    // TODO: Checks to ban duplicate ids.
 
-    for (const { bunchId, startCounter, count, isDeleted } of savedState) {
-      if (!(Number.isSafeInteger(count) && count >= 0)) {
-        throw new Error(`Invalid count: ${count}`);
+    // 1. Determine the leaves.
+
+    const leaves: LeafNode[] = [];
+    for (let i = 0; i < savedState.length; i++) {
+      const item = savedState[i];
+
+      if (!(Number.isSafeInteger(item.count) && item.count >= 0)) {
+        throw new Error(`Invalid count: ${item.count}`);
       }
       // Negative counters are okay, but they must be integral.
-      if (!Number.isSafeInteger(startCounter)) {
-        throw new Error(`Invalid startCounter: ${startCounter}`);
+      if (!Number.isSafeInteger(item.startCounter)) {
+        throw new Error(`Invalid startCounter: ${item.startCounter}`);
       }
 
-      for (let i = 0; i < count; i++) {
-        state.push({
-          id: { bunchId, counter: startCounter + i },
-          isDeleted,
-        });
+      if (item.count === 0) continue;
+
+      if (leaves.length !== 0) {
+        const lastLeaf = leaves.at(-1)!;
+        if (
+          item.bunchId === lastLeaf.bunchId &&
+          item.startCounter === lastLeaf.startCounter + lastLeaf.count
+        ) {
+          // Extend lastLeaf.
+          // Okay to mutate in-place since we haven't referenced it anywhere else yet.
+          // @ts-expect-error Mutate in place
+          lastLeaf.count += item.count;
+          if (!item.isDeleted)
+            lastLeaf.present.set(item.startCounter, item.count);
+          continue;
+        }
       }
-      if (!isDeleted) length += count;
+
+      // If we get to here, we need a new leaf.
+      const present = SparseIndices.new();
+      if (!item.isDeleted) present.set(item.startCounter, item.count);
+      leaves.push({
+        bunchId: item.bunchId,
+        startCounter: item.startCounter,
+        count: item.count,
+        present,
+      });
     }
 
-    return new IdList(state, length);
+    // 2. Create a B+Tree with the given leaves.
+    // We do a "direct" balanced construction that takes O(n) time, instead of inserting
+    // leaves one-by-one, which would take O(n log(n)) time.
+
+    if (leaves.length === 0) return IdList.new();
+    // Depth of the B+Tree, excluding the root.
+    // A B+Tree of depth d has between [M^{d-1} - 1, M^d] leaves.
+    const depth = Math.ceil(Math.log(leaves.length) / Math.log(M));
+    return new IdList(buildTree(leaves, 0, depth - 1));
+  }
+}
+
+function buildTree(
+  leaves: LeafNode[],
+  startIndex: number,
+  depthRemaining: number
+): InnerNode {
+  if (depthRemaining === 0) {
+    return new InnerNodeLeaf(leaves.slice(startIndex, startIndex + M));
+  } else {
+    const children: InnerNode[] = [];
+    const childLeafCount = Math.pow(M, depthRemaining);
+    for (let i = 0; i < M; i++) {
+      const childStartIndex = startIndex + i * childLeafCount;
+      if (childStartIndex >= leaves.length) break;
+      children.push(buildTree(leaves, childStartIndex, depthRemaining - 1));
+    }
+    return new InnerNodeInner(children);
   }
 }
 
