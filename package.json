@@ -65,5 +65,8 @@
     "fix:format": "prettier --write .",
     "docs": "typedoc --options typedoc.json src/index.ts",
     "clean": "rm -rf build docs coverage .nyc_output"
+  },
+  "dependencies": {
+    "sparse-array-rled": "^2.0.1"
   }
 }
