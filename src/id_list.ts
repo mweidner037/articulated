@@ -172,6 +172,9 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertAfter(before: ElementId | null, newId: ElementId, count = 1): IdList {
+    if (!(Number.isSafeInteger(count) && count >= 0)) {
+      throw new Error(`Invalid count: ${count}`);
+    }
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
@@ -278,6 +281,9 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertBefore(after: ElementId | null, newId: ElementId, count = 1): IdList {
+    if (!(Number.isSafeInteger(count) && count >= 0)) {
+      throw new Error(`Invalid count: ${count}`);
+    }
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
@@ -411,7 +417,9 @@ export class IdList {
    */
   undelete(id: ElementId) {
     const located = locate(id, this.root);
-    if (located === null) return this;
+    if (located === null) {
+      throw new Error("id is not known");
+    }
 
     const leaf = located[0].node;
     if (leaf.present.has(id.counter)) return this;
@@ -579,7 +587,7 @@ export class IdList {
    * Iterates over all __known__ ids in the list, indicating which are deleted.
    */
   valuesWithDeleted(): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
-    return iterateWithDeletedNode(this.root);
+    return iterateNodeWithDeleted(this.root);
   }
 
   private _knownIds?: KnownIdView;
@@ -624,8 +632,9 @@ export class IdList {
       if (!(Number.isSafeInteger(item.count) && item.count >= 0)) {
         throw new Error(`Invalid count: ${item.count}`);
       }
-      // Negative counters are okay, but they must be integral.
-      if (!Number.isSafeInteger(item.startCounter)) {
+      if (
+        !(Number.isSafeInteger(item.startCounter) && item.startCounter >= 0)
+      ) {
         throw new Error(`Invalid startCounter: ${item.startCounter}`);
       }
 
@@ -665,7 +674,8 @@ export class IdList {
     if (leaves.length === 0) return IdList.new();
     // Depth of the B+Tree, excluding the root.
     // A B+Tree of depth d has between [M^{d-1} - 1, M^d] leaves.
-    const depth = Math.ceil(Math.log(leaves.length) / Math.log(M));
+    let depth = Math.ceil(Math.log(leaves.length) / Math.log(M));
+    if (depth === 0) depth = 1;
     return new IdList(buildTree(leaves, 0, depth - 1));
   }
 }
@@ -803,7 +813,7 @@ export class KnownIdView {
    * Iterates over all ids in this view, i.e., all known ids in `this.list`.
    */
   [Symbol.iterator](): IterableIterator<ElementId> {
-    return iterateNode(this.root, false);
+    return iterateNode(this.root, true);
   }
 
   /**
@@ -957,17 +967,17 @@ function* iterateNode(
   }
 }
 
-function* iterateWithDeletedNode(
+function* iterateNodeWithDeleted(
   node: InnerNode
 ): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
-      yield* iterateWithDeletedNode(child);
+      yield* iterateNodeWithDeleted(child);
     }
   } else {
     for (const child of node.children) {
       let nextIndex = child.startCounter;
-      for (const [index, count] of child.present.items()) {
+      for (const index of child.present.keys()) {
         while (nextIndex < index) {
           yield {
             id: { bunchId: child.bunchId, counter: nextIndex },
@@ -975,13 +985,18 @@ function* iterateWithDeletedNode(
           };
           nextIndex++;
         }
-        for (let i = 0; i < count; i++) {
-          yield {
-            id: { bunchId: child.bunchId, counter: nextIndex },
-            isDeleted: false,
-          };
-          nextIndex++;
-        }
+        yield {
+          id: { bunchId: child.bunchId, counter: index },
+          isDeleted: false,
+        };
+        nextIndex++;
+      }
+      while (nextIndex < child.startCounter + child.count) {
+        yield {
+          id: { bunchId: child.bunchId, counter: nextIndex },
+          isDeleted: true,
+        };
+        nextIndex++;
       }
     }
   }

@@ -395,8 +395,7 @@ export class IdList {
       if (!(Number.isSafeInteger(count) && count >= 0)) {
         throw new Error(`Invalid count: ${count}`);
       }
-      // Negative counters are okay, but they must be integral.
-      if (!Number.isSafeInteger(startCounter)) {
+      if (!(Number.isSafeInteger(count) && count >= 0)) {
         throw new Error(`Invalid startCounter: ${startCounter}`);
       }
 

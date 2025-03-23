@@ -511,7 +511,22 @@ describe("IdList", () => {
       ];
       expect([...IdList.load(savedState4)]).to.deep.equal([]);
 
-      // Negative counters are okay.
+      // // Negative counters are okay.
+      // const savedState5: SavedIdList = [
+      //   {
+      //     bunchId: "abc",
+      //     startCounter: -1,
+      //     count: 3,
+      //     isDeleted: false,
+      //   },
+      // ];
+      // expect([...IdList.load(savedState5)]).to.deep.equal([
+      //   { bunchId: "abc", counter: -1 },
+      //   { bunchId: "abc", counter: 0 },
+      //   { bunchId: "abc", counter: 1 },
+      // ]);
+
+      // Negative counters are not allowed.
       const savedState5: SavedIdList = [
         {
           bunchId: "abc",
@@ -520,11 +535,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect([...IdList.load(savedState5)]).to.deep.equal([
-        { bunchId: "abc", counter: -1 },
-        { bunchId: "abc", counter: 0 },
-        { bunchId: "abc", counter: 1 },
-      ]);
+      expect(() => IdList.load(savedState5)).to.throw();
     });
   });
 });

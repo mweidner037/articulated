@@ -31,12 +31,12 @@ export interface ElementId {
    * IdList is optimized for this case, but it is not mandatory.
    * In particular, it is okay if future edits cause the sequential ids to be
    * separated, partially deleted, or even reordered.
-   *
-   * Negative integers are supported by IdList (e.g., for optimized right-to-left insertions),
-   * though you may choose to avoid these in your application, to make serialization easier.
    */
   readonly counter: number;
 }
+// TODO: Allow negative counters? Don't work with SparseIndices.
+// "Negative integers are supported by IdList (e.g., for optimized right-to-left insertions),
+// though you may choose to avoid these in your application, to make serialization easier."
 
 /**
  * Equals function for ElementIds.
