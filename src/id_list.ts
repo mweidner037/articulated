@@ -987,7 +987,7 @@ function* iterateWithDeletedNode(
   }
 }
 
-// TODO: Test that entries are fully merged with their neighbors.
+// TODO: Test that entries are fully merged with their neighbors. Also, no 0s.
 function saveNode(node: InnerNode, acc: SavedIdList) {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
@@ -995,12 +995,25 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
     }
   } else {
     for (const child of node.children) {
-      acc.push({
-        bunchId: child.bunchId,
-        startCounter: child.startCounter,
-        count: child.count,
-        isDeleted: child.isDeleted,
-      });
+      let nextIndex = child.startCounter;
+      for (const [index, count] of child.present.items()) {
+        if (nextIndex < index) {
+          // Need a deleted item.
+          acc.push({
+            bunchId: child.bunchId,
+            startCounter: nextIndex,
+            count: index - nextIndex,
+            isDeleted: true,
+          });
+        }
+        acc.push({
+          bunchId: child.bunchId,
+          startCounter: index,
+          count,
+          isDeleted: false,
+        });
+        nextIndex = index + count;
+      }
     }
   }
 }
