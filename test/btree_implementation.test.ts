@@ -76,7 +76,7 @@ describe("IdList B+Tree Implementation", () => {
       let list = IdList.new();
 
       // Insert exactly M elements (where M=8 is the branching factor)
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < M; i++) {
         list = list.insertAfter(null, createId(`id${i}`, 0));
       }
 
@@ -101,7 +101,7 @@ describe("IdList B+Tree Implementation", () => {
       }
 
       // Verify all elements are still accessible and in the correct order
-      for (let i = 0; i < 8; i++) {
+      for (let i = 0; i < M; i++) {
         expect(list.has(createId(`id${i}`, 0))).to.be.true;
         expect(list.indexOf(createId(`id${i}`, 0))).to.equal(i);
       }

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ElementId, IdList, SavedIdList } from "../src";
-import { InnerNode, InnerNodeInner, LeafNode } from "../src/id_list";
+import { InnerNode, InnerNodeInner, LeafNode, M } from "../src/id_list";
 
 describe("IdList Serialization and Edge Cases", () => {
   // Helper to create ElementIds
@@ -289,10 +289,10 @@ describe("IdList Serialization and Edge Cases", () => {
         const height = getTreeHeight(root);
 
         // Height should be approximately log_M(n), where M=8 is branching factor
-        const expectedHeight = Math.ceil(Math.log(numElements) / Math.log(8));
+        const expectedHeight = Math.ceil(Math.log(numElements) / Math.log(M));
 
         // For small trees, height might be 1 even if expected is 0
-        if (numElements > 8) {
+        if (numElements > M) {
           expect(height).to.be.closeTo(expectedHeight, 1);
         }
 
