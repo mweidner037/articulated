@@ -1,5 +1,12 @@
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import { ElementId, IdList, SavedIdList } from "../src";
+import {
+  InnerNode,
+  InnerNodeInner,
+  InnerNodeLeaf,
+  LeafNode,
+  locate,
+} from "../src/id_list";
 
 describe("IdList Internal Structure", () => {
   // Helper to create ElementIds
@@ -13,7 +20,7 @@ describe("IdList Internal Structure", () => {
       let list = IdList.new();
 
       // Insert enough elements to force multiple levels in the B+Tree
-      const ids = [];
+      const ids: ElementId[] = [];
       for (let i = 0; i < 50; i++) {
         const id = createId(`id${i}`, 0);
         ids.push(id);
@@ -21,9 +28,6 @@ describe("IdList Internal Structure", () => {
       }
 
       // Access internal locate function
-      // @ts-expect-error Accessing private function and field
-      const locate = Function("return this.locate")().bind(null);
-      // @ts-expect-error Accessing private field
       const root = list["root"];
 
       // Verify locate works for all elements
@@ -53,9 +57,6 @@ describe("IdList Internal Structure", () => {
 
       // Find the path to an element in the middle
       const middleId = createId("id10", 0);
-      // @ts-expect-error Accessing private function and field
-      const locate = Function("return this.locate")().bind(null);
-      // @ts-expect-error Accessing private field
       let root = list["root"];
       let path = locate(middleId, root);
 
@@ -67,7 +68,6 @@ describe("IdList Internal Structure", () => {
         list = list.insertAfter(middleId, createId(`split${i}`, 0));
 
         // After each insertion, re-check the path
-        // @ts-expect-error Accessing private field
         root = list["root"];
         path = locate(middleId, root);
 
@@ -81,12 +81,12 @@ describe("IdList Internal Structure", () => {
       // Either we have the same leaf (if it wasn't split) or a different one
       if (originalLeaf === newLeaf) {
         // If the same leaf, it should contain middleId in the same position
-        expect(originalLeaf.bunchId).to.equal("id10");
-        expect(originalLeaf.startCounter).to.equal(0);
+        expect(originalLeaf?.bunchId).to.equal("id10");
+        expect(originalLeaf?.startCounter).to.equal(0);
       } else {
         // If a new leaf, it should still contain middleId
-        expect(newLeaf.bunchId).to.equal("id10");
-        expect(newLeaf.startCounter).to.equal(0);
+        expect(newLeaf?.bunchId).to.equal("id10");
+        expect(newLeaf?.startCounter).to.equal(0);
       }
     });
   });
@@ -99,14 +99,12 @@ describe("IdList Internal Structure", () => {
       list = list.insertAfter(null, createId("bunch", 0), 5);
 
       // Get the initial root
-      // @ts-expect-error Accessing private field
       const initialRoot = list["root"];
 
       // Insert a value that should cause a leaf split
       list = list.insertAfter(createId("bunch", 2), createId("split", 0));
 
       // Get the new root
-      // @ts-expect-error Accessing private field
       const newRoot = list["root"];
 
       // The new root might be different if the tree height increased
@@ -133,38 +131,39 @@ describe("IdList Internal Structure", () => {
         );
       }
 
-      // @ts-expect-error Accessing private field
       const root = list["root"];
 
       // Helper to verify node sizes are consistent
-      function verifyNodeSizes(node) {
-        if (node.children && node.children[0].children) {
+      function verifyNodeSizes(node: InnerNode | LeafNode) {
+        if ("children" in node && "children" in node.children[0]) {
           // Inner node with inner node children
+          const nodeTyped = node as InnerNodeInner;
           let calculatedSize = 0;
           let calculatedKnownSize = 0;
 
-          for (const child of node.children) {
+          for (const child of nodeTyped.children) {
             verifyNodeSizes(child);
             calculatedSize += child.size;
             calculatedKnownSize += child.knownSize;
           }
 
           // The node's size should equal the sum of its children's sizes
-          expect(node.size).to.equal(calculatedSize);
-          expect(node.knownSize).to.equal(calculatedKnownSize);
-        } else if (node.children) {
+          expect(nodeTyped.size).to.equal(calculatedSize);
+          expect(nodeTyped.knownSize).to.equal(calculatedKnownSize);
+        } else if ("children" in node) {
           // Inner node with leaf children
+          const nodeTyped = node as InnerNodeLeaf;
           let calculatedSize = 0;
           let calculatedKnownSize = 0;
 
-          for (const child of node.children) {
+          for (const child of nodeTyped.children) {
             calculatedSize += child.present.count();
             calculatedKnownSize += child.count;
           }
 
           // The node's size should equal the sum of its children's sizes
-          expect(node.size).to.equal(calculatedSize);
-          expect(node.knownSize).to.equal(calculatedKnownSize);
+          expect(nodeTyped.size).to.equal(calculatedSize);
+          expect(nodeTyped.knownSize).to.equal(calculatedKnownSize);
         }
       }
 
@@ -293,7 +292,7 @@ describe("IdList Internal Structure", () => {
   describe("buildTree function", () => {
     it("should create a balanced tree from leaves", () => {
       // Create a SavedIdList with enough entries to require multiple levels
-      const savedState = [];
+      const savedState: SavedIdList = [];
       for (let i = 0; i < 100; i++) {
         savedState.push({
           bunchId: `bunch${i}`,
@@ -306,14 +305,14 @@ describe("IdList Internal Structure", () => {
       // Load into a new IdList
       const list = IdList.load(savedState);
 
-      // @ts-expect-error Accessing private field
       const root = list["root"];
 
       // Helper to check tree height and balance
-      function getTreeHeight(node) {
-        if (node.children && node.children[0].children) {
+      function getTreeHeight(node: InnerNode): number {
+        if (node.children && "children" in node.children[0]) {
           // Inner node with inner node children
-          const childHeights = node.children.map(getTreeHeight);
+          const nodeTyped = node as InnerNodeInner;
+          const childHeights = nodeTyped.children.map(getTreeHeight);
 
           // All children should have the same height (balanced)
           const firstHeight = childHeights[0];

@@ -2,7 +2,9 @@ import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
 import { SavedIdList } from "./saved_id_list";
 
-interface LeafNode {
+// Most exports are only for tests. See index.ts for public exports.
+
+export interface LeafNode {
   readonly bunchId: string;
   readonly startCounter: number;
   readonly count: number;
@@ -14,7 +16,7 @@ interface LeafNode {
   readonly present: SparseIndices;
 }
 
-class InnerNodeInner {
+export class InnerNodeInner {
   readonly size: number;
   readonly knownSize: number;
 
@@ -30,7 +32,7 @@ class InnerNodeInner {
   }
 }
 
-class InnerNodeLeaf {
+export class InnerNodeLeaf {
   readonly size: number;
   readonly knownSize: number;
 
@@ -46,7 +48,7 @@ class InnerNodeLeaf {
   }
 }
 
-type InnerNode = InnerNodeInner | InnerNodeLeaf;
+export type InnerNode = InnerNodeInner | InnerNodeLeaf;
 
 type Located = [
   { node: LeafNode; indexInParent: number },
@@ -63,7 +65,7 @@ type Located = [
  * In this case a reasonable choice for block size would be the size of [the] processor's cache line."
  * (64 bytes) / (8 byte pointer) = 8.
  */
-const M = 8;
+export const M = 8;
 
 // TODO:
 // - Move helper methods to functions, for minification.
@@ -857,7 +859,7 @@ function lastId(node: InnerNode): ElementId {
  * The path contains each node and its index in its parent's node, starting with id's
  * LeafNode and ending at a child of the root.
  */
-function locate(id: ElementId, node: InnerNode): Located | null {
+export function locate(id: ElementId, node: InnerNode): Located | null {
   if (node instanceof InnerNodeInner) {
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i];

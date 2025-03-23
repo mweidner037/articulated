@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import { ElementId, IdList, SavedIdList } from "../src";
+import { InnerNode, InnerNodeInner, LeafNode } from "../src/id_list";
 
 describe("IdList Serialization and Edge Cases", () => {
   // Helper to create ElementIds
@@ -117,7 +118,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("load function", () => {
     it("should correctly handle empty SavedIdList", () => {
-      const saved = [];
+      const saved: SavedIdList = [];
       const list = IdList.load(saved);
 
       expect(list.length).to.equal(0);
@@ -254,8 +255,8 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("building balanced trees", () => {
     it("should create appropriately balanced trees based on input size", () => {
-      function testTreeBalance(numElements) {
-        const saved = [];
+      function testTreeBalance(numElements: number) {
+        const saved: SavedIdList = [];
 
         // Create SavedIdList with numElements entries
         for (let i = 0; i < numElements; i++) {
@@ -269,15 +270,14 @@ describe("IdList Serialization and Edge Cases", () => {
 
         const list = IdList.load(saved);
 
-        // @ts-expect-error Accessing private field
         const root = list["root"];
 
         // Helper to calculate tree height
-        function getTreeHeight(node) {
-          if (node.children && node.children[0].children) {
+        function getTreeHeight(node: InnerNode | LeafNode): number {
+          if ("children" in node && "children" in node.children[0]) {
             // Inner node with inner node children
             return 1 + getTreeHeight(node.children[0]);
-          } else if (node.children) {
+          } else if ("children" in node) {
             // Inner node with leaf children
             return 1;
           } else {
@@ -297,8 +297,8 @@ describe("IdList Serialization and Edge Cases", () => {
         }
 
         // Check if the tree is balanced
-        function checkNodeBalance(node) {
-          if (node.children && node.children[0].children) {
+        function checkNodeBalance(node: InnerNode) {
+          if (node.children && "children" in node.children[0]) {
             // All children should have the same height
             const childHeights = node.children.map(getTreeHeight);
             const firstHeight = childHeights[0];
@@ -308,7 +308,7 @@ describe("IdList Serialization and Edge Cases", () => {
             }
 
             // Recurse into children
-            for (const child of node.children) {
+            for (const child of (node as InnerNodeInner).children) {
               checkNodeBalance(child);
             }
           }

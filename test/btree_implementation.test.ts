@@ -1,5 +1,6 @@
-import { assert, expect } from "chai";
+import { expect } from "chai";
 import { ElementId, IdList } from "../src";
+import { InnerNode, InnerNodeInner, M } from "../src/id_list";
 
 describe("IdList B+Tree Implementation", () => {
   // Helper to create ElementIds
@@ -19,21 +20,20 @@ describe("IdList B+Tree Implementation", () => {
       }
 
       // Access the root to examine the tree structure
-      // @ts-expect-error Accessing private field
       const root = list["root"];
 
       // Helper to check node properties recursively
       function checkNodeProperties(
-        node,
+        node: InnerNode,
         depth = 0
       ): { height: number; maxChildren: number } {
         // No node should exceed the branching factor M (8)
-        expect(node.children.length).to.be.at.most(8);
+        expect(node.children.length).to.be.at.most(M);
 
         // If this is an inner node (has children that have children)
-        if (node.children.length > 0 && node.children[0].children) {
+        if (node.children.length > 0 && "children" in node.children[0]) {
           // Check all children and get their heights
-          const childStats = node.children.map((child) =>
+          const childStats = (node as InnerNodeInner).children.map((child) =>
             checkNodeProperties(child, depth + 1)
           );
 
@@ -80,13 +80,11 @@ describe("IdList B+Tree Implementation", () => {
         list = list.insertAfter(null, createId(`id${i}`, 0));
       }
 
-      // @ts-expect-error Accessing private field
       const beforeSplit = list["root"];
 
       // Insert one more element to force a split
       list = list.insertAfter(null, createId("split", 0));
 
-      // @ts-expect-error Accessing private field
       const afterSplit = list["root"];
 
       // After a split, we should have a different root structure
@@ -94,8 +92,8 @@ describe("IdList B+Tree Implementation", () => {
 
       // Specifically, we should now have inner nodes if we didn't before
       // Or more children in the inner nodes if we already had them
-      if (!beforeSplit.children[0].children) {
-        expect(afterSplit.children[0].children).to.exist;
+      if (!("children" in beforeSplit.children[0])) {
+        expect((afterSplit as InnerNodeInner).children[0].children).to.exist;
       } else {
         expect(afterSplit.children.length).to.not.equal(
           beforeSplit.children.length
@@ -320,12 +318,12 @@ describe("IdList B+Tree Implementation", () => {
 
     it("should handle insertions in empty lists", () => {
       // Empty list insertAfter with null
-      let list1 = IdList.new().insertAfter(null, createId("first", 0));
+      const list1 = IdList.new().insertAfter(null, createId("first", 0));
       expect(list1.length).to.equal(1);
       expect(list1.at(0)).to.deep.equal(createId("first", 0));
 
       // Empty list insertBefore with null
-      let list2 = IdList.new().insertBefore(null, createId("first", 0));
+      const list2 = IdList.new().insertBefore(null, createId("first", 0));
       expect(list2.length).to.equal(1);
       expect(list2.at(0)).to.deep.equal(createId("first", 0));
     });
@@ -393,7 +391,7 @@ describe("IdList B+Tree Implementation", () => {
       expect(list.length).to.be.closeTo(expectedLength, 1);
 
       // Check that all middle elements were inserted together
-      const middleIndices = [];
+      const middleIndices: number[] = [];
       for (let i = 0; i < 5; i++) {
         middleIndices.push(list.indexOf(createId("middle", i)));
       }
@@ -428,7 +426,7 @@ describe("IdList B+Tree Implementation", () => {
       }
 
       // Verify elements are still accessible in the correct order
-      let expectedIndex = 0;
+      const expectedIndex = 0;
       for (let i = 0; i < 100; i++) {
         if (i % 7 === 0) {
           // This element is deleted
