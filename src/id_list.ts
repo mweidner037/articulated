@@ -172,6 +172,9 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertAfter(before: ElementId | null, newId: ElementId, count = 1): IdList {
+    if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
+      throw new Error(`Invalid counter: ${newId.counter}`);
+    }
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
@@ -281,6 +284,9 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertBefore(after: ElementId | null, newId: ElementId, count = 1): IdList {
+    if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
+      throw new Error(`Invalid counter: ${newId.counter}`);
+    }
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
@@ -386,9 +392,6 @@ export class IdList {
    * Because `id` is still known, you can reference it in future insertAfter/insertBefore
    * operations, including ones sent concurrently by other devices.
    * However, it does occupy space in memory (compressed in common cases).
-   *
-   * For an exact inverse to `insertAfter(-, id)` or `insertBefore(-, id)`
-   * that makes `id` no longer known, see {@link uninsert}.
    *
    * If `id` is already deleted or not known, this method does nothing.
    */
@@ -1028,6 +1031,14 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
           isDeleted: false,
         });
         nextIndex = index + count;
+      }
+      if (nextIndex < child.startCounter + child.count) {
+        acc.push({
+          bunchId: child.bunchId,
+          startCounter: nextIndex,
+          count: child.startCounter + child.count - nextIndex,
+          isDeleted: true,
+        });
       }
     }
   }

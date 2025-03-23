@@ -173,9 +173,6 @@ export class IdList {
    * operations, including ones sent concurrently by other devices.
    * However, it does occupy space in memory (compressed in common cases).
    *
-   * For an exact inverse to `insertAfter(-, id)` or `insertBefore(-, id)`
-   * that makes `id` no longer known, see {@link uninsert}.
-   *
    * If `id` is already deleted or not known, this method does nothing.
    */
   delete(id: ElementId) {
