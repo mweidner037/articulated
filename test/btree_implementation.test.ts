@@ -417,9 +417,6 @@ describe("IdList B+Tree Implementation", () => {
       const saved = list.save();
       expect(saved.length).to.equal(1); // Should be compressed to a single entry
     });
-
-    // TODO: If you insert separated counters in a bunch (e.g. 0, 2, 1), it won't merge the leaves.
-    // Could be okay (perf penalty for doing silly things) but it may mess up the saved states.
   });
 
   describe("Advanced Operations and Combined Cases", () => {

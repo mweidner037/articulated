@@ -1034,11 +1034,6 @@ function* iterateNodeWithDeleted(
   }
 }
 
-// TODO: It's possible for adjacent leaves to be mergeable but not merged.
-// This happens if you insert a bunch in pattern 0, 2, 1.
-// I think that's okay (just a perf issue that goes away after reloading),
-// but we need to merge the resulting save items, document it,
-// and check that no other parts of the code depend on fully-merged leaves.
 function saveNode(node: InnerNode, acc: SavedIdList) {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
@@ -1050,14 +1045,14 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
       for (const [index, count] of child.present.items()) {
         if (nextIndex < index) {
           // Need a deleted item.
-          acc.push({
+          pushSaveItem(acc, {
             bunchId: child.bunchId,
             startCounter: nextIndex,
             count: index - nextIndex,
             isDeleted: true,
           });
         }
-        acc.push({
+        pushSaveItem(acc, {
           bunchId: child.bunchId,
           startCounter: index,
           count,
@@ -1066,7 +1061,7 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
         nextIndex = index + count;
       }
       if (nextIndex < child.startCounter + child.count) {
-        acc.push({
+        pushSaveItem(acc, {
           bunchId: child.bunchId,
           startCounter: nextIndex,
           count: child.startCounter + child.count - nextIndex,
@@ -1075,4 +1070,32 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
       }
     }
   }
+}
+
+/**
+ * Pushes a save item onto acc, combing it with the previous item if possible
+ *
+ * This function is necessary because we don't guarantee that adjacent leaves are fully merged.
+ * Specifically, if you insert a bunch's ids with counter values (0, 2, 1)
+ * in that order, then counter 1 will extend one of the existing leaves
+ * but not merge with the other leaf.
+ *
+ * This situation won't appear in typical usage, and its perf penalty
+ * will go away once you reload. Thus we tolerate it instead of figuring out
+ * how to delete leaves from a B+Tree.
+ */
+function pushSaveItem(acc: SavedIdList, item: SavedIdList[number]) {
+  if (acc.length > 0) {
+    const previous = acc.at(-1)!;
+    if (
+      previous.isDeleted === item.isDeleted &&
+      previous.bunchId === item.bunchId &&
+      previous.startCounter + previous.count === item.startCounter
+    ) {
+      // Combine items.
+      previous.count += item.count;
+      return;
+    }
+  }
+  acc.push(item);
 }

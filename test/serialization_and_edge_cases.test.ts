@@ -130,6 +130,30 @@ describe("IdList Serialization and Edge Cases", () => {
 
       checkIterators(loaded, list);
     });
+
+    it("should handle non-merged leaves correctly", () => {
+      // See typedoc for pushSaveItem.
+
+      let list = IdList.new();
+
+      // Create un-merged leaves.
+      list = list.insertAfter(null, createId("a", 0));
+      list = list.insertAfter(createId("a", 0), createId("a", 2));
+      list = list.insertAfter(createId("a", 0), createId("a", 1));
+
+      // Verify that the leaves are not fully merged.
+      expect(list["root"].children.length).to.be.greaterThan(1);
+
+      // Verify that the resulting save item is merged.
+      const saved = list.save();
+      expect(saved.length).to.equal(1);
+
+      // Verify the loading "fixes" the un-merged leaves.
+      const loaded = IdList.load(saved);
+      expect(loaded["root"].children.length).to.equal(1);
+
+      checkIterators(loaded, list);
+    });
   });
 
   describe("load function", () => {
