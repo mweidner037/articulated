@@ -5,6 +5,8 @@ interface ListElement {
   readonly isDeleted: boolean;
 }
 
+// Simpler implementation of IdList, used for illustration purposes and fuzz testing.
+
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
  *
