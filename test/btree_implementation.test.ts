@@ -68,6 +68,17 @@ describe("IdList B+Tree Implementation", () => {
       for (let i = 0; i < 100; i++) {
         expect(list.has(createId(`id${i}`, 0))).to.be.true;
         expect(list.indexOf(createId(`id${i}`, 0))).to.equal(i);
+        expect(list.knownIds.indexOf(createId(`id${i}`, 0))).to.equal(i);
+      }
+
+      // To test knownIds.indexOf, delete some elements and check again.
+      for (let i = 0; i < 100; i += 5) {
+        list = list.delete(createId(`id${i}`, 0));
+      }
+      for (let i = 0; i < 100; i++) {
+        expect(list.has(createId(`id${i}`, 0))).to.equal(i % 5 !== 0);
+        expect(list.isKnown(createId(`id${i}`, 0))).to.be.true;
+        expect(list.knownIds.indexOf(createId(`id${i}`, 0))).to.equal(i);
       }
     });
 
@@ -107,7 +118,7 @@ describe("IdList B+Tree Implementation", () => {
   });
 
   describe("Leaf Node Splitting", () => {
-    it("should correctly split a leaf when inserting in the middle", () => {
+    it("should correctly split a leaf when inserting after in the middle", () => {
       let list = IdList.new();
 
       // Insert sequential elements in a single bunch (single leaf)
@@ -136,7 +147,34 @@ describe("IdList B+Tree Implementation", () => {
       expect(list.indexOf(createId("middle", 0))).to.equal(3);
     });
 
-    // TODO: Also test splitting presence (partially deleted starting bunch).
+    it("should correctly split a leaf when inserting before in the middle", () => {
+      let list = IdList.new();
+
+      // Insert sequential elements in a single bunch (single leaf)
+      list = list.insertAfter(null, createId("bunch", 0), 6);
+
+      // Insert in the middle of the leaf to force a split
+      list = list.insertBefore(createId("bunch", 3), createId("middle", 0));
+
+      // Verify the order is correct after split
+      expect(list.at(0)).to.deep.equal(createId("bunch", 0));
+      expect(list.at(1)).to.deep.equal(createId("bunch", 1));
+      expect(list.at(2)).to.deep.equal(createId("bunch", 2));
+      expect(list.at(3)).to.deep.equal(createId("middle", 0));
+      expect(list.at(4)).to.deep.equal(createId("bunch", 3));
+      expect(list.at(5)).to.deep.equal(createId("bunch", 4));
+      expect(list.at(6)).to.deep.equal(createId("bunch", 5));
+
+      // Verify we can still locate all elements
+      for (let i = 0; i < 6; i++) {
+        if (i < 3) {
+          expect(list.indexOf(createId("bunch", i))).to.equal(i);
+        } else {
+          expect(list.indexOf(createId("bunch", i))).to.equal(i + 1);
+        }
+      }
+      expect(list.indexOf(createId("middle", 0))).to.equal(3);
+    });
 
     it("should handle multiple splits in a complex insertion pattern", () => {
       let list = IdList.new();
