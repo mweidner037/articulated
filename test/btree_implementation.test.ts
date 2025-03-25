@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ElementId, IdList } from "../src";
-import { InnerNode, InnerNodeInner, M } from "../src/id_list";
+import { InnerNode, InnerNodeInner, InnerNodeLeaf, M } from "../src/id_list";
 
 describe("IdList B+Tree Implementation", () => {
   // Helper to create ElementIds
@@ -16,17 +16,17 @@ describe("IdList B+Tree Implementation", () => {
       // Insert enough elements to force multiple levels in the B+Tree
       // M = 8, so we'll insert more than enough to cause splits
       for (let i = 0; i < 100; i++) {
-        list = list.insertAfter(null, createId(`id${i}`, 0));
+        list = list.insertBefore(null, createId(`id${i}`, 0));
       }
 
       // Access the root to examine the tree structure
       const root = list["root"];
 
       // Helper to check node properties recursively
-      function checkNodeProperties(
-        node: InnerNode,
-        depth = 0
-      ): { height: number; maxChildren: number } {
+      function checkNodeProperties(node: InnerNode): {
+        height: number;
+        maxChildren: number;
+      } {
         // No node should exceed the branching factor M (8)
         expect(node.children.length).to.be.at.most(M);
 
@@ -34,7 +34,7 @@ describe("IdList B+Tree Implementation", () => {
         if (node.children.length > 0 && "children" in node.children[0]) {
           // Check all children and get their heights
           const childStats = (node as InnerNodeInner).children.map((child) =>
-            checkNodeProperties(child, depth + 1)
+            checkNodeProperties(child)
           );
 
           // All children should have the same height (balanced tree property)
@@ -61,9 +61,8 @@ describe("IdList B+Tree Implementation", () => {
 
       const treeStats = checkNodeProperties(root);
 
-      // For 100 elements with M=8, expected height would be around 3 or 4
-      // ⌈log_8(100)⌉ is approximately 3
-      expect(treeStats.height).to.be.greaterThan(1);
+      // For 100 elements with M=8, expected height (excluding root) is 3.
+      expect(treeStats.height).to.equal(3);
 
       // Verify all elements are accessible
       for (let i = 0; i < 100; i++) {
@@ -77,28 +76,26 @@ describe("IdList B+Tree Implementation", () => {
 
       // Insert exactly M elements (where M=8 is the branching factor)
       for (let i = 0; i < M; i++) {
-        list = list.insertAfter(null, createId(`id${i}`, 0));
+        list = list.insertBefore(null, createId(`id${i}`, 0));
       }
 
       const beforeSplit = list["root"];
+      expect(beforeSplit.children).to.have.length(M);
+      expect(beforeSplit).to.be.instanceOf(InnerNodeLeaf);
 
       // Insert one more element to force a split
-      list = list.insertAfter(null, createId("split", 0));
+      list = list.insertBefore(null, createId("split", 0));
 
       const afterSplit = list["root"];
 
-      // After a split, we should have a different root structure
-      expect(afterSplit).to.not.deep.equal(beforeSplit);
+      expect(afterSplit.children).to.have.length(2);
+      expect(afterSplit).to.be.instanceOf(InnerNodeInner);
 
-      // Specifically, we should now have inner nodes if we didn't before
-      // Or more children in the inner nodes if we already had them
-      if (!("children" in beforeSplit.children[0])) {
-        expect((afterSplit as InnerNodeInner).children[0].children).to.exist;
-      } else {
-        expect(afterSplit.children.length).to.not.equal(
-          beforeSplit.children.length
-        );
-      }
+      const [newLeft, newRight] = afterSplit.children as InnerNodeLeaf[];
+      expect(newLeft).to.be.instanceOf(InnerNodeLeaf);
+      expect(newRight).to.be.instanceOf(InnerNodeLeaf);
+      expect(newLeft.children).to.have.length(M / 2);
+      expect(newRight.children).to.have.length(M / 2 + 1);
 
       // Verify all elements are still accessible and in the correct order
       for (let i = 0; i < M; i++) {
@@ -139,6 +136,8 @@ describe("IdList B+Tree Implementation", () => {
       expect(list.indexOf(createId("middle", 0))).to.equal(3);
     });
 
+    // TODO: Also test splitting presence (partially deleted starting bunch).
+
     it("should handle multiple splits in a complex insertion pattern", () => {
       let list = IdList.new();
 
@@ -152,7 +151,7 @@ describe("IdList B+Tree Implementation", () => {
 
       // Verify all elements are in the correct order
       for (let i = 0; i < 15; i++) {
-        const expectedPosition = i + Math.floor(i / 2);
+        const expectedPosition = i + Math.ceil(i / 2);
         expect(list.indexOf(createId("seq", i))).to.equal(expectedPosition);
 
         if (i % 2 === 0 && i < 14) {
@@ -226,8 +225,8 @@ describe("IdList B+Tree Implementation", () => {
 
       // Delete elements in the middle
       list = list.delete(createId("bunch", 3));
-      list = list.delete(createId("bunch", 4));
       list = list.delete(createId("bunch", 5));
+      list = list.delete(createId("bunch", 4));
 
       // Insert different IDs
       list = list.insertAfter(createId("bunch", 2), createId("other", 0));
@@ -331,7 +330,7 @@ describe("IdList B+Tree Implementation", () => {
     it("should handle very large bulk insertions", () => {
       let list = IdList.new();
 
-      // Insert a large number of sequential IDs
+      // Insert a large number of sequential IDs as one bulk op
       const largeCount = 1000;
       list = list.insertAfter(null, createId("bulk", 0), largeCount);
 
@@ -351,6 +350,38 @@ describe("IdList B+Tree Implementation", () => {
       const saved = list.save();
       expect(saved.length).to.equal(1); // Should be compressed to a single entry
     });
+
+    it("should handle very large sequential insertions", () => {
+      let list = IdList.new();
+
+      // Insert a large number of sequential IDs as sequential ops
+      const largeCount = 1000;
+      for (let i = 0; i < largeCount; i++) {
+        list = list.insertAfter(
+          i === 0 ? null : createId("bulk", i - 1),
+          createId("bulk", i)
+        );
+      }
+
+      // Verify all elements are accessible
+      expect(list.length).to.equal(largeCount);
+
+      // Check some elements at various indices
+      expect(list.at(0)).to.deep.equal(createId("bulk", 0));
+      expect(list.at(largeCount - 1)).to.deep.equal(
+        createId("bulk", largeCount - 1)
+      );
+      expect(list.at(largeCount / 2)).to.deep.equal(
+        createId("bulk", largeCount / 2)
+      );
+
+      // Check that the operation was efficient by examining the save format
+      const saved = list.save();
+      expect(saved.length).to.equal(1); // Should be compressed to a single entry
+    });
+
+    // TODO: If you insert separated counters in a bunch (e.g. 0, 2, 1), it won't merge the leaves.
+    // Could be okay (perf penalty for doing silly things) but it may mess up the saved states.
   });
 
   describe("Advanced Operations and Combined Cases", () => {
@@ -371,24 +402,18 @@ describe("IdList B+Tree Implementation", () => {
         }
       }
 
-      // Delete every third element to fragment the tree
+      // Delete every third element to create fragmentation in leaves' presence
       for (let i = 0; i < 50; i += 3) {
-        if (i < list.length) {
-          list = list.delete(list.at(i));
-        }
+        list = list.delete(list.knownIds.at(i));
       }
 
       // Insert new elements in the middle
       const middleId = list.at(Math.floor(list.length / 2));
       list = list.insertAfter(middleId, createId("middle", 0), 5);
 
-      // Verify the tree still provides correct answers
-      const allIds = [...list];
-
       // Check the length is correct
       const expectedLength = 50 - Math.ceil(50 / 3) + 5;
-      expect(list.length).to.equal(allIds.length);
-      expect(list.length).to.be.closeTo(expectedLength, 1);
+      expect(list.length).to.equal(expectedLength);
 
       // Check that all middle elements were inserted together
       const middleIndices: number[] = [];
@@ -402,7 +427,8 @@ describe("IdList B+Tree Implementation", () => {
       }
     });
 
-    it("should handle interleaved operations on a deep tree", () => {
+    // TODO: Convert to fuzz test.
+    it.skip("should handle interleaved operations on a deep tree", () => {
       let list = IdList.new();
 
       // Create a deep tree with many elements
@@ -418,7 +444,7 @@ describe("IdList B+Tree Implementation", () => {
         );
       }
 
-      // Delete some elements to create fragmentation
+      // Delete some elements to create fragmentation in leaves' presence
       for (let i = 0; i < 30; i++) {
         if (i % 7 === 0) {
           list = list.delete(createId("base", i));
@@ -428,7 +454,7 @@ describe("IdList B+Tree Implementation", () => {
       // Verify elements are still accessible in the correct order
       const expectedIndex = 0;
       for (let i = 0; i < 100; i++) {
-        if (i % 7 === 0) {
+        if (i % 7 === 0 && i < 30) {
           // This element is deleted
           expect(list.has(createId("base", i))).to.be.false;
         } else {

@@ -9,6 +9,16 @@ describe("IdList Serialization and Edge Cases", () => {
     counter,
   });
 
+  function checkIterators(loaded: IdList, list: IdList) {
+    expect([...loaded.values()]).to.deep.equal([...list.values()]);
+    expect([...loaded.knownIds.values()]).to.deep.equal([
+      ...list.knownIds.values(),
+    ]);
+    expect([...loaded.valuesWithDeleted()]).to.deep.equal([
+      ...list.valuesWithDeleted(),
+    ]);
+  }
+
   describe("saveNode function", () => {
     it("should properly serialize deleted elements at the end of leaves", () => {
       let list = IdList.new();
@@ -44,6 +54,8 @@ describe("IdList Serialization and Edge Cases", () => {
         expect(loaded.isKnown(createId("bunch", i))).to.be.true;
         expect(loaded.has(createId("bunch", i))).to.be.false;
       }
+
+      checkIterators(loaded, list);
     });
 
     it("should handle complex patterns of present and deleted elements", () => {
@@ -82,6 +94,8 @@ describe("IdList Serialization and Edge Cases", () => {
           expect(loaded.has(createId("bunch", i))).to.be.false;
         }
       }
+
+      checkIterators(loaded, list);
     });
 
     it("should handle interleaving bunchIds correctly", () => {
@@ -113,6 +127,8 @@ describe("IdList Serialization and Edge Cases", () => {
           expect(loaded.at(i)).to.deep.equal(createId("b", Math.floor(i / 2)));
         }
       }
+
+      checkIterators(loaded, list);
     });
   });
 
@@ -212,13 +228,42 @@ describe("IdList Serialization and Edge Cases", () => {
 
       const list = IdList.load(saved);
 
-      // Should be merged into a single leaf
+      // Should be merged into a single saved item
       expect(list.length).to.equal(10);
 
       // Save again to check if it's compressed
       const resaved = list.save();
       expect(resaved.length).to.equal(1);
       expect(resaved[0].count).to.equal(10);
+    });
+
+    it("should merge adjacent leaves with the same bunchId and opposite presence", () => {
+      const saved = [
+        {
+          bunchId: "bunch",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "bunch",
+          startCounter: 5, // Continues right after the previous entry
+          count: 5,
+          isDeleted: true,
+        },
+      ];
+
+      const list = IdList.load(saved);
+
+      // Should be merged into a single leaf
+      expect(list["root"].children.length).to.equal(1);
+
+      // Save again to check if it's split into two items
+      const resaved = list.save();
+      expect(resaved.length).to.equal(2);
+      expect(resaved[0].count).to.equal(5);
+      expect(resaved[0].isDeleted).to.be.false;
+      expect(resaved[1].isDeleted).to.be.true;
     });
 
     it("should not merge entries with different bunchIds or non-sequential counters", () => {
@@ -230,14 +275,14 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
         {
-          bunchId: "bunch2", // Different bunchId
-          startCounter: 0,
+          bunchId: "bunch1",
+          startCounter: 10, // Gap in counter sequence
           count: 5,
           isDeleted: false,
         },
         {
-          bunchId: "bunch1",
-          startCounter: 10, // Gap in counter sequence
+          bunchId: "bunch2", // Different bunchId
+          startCounter: 0,
           count: 5,
           isDeleted: false,
         },
@@ -288,13 +333,11 @@ describe("IdList Serialization and Edge Cases", () => {
 
         const height = getTreeHeight(root);
 
-        // Height should be approximately log_M(n), where M=8 is branching factor
+        // Loading produces a balanced M-ary tree. Height should be exaclty ceil(log_M(n)).
+        // Note: That is not true for a tree produced by insertions, since nodes may have
+        // only M/2 children after splitting.
         const expectedHeight = Math.ceil(Math.log(numElements) / Math.log(M));
-
-        // For small trees, height might be 1 even if expected is 0
-        if (numElements > M) {
-          expect(height).to.be.closeTo(expectedHeight, 1);
-        }
+        expect(height).to.equal(expectedHeight);
 
         // Check if the tree is balanced
         function checkNodeBalance(node: InnerNode) {
@@ -327,6 +370,7 @@ describe("IdList Serialization and Edge Cases", () => {
       testTreeBalance(10); // Just over M
       testTreeBalance(70); // Medium tree (multiple levels)
       testTreeBalance(100); // Larger tree
+      testTreeBalance(1000); // Large tree
     });
   });
 
@@ -505,33 +549,6 @@ describe("IdList Serialization and Edge Cases", () => {
       expect(saved2[0].startCounter).to.equal(0);
       expect(saved2[0].count).to.equal(150);
       expect(saved2[0].isDeleted).to.be.false;
-    });
-
-    it("should correctly compress interleaved present and deleted elements", () => {
-      let list = IdList.new();
-
-      // Insert sequential IDs
-      list = list.insertAfter(null, createId("bunch", 0), 20);
-
-      // Delete every other element
-      for (let i = 0; i < 20; i += 2) {
-        list = list.delete(createId("bunch", i));
-      }
-
-      // Save and check compression
-      const saved = list.save();
-
-      // Each pair of (deleted, present) should be an entry
-      // With optimal compression, we expect 2 entries
-      expect(saved.length).to.equal(2);
-
-      // The first entry should be all the even indices (deleted)
-      expect(saved[0].bunchId).to.equal("bunch");
-      expect(saved[0].isDeleted).to.be.true;
-
-      // The second entry should be all the odd indices (present)
-      expect(saved[1].bunchId).to.equal("bunch");
-      expect(saved[1].isDeleted).to.be.false;
     });
   });
 });

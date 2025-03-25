@@ -34,7 +34,11 @@ describe("IdList Internal Structure", () => {
       for (let i = 0; i < 50; i++) {
         const path = locate(ids[i], root);
         expect(path).to.not.be.null;
-        expect(path?.length).to.be.greaterThan(0);
+        // Although a balanced BTree would have root-exclusive depth 2
+        // (ceil(log_8(50))), building a tree by insert (instead of load)
+        // results in many nodes with M/2 [+ 1] children. So the depth
+        // may instead be 3, consistently for all leaves.
+        expect(path?.length).to.be.lessThanOrEqual(3);
 
         // First item in path should be the leaf containing our id
         expect(path?.[0].node.bunchId).to.equal(`id${i}`);
@@ -98,16 +102,9 @@ describe("IdList Internal Structure", () => {
       // Create a list with sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 5);
 
-      // Get the initial root
-      const initialRoot = list["root"];
-
       // Insert a value that should cause a leaf split
       list = list.insertAfter(createId("bunch", 2), createId("split", 0));
 
-      // Get the new root
-      const newRoot = list["root"];
-
-      // The new root might be different if the tree height increased
       // Test that the insertion and leaf replacement worked
       expect(list.indexOf(createId("bunch", 0))).to.equal(0);
       expect(list.indexOf(createId("bunch", 1))).to.equal(1);
@@ -220,9 +217,7 @@ describe("IdList Internal Structure", () => {
         if (i % 10 === 0) {
           // Start a new sequence
           list = list.insertAfter(
-            i === 0
-              ? null
-              : createId(`seq${Math.floor((i - 1) / 10)}`, (i % 10) - 1),
+            i === 0 ? null : createId(`seq${Math.floor((i - 1) / 10)}`, 9),
             createId(`seq${Math.floor(i / 10)}`, 0)
           );
         } else {
@@ -234,7 +229,7 @@ describe("IdList Internal Structure", () => {
         }
       }
 
-      // Delete some elements to create gaps
+      // Delete some elements to create gaps in the leaves' presence
       for (let i = 0; i < 5; i++) {
         list = list.delete(createId(`seq${i}`, 5));
       }
@@ -247,19 +242,9 @@ describe("IdList Internal Structure", () => {
 
       // Verify the loaded list matches the original
       expect(loadedList.length).to.equal(list.length);
-
-      // Check a few elements from each sequence
-      for (let i = 0; i < 5; i++) {
-        for (let j = 0; j < 10; j++) {
-          if (j === 5) {
-            // This element was deleted
-            expect(loadedList.has(createId(`seq${i}`, j))).to.be.false;
-            expect(loadedList.isKnown(createId(`seq${i}`, j))).to.be.true;
-          } else {
-            expect(loadedList.has(createId(`seq${i}`, j))).to.be.true;
-          }
-        }
-      }
+      expect([...loadedList.valuesWithDeleted()]).to.deep.equal([
+        ...list.valuesWithDeleted(),
+      ]);
     });
 
     it("should correct handle serializing deleted items at end of leaf nodes", () => {
@@ -276,6 +261,9 @@ describe("IdList Internal Structure", () => {
       // Save and load
       const saved = list.save();
       const loadedList = IdList.load(saved);
+
+      // Verify that save has two items
+      expect(saved.length).to.equal(2);
 
       // Verify all deleted elements are still known
       for (let i = 7; i < 10; i++) {
@@ -327,9 +315,8 @@ describe("IdList Internal Structure", () => {
 
       const height = getTreeHeight(root);
 
-      // For 100 elements with M=8, height should be around 3
-      expect(height).to.be.greaterThanOrEqual(2);
-      expect(height).to.be.lessThanOrEqual(4);
+      // For 100 elements with M=8, height should be 3
+      expect(height).to.be.equal(3);
 
       // Check that all elements are accessible
       let presentCount = 0;
