@@ -1,6 +1,7 @@
 import seedrandom from "seedrandom";
-import { ElementId } from "../src";
+import { ElementId, IdList } from "../src";
 import { Fuzzer } from "./fuzzer";
+import { IdList as IdListSimple } from "./id_list_simple";
 
 describe("IdList Fuzzer Tests", () => {
   let prng!: seedrandom.PRNG;
@@ -197,6 +198,7 @@ describe("IdList Fuzzer Tests", () => {
                 break;
             }
           } catch (e) {
+            // TODO: remove?
             // Expected exceptions might occur, continue
           }
         }

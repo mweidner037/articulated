@@ -180,6 +180,8 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
+    // TODO: This doesn't check if newId...count ids are known.
+    // Likewise in insertBefore and IdListSimple.
     if (this.isKnown(newId)) {
       throw new Error("newId is already known");
     }
@@ -1007,7 +1009,11 @@ function* iterateNodeWithDeleted(
   }
 }
 
-// TODO: Test that entries are fully merged with their neighbors. Also, no 0s.
+// TODO: It's possible for adjacent leaves to be mergeable but not merged.
+// This happens if you insert a bunch in pattern 0, 2, 1.
+// I think that's okay (just a perf issue that goes away after reloading),
+// but we need to merge the resulting save items, document it,
+// and check that no other parts of the code depend on fully-merged leaves.
 function saveNode(node: InnerNode, acc: SavedIdList) {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
