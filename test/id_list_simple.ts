@@ -112,15 +112,9 @@ export class IdListSimple {
       throw new Error("An inserted id is already known");
     }
 
-    return new IdListSimple(
-      this.state
-        .slice(0, index + 1)
-        .concat(
-          expandElements(newId, false, count),
-          this.state.slice(index + 1)
-        ),
-      this.length + count
-    );
+    const newState = this.state.slice();
+    newState.splice(index + 1, 0, ...expandElements(newId, false, count));
+    return new IdListSimple(newState, this.length + count);
   }
 
   /**
@@ -156,12 +150,9 @@ export class IdListSimple {
     }
 
     // We insert the bunch from left-to-right even though it's insertBefore.
-    return new IdListSimple(
-      this.state
-        .slice(0, index)
-        .concat(expandElements(newId, false, count), this.state.slice(index)),
-      this.length + count
-    );
+    const newState = this.state.slice();
+    newState.splice(index, 0, ...expandElements(newId, false, count));
+    return new IdListSimple(newState, this.length + count);
   }
 
   /**
@@ -180,15 +171,9 @@ export class IdListSimple {
     if (index != -1) {
       const elt = this.state[index];
       if (!elt.isDeleted) {
-        return new IdListSimple(
-          this.state
-            .slice(0, index)
-            .concat(
-              [{ id: elt.id, isDeleted: true }],
-              this.state.slice(index + 1)
-            ),
-          this.length - 1
-        );
+        const newState = this.state.slice();
+        newState.splice(index, 1, { id: elt.id, isDeleted: true });
+        return new IdListSimple(newState, this.length - 1);
       }
     }
 
@@ -212,15 +197,9 @@ export class IdListSimple {
     }
     const elt = this.state[index];
     if (elt.isDeleted) {
-      return new IdListSimple(
-        this.state
-          .slice(0, index)
-          .concat(
-            [{ id: elt.id, isDeleted: false }],
-            this.state.slice(index + 1)
-          ),
-        this.length + 1
-      );
+      const newState = this.state.slice();
+      newState.splice(index, 1, { id: elt.id, isDeleted: false });
+      return new IdListSimple(newState, this.length + 1);
     }
 
     return this;

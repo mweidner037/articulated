@@ -111,6 +111,6 @@ IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2
 
 In terms of the number of leaves `L`, mutating an IdList with insertAfter/insertBefore/delete/undelete will only create `O(log(L))` new tree nodes, reusing the rest. However, most methods currently take `O(L)` total time because they search the whole tree for a given ElementId, which has not yet been optimized (it uses a simple depth-first search). Exception: `IdList.at(index)` takes only `O(log(L))` time.
 
-If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and splicing operations. The downside is that IdListSimple does not compress ElementIds, and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
+If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds, and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
 
 <!-- TODO: related work: CRDTs, ropes, list-positions, ?? -->
