@@ -34,9 +34,6 @@ export interface ElementId {
    */
   readonly counter: number;
 }
-// TODO: Allow negative counters? Don't work with SparseIndices.
-// "Negative integers are supported by IdList (e.g., for optimized right-to-left insertions),
-// though you may choose to avoid these in your application, to make serialization easier."
 
 /**
  * Equals function for ElementIds.

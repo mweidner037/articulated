@@ -93,9 +93,6 @@ type Located = [
  */
 export const M = 8;
 
-// TODO: Combine at/indexOf with KnownId versions, for easier modification & smaller code.
-// TODO: Future release: faster searching (not O(# leaves)).
-
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
  *
@@ -651,8 +648,6 @@ export class IdList {
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
-    // TODO: Checks to ban duplicate ids.
-
     // 1. Determine the leaves.
 
     const leaves: LeafNode[] = [];
