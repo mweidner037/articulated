@@ -2,7 +2,7 @@ import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId, IdList } from "../src";
 import { Fuzzer } from "./fuzzer";
-import { IdList as IdListSimple } from "./id_list_simple";
+import { IdListSimple } from "./id_list_simple";
 
 describe("IdList Fuzzer Tests", () => {
   let prng!: seedrandom.PRNG;

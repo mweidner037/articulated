@@ -10,12 +10,12 @@ interface ListElement {
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
  *
- * An IdList helps you assign a unique immutable id to each element of a list, such
+ * An IdListSimple helps you assign a unique immutable id to each element of a list, such
  * as a todo-list or a text document (= list of characters). That way, you can keep track
  * of those elements even as their (array) indices change due to insert/delete operations
  * earlier in the list.
  *
- * Any id that has been inserted into an IdList remains **known** to that list indefinitely,
+ * Any id that has been inserted into an IdListSimple remains **known** to that list indefinitely,
  * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
  * merely marks an id as deleted (= not present); it remains in memory as a "tombstone".
  * This is useful in collaborative settings, since another user might instruct you to
@@ -23,17 +23,17 @@ interface ListElement {
  *
  * To enable easy and efficient rollbacks, such as in a
  * [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
- * architecture, IdList is a persistent (immutable) data structure. Mutating methods
- * return a new IdList, sharing memory with the old IdList where possible.
+ * architecture, IdListSimple is a persistent (immutable) data structure. Mutating methods
+ * return a new IdListSimple, sharing memory with the old IdListSimple where possible.
  *
- * See {@link ElementId} for advice on generating ElementIds. IdList is optimized for
+ * See {@link ElementId} for advice on generating ElementIds. IdListSimple is optimized for
  * the case where sequential ElementIds often have the same bunchId and sequential counters.
  * However, you are not required to order ids in this way - it is okay if future edits
  * cause such ids to be separated, partially deleted, or even reordered.
  */
-export class IdList {
+export class IdListSimple {
   /**
-   * Internal - construct an IdList using a static method (e.g. `IdList.new`).
+   * Internal - construct an IdListSimple using a static method (e.g. `IdListSimple.new`).
    */
   private constructor(
     private readonly state: ListElement[],
@@ -43,7 +43,7 @@ export class IdList {
   /**
    * Constructs an empty list.
    *
-   * To begin with a non-empty list, use {@link IdList.from} or {@link IdList.fromIds}.
+   * To begin with a non-empty list, use {@link IdListSimple.from} or {@link IdListSimple.fromIds}.
    */
   static new() {
     return new this([], 0);
@@ -66,7 +66,7 @@ export class IdList {
   /**
    * Constructs a list with the given present ids.
    *
-   * Typically, you instead want {@link IdList.from}, which allows you to also
+   * Typically, you instead want {@link IdListSimple.from}, which allows you to also
    * specify known-but-deleted ids. That way, you can reference the known-but-deleted ids
    * in future insertAfter/insertBefore operations.
    */
@@ -82,7 +82,7 @@ export class IdList {
 
   /**
    * Inserts `newId` immediately after the given id (`before`), which may be deleted.
-   * A new IdList is returned and the current list remains unchanged.
+   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * All ids to the right of `before` are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
@@ -112,7 +112,7 @@ export class IdList {
       throw new Error("An inserted id is already known");
     }
 
-    return new IdList(
+    return new IdListSimple(
       this.state
         .slice(0, index + 1)
         .concat(
@@ -125,7 +125,7 @@ export class IdList {
 
   /**
    * Inserts `newId` immediately before the given id (`after`), which may be deleted.
-   * A new IdList is returned and the current list remains unchanged.
+   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * All ids to the right of `after`, plus `after` itself, are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
@@ -156,7 +156,7 @@ export class IdList {
     }
 
     // We insert the bunch from left-to-right even though it's insertBefore.
-    return new IdList(
+    return new IdListSimple(
       this.state
         .slice(0, index)
         .concat(expandElements(newId, false, count), this.state.slice(index)),
@@ -166,7 +166,7 @@ export class IdList {
 
   /**
    * Marks `id` as deleted from this list.
-   * A new IdList is returned and the current list remains unchanged.
+   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * The id remains known (a "tombstone").
    * Because `id` is still known, you can reference it in future insertAfter/insertBefore
@@ -180,7 +180,7 @@ export class IdList {
     if (index != -1) {
       const elt = this.state[index];
       if (!elt.isDeleted) {
-        return new IdList(
+        return new IdListSimple(
           this.state
             .slice(0, index)
             .concat(
@@ -197,7 +197,7 @@ export class IdList {
 
   /**
    * Un-marks `id` as deleted from this list, making it present again.
-   * A new IdList is returned and the current list remains unchanged.
+   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * This method is an exact inverse to {@link delete}.
    *
@@ -212,7 +212,7 @@ export class IdList {
     }
     const elt = this.state[index];
     if (elt.isDeleted) {
-      return new IdList(
+      return new IdListSimple(
         this.state
           .slice(0, index)
           .concat(
@@ -414,23 +414,26 @@ export class IdList {
       if (!isDeleted) length += count;
     }
 
-    return new IdList(state, length);
+    return new IdListSimple(state, length);
   }
 }
 
 /**
- * A view of an IdList that treats all known ids as present.
+ * A view of an IdListSimple that treats all known ids as present.
  * That is, this class ignores the underlying list's isDeleted status when computing list indices.
- * Access using {@link IdList.knownIds}.
+ * Access using {@link IdListSimple.knownIds}.
  *
- * Like IdList, KnownIdView is immutable. To mutate, use a mutating method on the original IdList
+ * Like IdListSimple, KnownIdView is immutable. To mutate, use a mutating method on the original IdListSimple
  * and access the returned list's `knownIds`.
  */
 export class KnownIdView {
   /**
-   * Internal use only. Use {@link IdList.knownIds} instead.
+   * Internal use only. Use {@link IdListSimple.knownIds} instead.
    */
-  constructor(readonly list: IdList, private readonly state: ListElement[]) {}
+  constructor(
+    readonly list: IdListSimple,
+    private readonly state: ListElement[]
+  ) {}
 
   // Mutators are omitted - mutate this.list instead.
 

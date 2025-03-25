@@ -103,7 +103,7 @@ export const M = 8;
  *
  * Any id that has been inserted into an IdList remains **known** to that list indefinitely,
  * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
- * merely marks an id as deleted (= not present); it remains in memory as a "tombstone".
+ * merely marks an id as deleted (= not present); a deleted id does not count towards the length of the list or index-based accessors, but it does remain in memory as a "tombstone".
  * This is useful in collaborative settings, since another user might instruct you to
  * call `insertAfter(before, newId)` when you have already deleted `before` locally.
  *
@@ -412,12 +412,13 @@ export class IdList {
    * Marks `id` as deleted from this list.
    * A new IdList is returned and the current list remains unchanged.
    *
-   * The id remains known (a "tombstone").
+   * Once deleted, `id` does not count towards the length of the list or index-based accessors.
+   * However, it remains known (a "tombstone").
    * Because `id` is still known, you can reference it in future insertAfter/insertBefore
    * operations, including ones sent concurrently by other devices.
-   * However, it does occupy space in memory (compressed in common cases).
+   * This does have a memory cost, but it is compressed in common cases.
    *
-   * If `id` is already deleted or not known, this method does nothing.
+   * If `id` is already deleted or is not known, this method does nothing.
    */
   delete(id: ElementId) {
     const located = locate(id, this.root);
@@ -491,6 +492,11 @@ export class IdList {
     return locate(id, this.root) !== null;
   }
 
+  /**
+   * The length of the list, counting only present ids.
+   *
+   * To include known but deleted ids, use `this.knownIds.length`.
+   */
   get length() {
     return this.root.size;
   }
@@ -621,7 +627,7 @@ export class IdList {
 
   /**
    * A view of this list that treats all known ids as present.
-   * That is, it ignores isDeleted status when computing list indices or iterating.
+   * That is, it ignores is-deleted status when computing list indices or iterating.
    */
   get knownIds(): KnownIdView {
     if (this._knownIds === undefined) {
@@ -726,7 +732,7 @@ function buildTree(
 
 /**
  * A view of an IdList that treats all known ids as present.
- * That is, this class ignores the underlying list's isDeleted status when computing list indices.
+ * That is, this class ignores the underlying list's is-deleted status when computing list indices.
  * Access using {@link IdList.knownIds}.
  *
  * Like IdList, KnownIdView is immutable. To mutate, use a mutating method on the original IdList

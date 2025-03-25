@@ -3,12 +3,12 @@
  *
  * ElementIds are conceptually the same as UUIDs (or nanoids, etc.).
  * However, when a single thread generates a series of ElementIds, you are
- * allowed to optimize by generating a single UUID/nanoid/etc. and using that as the "bunchId"
+ * allowed to optimize by generating a single UUID/nanoid/etc. and using that as the `bunchId`
  * for a "bunch" of elements, with varying `counter`.
  * The resulting ElementIds compress better than a set of UUIDs, but they are
- * still globally unique, even if another thread/user/device generates ElementIds concurrently.
+ * still globally unique, even if another thread/device/user generates ElementIds concurrently.
  *
- * For example, if a user types a sentence from left to right, you may generate a
+ * For example, if a user types a sentence from left to right, you can generate a
  * single `bunchId` and assign their characters the sequential ElementIds
  * `{ bunchId, counter: 0 }, { bunchId, counter: 1 }, { bunchId, counter: 2 }, ...`.
  * An IdList will store all of these as a single object instead of

@@ -1,6 +1,6 @@
 import { expect } from "chai";
 import { ElementId, IdList } from "../src";
-import { IdList as IdListSimple } from "./id_list_simple";
+import { IdListSimple } from "./id_list_simple";
 
 const DEBUG = false;
 
