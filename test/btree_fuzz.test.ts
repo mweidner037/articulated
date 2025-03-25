@@ -517,5 +517,31 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         fuzzer.checkAll();
       }
     });
+
+    it("should handle interleaved operations on a deep tree", () => {
+      let fuzzer = Fuzzer.new();
+
+      // Create a deep tree with many elements
+      fuzzer = fuzzer.insertAfter(null, createId("base", 0), 100);
+
+      // Insert elements with varying patterns in the middle
+      for (let i = 0; i < 20; i++) {
+        const baseIndex = 10 + i * 4;
+        fuzzer = fuzzer.insertAfter(
+          createId("base", baseIndex),
+          createId(`interleaved${i}`, 0),
+          (i % 3) + 1 // Insert 1, 2, or 3 elements
+        );
+      }
+      fuzzer.checkAll();
+
+      // Delete some elements to create fragmentation in leaves' presence
+      for (let i = 0; i < 30; i++) {
+        if (i % 7 === 0) {
+          fuzzer = fuzzer.delete(createId("base", i));
+        }
+      }
+      fuzzer.checkAll();
+    });
   });
 });

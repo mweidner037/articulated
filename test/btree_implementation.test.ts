@@ -461,52 +461,5 @@ describe("IdList B+Tree Implementation", () => {
         expect(middleIndices[i]).to.equal(middleIndices[i - 1] + 1);
       }
     });
-
-    // TODO: Convert to fuzz test.
-    it.skip("should handle interleaved operations on a deep tree", () => {
-      let list = IdList.new();
-
-      // Create a deep tree with many elements
-      list = list.insertAfter(null, createId("base", 0), 100);
-
-      // Insert elements with varying patterns in the middle
-      for (let i = 0; i < 20; i++) {
-        const baseIndex = 10 + i * 4;
-        list = list.insertAfter(
-          createId("base", baseIndex),
-          createId(`interleaved${i}`, 0),
-          (i % 3) + 1 // Insert 1, 2, or 3 elements
-        );
-      }
-
-      // Delete some elements to create fragmentation in leaves' presence
-      for (let i = 0; i < 30; i++) {
-        if (i % 7 === 0) {
-          list = list.delete(createId("base", i));
-        }
-      }
-
-      // Verify elements are still accessible in the correct order
-      const expectedIndex = 0;
-      for (let i = 0; i < 100; i++) {
-        if (i % 7 === 0 && i < 30) {
-          // This element is deleted
-          expect(list.has(createId("base", i))).to.be.false;
-        } else {
-          expect(list.has(createId("base", i))).to.be.true;
-
-          // Check position - need to account for interleaved insertions
-          const basePos = list.indexOf(createId("base", i));
-          if (i >= 10 && i < 90 && (i - 10) % 4 === 0) {
-            // An insertion point - check the interleaved elements
-            const interleaveIndex = Math.floor((i - 10) / 4);
-            for (let j = 0; j < (interleaveIndex % 3) + 1; j++) {
-              expect(list.has(createId(`interleaved${interleaveIndex}`, j))).to
-                .be.true;
-            }
-          }
-        }
-      }
-    });
   });
 });

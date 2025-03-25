@@ -67,10 +67,9 @@ type Located = [
  */
 export const M = 8;
 
-// TODO:
-// - Combine at/indexOf with KnownId versions, for easier modification & smaller code.
-// - Describe B+Tree here. Describe asymptotics in readme.
-// - Future release: faster searching (not O(# leaves)).
+// TODO: Combine at/indexOf with KnownId versions, for easier modification & smaller code.
+// TODO: Describe B+Tree here. Describe asymptotics in readme.
+// TODO: Future release: faster searching (not O(# leaves)).
 
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
