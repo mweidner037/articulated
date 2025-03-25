@@ -1,3 +1,4 @@
+import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId, IdList } from "../src";
 import { Fuzzer } from "./fuzzer";
@@ -64,6 +65,9 @@ describe("IdList Fuzzer Tests", () => {
                   });
                 }
               } catch (e) {
+                if (e instanceof AssertionError) {
+                  throw e;
+                }
                 // This might fail legitimately if the ID already exists
                 // Just continue with the next operation
               }
@@ -88,6 +92,9 @@ describe("IdList Fuzzer Tests", () => {
                   });
                 }
               } catch (e) {
+                if (e instanceof AssertionError) {
+                  throw e;
+                }
                 // This might fail legitimately if the ID already exists
                 // Just continue with the next operation
               }
@@ -110,6 +117,9 @@ describe("IdList Fuzzer Tests", () => {
               try {
                 fuzzer = fuzzer.undelete(id);
               } catch (e) {
+                if (e instanceof AssertionError) {
+                  throw e;
+                }
                 // This might fail if the ID wasn't deleted
                 // Just continue with the next operation
               }
@@ -198,7 +208,9 @@ describe("IdList Fuzzer Tests", () => {
                 break;
             }
           } catch (e) {
-            // TODO: remove?
+            if (e instanceof AssertionError) {
+              throw e;
+            }
             // Expected exceptions might occur, continue
           }
         }
@@ -227,6 +239,9 @@ describe("IdList Fuzzer Tests", () => {
         try {
           fuzzer = fuzzer.insertAfter(null, batchId, batchSize);
         } catch (e) {
+          if (e instanceof AssertionError) {
+            throw e;
+          }
           // If this insertion fails, try with a different ID
           const alternateBatchId = createRandomId();
           fuzzer = fuzzer.insertAfter(null, alternateBatchId, batchSize);
@@ -487,6 +502,9 @@ describe("IdList Fuzzer Tests", () => {
             knownIds.push({ bunchId: batchId.bunchId, counter: i });
           }
         } catch (e) {
+          if (e instanceof AssertionError) {
+            throw e;
+          }
           // Handle case where ID already exists
         }
 
@@ -522,6 +540,9 @@ describe("IdList Fuzzer Tests", () => {
               }
               knownIds.push(newId);
             } catch (e) {
+              if (e instanceof AssertionError) {
+                throw e;
+              }
               // Handle possible exceptions
             }
           }
@@ -535,6 +556,9 @@ describe("IdList Fuzzer Tests", () => {
             try {
               fuzzer = fuzzer.undelete(knownIds[idx]);
             } catch (e) {
+              if (e instanceof AssertionError) {
+                throw e;
+              }
               // Handle case where element wasn't deleted
             }
           }
@@ -568,6 +592,9 @@ describe("IdList Fuzzer Tests", () => {
           );
           ids.push(id);
         } catch (e) {
+          if (e instanceof AssertionError) {
+            throw e;
+          }
           // Handle ID collision
         }
       }
@@ -587,8 +614,8 @@ describe("IdList Fuzzer Tests", () => {
 
         // Create a new fuzzer from the saved state
         fuzzer = new Fuzzer(
-          IdList.load(savedState),
-          IdListSimple.load(savedState)
+          () => IdList.load(savedState),
+          () => IdListSimple.load(savedState)
         );
 
         fuzzer.checkAll();
@@ -606,6 +633,9 @@ describe("IdList Fuzzer Tests", () => {
                   fuzzer = fuzzer.insertAfter(ids[idx], id);
                   ids.push(id);
                 } catch (e) {
+                  if (e instanceof AssertionError) {
+                    throw e;
+                  }
                   // Handle exceptions
                 }
               }
@@ -619,6 +649,9 @@ describe("IdList Fuzzer Tests", () => {
                   fuzzer = fuzzer.insertBefore(ids[idx], id);
                   ids.push(id);
                 } catch (e) {
+                  if (e instanceof AssertionError) {
+                    throw e;
+                  }
                   // Handle exceptions
                 }
               }
@@ -637,6 +670,9 @@ describe("IdList Fuzzer Tests", () => {
                 try {
                   fuzzer = fuzzer.undelete(ids[idx]);
                 } catch (e) {
+                  if (e instanceof AssertionError) {
+                    throw e;
+                  }
                   // Handle exceptions
                 }
               }

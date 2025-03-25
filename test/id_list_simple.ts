@@ -96,8 +96,8 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertAfter(before: ElementId | null, newId: ElementId, count = 1) {
-    if (this.isKnown(newId)) {
-      throw new Error("newId is already known");
+    if (this.isAnyKnown(newId, count)) {
+      throw new Error("An inserted id is already known");
     }
 
     let index: number;
@@ -141,8 +141,8 @@ export class IdList {
    * @throws If `newId` is already known.
    */
   insertBefore(after: ElementId | null, newId: ElementId, count = 1) {
-    if (this.isKnown(newId)) {
-      throw new Error("newId is already known");
+    if (this.isAnyKnown(newId, count)) {
+      throw new Error("An inserted id is already known");
     }
 
     let index: number;
@@ -249,7 +249,16 @@ export class IdList {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return this.state.some((elt) => equalsId(elt.id, id));
+    return this.isAnyKnown(id, 1);
+  }
+
+  private isAnyKnown(id: ElementId, count: number): boolean {
+    return this.state.some(
+      (elt) =>
+        elt.id.bunchId === id.bunchId &&
+        id.counter <= elt.id.counter &&
+        elt.id.counter < id.counter + count
+    );
   }
 
   /**

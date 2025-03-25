@@ -1,3 +1,4 @@
+import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId } from "../src";
 import { Fuzzer } from "./fuzzer";
@@ -212,6 +213,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
                 }
                 ids.push(id);
               } catch (e) {
+                if (e instanceof AssertionError) {
+                  throw e;
+                }
                 // Handle ID collisions
               }
             }
@@ -235,6 +239,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
                   ids.push({ bunchId: id.bunchId, counter: id.counter + i });
                 }
               } catch (e) {
+                if (e instanceof AssertionError) {
+                  throw e;
+                }
                 // Handle ID collisions
               }
             }
@@ -276,6 +283,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
                 try {
                   fuzzer = fuzzer.undelete(ids[idx]);
                 } catch (e) {
+                  if (e instanceof AssertionError) {
+                    throw e;
+                  }
                   // Element might not be deleted
                 }
               }
@@ -488,6 +498,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
             fuzzer = fuzzer.insertBefore(ids[boundary], id);
             ids.push(id);
           } catch (e) {
+            if (e instanceof AssertionError) {
+              throw e;
+            }
             // Handle case where ID is already deleted
           }
         }

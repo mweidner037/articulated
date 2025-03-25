@@ -9,10 +9,27 @@ const DEBUG = false;
  * erroring if the resulting states differ.
  */
 export class Fuzzer {
-  constructor(readonly list: IdList, readonly simple: IdListSimple) {
+  readonly list: IdList;
+  readonly simple: IdListSimple;
+
+  constructor(makeList: () => IdList, makeSimple: () => IdListSimple) {
+    try {
+      this.list = makeList();
+      this.simple = makeSimple();
+    } catch (e) {
+      // If one throws, they both should throw.
+      // E.g. you tried to insert a known id.
+      expect(makeList).to.throw((e as Error).message);
+      expect(makeSimple).to.throw((e as Error).message);
+
+      // Throw the original error for the caller.
+      // Our tests usually filter out non-AssertionErrors.
+      throw e;
+    }
+
     // Check that states agree.
-    expect([...list.valuesWithDeleted()]).to.deep.equal([
-      ...simple.valuesWithDeleted(),
+    expect([...this.list.valuesWithDeleted()]).to.deep.equal([
+      ...this.simple.valuesWithDeleted(),
     ]);
   }
 
@@ -50,15 +67,24 @@ export class Fuzzer {
   }
 
   static new() {
-    return new Fuzzer(IdList.new(), IdListSimple.new());
+    return new Fuzzer(
+      () => IdList.new(),
+      () => IdListSimple.new()
+    );
   }
 
   static from(knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>) {
-    return new Fuzzer(IdList.from(knownIds), IdListSimple.from(knownIds));
+    return new Fuzzer(
+      () => IdList.from(knownIds),
+      () => IdListSimple.from(knownIds)
+    );
   }
 
   static fromIds(ids: Iterable<ElementId>) {
-    return new Fuzzer(IdList.fromIds(ids), IdListSimple.fromIds(ids));
+    return new Fuzzer(
+      () => IdList.fromIds(ids),
+      () => IdListSimple.fromIds(ids)
+    );
   }
 
   insertAfter(before: ElementId | null, newId: ElementId, count?: number) {
@@ -66,8 +92,8 @@ export class Fuzzer {
       console.log("insertAfter", before, newId, count);
     }
     return new Fuzzer(
-      this.list.insertAfter(before, newId, count),
-      this.simple.insertAfter(before, newId, count)
+      () => this.list.insertAfter(before, newId, count),
+      () => this.simple.insertAfter(before, newId, count)
     );
   }
 
@@ -76,8 +102,8 @@ export class Fuzzer {
       console.log("insertBefore", after, newId, count);
     }
     return new Fuzzer(
-      this.list.insertBefore(after, newId, count),
-      this.simple.insertBefore(after, newId, count)
+      () => this.list.insertBefore(after, newId, count),
+      () => this.simple.insertBefore(after, newId, count)
     );
   }
 
@@ -85,13 +111,19 @@ export class Fuzzer {
     if (DEBUG) {
       console.log("delete", id);
     }
-    return new Fuzzer(this.list.delete(id), this.simple.delete(id));
+    return new Fuzzer(
+      () => this.list.delete(id),
+      () => this.simple.delete(id)
+    );
   }
 
   undelete(id: ElementId) {
     if (DEBUG) {
       console.log("undelete", id);
     }
-    return new Fuzzer(this.list.undelete(id), this.simple.undelete(id));
+    return new Fuzzer(
+      () => this.list.undelete(id),
+      () => this.simple.undelete(id)
+    );
   }
 }
