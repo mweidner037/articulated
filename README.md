@@ -86,15 +86,15 @@ list = list.insertAfter(null, { bunchId: "user1", counter: 0 }, 5);
 // Inserts 5 ids with bunchId="user1" and counters 0, 1, 2, 3, 4
 ```
 
-### Persistence
+#### Save and load
 
-Save and restore the list state:
+Save and load the list state in JSON form:
 
 ```typescript
 // Save list state
 const savedState = list.save();
 
-// Later, restore from saved state
+// Later, load from saved state
 let newList = IdList.load(savedState);
 ```
 
@@ -104,3 +104,11 @@ let newList = IdList.load(savedState);
 - Todo lists with collaborative editing
 - Any list where elements' positions change but need stable identifiers
 - Conflict-free replicated data type (CRDT) implementations
+
+## Performance
+
+### Asymptotics
+
+IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%252B_tree), described at the top of [its source code](./src/id_list.ts). Each leaf in the B+Tree represents multiple ids in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
+
+In terms of the number of leaves `L`, mutating an IdList with insertAfter/insertBefore/delete/undelete will only create `O(log(L))` new tree nodes, reusing the rest. However, most methods currently take `O(L)` total time because they search the whole tree for a given id, which has not yet been optimized (it uses a simple depth-first search). Exception: `IdList.at(index)` takes only `O(log(L))` time.

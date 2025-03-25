@@ -4,6 +4,32 @@ import { SavedIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
+/*
+ IdList implementation using a modified B+Tree.
+
+ See tests/id_list_simple.ts for a simpler implementation with the same API but
+ impractical efficiency (linear time ops; one object in memory per id).
+ The fuzz tests compare that implementation to this one.
+
+ The B+Tree is unusual in that it has no keys, only values (= ids). The order on the values
+ is determined "by fiat" using insertAfter/insertBefore instead of using sorted keys.
+
+ The leaves in the B+Tree are not individual ids; instead, each leaf is a compressed reprsentation of a groups of ids
+ with the same bunchId and sequential counters. Each leaf also contains a `present`
+ field to track which of its ids are not deleted.
+ (Unlike in a SavedIdList, we do not separate adjacent ids with different isDeleted statuses.)
+
+ Note that it is possible for adjacent leaves to be mergeable (i.e., they could be one leaf) but not merged.
+ This happens if you insert the middle ids later (e.g., 0, 2, 1).
+ It has a slight perf penalty that goes away once you reload.
+ Note that save() needs to work around this possibility (see pushSaveItem).
+
+ The B+Tree also stores two statistics about each subtree: its size (# of present ids),
+ and its knownSize (# of known ids). These are used to allow indexed access in log time.
+
+ Unlike some B+Trees, we do not store a linked list of leaves. Iteration instead uses a depth-first search.
+*/
+
 export interface LeafNode {
   readonly bunchId: string;
   readonly startCounter: number;
@@ -68,7 +94,6 @@ type Located = [
 export const M = 8;
 
 // TODO: Combine at/indexOf with KnownId versions, for easier modification & smaller code.
-// TODO: Describe B+Tree here. Describe asymptotics in readme.
 // TODO: Future release: faster searching (not O(# leaves)).
 
 /**
