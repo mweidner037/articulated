@@ -171,7 +171,7 @@ export class IdList {
    * @param count Provide this to bulk-insert `count` ids from left-to-right,
    * starting with newId and proceeding with the same bunchId and sequential counters.
    * @throws If `before` is not known.
-   * @throws If `newId` is already known.
+   * @throws If any inserted id is already known.
    */
   insertAfter(before: ElementId | null, newId: ElementId, count = 1): IdList {
     if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
@@ -180,10 +180,8 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    // TODO: This doesn't check if newId...count ids are known.
-    // Likewise in insertBefore and IdListSimple.
-    if (this.isKnown(newId)) {
-      throw new Error("newId is already known");
+    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+      throw new Error("An inserted id is already known");
     }
 
     if (before === null) {
@@ -294,8 +292,8 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    if (this.isKnown(newId)) {
-      throw new Error("newId is already known");
+    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+      throw new Error("An inserted id is already known");
     }
 
     if (after === null) {
@@ -884,6 +882,32 @@ export function locate(id: ElementId, node: InnerNode): Located | null {
     }
   }
   return null;
+}
+
+/**
+ * Returns true if any of the given bulk ids are known within node's subtree.
+ *
+ * Assumes count > 0.
+ */
+function isAnyKnown(id: ElementId, count: number, node: InnerNode): boolean {
+  if (node instanceof InnerNodeInner) {
+    for (const child of node.children) {
+      if (isAnyKnown(id, count, child)) return true;
+    }
+  } else {
+    for (const child of node.children) {
+      if (child.bunchId === id.bunchId) {
+        // Test if there is any overlap between the child's counter range [a, b]
+        // and the bulk id's counter range [c, d].
+        const a = child.startCounter;
+        const b = child.startCounter + child.count - 1;
+        const c = id.counter;
+        const d = id.counter + count - 1;
+        if (a <= d && c <= b) return true;
+      }
+    }
+  }
+  return false;
 }
 
 /**

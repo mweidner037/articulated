@@ -276,8 +276,6 @@ describe("IdList", () => {
     });
   });
 
-  // TODO: Test immutability.
-
   describe("accessor operations", () => {
     let list: IdList;
     const id1: ElementId = { bunchId: "abc", counter: 1 };

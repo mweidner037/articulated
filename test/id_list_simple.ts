@@ -93,13 +93,9 @@ export class IdList {
    * @param count Provide this to bulk-insert `count` ids from left-to-right,
    * starting with newId and proceeding with the same bunchId and sequential counters.
    * @throws If `before` is not known.
-   * @throws If `newId` is already known.
+   * @throws If any inserted id is already known.
    */
   insertAfter(before: ElementId | null, newId: ElementId, count = 1) {
-    if (this.isAnyKnown(newId, count)) {
-      throw new Error("An inserted id is already known");
-    }
-
     let index: number;
     if (before === null) {
       // -1 so index + 1 is 0: insert at the beginning of the list.
@@ -112,6 +108,9 @@ export class IdList {
     }
 
     if (count === 0) return this;
+    if (this.isAnyKnown(newId, count)) {
+      throw new Error("An inserted id is already known");
+    }
 
     return new IdList(
       this.state
@@ -138,13 +137,9 @@ export class IdList {
    * __Note__: Although the new ids are inserted to the left of `after`, they are still
    * inserted in left-to-right order relative to each other.
    * @throws If `after` is not known.
-   * @throws If `newId` is already known.
+   * @throws If any inserted id is already known.
    */
   insertBefore(after: ElementId | null, newId: ElementId, count = 1) {
-    if (this.isAnyKnown(newId, count)) {
-      throw new Error("An inserted id is already known");
-    }
-
     let index: number;
     if (after === null) {
       index = this.state.length;
@@ -156,6 +151,9 @@ export class IdList {
     }
 
     if (count === 0) return this;
+    if (this.isAnyKnown(newId, count)) {
+      throw new Error("An inserted id is already known");
+    }
 
     // We insert the bunch from left-to-right even though it's insertBefore.
     return new IdList(
