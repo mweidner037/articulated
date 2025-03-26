@@ -6,8 +6,8 @@
  * and sequential counters, then they are combined into a single object.
  */
 export type SavedIdList = Array<{
-  bunchId: string;
-  startCounter: number;
-  count: number;
-  isDeleted: boolean;
+  readonly bunchId: string;
+  readonly startCounter: number;
+  readonly count: number;
+  readonly isDeleted: boolean;
 }>;

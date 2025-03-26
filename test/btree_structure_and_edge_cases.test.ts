@@ -242,8 +242,8 @@ describe("IdList Internal Structure", () => {
 
       // Verify the loaded list matches the original
       expect(loadedList.length).to.equal(list.length);
-      expect([...loadedList.valuesWithDeleted()]).to.deep.equal([
-        ...list.valuesWithDeleted(),
+      expect([...loadedList.valuesWithIsDeleted()]).to.deep.equal([
+        ...list.valuesWithIsDeleted(),
       ]);
     });
 

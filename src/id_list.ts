@@ -14,18 +14,18 @@ import { SavedIdList } from "./saved_id_list";
  The B+Tree is unusual in that it has no keys, only values (= ids). The order on the values
  is determined "by fiat" using insertAfter/insertBefore instead of using sorted keys.
 
- The leaves in the B+Tree are not individual ids; instead, each leaf is a compressed reprsentation of a groups of ids
+ The leaves in the B+Tree are not individual ids; instead, each leaf is a compressed representation of a groups of ids
  with the same bunchId and sequential counters. Each leaf also contains a `present`
- field to track which of its ids are not deleted.
+ field to track which of its ids are deleted.
  (Unlike in a SavedIdList, we do not separate adjacent ids with different isDeleted statuses.)
 
  Note that it is possible for adjacent leaves to be mergeable (i.e., they could be one leaf) but not merged.
  This happens if you insert the middle ids later (e.g., 0, 2, 1).
  It has a slight perf penalty that goes away once you reload.
- Note that save() needs to work around this possibility (see pushSaveItem).
+ Note that save() needs to work around this possibility - see pushSaveItem.
 
- The B+Tree also stores two statistics about each subtree: its size (# of present ids),
- and its knownSize (# of known ids). These are used to allow indexed access in log time.
+ The B+Tree also stores two statistics about each subtree: its size (# of present ids)
+ and its knownSize (# of known ids). These allow indexed access in log time.
 
  Unlike some B+Trees, we do not store a linked list of leaves. Iteration instead uses a depth-first search.
 */
@@ -37,11 +37,14 @@ export interface LeafNode {
   /**
    * The present counter values in this leaf node.
    *
-   * Note that it starts at this.count, not 0.
+   * Note that it is indexed by counter, not by (counter - this.startCounter).
    */
   readonly present: SparseIndices;
 }
 
+/**
+ * An inner node with inner-node children.
+ */
 export class InnerNodeInner {
   readonly size: number;
   readonly knownSize: number;
@@ -58,6 +61,9 @@ export class InnerNodeInner {
   }
 }
 
+/**
+ * An inner node with leaf children.
+ */
 export class InnerNodeLeaf {
   readonly size: number;
   readonly knownSize: number;
@@ -76,12 +82,6 @@ export class InnerNodeLeaf {
 
 export type InnerNode = InnerNodeInner | InnerNodeLeaf;
 
-type Located = [
-  { node: LeafNode; indexInParent: number },
-  // Index 1 will be an InnerNodeLeaf if it exists.
-  ...{ node: InnerNode; indexInParent: number }[]
-];
-
 /**
  * The B+Tree's branching factor, i.e., the max number of children of a node.
  *
@@ -89,7 +89,7 @@ type Located = [
  *
  * Wiki B+Tree: "B+ trees can also be used for data stored in RAM.
  * In this case a reasonable choice for block size would be the size of [the] processor's cache line."
- * (64 bytes) / (8 byte pointer) = 8.
+ * (64 byte cache line) / (8 byte pointer) = 8.
  */
 export const M = 8;
 
@@ -126,7 +126,8 @@ export class IdList {
   /**
    * Constructs an empty list.
    *
-   * To begin with a non-empty list, use {@link IdList.from} or {@link IdList.fromIds}.
+   * To begin with a non-empty list, use {@link IdList.from}, {@link IdList.fromIds},
+   * or {@link IdList.load}.
    */
   static new() {
     return new this(new InnerNodeLeaf([]));
@@ -143,12 +144,13 @@ export class IdList {
 
     for (const { id, isDeleted } of knownIds) {
       if (savedState.length !== 0) {
-        const current = savedState[savedState.length - 1];
+        const current = savedState.at(-1)!;
         if (
           id.bunchId === current.bunchId &&
           id.counter === current.startCounter + current.count &&
           isDeleted === current.isDeleted
         ) {
+          // @ts-expect-error Mutating for convenience; no aliasing to worry about.
           current.count++;
           continue;
         }
@@ -321,24 +323,12 @@ export class IdList {
     if (after === null) {
       if (count === 0) return this;
 
-      if (this.root.children.length === 0) {
-        // Insert the first leaf as a child of root.
-        const present = SparseIndices.new();
-        present.set(newId.counter, count);
-        return new IdList(
-          new InnerNodeLeaf([
-            {
-              bunchId: newId.bunchId,
-              startCounter: newId.counter,
-              count,
-              present,
-            },
-          ])
-        );
-      } else {
-        // Insert after the first known id.
-        return this.insertAfter(lastId(this.root), newId, count);
-      }
+      // Insert after the last known id, or at the beginning if empty.
+      return this.insertAfter(
+        this.root.knownSize === 0 ? null : lastId(this.root),
+        newId,
+        count
+      );
     }
 
     const located = locate(after, this.root);
@@ -460,7 +450,7 @@ export class IdList {
 
   /**
    * Replaces the leaf at the given path with newLeaves.
-   * Returns a proper BTree with updated sizes.
+   * Returns a proper (sufficiently balanced) B+Tree with updated sizes.
    *
    * newLeaves.length must be in [1, M].
    */
@@ -584,8 +574,7 @@ export class IdList {
     }
 
     // id's index within leaf.
-    const idLeaf = leafParent.children[located[0].indexInParent];
-    const [count, has] = idLeaf.present._countHas(id.counter);
+    const [count, has] = located[0].node.present._countHas(id.counter);
     index += count;
     if (has) return index;
     else {
@@ -619,8 +608,11 @@ export class IdList {
   /**
    * Iterates over all __known__ ids in the list, indicating which are deleted.
    */
-  valuesWithDeleted(): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
-    return iterateNodeWithDeleted(this.root);
+  valuesWithIsDeleted(): IterableIterator<{
+    id: ElementId;
+    isDeleted: boolean;
+  }> {
+    return iterateNodeWithIsDeleted(this.root);
   }
 
   private _knownIds?: KnownIdView;
@@ -681,8 +673,9 @@ export class IdList {
           // Okay to mutate in-place since we haven't referenced it anywhere else yet.
           // @ts-expect-error Mutate in place
           lastLeaf.count += item.count;
-          if (!item.isDeleted)
+          if (!item.isDeleted) {
             lastLeaf.present.set(item.startCounter, item.count);
+          }
           continue;
         }
       }
@@ -703,30 +696,14 @@ export class IdList {
     // leaves one-by-one, which would take O(n log(n)) time.
 
     if (leaves.length === 0) return IdList.new();
-    // Depth of the B+Tree, excluding the root.
-    // A B+Tree of depth d has between [M^{d-1} - 1, M^d] leaves.
-    let depth = Math.ceil(Math.log(leaves.length) / Math.log(M));
-    if (depth === 0) depth = 1;
-    return new IdList(buildTree(leaves, 0, depth - 1));
-  }
-}
 
-function buildTree(
-  leaves: LeafNode[],
-  startIndex: number,
-  depthRemaining: number
-): InnerNode {
-  if (depthRemaining === 0) {
-    return new InnerNodeLeaf(leaves.slice(startIndex, startIndex + M));
-  } else {
-    const children: InnerNode[] = [];
-    const childLeafCount = Math.pow(M, depthRemaining);
-    for (let i = 0; i < M; i++) {
-      const childStartIndex = startIndex + i * childLeafCount;
-      if (childStartIndex >= leaves.length) break;
-      children.push(buildTree(leaves, childStartIndex, depthRemaining - 1));
-    }
-    return new InnerNodeInner(children);
+    // Depth of the B+Tree (number of non-root nodes on any path from a leaf to the root).
+    // A fully balanced B+Tree of depth d has between [M^{d-1} + 1, M^d] leaves.
+    const depth =
+      leaves.length === 1
+        ? 1
+        : Math.ceil(Math.log(leaves.length) / Math.log(M));
+    return new IdList(buildTree(leaves, 0, depth));
   }
 }
 
@@ -825,8 +802,7 @@ export class KnownIdView {
     }
 
     // id's index with leaf.
-    const idLeaf = leafParent.children[located[0].indexInParent];
-    return index + (id.counter - idLeaf.startCounter);
+    return index + (id.counter - located[0].node.startCounter);
   }
 
   /**
@@ -855,6 +831,9 @@ export class KnownIdView {
   }
 }
 
+/**
+ * Returns the first (leftmost) known ElementId in node's subtree.
+ */
 function firstId(node: InnerNode): ElementId {
   let currentInner = node;
   while (!(currentInner instanceof InnerNodeLeaf)) {
@@ -867,6 +846,9 @@ function firstId(node: InnerNode): ElementId {
   };
 }
 
+/**
+ * Returns the last (rightmost) known ElementId in node's subtree.
+ */
 function lastId(node: InnerNode): ElementId {
   let currentInner = node;
   while (!(currentInner instanceof InnerNodeLeaf)) {
@@ -875,9 +857,15 @@ function lastId(node: InnerNode): ElementId {
   const lastLeaf = currentInner.children.at(-1)!;
   return {
     bunchId: lastLeaf.bunchId,
-    counter: lastLeaf.startCounter,
+    counter: lastLeaf.startCounter + lastLeaf.count - 1,
   };
 }
+
+type Located = [
+  { node: LeafNode; indexInParent: number },
+  // Index 1 will be an InnerNodeLeaf if it exists.
+  ...{ node: InnerNode; indexInParent: number }[]
+];
 
 /**
  * Returns the path from id's leaf node to the root, or null if id is not found.
@@ -937,7 +925,7 @@ function isAnyKnown(id: ElementId, count: number, node: InnerNode): boolean {
 }
 
 /**
- * Replace located[i].node with newNodes. root is effectively located[located.length].node.
+ * Replace located[i].node with newNodes.
  *
  * newNodes.length must be in [1, M].
  */
@@ -956,7 +944,8 @@ function replaceNode(
     .concat(newNodes, parent.children.slice(indexInParent + 1));
 
   if (newChildren.length > M) {
-    const split = Math.floor(newChildren.length / 2);
+    // Split the parent to maintain BTree property (# children <= M).
+    const split = Math.ceil(newChildren.length / 2);
     const newParents = [
       newChildren.slice(0, split),
       newChildren.slice(split),
@@ -985,6 +974,9 @@ function replaceNode(
   }
 }
 
+/**
+ * Splits present into two SparseIndices at the given counter.
+ */
 function splitPresent(
   present: SparseIndices,
   splitCounter: number
@@ -1024,12 +1016,12 @@ function* iterateNode(
   }
 }
 
-function* iterateNodeWithDeleted(
+function* iterateNodeWithIsDeleted(
   node: InnerNode
 ): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
-      yield* iterateNodeWithDeleted(child);
+      yield* iterateNodeWithIsDeleted(child);
     }
   } else {
     for (const child of node.children) {
@@ -1059,6 +1051,10 @@ function* iterateNodeWithDeleted(
   }
 }
 
+/**
+ * Updates acc to account for node's subtree, as part of a depth-first search
+ * in list order.
+ */
 function saveNode(node: InnerNode, acc: SavedIdList) {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
@@ -1098,7 +1094,7 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
 }
 
 /**
- * Pushes a save item onto acc, combing it with the previous item if possible
+ * Pushes a save item onto acc, combing it with the previous item if possible.
  *
  * This function is necessary because we don't guarantee that adjacent leaves are fully merged.
  * Specifically, if you insert a bunch's ids with counter values (0, 2, 1)
@@ -1118,9 +1114,36 @@ function pushSaveItem(acc: SavedIdList, item: SavedIdList[number]) {
       previous.startCounter + previous.count === item.startCounter
     ) {
       // Combine items.
+      // @ts-expect-error Mutating for convenience; no aliasing to worry about.
       previous.count += item.count;
       return;
     }
   }
   acc.push(item);
+}
+
+/**
+ * Builds a tree with the given leaves. Used by IdList.load.
+ *
+ * In contrast to inserting the leaves one-by-one, this function balances the
+ * tree, with full inner nodes (M children) whenever possible,
+ * and runs in O(L) time instead of O(L log(L)).
+ */
+function buildTree(
+  leaves: LeafNode[],
+  startIndex: number,
+  depthRemaining: number
+): InnerNode {
+  if (depthRemaining === 1) {
+    return new InnerNodeLeaf(leaves.slice(startIndex, startIndex + M));
+  } else {
+    const children: InnerNode[] = [];
+    const childLeafCount = Math.pow(M, depthRemaining - 1);
+    for (let i = 0; i < M; i++) {
+      const childStartIndex = startIndex + i * childLeafCount;
+      if (childStartIndex >= leaves.length) break;
+      children.push(buildTree(leaves, childStartIndex, depthRemaining - 1));
+    }
+    return new InnerNodeInner(children);
+  }
 }

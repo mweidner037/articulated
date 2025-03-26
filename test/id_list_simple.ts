@@ -317,7 +317,10 @@ export class IdListSimple {
   /**
    * Iterates over all __known__ ids in the list, indicating which are deleted.
    */
-  valuesWithDeleted(): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
+  valuesWithIsDeleted(): IterableIterator<{
+    id: ElementId;
+    isDeleted: boolean;
+  }> {
     return this.state.values();
   }
 
@@ -353,6 +356,7 @@ export class IdListSimple {
           id.counter === current.startCounter + current.count &&
           isDeleted === current.isDeleted
         ) {
+          // @ts-expect-error Mutating for convenience; no aliasing to worry about.
           current.count++;
           continue;
         }

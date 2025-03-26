@@ -105,8 +105,8 @@ describe("IdList B+Tree Implementation", () => {
       const [newLeft, newRight] = afterSplit.children as InnerNodeLeaf[];
       expect(newLeft).to.be.instanceOf(InnerNodeLeaf);
       expect(newRight).to.be.instanceOf(InnerNodeLeaf);
-      expect(newLeft.children).to.have.length(M / 2);
-      expect(newRight.children).to.have.length(M / 2 + 1);
+      expect(newLeft.children).to.have.length(M / 2 + 1);
+      expect(newRight.children).to.have.length(M / 2);
 
       // Verify all elements are still accessible and in the correct order
       for (let i = 0; i < M; i++) {

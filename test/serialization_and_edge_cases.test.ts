@@ -14,8 +14,8 @@ describe("IdList Serialization and Edge Cases", () => {
     expect([...loaded.knownIds.values()]).to.deep.equal([
       ...list.knownIds.values(),
     ]);
-    expect([...loaded.valuesWithDeleted()]).to.deep.equal([
-      ...list.valuesWithDeleted(),
+    expect([...loaded.valuesWithIsDeleted()]).to.deep.equal([
+      ...list.valuesWithIsDeleted(),
     ]);
   }
 
@@ -456,8 +456,8 @@ describe("IdList Serialization and Edge Cases", () => {
       const presentIds = [...list];
       expect(presentIds.length).to.equal(7);
 
-      // Test valuesWithDeleted (all known values)
-      const allValues = [...list.valuesWithDeleted()];
+      // Test valuesWithIsDeleted (all known values)
+      const allValues = [...list.valuesWithIsDeleted()];
       expect(allValues.length).to.equal(10);
 
       // Check the deleted status for each value
@@ -519,8 +519,8 @@ describe("IdList Serialization and Edge Cases", () => {
       // Expected count: 50 original - 10 deleted + 10 new = 50
       expect(presentIds.length).to.equal(50);
 
-      // Check for deleted elements using valuesWithDeleted
-      const allValues = [...list.valuesWithDeleted()];
+      // Check for deleted elements using valuesWithIsDeleted
+      const allValues = [...list.valuesWithIsDeleted()];
       expect(allValues.length).to.equal(60); // 50 original + 10 new
 
       // Verify all new elements are present

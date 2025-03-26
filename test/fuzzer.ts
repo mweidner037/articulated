@@ -28,8 +28,8 @@ export class Fuzzer {
     }
 
     // Check that states agree.
-    expect([...this.list.valuesWithDeleted()]).to.deep.equal([
-      ...this.simple.valuesWithDeleted(),
+    expect([...this.list.valuesWithIsDeleted()]).to.deep.equal([
+      ...this.simple.valuesWithIsDeleted(),
     ]);
   }
 
@@ -62,8 +62,8 @@ export class Fuzzer {
 
     // Check loaded state as well.
     expect([
-      ...IdList.load(this.list.save()).valuesWithDeleted(),
-    ]).to.deep.equal([...this.simple.valuesWithDeleted()]);
+      ...IdList.load(this.list.save()).valuesWithIsDeleted(),
+    ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
   }
 
   static new() {

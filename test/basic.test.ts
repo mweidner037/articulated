@@ -144,6 +144,25 @@ describe("IdList", () => {
       expect(equalsId(list.at(1), id1)).to.be.true;
     });
 
+    it("should insert before the end", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+
+      // Insert before null when the list is empty.
+      list = list.insertBefore(null, id1, 3);
+
+      expect(list.length).to.equal(3);
+      expect(equalsId(list.at(0), id1)).to.be.true;
+
+      // Insert before null when the list has ids.
+      list = list.insertBefore(null, id2);
+
+      expect(list.length).to.equal(4);
+      expect(equalsId(list.at(3), id2)).to.be.true;
+      expect(equalsId(list.at(0), id1)).to.be.true;
+    });
+
     it("should bulk insert multiple elements", () => {
       let list = IdList.new();
       const startId: ElementId = { bunchId: "abc", counter: 1 };
@@ -344,8 +363,8 @@ describe("IdList", () => {
       expect(equalsId(ids[1], id3)).to.be.true;
     });
 
-    it("should iterate over all known elements with valuesWithDeleted", () => {
-      const elements = [...list.valuesWithDeleted()];
+    it("should iterate over all known elements with valuesWithIsDeleted", () => {
+      const elements = [...list.valuesWithIsDeleted()];
       expect(elements).to.have.length(3);
 
       expect(equalsId(elements[0].id, id1)).to.be.true;
