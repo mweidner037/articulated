@@ -17,5 +17,5 @@ void (async function () {
   );
 
   await insertAfterJson();
-  // await insertAfterCustom();
+  await insertAfterCustom();
 })();

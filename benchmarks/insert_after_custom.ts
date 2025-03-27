@@ -1,19 +1,16 @@
 import { assert } from "chai";
 import { v4 as uuidv4 } from "uuid";
 import { ElementId, IdList, SavedIdList } from "../src";
-import realTextTraceEdits from "./internal/real_text_trace_edits.json";
 import {
   avg,
   getMemUsed,
   gunzipString,
   gzipString,
+  realTextTraceEdits,
   sleep,
 } from "./internal/util";
 
-const { edits, finalText } = realTextTraceEdits as unknown as {
-  finalText: string;
-  edits: Array<[number, number, string | undefined]>;
-};
+const { edits, finalText } = realTextTraceEdits();
 
 type Update = string;
 

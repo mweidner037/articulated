@@ -1,4 +1,22 @@
 import { gunzipSync, gzipSync } from "fflate";
+import fs from "fs";
+import path from "path";
+
+export function realTextTraceEdits(): {
+  finalText: string;
+  edits: Array<[number, number, string | undefined]>;
+} {
+  // A JSON import would be nicer, but it blows up the heap usage for some reason,
+  // making heap snapshots slow.
+  return JSON.parse(
+    fs.readFileSync(path.join(__dirname, "real_text_trace_edits.json"), {
+      encoding: "utf8",
+    })
+  ) as {
+    finalText: string;
+    edits: Array<[number, number, string | undefined]>;
+  };
+}
 
 export function getMemUsed() {
   if (global.gc) {
