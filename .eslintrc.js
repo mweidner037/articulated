@@ -27,8 +27,6 @@ module.exports = {
     "@typescript-eslint/no-non-null-assertion": "off",
     // Disallow default exports; only allow named exports.
     "import/no-default-export": "error",
-    // Impose alphabetically ordered imports.
-    "import/order": "error",
     // Allow implicit string casts in template literals.
     "@typescript-eslint/restrict-template-expressions": "off",
     // Allow ts-ignore with justification.
