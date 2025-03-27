@@ -73,6 +73,8 @@
     "clean": "rm -rf build docs coverage .nyc_output"
   },
   "dependencies": {
+    "@types/functional-red-black-tree": "^1.0.6",
+    "functional-red-black-tree": "^1.0.1",
     "sparse-array-rled": "^2.0.1"
   }
 }

@@ -1,3 +1,4 @@
+import createRBTree, { Tree } from "functional-red-black-tree";
 import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
 import { SavedIdList } from "./saved_id_list";
@@ -40,6 +41,24 @@ export interface LeafNode {
    * Note that it is indexed by counter, not by (counter - this.startCounter).
    */
   readonly present: SparseIndices;
+}
+
+/**
+ * Sort function for LeafNode in IdTree.leaves.
+ *
+ * Sorting by counters lets us quickly look up the LeafNode containing an ElementId,
+ * even though the LeafNode might start at a lower counter.
+ */
+function compareLeaves(a: LeafNode, b: LeafNode) {
+  if (a.bunchId === b.bunchId) {
+    return a.startCounter - b.startCounter;
+  } else {
+    return a.bunchId > b.bunchId ? 1 : -1;
+  }
+}
+
+function newLeafSet(): Tree<LeafNode, undefined> {
+  return createRBTree(compareLeaves);
 }
 
 /**
@@ -121,7 +140,15 @@ export class IdList {
   /**
    * Internal - construct an IdList using a static method (e.g. `IdList.new`).
    */
-  private constructor(private readonly root: InnerNode) {}
+  private constructor(
+    private readonly root: InnerNode,
+    /**
+     * A sorted set of all leaves, in order by their first ElementId's bunchId & counter
+     * (not the B+Tree order!).
+     * Used to look up the leaf containing an ElementId.
+     */
+    private readonly leafSet: Tree<LeafNode, undefined>
+  ) {}
 
   /**
    * Constructs an empty list.
@@ -130,7 +157,7 @@ export class IdList {
    * or {@link IdList.load}.
    */
   static new() {
-    return new this(new InnerNodeLeaf([]));
+    return new this(new InnerNodeLeaf([]), newLeafSet());
   }
 
   /**
@@ -215,15 +242,15 @@ export class IdList {
         // Insert the first leaf as a child of root.
         const present = SparseIndices.new();
         present.set(newId.counter, count);
+        const leaf = {
+          bunchId: newId.bunchId,
+          startCounter: newId.counter,
+          count,
+          present,
+        };
         return new IdList(
-          new InnerNodeLeaf([
-            {
-              bunchId: newId.bunchId,
-              startCounter: newId.counter,
-              count,
-              present,
-            },
-          ])
+          new InnerNodeLeaf([leaf]),
+          newLeafSet().insert(leaf, undefined)
         );
       } else {
         // Insert before the first known id.
@@ -455,7 +482,20 @@ export class IdList {
    * newLeaves.length must be in [1, M].
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
-    return new IdList(replaceNode(located, this.root, newLeaves, 0));
+    const newRoot = replaceNode(located, this.root, newLeaves, 0);
+
+    let newLeafSet = this.leafSet;
+    const oldLeaf = located[0].node;
+    if (!newLeaves.includes(oldLeaf)) {
+      newLeafSet = newLeafSet.remove(oldLeaf);
+    }
+    for (const newLeaf of newLeaves) {
+      if (newLeaf !== oldLeaf) {
+        newLeafSet = newLeafSet.insert(newLeaf, undefined);
+      }
+    }
+
+    return new IdList(newRoot, newLeafSet);
   }
 
   // Accessors
@@ -646,7 +686,7 @@ export class IdList {
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
-    // 1. Determine the leaves.
+    // 1. Determine the leaves in list order.
 
     const leaves: LeafNode[] = [];
     for (let i = 0; i < savedState.length; i++) {
@@ -683,12 +723,13 @@ export class IdList {
       // If we get to here, we need a new leaf.
       const present = SparseIndices.new();
       if (!item.isDeleted) present.set(item.startCounter, item.count);
-      leaves.push({
+      const leaf = {
         bunchId: item.bunchId,
         startCounter: item.startCounter,
         count: item.count,
         present,
-      });
+      };
+      leaves.push(leaf);
     }
 
     // 2. Create a B+Tree with the given leaves.
@@ -697,13 +738,19 @@ export class IdList {
 
     if (leaves.length === 0) return IdList.new();
 
+    // TODO: Bulk constructor for leafMap? To get O(L) time instead of O(L*log(L)).
+    let leafSet = newLeafSet();
+    for (const leaf of leaves) {
+      leafSet = leafSet.insert(leaf, undefined);
+    }
+
     // Depth of the B+Tree (number of non-root nodes on any path from a leaf to the root).
     // A fully balanced B+Tree of depth d has between [M^{d-1} + 1, M^d] leaves.
     const depth =
       leaves.length === 1
         ? 1
         : Math.ceil(Math.log(leaves.length) / Math.log(M));
-    return new IdList(buildTree(leaves, 0, depth));
+    return new IdList(buildTree(leaves, 0, depth), leafSet);
   }
 }
 
