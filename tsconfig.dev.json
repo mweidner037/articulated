@@ -1,7 +1,8 @@
 {
   "extends": "./tsconfig.commonjs.json",
   "compilerOptions": {
-    "rootDir": "."
+    "rootDir": ".",
+    "resolveJsonModule": true
   },
   "include": ["src", "test", "benchmarks"]
 }

@@ -1,18 +1,13 @@
 import { assert } from "chai";
-import {
-  BunchMeta,
-  OrderSavedState,
-  Position,
-  Text,
-  TextSavedState,
-} from "../src";
+import { v4 as uuidv4 } from "uuid";
+import { ElementId, IdList, SavedIdList } from "../src";
 import realTextTraceEdits from "./internal/real_text_trace_edits.json";
 import {
   avg,
   getMemUsed,
-  sleep,
   gunzipString,
   gzipString,
+  sleep,
 } from "./internal/util";
 
 const { edits, finalText } = realTextTraceEdits as unknown as {
@@ -22,41 +17,59 @@ const { edits, finalText } = realTextTraceEdits as unknown as {
 
 type Update =
   | {
-      type: "set";
-      pos: Position;
-      value: string;
-      meta?: BunchMeta;
+      type: "insertAfter";
+      id: ElementId;
+      before: ElementId | null;
     }
-  | { type: "delete"; pos: Position };
+  | { type: "delete"; id: ElementId };
 
-type SavedState = {
-  order: OrderSavedState;
-  text: TextSavedState;
-};
-
-export async function textDirect() {
-  console.log("\n## Text Direct\n");
+export async function insertAfterJson() {
+  console.log("\n## Insert-After, JSON Encoding\n");
   console.log(
-    "Use `Text` and send updates directly over a reliable link (e.g. WebSocket)."
+    "Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only."
   );
   console.log(
     "Updates and saved states use JSON encoding, with optional GZIP for saved states.\n"
   );
 
+  // TODO: Deterministic randomness.
+  const replicaId = uuidv4();
+  let replicaCounter = 0;
+  function nextBunchId(): string {
+    // This is unrealistic (more than one replica will edit a document this large)
+    // but the closest comparison to existing CRDT / list-positions benchmarks.
+    return replicaId + replicaCounter++;
+  }
+
   // Perform the whole trace, sending all updates.
   const updates: string[] = [];
   let startTime = process.hrtime.bigint();
-  const sender = new Text();
+  let sender = IdList.new();
+  const lastCounters = new Map<string, number>();
   for (const edit of edits) {
     let updateObj: Update;
     if (edit[2] !== undefined) {
-      const [pos, newMeta] = sender.insertAt(edit[0], edit[2]);
-      updateObj = { type: "set", pos, value: edit[2] };
-      if (newMeta !== null) updateObj.meta = newMeta;
+      const before = edit[0] === 0 ? null : sender.at(edit[0] - 1);
+      let id: ElementId;
+      // Try to extend before's bunch, so that it will be compressed.
+      if (
+        before !== null &&
+        lastCounters.get(before.bunchId) === before.counter
+      ) {
+        id = { bunchId: before.bunchId, counter: before.counter + 1 };
+      } else {
+        // id = { bunchId: uuidv4(), counter: 0 };
+        id = { bunchId: nextBunchId(), counter: 0 };
+      }
+      lastCounters.set(id.bunchId, id.counter);
+
+      sender = sender.insertAfter(before, id);
+
+      updateObj = { type: "insertAfter", id, before };
     } else {
-      const pos = sender.positionAt(edit[0]);
-      sender.delete(pos);
-      updateObj = { type: "delete", pos };
+      const id = sender.at(edit[0]);
+      sender = sender.delete(id);
+      updateObj = { type: "delete", id };
     }
 
     updates.push(JSON.stringify(updateObj));
@@ -72,24 +85,24 @@ export async function textDirect() {
     "- Avg update size (bytes):",
     avg(updates.map((message) => message.length)).toFixed(1)
   );
-  assert.strictEqual(sender.toString(), finalText);
+  // TODO
+  // assert.strictEqual(sender.toString(), finalText);
 
   // Receive all updates.
   startTime = process.hrtime.bigint();
-  const receiver = new Text();
+  let receiver = IdList.new();
   for (const update of updates) {
-    const updateObj: Update = JSON.parse(update);
-    if (updateObj.type === "set") {
-      if (updateObj.meta) receiver.order.addMetas([updateObj.meta]);
-      receiver.set(updateObj.pos, updateObj.value);
+    const updateObj = JSON.parse(update) as Update;
+    if (updateObj.type === "insertAfter") {
+      receiver = receiver.insertAfter(updateObj.before, updateObj.id);
       // To simulate events, also compute the inserted index.
-      void receiver.indexOfPosition(updateObj.pos);
+      void receiver.indexOf(updateObj.id);
     } else {
       // type "delete"
-      if (receiver.has(updateObj.pos)) {
+      if (receiver.has(updateObj.id)) {
         // To simulate events, also compute the inserted index.
-        void receiver.indexOfPosition(updateObj.pos);
-        receiver.delete(updateObj.pos); // Also okay to call outside of the "has" guard.
+        void receiver.indexOf(updateObj.id);
+        receiver = receiver.delete(updateObj.id); // Also okay to call outside of the "has" guard.
       }
     }
   }
@@ -100,24 +113,23 @@ export async function textDirect() {
       new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000
     )
   );
-  assert.strictEqual(receiver.toString(), finalText);
+  assert.deepStrictEqual(
+    [...receiver.valuesWithIsDeleted()],
+    [...sender.valuesWithIsDeleted()]
+  );
+  // TODO
+  // assert.strictEqual(receiver.toString(), finalText);
 
-  const savedState = (await saveLoad(receiver, false)) as string;
-  await saveLoad(receiver, true);
+  const savedState = saveLoad(receiver, false) as string;
+  saveLoad(receiver, true);
 
   await memory(savedState);
 }
 
-async function saveLoad(
-  saver: Text,
-  gzip: boolean
-): Promise<string | Uint8Array> {
+function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
   // Save.
   let startTime = process.hrtime.bigint();
-  const savedStateObj: SavedState = {
-    order: saver.order.save(),
-    text: saver.save(),
-  };
+  const savedStateObj = saver.save();
   const savedState = gzip
     ? gzipString(JSON.stringify(savedStateObj))
     : JSON.stringify(savedStateObj);
@@ -135,14 +147,11 @@ async function saveLoad(
 
   // Load the saved state.
   startTime = process.hrtime.bigint();
-  const loader = new Text();
   const toLoadStr = gzip
     ? gunzipString(savedState as Uint8Array)
     : (savedState as string);
-  const toLoadObj: SavedState = JSON.parse(toLoadStr);
-  // Important to load Order first.
-  loader.order.load(toLoadObj.order);
-  loader.load(toLoadObj.text);
+  const toLoadObj = JSON.parse(toLoadStr) as SavedIdList;
+  void IdList.load(toLoadObj);
 
   console.log(
     `- Load time ${gzip ? "GZIP'd " : ""}(ms):`,
@@ -162,14 +171,12 @@ async function memory(savedState: string) {
   await sleep(1000);
   const startMem = getMemUsed();
 
-  const loader = new Text();
+  let loader: IdList | null = null;
   // Keep the parsed saved state in a separate scope so it can be GC'd
   // before we measure memory.
   (function () {
-    const savedStateObj: SavedState = JSON.parse(savedState);
-    // Important to load Order first.
-    loader.order.load(savedStateObj.order);
-    loader.load(savedStateObj.text);
+    const savedStateObj = JSON.parse(savedState) as SavedIdList;
+    loader = IdList.load(savedStateObj);
   })();
 
   console.log(

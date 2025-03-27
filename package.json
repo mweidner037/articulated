@@ -51,7 +51,8 @@
     "seedrandom": "^3.0.5",
     "ts-node": "^10.9.2",
     "typedoc": "^0.25.13",
-    "typescript": "^5.4.5"
+    "typescript": "^5.4.5",
+    "uuid": "^11.1.0"
   },
   "scripts": {
     "prepack": "npm run clean && npm run build && npm run test",

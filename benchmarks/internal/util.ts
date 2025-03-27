@@ -1,4 +1,4 @@
-import { gzipSync, gunzipSync } from "fflate";
+import { gunzipSync, gzipSync } from "fflate";
 
 export function getMemUsed() {
   if (global.gc) {
@@ -24,7 +24,7 @@ export async function sleep(ms: number) {
  * @returns Nearest-rank percentiles
  */
 export function percentiles(values: number[], percentiles: number[]): number[] {
-  if (values.length === 0) return new Array(percentiles.length).fill(0);
+  if (values.length === 0) return new Array<number>(percentiles.length).fill(0);
 
   values.sort((a, b) => a - b);
   const ans: number[] = [];
