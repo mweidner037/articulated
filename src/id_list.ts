@@ -231,7 +231,7 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+    if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
@@ -343,7 +343,7 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+    if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
@@ -508,9 +508,20 @@ export class IdList {
    * Compare to {@link isKnown}.
    */
   has(id: ElementId): boolean {
-    const located = locate(id, this.root);
-    if (located === null) return false;
-    return located[0].node.present.has(id.counter);
+    // Find an iter to the LeafNode that would contain id if known.
+    const iter = this.leafSet.le({
+      bunchId: id.bunchId,
+      startCounter: id.counter,
+    } as LeafNode);
+
+    if (iter.valid) {
+      const leaf = iter.key!;
+      if (leaf.bunchId === id.bunchId) {
+        return leaf.present.has(id.counter);
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -519,7 +530,55 @@ export class IdList {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return locate(id, this.root) !== null;
+    // Find an iter to the LeafNode that would contain id if known.
+    const iter = this.leafSet.le({
+      bunchId: id.bunchId,
+      startCounter: id.counter,
+    } as LeafNode);
+
+    if (iter.valid) {
+      const leaf = iter.key!;
+      if (leaf.bunchId === id.bunchId) {
+        return (
+          leaf.startCounter <= id.counter &&
+          id.counter < leaf.startCounter + leaf.count
+        );
+      }
+    }
+
+    return false;
+  }
+
+  // TODO: Make public?
+  /**
+   * Returns true if any of the given bulk ids are known.
+   */
+  private isAnyKnown(id: ElementId, count: number): boolean {
+    if (count === 0) return false;
+
+    // Any leaf that contains any of the bulk ids will be <= the last bulk id
+    // in leafSet. Any leaf between such a leaf and the last bulk id, will also be
+    // such a leaf. So we only need to consider the greatest <= leaf.
+    const iter = this.leafSet.le({
+      bunchId: id.bunchId,
+      startCounter: id.counter + count - 1,
+    } as LeafNode);
+
+    if (iter.valid) {
+      const leaf = iter.key!;
+      if (leaf.bunchId === id.bunchId) {
+        const leaf = iter.key!;
+        // Test if there is any overlap between the leaf's counter range [a, b]
+        // and the bulk ids' counter range [c, d].
+        const a = leaf.startCounter;
+        const b = leaf.startCounter + leaf.count - 1;
+        const c = id.counter;
+        const d = id.counter + count - 1;
+        if (a <= d && c <= b) return true;
+      }
+    }
+
+    return false;
   }
 
   /**
@@ -943,32 +1002,6 @@ export function locate(id: ElementId, node: InnerNode): Located | null {
     }
   }
   return null;
-}
-
-/**
- * Returns true if any of the given bulk ids are known within node's subtree.
- *
- * Assumes count > 0.
- */
-function isAnyKnown(id: ElementId, count: number, node: InnerNode): boolean {
-  if (node instanceof InnerNodeInner) {
-    for (const child of node.children) {
-      if (isAnyKnown(id, count, child)) return true;
-    }
-  } else {
-    for (const child of node.children) {
-      if (child.bunchId === id.bunchId) {
-        // Test if there is any overlap between the child's counter range [a, b]
-        // and the bulk id's counter range [c, d].
-        const a = child.startCounter;
-        const b = child.startCounter + child.count - 1;
-        const c = id.counter;
-        const d = id.counter + count - 1;
-        if (a <= d && c <= b) return true;
-      }
-    }
-  }
-  return false;
 }
 
 /**
