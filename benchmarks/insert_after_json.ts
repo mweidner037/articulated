@@ -163,7 +163,7 @@ function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
 async function memory(savedState: string) {
   // Measure memory usage of loading the saved state.
 
-  // Pause (& separate function)seems to make GC more consistent -
+  // Pause (& separate function) seems to make GC more consistent -
   // less likely to get negative diffs.
   await sleep(1000);
   const startMem = getMemUsed();
