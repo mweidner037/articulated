@@ -33,9 +33,9 @@ export class SeqMap {
     return new SeqMap(this.tree.remove(seq).insert(seq, value), this.nextSeq);
   }
 
-  delete(seq: number): SeqMap {
-    return new SeqMap(this.tree.remove(seq), this.nextSeq);
-  }
+  // delete(seq: number): SeqMap {
+  //   return new SeqMap(this.tree.remove(seq), this.nextSeq);
+  // }
 }
 
 export interface MutableSeqMap {
