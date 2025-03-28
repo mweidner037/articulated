@@ -109,7 +109,16 @@ let newList = IdList.load(savedState);
 
 IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./src/id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
 
-In terms of the number of leaves `L`, mutating an IdList with insertAfter/insertBefore/delete/undelete will only create `O(log(L))` new tree nodes, reusing the rest. However, most methods currently take `O(L)` total time because they search the whole tree for a given ElementId, which has not yet been optimized (it uses a simple depth-first search). Exception: `IdList.at(index)` takes only `O(log(L))` time.
+To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees from [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
+
+Asymptotic runtimes are given in terms of the number of leaves `L` and the maximum "fragmentation" of a leaf `F`, which is the number of times its ElementIds alternate between deleted vs present.
+
+- insertAfter, insertBefore: `O(log^2(L) + F)`
+- delete, undelete: `O(log^2(L) + F)`
+- at: `O(log(L) + F)`
+- indexOf: `O(log^2(L) + F)`
+
+Except for `at` (which does a simple B+Tree search), the bottleneck of each method is finding the B+Tree path corresponding to an ElementId's leaf. This requires `O(log(L))` lookups in the bottom-up tree's map, each of which takes `O(log(L))` time. See the implementation of `IdList.locate`.
 
 If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds, and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
 

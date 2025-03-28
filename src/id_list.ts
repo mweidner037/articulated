@@ -30,6 +30,13 @@ import { SavedIdList } from "./saved_id_list";
  and its knownSize (# of known ids). These allow indexed access in log time.
 
  Unlike some B+Trees, we do not store a linked list of leaves. Iteration instead uses a depth-first search.
+
+ Finally, we also store a "bottom-up" view of the B+Tree, in order to quickly find the leaf or
+ tree path corresponding to an ElementId. Each inner node is assigned a unique sequence number
+ (seq), and we store a persistent map from each leaf to its parent's seq (leafMap)
+ and from each inner node's seq to its parent's seq (parentSeqs). Because leafMap is sorted
+ by (LeafNode.bunchId, LeafNode.startCounter), we also use it to lookup the leaf corresponding
+ to an ElementId.
 */
 
 export interface LeafNode {
