@@ -19,16 +19,18 @@ export class SeqMap {
     );
   }
 
+  bumpNextSeq(): SeqMap {
+    return new SeqMap(this.tree, this.nextSeq + 1);
+  }
+
   get(seq: number): number {
     return this.tree.get(seq)!;
   }
 
   set(seq: number, value: number): SeqMap {
-    if (seq === this.nextSeq) {
-      return new SeqMap(this.tree.insert(seq, value), this.nextSeq + 1);
-    } else {
-      return new SeqMap(this.tree.remove(seq).insert(seq, value), this.nextSeq);
-    }
+    // TODO: Vendor functional-red-black-tree and add our own set method
+    // so we can avoid this 2x penalty.
+    return new SeqMap(this.tree.remove(seq).insert(seq, value), this.nextSeq);
   }
 
   delete(seq: number): SeqMap {
@@ -38,4 +40,10 @@ export class SeqMap {
 
 export interface MutableSeqMap {
   value: SeqMap;
+}
+
+export function getAndBumpNextSeq(seqsMut: MutableSeqMap): number {
+  const nextSeq = seqsMut.value.nextSeq;
+  seqsMut.value = seqsMut.value.bumpNextSeq();
+  return nextSeq;
 }

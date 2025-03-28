@@ -1,7 +1,7 @@
 import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
-import { MutableSeqMap, SeqMap } from "./internal/seq_map";
+import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
@@ -119,8 +119,6 @@ export type InnerNode = InnerNodeInner | InnerNodeLeaf;
  */
 export const M = 8;
 
-// TODO: Check for opportunities to delete leafMap / parentSeqs entries (key node no longer present).
-
 /**
  * A list of ElementIds, as a persistent (immutable) data structure.
  *
@@ -147,17 +145,7 @@ export const M = 8;
  */
 export class IdList {
   /**
-   * A persistent map from each InnerNode's seq to its parent node's seq.
-   *
-   * We also add an entry for the root, with value 0.
-   */
-  private readonly parentSeqs: SeqMap;
-
-  /**
    * Internal - construct an IdList using a static method (e.g. `IdList.new`).
-   *
-   * This constructor will set root's entry in parentSeqs, so you don't need to.
-   * When root is new, that has the side effect of incrementing parentSeqs.nextSeq properly.
    */
   private constructor(
     private readonly root: InnerNode,
@@ -167,10 +155,11 @@ export class IdList {
      * Besides parentSeqs, we use this to lookup leaves by ElementId.
      */
     private readonly leafMap: LeafMap,
-    parentSeqs: SeqMap
-  ) {
-    this.parentSeqs = parentSeqs.set(root.seq, 0);
-  }
+    /**
+     * A persistent map from each InnerNode's seq to its parent node's seq.
+     */
+    private readonly parentSeqs: SeqMap
+  ) {}
 
   /**
    * Constructs an empty list.
@@ -180,9 +169,13 @@ export class IdList {
    */
   static new() {
     const leafMapMut = { value: LeafMap.new() };
-    const parentSeqs = SeqMap.new();
-    const root = new InnerNodeLeaf(parentSeqs.nextSeq, [], leafMapMut);
-    return new this(root, leafMapMut.value, parentSeqs);
+    const parentSeqsMut = { value: SeqMap.new() };
+    const root = new InnerNodeLeaf(
+      getAndBumpNextSeq(parentSeqsMut),
+      [],
+      leafMapMut
+    );
+    return new this(root, leafMapMut.value, parentSeqsMut.value);
   }
 
   /**
@@ -1039,14 +1032,11 @@ function replaceNode(
     .slice(0, indexInParent)
     .concat(newNodes, parent.children.slice(indexInParent + 1));
 
-  // TODO: seq assignments.
-  // Need to be careful to do it just before returning, so that nextSeq is updated in time.
-
   if (newChildren.length > M) {
     // Split the parent to maintain BTree property (# children <= M).
     // Treat the right parent as "new", getting a new seq.
     const split = Math.ceil(newChildren.length / 2);
-    const seqs = [parent.seq, parentSeqsMut.value.nextSeq];
+    const seqs = [parent.seq, getAndBumpNextSeq(parentSeqsMut)];
     const newParents = [
       newChildren.slice(0, split),
       newChildren.slice(split),
@@ -1058,7 +1048,7 @@ function replaceNode(
     if (i === located.length - 1) {
       // newParents replace root. We need a new root to hold them.
       return new InnerNodeInner(
-        parentSeqsMut.value.nextSeq,
+        getAndBumpNextSeq(parentSeqsMut),
         newParents,
         parentSeqsMut
       );
@@ -1265,7 +1255,7 @@ function buildTree(
   startIndex: number,
   depthRemaining: number
 ): InnerNode {
-  const parentSeq = parentSeqsMut.value.nextSeq;
+  const parentSeq = getAndBumpNextSeq(parentSeqsMut);
   if (depthRemaining === 1) {
     return new InnerNodeLeaf(
       parentSeq,
