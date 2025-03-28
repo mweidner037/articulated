@@ -15,7 +15,7 @@ export class SeqMap {
   static new(): SeqMap {
     return new this(
       createRBTree((a, b) => a - b),
-      0
+      1
     );
   }
 

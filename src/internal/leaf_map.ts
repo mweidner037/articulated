@@ -15,18 +15,18 @@ export class LeafMap {
     return new this(createRBTree(compareLeaves));
   }
 
-  getSeq(leaf: LeafNode): number {
-    return this.tree.get(leaf)!;
-  }
-
   /**
    * Returns the greatest leaf whose first id is <= the given id,
-   * or undefined if none exists.
+   * or undefined if none exists. Also returns the associated seq (or -1 if not found).
    *
    * The returned leaf might not actually contain the given id.
    */
-  getLeaf(bunchId: string, counter: number): LeafNode | undefined {
-    return this.tree.le({ bunchId, startCounter: counter } as LeafNode).key;
+  getLeaf(
+    bunchId: string,
+    counter: number
+  ): [leaf: LeafNode | undefined, seq: number] {
+    const iter = this.tree.le({ bunchId, startCounter: counter } as LeafNode);
+    return [iter.key, iter.value ?? -1];
   }
 
   set(leaf: LeafNode, seq: number): LeafMap {

@@ -5,7 +5,6 @@ import {
   InnerNodeInner,
   InnerNodeLeaf,
   LeafNode,
-  locate,
 } from "../src/id_list";
 
 describe("IdList Internal Structure", () => {
@@ -27,12 +26,9 @@ describe("IdList Internal Structure", () => {
         list = list.insertAfter(i === 0 ? null : ids[i - 1], id);
       }
 
-      // Access internal locate function
-      const root = list["root"];
-
       // Verify locate works for all elements
       for (let i = 0; i < 50; i++) {
-        const path = locate(ids[i], root);
+        const path = list["locate"](ids[i]);
         expect(path).to.not.be.null;
         // Although a balanced BTree would have root-exclusive depth 2
         // (ceil(log_8(50))), building a tree by insert (instead of load)
@@ -47,7 +43,7 @@ describe("IdList Internal Structure", () => {
 
       // Test locate on an unknown element
       const unknownId = createId("unknown", 0);
-      const unknownPath = locate(unknownId, root);
+      const unknownPath = list["locate"](unknownId);
       expect(unknownPath).to.be.null;
     });
 
@@ -61,8 +57,7 @@ describe("IdList Internal Structure", () => {
 
       // Find the path to an element in the middle
       const middleId = createId("id10", 0);
-      let root = list["root"];
-      let path = locate(middleId, root);
+      let path = list["locate"](middleId);
 
       // Remember the leaf node that contains middleId
       const originalLeaf = path?.[0].node;
@@ -72,8 +67,7 @@ describe("IdList Internal Structure", () => {
         list = list.insertAfter(middleId, createId(`split${i}`, 0));
 
         // After each insertion, re-check the path
-        root = list["root"];
-        path = locate(middleId, root);
+        path = list["locate"](middleId);
 
         // The element should still be locatable
         expect(path).to.not.be.null;

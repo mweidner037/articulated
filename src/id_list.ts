@@ -108,6 +108,12 @@ export class InnerNodeLeaf {
 
 export type InnerNode = InnerNodeInner | InnerNodeLeaf;
 
+type Located = [
+  { node: LeafNode; indexInParent: number },
+  // Index 1 will be an InnerNodeLeaf if it exists.
+  ...{ node: InnerNode; indexInParent: number }[]
+];
+
 /**
  * The B+Tree's branching factor, i.e., the max number of children of a node.
  *
@@ -145,6 +151,13 @@ export const M = 8;
  */
 export class IdList {
   /**
+   * A persistent map from each InnerNode's seq to its parent node's seq.
+   *
+   * We map the root's seq to 0 (in our constructor).
+   */
+  private readonly parentSeqs: SeqMap;
+
+  /**
    * Internal - construct an IdList using a static method (e.g. `IdList.new`).
    */
   private constructor(
@@ -155,11 +168,10 @@ export class IdList {
      * Besides parentSeqs, we use this to lookup leaves by ElementId.
      */
     private readonly leafMap: LeafMap,
-    /**
-     * A persistent map from each InnerNode's seq to its parent node's seq.
-     */
-    private readonly parentSeqs: SeqMap
-  ) {}
+    parentSeqs: SeqMap
+  ) {
+    this.parentSeqs = parentSeqs.set(root.seq, 0);
+  }
 
   /**
    * Constructs an empty list.
@@ -278,7 +290,7 @@ export class IdList {
       }
     }
 
-    const located = locate(before, this.root);
+    const located = this.locate(before);
     if (located === null) {
       throw new Error("before is not known");
     }
@@ -378,7 +390,7 @@ export class IdList {
       );
     }
 
-    const located = locate(after, this.root);
+    const located = this.locate(after);
     if (located === null) {
       throw new Error("after is not known");
     }
@@ -458,7 +470,7 @@ export class IdList {
    * If `id` is already deleted or is not known, this method does nothing.
    */
   delete(id: ElementId) {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) return this;
 
     const leaf = located[0].node;
@@ -481,7 +493,7 @@ export class IdList {
    * @throws If `id` is not known.
    */
   undelete(id: ElementId) {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) {
       throw new Error("id is not known");
     }
@@ -493,6 +505,61 @@ export class IdList {
     newPresent.set(id.counter);
 
     return this.replaceLeaf(located, { ...leaf, present: newPresent });
+  }
+
+  /**
+   * Returns the path from id's leaf node to the root, or null if id is not found.
+   *
+   * The path contains each node and its index in its parent's node, starting with id's
+   * LeafNode and ending at a child of the root.
+   */
+  private locate(id: ElementId): Located | null {
+    // Find the leaf containing id, if any.
+    const [leaf, parentSeq] = this.leafMap.getLeaf(id.bunchId, id.counter);
+    if (leaf === undefined) return null;
+    if (
+      !(
+        leaf.bunchId === id.bunchId &&
+        leaf.startCounter <= id.counter &&
+        id.counter < leaf.startCounter + leaf.count
+      )
+    ) {
+      return null;
+    }
+
+    // Find the seqs on the path (leaf, root].
+    const innerSeqs: number[] = [];
+    let curSeq = parentSeq;
+    while (curSeq !== 0) {
+      innerSeqs.push(curSeq);
+      curSeq = this.parentSeqs.get(curSeq);
+    }
+
+    // Find the nodes and indexInParent's on the path (root, leaf),
+    // using seqs to find the appropriate child of each node.
+    const innerNodes: { node: InnerNode; indexInParent: number }[] = [];
+    let curParent = this.root;
+    // Start at the root child's seq and proceed to the leaf parent's seq.
+    for (let i = innerSeqs.length - 2; i >= 0; i--) {
+      const children = (curParent as InnerNodeInner).children;
+
+      const childIndex = children.findIndex(
+        (child) => child.seq === innerSeqs[i]
+      );
+      if (childIndex === -1) throw new Error("Internal error");
+      const child = children[childIndex];
+
+      innerNodes.push({ node: child, indexInParent: childIndex });
+      curParent = child;
+    }
+
+    // Now curParent is the leaf's parent. Find leaf in its children and return.
+    const leafChildIndex = (curParent as InnerNodeLeaf).children.indexOf(leaf);
+    if (leafChildIndex === -1) throw new Error("Internal error");
+    return [
+      { node: leaf, indexInParent: leafChildIndex },
+      ...innerNodes.reverse(),
+    ];
   }
 
   /**
@@ -530,7 +597,7 @@ export class IdList {
    */
   has(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
-    const leaf = this.leafMap.getLeaf(id.bunchId, id.counter);
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
     if (leaf) {
       if (leaf.bunchId === id.bunchId) {
         return leaf.present.has(id.counter);
@@ -547,7 +614,7 @@ export class IdList {
    */
   isKnown(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
-    const leaf = this.leafMap.getLeaf(id.bunchId, id.counter);
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
     if (leaf) {
       if (leaf.bunchId === id.bunchId) {
         return (
@@ -569,7 +636,7 @@ export class IdList {
 
     // Find the leaf containing the last id, or the previous leaf.
     // If any leaf knows any of the ids, this leaf must know an id too.
-    const leaf = this.leafMap.getLeaf(id.bunchId, id.counter + count - 1);
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter + count - 1);
 
     if (leaf) {
       if (leaf.bunchId === id.bunchId) {
@@ -650,7 +717,7 @@ export class IdList {
    * @throws If `id` is not known.
    */
   indexOf(id: ElementId, bias: "none" | "left" | "right" = "none"): number {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) throw new Error("id is not known");
 
     /**
@@ -886,7 +953,8 @@ export class KnownIdView {
    * Returns the index of `id` in this view, or -1 if it is not known.
    */
   indexOf(id: ElementId): number {
-    const located = locate(id, this.root);
+    // @ts-expect-error Ignore private
+    const located = this.list.locate(id);
     if (located === null) throw new Error("id is not known");
 
     /**
@@ -972,44 +1040,6 @@ function lastId(node: InnerNode): ElementId {
     bunchId: lastLeaf.bunchId,
     counter: lastLeaf.startCounter + lastLeaf.count - 1,
   };
-}
-
-type Located = [
-  { node: LeafNode; indexInParent: number },
-  // Index 1 will be an InnerNodeLeaf if it exists.
-  ...{ node: InnerNode; indexInParent: number }[]
-];
-
-/**
- * Returns the path from id's leaf node to the root, or null if id is not found.
- *
- * The path contains each node and its index in its parent's node, starting with id's
- * LeafNode and ending at a child of the root.
- */
-export function locate(id: ElementId, node: InnerNode): Located | null {
-  // TOOD: Use new data structures to search.
-  if (node instanceof InnerNodeInner) {
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
-      const childLocated = locate(id, child);
-      if (childLocated !== null) {
-        childLocated.push({ node: child, indexInParent: i });
-        return childLocated;
-      }
-    }
-  } else {
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
-      if (
-        child.bunchId === id.bunchId &&
-        child.startCounter <= id.counter &&
-        id.counter < child.startCounter + child.count
-      ) {
-        return [{ node: child, indexInParent: i }];
-      }
-    }
-  }
-  return null;
 }
 
 /**
