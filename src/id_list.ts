@@ -504,6 +504,10 @@ export class IdList {
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     const leafMapMut = { value: this.leafMap };
     const parentSeqsMut = { value: this.parentSeqs };
+
+    // Delete the replaced leaf, in case it's not replaced with a leaf having the same startCounter.
+    leafMapMut.value = leafMapMut.value.delete(located[0].node);
+
     const newRoot = replaceNode(
       located,
       this.root,
