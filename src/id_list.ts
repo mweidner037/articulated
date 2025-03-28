@@ -170,12 +170,11 @@ export class IdList {
   static new() {
     const leafMapMut = { value: LeafMap.new() };
     const parentSeqsMut = { value: SeqMap.new() };
-    const root = new InnerNodeLeaf(
-      getAndBumpNextSeq(parentSeqsMut),
-      [],
-      leafMapMut
+    return new this(
+      new InnerNodeLeaf(getAndBumpNextSeq(parentSeqsMut), [], leafMapMut),
+      leafMapMut.value,
+      parentSeqsMut.value
     );
-    return new this(root, leafMapMut.value, parentSeqsMut.value);
   }
 
   /**
@@ -268,8 +267,11 @@ export class IdList {
         };
 
         const leafMapMut = { value: this.leafMap };
-        const newRoot = new InnerNodeLeaf(this.root.seq, [leaf], leafMapMut);
-        return new IdList(newRoot, leafMapMut.value, this.parentSeqs);
+        return new IdList(
+          new InnerNodeLeaf(this.root.seq, [leaf], leafMapMut),
+          leafMapMut.value,
+          this.parentSeqs
+        );
       } else {
         // Insert before the first known id.
         return this.insertBefore(firstId(this.root), newId, count);
@@ -510,7 +512,6 @@ export class IdList {
       newLeaves,
       0
     );
-
     return new IdList(newRoot, leafMapMut.value, parentSeqsMut.value);
   }
 
@@ -562,9 +563,8 @@ export class IdList {
   private isAnyKnown(id: ElementId, count: number): boolean {
     if (count === 0) return false;
 
-    // Any leaf that contains any of the bulk ids will be <= the last bulk id
-    // in leafMap. Any leaf between such a leaf and the last bulk id, will also be
-    // such a leaf. So we only need to consider the greatest <= leaf.
+    // Find the leaf containing the last id, or the previous leaf.
+    // If any leaf knows any of the ids, this leaf must know an id too.
     const leaf = this.leafMap.getLeaf(id.bunchId, id.counter + count - 1);
 
     if (leaf) {
@@ -783,13 +783,12 @@ export class IdList {
       // If we get to here, we need a new leaf.
       const present = SparseIndices.new();
       if (!item.isDeleted) present.set(item.startCounter, item.count);
-      const leaf: LeafNode = {
+      leaves.push({
         bunchId: item.bunchId,
         startCounter: item.startCounter,
         count: item.count,
         present,
-      };
-      leaves.push(leaf);
+      });
     }
 
     // 2. Create a B+Tree with the given leaves.
@@ -984,6 +983,7 @@ type Located = [
  * LeafNode and ending at a child of the root.
  */
 export function locate(id: ElementId, node: InnerNode): Located | null {
+  // TOOD: Use new data structures to search.
   if (node instanceof InnerNodeInner) {
     for (let i = 0; i < node.children.length; i++) {
       const child = node.children[i];
@@ -1014,7 +1014,7 @@ export function locate(id: ElementId, node: InnerNode): Located | null {
  * newNodes.length must be in [1, M].
  *
  * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
- * but not the node itself (since we don't know its parent here).
+ * but the node itself is not (since we don't know its parent here).
  */
 function replaceNode(
   located: Located,
@@ -1063,7 +1063,7 @@ function replaceNode(
       );
     }
   } else {
-    // Safe to replace parent.seq.
+    // "Replace" parent, reusing its seq.
     // TODO: opt: skip unnecessary sets in this case?
     const newParent =
       i === 0
