@@ -60,16 +60,18 @@ export class InnerNodeInner {
     /**
      * We add entries for the children to this map, overwriting any existing parentSeqs.
      *
-     * TODO: Skip when not necessary (seq is unchanged from their previous parent)?
+     * Pass null to skip when you are doing it yourself.
      */
-    parentSeqsMut: MutableSeqMap
+    parentSeqsMut: MutableSeqMap | null
   ) {
     let size = 0;
     let knownSize = 0;
     for (const child of children) {
       size += child.size;
       knownSize += child.knownSize;
-      parentSeqsMut.value = parentSeqsMut.value.set(child.seq, seq);
+      if (parentSeqsMut) {
+        parentSeqsMut.value = parentSeqsMut.value.set(child.seq, seq);
+      }
     }
     this.size = size;
     this.knownSize = knownSize;
@@ -91,15 +93,19 @@ export class InnerNodeLeaf {
     readonly children: readonly LeafNode[],
     /**
      * We add entries for the children to this map, overwriting any existing parentSeqs.
+     *
+     * Pass null to skip when you are doing it yourself.
      */
-    leafMapMut: MutableLeafMap
+    leafMapMut: MutableLeafMap | null
   ) {
     let size = 0;
     let knownSize = 0;
     for (const child of children) {
       size += child.present.count();
       knownSize += child.count;
-      leafMapMut.value = leafMapMut.value.set(child, seq);
+      if (leafMapMut) {
+        leafMapMut.value = leafMapMut.value.set(child, seq);
+      }
     }
     this.size = size;
     this.knownSize = knownSize;
@@ -571,9 +577,6 @@ export class IdList {
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     const leafMapMut = { value: this.leafMap };
     const parentSeqsMut = { value: this.parentSeqs };
-
-    // Delete the replaced leaf, in case it's not replaced with a leaf having the same startCounter.
-    leafMapMut.value = leafMapMut.value.delete(located[0].node);
 
     const newRoot = replaceNode(
       located,
@@ -1098,15 +1101,40 @@ function replaceNode(
     }
   } else {
     // "Replace" parent, reusing its seq.
-    // TODO: opt: skip unnecessary sets in this case?
-    const newParent =
-      i === 0
-        ? new InnerNodeLeaf(parent.seq, newChildren as LeafNode[], leafMapMut)
-        : new InnerNodeInner(
-            parent.seq,
-            newChildren as InnerNode[],
-            parentSeqsMut
+    // To avoid doing newChildren.length sets every time (which makes replaceLeaf
+    // do >=(M/2)*log(L) total sets, even when none were necessary),
+    // we bypass the InnerNode constructors' leafMap/parentSeq operations,
+    // instead doing them ourselves only on the changed children.
+    let newParent: InnerNode;
+    if (i === 0) {
+      newParent = new InnerNodeLeaf(
+        parent.seq,
+        newChildren as LeafNode[],
+        null
+      );
+      // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
+      leafMapMut.value = leafMapMut.value.delete(located[0].node);
+      for (const newNode of newNodes as LeafNode[]) {
+        leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
+      }
+    } else {
+      newParent = new InnerNodeInner(
+        parent.seq,
+        newChildren as InnerNode[],
+        null
+      );
+      for (const newNode of newNodes as InnerNode[]) {
+        if (newNode.seq !== (located[i].node as InnerNode).seq) {
+          parentSeqsMut.value = parentSeqsMut.value.set(
+            newNode.seq,
+            parent.seq
           );
+        }
+      }
+      // If the replaced node isn't represented in newNodes (i.e., same seq is not reused),
+      // we could delete its entry to save memory, but it is not necessary.
+    }
+
     if (i === located.length - 1) {
       // Replaces root.
       return newParent;
