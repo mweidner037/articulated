@@ -32,9 +32,14 @@
     "access": "public"
   },
   "sideEffects": false,
+  "dependencies": {
+    "functional-red-black-tree": "^1.0.1",
+    "sparse-array-rled": "^2.0.1"
+  },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.4",
+    "@types/functional-red-black-tree": "^1.0.6",
     "@types/mocha": "^10.0.1",
     "@types/seedrandom": "^3.0.8",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
@@ -71,10 +76,5 @@
     "benchmarks": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc benchmarks/main.ts",
     "inspect": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc --inspect benchmarks/main.ts",
     "clean": "rm -rf build docs coverage .nyc_output"
-  },
-  "dependencies": {
-    "@types/functional-red-black-tree": "^1.0.6",
-    "functional-red-black-tree": "^1.0.1",
-    "sparse-array-rled": "^2.0.1"
   }
 }
