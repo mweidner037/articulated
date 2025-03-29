@@ -2,7 +2,7 @@ import createRBTree, { Tree } from "functional-red-black-tree";
 import type { LeafNode } from "../id_list";
 
 /**
- * A persistent sorted map from each LeafNode to its parent's seqNum.
+ * A persistent sorted map from each LeafNode to its parent's seq.
  *
  * Leaves are sorted by their first ElementId.
  * This lets you quickly look up the LeafNode containing an ElementId,

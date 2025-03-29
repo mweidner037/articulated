@@ -1,7 +1,7 @@
 import createRBTree, { Tree } from "functional-red-black-tree";
 
 /**
- * A persistent map from an InnerNode's seqNum to its parent's seqNum
+ * A persistent map from an InnerNode's seq to its parent's seq
  * (or 0 for the root).
  *
  * Sequence numbers start at 1 and increment each time you call set(nextSeq, ...).
@@ -9,7 +9,7 @@ import createRBTree, { Tree } from "functional-red-black-tree";
 export class SeqMap {
   constructor(
     private readonly tree: Tree<number, number>,
-    readonly nextSeq: number
+    private readonly nextSeq: number
   ) {}
 
   static new(): SeqMap {
@@ -43,6 +43,7 @@ export interface MutableSeqMap {
 }
 
 export function getAndBumpNextSeq(seqsMut: MutableSeqMap): number {
+  // @ts-expect-error Ignore private
   const nextSeq = seqsMut.value.nextSeq;
   seqsMut.value = seqsMut.value.bumpNextSeq();
   return nextSeq;

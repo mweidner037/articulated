@@ -35,8 +35,8 @@ import { SavedIdList } from "./saved_id_list";
  tree path corresponding to an ElementId. Each inner node is assigned a unique sequence number
  (seq), and we store a persistent map from each leaf to its parent's seq (leafMap)
  and from each inner node's seq to its parent's seq (parentSeqs). Because leafMap is sorted
- by (LeafNode.bunchId, LeafNode.startCounter), we also use it to lookup the leaf corresponding
- to an ElementId.
+ by (LeafNode.bunchId, LeafNode.startCounter), we can also use it to lookup the leaf corresponding
+ to an ElementId, e.g., for IdList.has.
 */
 
 export interface LeafNode {
@@ -67,7 +67,8 @@ export class InnerNodeInner {
     /**
      * We add entries for the children to this map, overwriting any existing parentSeqs.
      *
-     * Pass null to skip when you are doing it yourself.
+     * Pass null to skip when you are doing it yourself. Regardless, you need to
+     * delete any outdated entries yourself.
      */
     parentSeqsMut: MutableSeqMap | null
   ) {
@@ -178,7 +179,7 @@ export class IdList {
     /**
      * A persistent sorted map from each leaf to its parent node's seq.
      *
-     * Besides parentSeqs, we use this to lookup leaves by ElementId.
+     * Besides parentSeqs, we also use this to lookup leaves by ElementId.
      */
     private readonly leafMap: LeafMap,
     parentSeqs: SeqMap
@@ -555,7 +556,6 @@ export class IdList {
     // Start at the root child's seq and proceed to the leaf parent's seq.
     for (let i = innerSeqs.length - 2; i >= 0; i--) {
       const children = (curParent as InnerNodeInner).children;
-
       const childIndex = children.findIndex(
         (child) => child.seq === innerSeqs[i]
       );
@@ -608,10 +608,8 @@ export class IdList {
   has(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
     const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
-    if (leaf) {
-      if (leaf.bunchId === id.bunchId) {
-        return leaf.present.has(id.counter);
-      }
+    if (leaf && leaf.bunchId === id.bunchId) {
+      return leaf.present.has(id.counter);
     }
 
     return false;
@@ -625,13 +623,11 @@ export class IdList {
   isKnown(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
     const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
-    if (leaf) {
-      if (leaf.bunchId === id.bunchId) {
-        return (
-          leaf.startCounter <= id.counter &&
-          id.counter < leaf.startCounter + leaf.count
-        );
-      }
+    if (leaf && leaf.bunchId === id.bunchId) {
+      return (
+        leaf.startCounter <= id.counter &&
+        id.counter < leaf.startCounter + leaf.count
+      );
     }
 
     return false;
@@ -648,16 +644,14 @@ export class IdList {
     // If any leaf knows any of the ids, this leaf must know an id too.
     const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter + count - 1);
 
-    if (leaf) {
-      if (leaf.bunchId === id.bunchId) {
-        // Test if there is any overlap between the leaf's counter range [a, b]
-        // and the bulk ids' counter range [c, d].
-        const a = leaf.startCounter;
-        const b = leaf.startCounter + leaf.count - 1;
-        const c = id.counter;
-        const d = id.counter + count - 1;
-        if (a <= d && c <= b) return true;
-      }
+    if (leaf && leaf.bunchId === id.bunchId) {
+      // Test if there is any overlap between the leaf's counter range [a, b]
+      // and the bulk ids' counter range [c, d].
+      const a = leaf.startCounter;
+      const b = leaf.startCounter + leaf.count - 1;
+      const c = id.counter;
+      const d = id.counter + count - 1;
+      return a <= d && c <= b;
     }
 
     return false;
@@ -1312,8 +1306,8 @@ function pushSaveItem(acc: SavedIdList, item: SavedIdList[number]) {
  * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
  * but not the node itself (since we don't know its parent here).
  *
- * In contrast to inserting the leaves one-by-one, this function balances the
- * tree, with full inner nodes (M children) whenever possible,
+ * In contrast to inserting the leaves one-by-one, this function fills nodes
+ * with M children whenever possible,
  * and the B+Tree parts run in O(L) time instead of O(L log(L)).
  * However, the overall runtime is O(L log(L)) from constructing the sorted leafMap.
  */
