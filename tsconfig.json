@@ -4,6 +4,7 @@
     "outDir": "build/esm",
     "target": "es2021",
     "module": "es2015",
+    "allowJs": true,
     /* Needed with module: es2015 or else stuff breaks. */
     "moduleResolution": "node",
     /* Enable strict type checking. */
