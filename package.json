@@ -33,7 +33,6 @@
   },
   "sideEffects": false,
   "dependencies": {
-    "functional-red-black-tree": "^1.0.1",
     "sparse-array-rled": "^2.0.1"
   },
   "devDependencies": {

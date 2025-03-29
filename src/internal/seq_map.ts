@@ -1,4 +1,4 @@
-import createRBTree, { Tree } from "functional-red-black-tree";
+import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
 
 /**
  * A persistent map from an InnerNode's seq to its parent's seq

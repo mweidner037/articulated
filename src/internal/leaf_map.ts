@@ -1,4 +1,4 @@
-import createRBTree, { Tree } from "functional-red-black-tree";
+import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
 import type { LeafNode } from "../id_list";
 
 /**
