@@ -148,7 +148,7 @@ describe("IdList Internal Structure", () => {
           let calculatedKnownSize = 0;
 
           for (const child of nodeTyped.children) {
-            calculatedSize += child.present.count();
+            if (!child.isDeleted) calculatedSize += child.count;
             calculatedKnownSize += child.count;
           }
 
