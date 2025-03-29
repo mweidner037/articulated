@@ -1,4 +1,3 @@
-import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
@@ -43,12 +42,7 @@ export interface LeafNode {
   readonly bunchId: string;
   readonly startCounter: number;
   readonly count: number;
-  /**
-   * The present counter values in this leaf node.
-   *
-   * Note that it is indexed by counter, not by (counter - this.startCounter).
-   */
-  readonly present: SparseIndices;
+  readonly isDeleted: boolean;
 }
 
 /**
@@ -109,7 +103,7 @@ export class InnerNodeLeaf {
     let size = 0;
     let knownSize = 0;
     for (const child of children) {
-      size += child.present.count();
+      if (!child.isDeleted) size += child.count;
       knownSize += child.count;
       if (leafMapMut) {
         leafMapMut.value = leafMapMut.value.set(child, seq);
@@ -283,13 +277,11 @@ export class IdList {
 
       if (this.root.children.length === 0) {
         // Insert the first leaf as a child of root.
-        const present = SparseIndices.new();
-        present.set(newId.counter, count);
         const leaf: LeafNode = {
           bunchId: newId.bunchId,
           startCounter: newId.counter,
           count,
-          present,
+          isDeleted: false,
         };
 
         const leafMapMut = { value: this.leafMap };
@@ -315,52 +307,40 @@ export class IdList {
       // before is leaf's last id: we insert directly after leaf.
       if (
         leaf.bunchId === newId.bunchId &&
-        leaf.startCounter + leaf.count === newId.counter
+        leaf.startCounter + leaf.count === newId.counter &&
+        !leaf.isDeleted
       ) {
         // Extending leaf forwards.
-        const present = leaf.present.clone();
-        present.set(newId.counter, count);
         return this.replaceLeaf(located, {
           ...leaf,
           count: leaf.count + count,
-          present,
         });
       } else {
-        const present = SparseIndices.new();
-        present.set(newId.counter, count);
         return this.replaceLeaf(located, leaf, {
           bunchId: newId.bunchId,
           startCounter: newId.counter,
           count,
-          present,
+          isDeleted: false,
         });
       }
     } else {
       // before is not leaf's last id: we need to split leaf and insert there.
-      const newPresent = SparseIndices.new();
-      newPresent.set(newId.counter, count);
-      const [leftPresent, rightPresent] = splitPresent(
-        leaf.present,
-        before.counter + 1
-      );
       return this.replaceLeaf(
         located,
         {
           ...leaf,
           count: before.counter + 1 - leaf.startCounter,
-          present: leftPresent,
         },
         {
           bunchId: newId.bunchId,
           startCounter: newId.counter,
           count,
-          present: newPresent,
+          isDeleted: false,
         },
         {
           ...leaf,
           startCounter: before.counter + 1,
           count: leaf.count - (before.counter + 1 - leaf.startCounter),
-          present: rightPresent,
         }
       );
     }
@@ -415,57 +395,46 @@ export class IdList {
       // after is leaf's first id: we insert directly before leaf.
       if (
         leaf.bunchId === newId.bunchId &&
-        leaf.startCounter === newId.counter + count
+        leaf.startCounter === newId.counter + count &&
+        !leaf.isDeleted
       ) {
         // Extending leaf backwards.
-        const present = leaf.present.clone();
-        present.set(newId.counter, count);
         return this.replaceLeaf(located, {
           ...leaf,
           startCounter: leaf.startCounter - count,
           count: leaf.count + count,
-          present,
+          isDeleted: false,
         });
       } else {
-        const present = SparseIndices.new();
-        present.set(newId.counter, count);
         return this.replaceLeaf(
           located,
           {
             bunchId: newId.bunchId,
             startCounter: newId.counter,
             count,
-            present,
+            isDeleted: false,
           },
           leaf
         );
       }
     } else {
       // after is not leaf's first id: we need to split leaf and insert there.
-      const present = SparseIndices.new();
-      present.set(newId.counter, count);
-      const [leftPresent, rightPresent] = splitPresent(
-        leaf.present,
-        after.counter
-      );
       return this.replaceLeaf(
         located,
         {
           ...leaf,
           count: after.counter - leaf.startCounter,
-          present: leftPresent,
         },
         {
           bunchId: newId.bunchId,
           startCounter: newId.counter,
           count,
-          present,
+          isDeleted: false,
         },
         {
           ...leaf,
           startCounter: after.counter,
           count: leaf.count - (after.counter - leaf.startCounter),
-          present: rightPresent,
         }
       );
     }
@@ -484,16 +453,7 @@ export class IdList {
    * If `id` is already deleted or is not known, this method does nothing.
    */
   delete(id: ElementId) {
-    const located = this.locate(id);
-    if (located === null) return this;
-
-    const leaf = located[0].node;
-    if (!leaf.present.has(id.counter)) return this;
-
-    const newPresent = leaf.present.clone();
-    newPresent.delete(id.counter);
-
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
+    return this.setDeleted(id, true);
   }
 
   /**
@@ -507,18 +467,64 @@ export class IdList {
    * @throws If `id` is not known.
    */
   undelete(id: ElementId) {
+    return this.setDeleted(id, false);
+  }
+
+  private setDeleted(id: ElementId, isDeleted: boolean): IdList {
     const located = this.locate(id);
     if (located === null) {
-      throw new Error("id is not known");
+      if (isDeleted) return this;
+      else throw new Error("id is not known");
     }
 
     const leaf = located[0].node;
-    if (leaf.present.has(id.counter)) return this;
+    if (leaf.isDeleted === isDeleted) return this;
 
-    const newPresent = leaf.present.clone();
-    newPresent.set(id.counter);
+    // TODO: Merge with neighboring leaves if possible, at least within the same parent.
+    // Skipped for now b/c I just want to see the memory usage after loading.
 
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
+    if (leaf.count === 1) {
+      // Replace entire leaf.
+      return this.replaceLeaf(located, { ...leaf, isDeleted });
+    } else if (leaf.startCounter === id.counter) {
+      // Replace the front of leaf.
+      return this.replaceLeaf(
+        located,
+        { ...leaf, count: 1, isDeleted },
+        {
+          ...leaf,
+          startCounter: id.counter + 1,
+          count: leaf.count - 1,
+        }
+      );
+    } else if (leaf.startCounter + leaf.count - 1 === id.counter) {
+      // Replace the back of leaf.
+      return this.replaceLeaf(
+        located,
+        { ...leaf, count: leaf.count - 1 },
+        { bunchId: leaf.bunchId, startCounter: id.counter, count: 1, isDeleted }
+      );
+    } else {
+      // id is in the middle: split leaf and insert there.
+      return this.replaceLeaf(
+        located,
+        {
+          ...leaf,
+          count: id.counter - leaf.startCounter,
+        },
+        {
+          bunchId: id.bunchId,
+          startCounter: id.counter,
+          count: 1,
+          isDeleted,
+        },
+        {
+          ...leaf,
+          startCounter: id.counter + 1,
+          count: leaf.startCounter + leaf.count - (id.counter + 1),
+        }
+      );
+    }
   }
 
   /**
@@ -608,11 +614,13 @@ export class IdList {
   has(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
     const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
-    if (leaf && leaf.bunchId === id.bunchId) {
-      return leaf.present.has(id.counter);
-    }
-
-    return false;
+    return (
+      leaf !== undefined &&
+      !leaf.isDeleted &&
+      leaf.bunchId === id.bunchId &&
+      leaf.startCounter <= id.counter &&
+      id.counter < leaf.startCounter + leaf.count
+    );
   }
 
   /**
@@ -623,14 +631,12 @@ export class IdList {
   isKnown(id: ElementId): boolean {
     // Find the LeafNode that would contain id if known.
     const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
-    if (leaf && leaf.bunchId === id.bunchId) {
-      return (
-        leaf.startCounter <= id.counter &&
-        id.counter < leaf.startCounter + leaf.count
-      );
-    }
-
-    return false;
+    return (
+      leaf !== undefined &&
+      leaf.bunchId === id.bunchId &&
+      leaf.startCounter <= id.counter &&
+      id.counter < leaf.startCounter + leaf.count
+    );
   }
 
   // TODO: Make public?
@@ -692,15 +698,15 @@ export class IdList {
         }
       } else {
         for (const child of curParent.children) {
-          const childSize = child.present.count();
-          if (remaining < childSize) {
+          if (child.isDeleted) continue;
+          if (remaining < child.count) {
             // Found it.
             return {
               bunchId: child.bunchId,
-              counter: child.present.indexOfCount(remaining),
+              counter: child.startCounter + remaining,
             };
           } else {
-            remaining -= childSize;
+            remaining -= child.count;
           }
         }
       }
@@ -745,14 +751,13 @@ export class IdList {
       located.length === 1 ? this.root : located[1].node
     ) as InnerNodeLeaf;
     for (let c = 0; c < located[0].indexInParent; c++) {
-      index += leafParent.children[c].present.count();
+      const child = leafParent.children[c];
+      if (!child.isDeleted) index += child.count;
     }
 
-    // id's index within leaf.
-    const [count, has] = located[0].node.present._countHas(id.counter);
-    index += count;
-    if (has) return index;
-    else {
+    // id's index within its leaf.
+    const leaf = located[0].node;
+    if (leaf.isDeleted) {
       switch (bias) {
         case "none":
           return -1;
@@ -761,6 +766,8 @@ export class IdList {
         case "right":
           return index;
       }
+    } else {
+      return index + (id.counter - leaf.startCounter);
     }
   }
 
@@ -842,27 +849,23 @@ export class IdList {
         const lastLeaf = leaves.at(-1)!;
         if (
           item.bunchId === lastLeaf.bunchId &&
-          item.startCounter === lastLeaf.startCounter + lastLeaf.count
+          item.startCounter === lastLeaf.startCounter + lastLeaf.count &&
+          item.isDeleted === lastLeaf.isDeleted
         ) {
           // Extend lastLeaf.
           // Okay to mutate in-place since we haven't referenced it anywhere else yet.
           // @ts-expect-error Mutate in place
           lastLeaf.count += item.count;
-          if (!item.isDeleted) {
-            lastLeaf.present.set(item.startCounter, item.count);
-          }
           continue;
         }
       }
 
       // If we get to here, we need a new leaf.
-      const present = SparseIndices.new();
-      if (!item.isDeleted) present.set(item.startCounter, item.count);
       leaves.push({
         bunchId: item.bunchId,
         startCounter: item.startCounter,
         count: item.count,
-        present,
+        isDeleted: item.isDeleted,
       });
     }
 
@@ -1152,25 +1155,6 @@ function replaceNode(
   }
 }
 
-/**
- * Splits present into two SparseIndices at the given counter.
- */
-function splitPresent(
-  present: SparseIndices,
-  splitCounter: number
-): [leftPresent: SparseIndices, rightPresent: SparseIndices] {
-  const leftPresent = SparseIndices.new();
-  const rightPresent = SparseIndices.new();
-  const leafSlicer = present.newSlicer();
-  for (const [index, count] of leafSlicer.nextSlice(splitCounter)) {
-    leftPresent.set(index, count);
-  }
-  for (const [index, count] of leafSlicer.nextSlice(null)) {
-    rightPresent.set(index, count);
-  }
-  return [leftPresent, rightPresent];
-}
-
 function* iterateNode(
   node: InnerNode,
   includeDeleted: boolean
@@ -1181,13 +1165,9 @@ function* iterateNode(
     }
   } else {
     for (const child of node.children) {
-      if (includeDeleted) {
+      if (!child.isDeleted || includeDeleted) {
         for (let i = 0; i < child.count; i++) {
           yield { bunchId: child.bunchId, counter: child.startCounter + i };
-        }
-      } else {
-        for (const counter of child.present.keys()) {
-          yield { bunchId: child.bunchId, counter };
         }
       }
     }
@@ -1203,27 +1183,11 @@ function* iterateNodeWithIsDeleted(
     }
   } else {
     for (const child of node.children) {
-      let nextIndex = child.startCounter;
-      for (const index of child.present.keys()) {
-        while (nextIndex < index) {
-          yield {
-            id: { bunchId: child.bunchId, counter: nextIndex },
-            isDeleted: true,
-          };
-          nextIndex++;
-        }
+      for (let i = 0; i < child.count; i++) {
         yield {
-          id: { bunchId: child.bunchId, counter: index },
-          isDeleted: false,
+          id: { bunchId: child.bunchId, counter: child.startCounter + i },
+          isDeleted: child.isDeleted,
         };
-        nextIndex++;
-      }
-      while (nextIndex < child.startCounter + child.count) {
-        yield {
-          id: { bunchId: child.bunchId, counter: nextIndex },
-          isDeleted: true,
-        };
-        nextIndex++;
       }
     }
   }
@@ -1240,33 +1204,12 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
     }
   } else {
     for (const child of node.children) {
-      let nextIndex = child.startCounter;
-      for (const [index, count] of child.present.items()) {
-        if (nextIndex < index) {
-          // Need a deleted item.
-          pushSaveItem(acc, {
-            bunchId: child.bunchId,
-            startCounter: nextIndex,
-            count: index - nextIndex,
-            isDeleted: true,
-          });
-        }
-        pushSaveItem(acc, {
-          bunchId: child.bunchId,
-          startCounter: index,
-          count,
-          isDeleted: false,
-        });
-        nextIndex = index + count;
-      }
-      if (nextIndex < child.startCounter + child.count) {
-        pushSaveItem(acc, {
-          bunchId: child.bunchId,
-          startCounter: nextIndex,
-          count: child.startCounter + child.count - nextIndex,
-          isDeleted: true,
-        });
-      }
+      pushSaveItem(acc, {
+        bunchId: child.bunchId,
+        count: child.count,
+        startCounter: child.startCounter,
+        isDeleted: child.isDeleted,
+      });
     }
   }
 }
@@ -1275,7 +1218,7 @@ function saveNode(node: InnerNode, acc: SavedIdList) {
  * Pushes a save item onto acc, combing it with the previous item if possible.
  *
  * This function is necessary because we don't guarantee that adjacent leaves are fully merged.
- * Specifically, if you insert a bunch's ids with counter values (0, 2, 1)
+ * E.g., if you insert a bunch's ids with counter values (0, 2, 1)
  * in that order, then counter 1 will extend one of the existing leaves
  * but not merge with the other leaf.
  *

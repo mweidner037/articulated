@@ -261,7 +261,7 @@ describe("IdList Serialization and Edge Cases", () => {
       expect(resaved[0].count).to.equal(10);
     });
 
-    it("should merge adjacent leaves with the same bunchId and opposite presence", () => {
+    it("should not merge adjacent leaves with the same bunchId and opposite presence", () => {
       const saved = [
         {
           bunchId: "bunch",
@@ -279,8 +279,8 @@ describe("IdList Serialization and Edge Cases", () => {
 
       const list = IdList.load(saved);
 
-      // Should be merged into a single leaf
-      expect(list["root"].children.length).to.equal(1);
+      // Should not be merged into a single leaf
+      expect(list["root"].children.length).to.equal(2);
 
       // Save again to check if it's split into two items
       const resaved = list.save();

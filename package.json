@@ -32,9 +32,6 @@
     "access": "public"
   },
   "sideEffects": false,
-  "dependencies": {
-    "sparse-array-rled": "^2.0.1"
-  },
   "devDependencies": {
     "@istanbuljs/nyc-config-typescript": "^1.0.2",
     "@types/chai": "^4.3.4",
