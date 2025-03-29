@@ -13,9 +13,6 @@ declare namespace createRBTree {
     /** An array of all values in the tree, sorted by key. */
     readonly values: V[];
 
-    /** The number of items in the tree. */
-    readonly length: number;
-
     /**
      * Creates a new tree with the new `key/value` pair inserted.
      *
@@ -45,14 +42,6 @@ declare namespace createRBTree {
 
     /** An iterator pointing to the last element in the tree. */
     readonly end: Iterator<K, V>;
-
-    /**
-     * Finds an iterator starting at the given element.
-     *
-     * @param position The index at which the iterator gets created.
-     * @returns An iterator starting at `position`.
-     */
-    at: (idx: number) => Iterator<K, V>;
 
     /**
      * Finds the first item in the tree whose key is >= `key`.
@@ -138,9 +127,6 @@ declare namespace createRBTree {
 
     /** The value of the iterator's current item. */
     readonly value?: V | undefined;
-
-    /** Returns the position of the iterator in the sequence. */
-    readonly index: number;
 
     /** Advances the iterator to the next position. */
     next: () => void;
