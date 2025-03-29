@@ -7,11 +7,11 @@ declare namespace createRBTree {
     /** Returns the root node of the tree. */
     root: Node<K, V>;
 
-    /** A sorted array of all keys in the tree. */
-    readonly keys: K[];
+    // /** A sorted array of all keys in the tree. */
+    // readonly keys: K[];
 
-    /** An array of all values in the tree, sorted by key. */
-    readonly values: V[];
+    // /** An array of all values in the tree, sorted by key. */
+    // readonly values: V[];
 
     /**
      * Creates a new tree with `key` set to `value`, overwriting any
@@ -23,50 +23,50 @@ declare namespace createRBTree {
      */
     set: (key: K, value: V) => Tree<K, V>;
 
-    /**
-     * Walks a visitor function over the nodes of the tree in order.
-     *
-     * @param visitor The callback to be executed on each node. If a truthy
-     * value is returned from the visitor, then iteration is stopped.
-     * @param lo An optional start of the range to visit (inclusive).
-     * @param hi An optional end of the range to visit (non-inclusive).
-     * @returns The last value returned by the callback.
-     */
-    forEach: {
-      <T>(visitor: (key: K, value: V) => T): T;
-      // tslint:disable-next-line:unified-signatures
-      <T>(visitor: (key: K, value: V) => T, lo: K, hi?: K): T;
-    };
+    // /**
+    //  * Walks a visitor function over the nodes of the tree in order.
+    //  *
+    //  * @param visitor The callback to be executed on each node. If a truthy
+    //  * value is returned from the visitor, then iteration is stopped.
+    //  * @param lo An optional start of the range to visit (inclusive).
+    //  * @param hi An optional end of the range to visit (non-inclusive).
+    //  * @returns The last value returned by the callback.
+    //  */
+    // forEach: {
+    //   <T>(visitor: (key: K, value: V) => T): T;
+    //   // tslint:disable-next-line:unified-signatures
+    //   <T>(visitor: (key: K, value: V) => T, lo: K, hi?: K): T;
+    // };
 
-    /** An iterator pointing to the first element in the tree. */
-    readonly begin: Iterator<K, V>;
+    // /** An iterator pointing to the first element in the tree. */
+    // readonly begin: Iterator<K, V>;
 
-    /** An iterator pointing to the last element in the tree. */
-    readonly end: Iterator<K, V>;
+    // /** An iterator pointing to the last element in the tree. */
+    // readonly end: Iterator<K, V>;
 
-    /**
-     * Finds the first item in the tree whose key is >= `key`.
-     *
-     * @param key The key to search for.
-     * @returns An iterator at the given element.
-     */
-    ge: (key: K) => Iterator<K, V>;
+    // /**
+    //  * Finds the first item in the tree whose key is >= `key`.
+    //  *
+    //  * @param key The key to search for.
+    //  * @returns An iterator at the given element.
+    //  */
+    // ge: (key: K) => Iterator<K, V>;
 
-    /**
-     * Finds the first item in the tree whose key is > `key`.
-     *
-     * @param key The key to search for.
-     * @returns An iterator at the given element.
-     */
-    gt: (key: K) => Iterator<K, V>;
+    // /**
+    //  * Finds the first item in the tree whose key is > `key`.
+    //  *
+    //  * @param key The key to search for.
+    //  * @returns An iterator at the given element.
+    //  */
+    // gt: (key: K) => Iterator<K, V>;
 
-    /**
-     * Finds the last item in the tree whose key is < `key`.
-     *
-     * @param key The key to search for.
-     * @returns An iterator at the given element.
-     */
-    lt: (key: K) => Iterator<K, V>;
+    // /**
+    //  * Finds the last item in the tree whose key is < `key`.
+    //  *
+    //  * @param key The key to search for.
+    //  * @returns An iterator at the given element.
+    //  */
+    // lt: (key: K) => Iterator<K, V>;
 
     /**
      * Finds the last item in the tree whose key is <= `key`.
@@ -104,17 +104,17 @@ declare namespace createRBTree {
     /** The tree associated with the iterator. */
     tree: Tree<K, V>;
 
-    /** Checks if the iterator is valid. */
-    readonly valid: boolean;
+    // /** Checks if the iterator is valid. */
+    // readonly valid: boolean;
 
-    /**
-     * The value of the node at the iterator's current position, or null if the
-     * iterator is invalid.
-     */
-    readonly node: Node<K, V> | null;
+    // /**
+    //  * The value of the node at the iterator's current position, or null if the
+    //  * iterator is invalid.
+    //  */
+    // readonly node: Node<K, V> | null;
 
-    /** Makes a copy of the iterator. */
-    clone: () => Iterator<K, V>;
+    // /** Makes a copy of the iterator. */
+    // clone: () => Iterator<K, V>;
 
     /**
      * Removes the iterator's current item form the tree.
@@ -129,24 +129,24 @@ declare namespace createRBTree {
     /** The value of the iterator's current item. */
     readonly value?: V | undefined;
 
-    /** Advances the iterator to the next position. */
-    next: () => void;
+    // /** Advances the iterator to the next position. */
+    // next: () => void;
 
-    /** If true, then the iterator is not at the end of the sequence. */
-    readonly hasNext: boolean;
+    // /** If true, then the iterator is not at the end of the sequence. */
+    // readonly hasNext: boolean;
 
-    /**
-     * Updates the value of the iterator's current item.
-     *
-     * @returns A new binary search tree with the corresponding node updated.
-     */
-    update: (value: V) => Tree<K, V>;
+    // /**
+    //  * Updates the value of the iterator's current item.
+    //  *
+    //  * @returns A new binary search tree with the corresponding node updated.
+    //  */
+    // update: (value: V) => Tree<K, V>;
 
-    /** Moves the iterator backward one element. */
-    prev: () => void;
+    // /** Moves the iterator backward one element. */
+    // prev: () => void;
 
-    /** If true, then the iterator is not at the beginning of the sequence. */
-    readonly hasPrev: boolean;
+    // /** If true, then the iterator is not at the beginning of the sequence. */
+    // readonly hasPrev: boolean;
   }
 
   /** Represents a node in a red-black tree. */
@@ -168,10 +168,10 @@ declare namespace createRBTree {
 /**
  * Creates an empty red-black tree.
  *
- * @param compare Optional comparison function, same semantics as array.sort().
+ * @param compare Comparison function, same semantics as array.sort().
  * @returns An empty tree ordered by `compare`.
  */
 declare function createRBTree<K, V>(
-  compare?: (key1: K, key2: K) => number
+  compare: (key1: K, key2: K) => number
 ): createRBTree.Tree<K, V>;
 export = createRBTree;

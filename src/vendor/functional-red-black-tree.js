@@ -31,25 +31,25 @@ function RedBlackTree(compare, root) {
 
 var proto = RedBlackTree.prototype;
 
-Object.defineProperty(proto, "keys", {
-  get: function () {
-    var result = [];
-    this.forEach(function (k, v) {
-      result.push(k);
-    });
-    return result;
-  },
-});
+// Object.defineProperty(proto, "keys", {
+//   get: function () {
+//     var result = [];
+//     this.forEach(function (k, v) {
+//       result.push(k);
+//     });
+//     return result;
+//   },
+// });
 
-Object.defineProperty(proto, "values", {
-  get: function () {
-    var result = [];
-    this.forEach(function (k, v) {
-      result.push(v);
-    });
-    return result;
-  },
-});
+// Object.defineProperty(proto, "values", {
+//   get: function () {
+//     var result = [];
+//     this.forEach(function (k, v) {
+//       result.push(v);
+//     });
+//     return result;
+//   },
+// });
 
 //Set a key-value pair
 proto.set = function (key, value) {
@@ -64,7 +64,7 @@ proto.set = function (key, value) {
     n_stack.push(n);
     d_stack.push(d);
     // If the keys are equivalent, skip straight to the replace = true case.
-    if (d == 0) break;
+    if (d === 0) break;
     else if (d < 0) {
       n = n.left;
     } else {
@@ -72,7 +72,7 @@ proto.set = function (key, value) {
     }
   }
 
-  const replace = d == 0 && n_stack.length > 0;
+  const replace = d === 0 && n_stack.length > 0;
   if (replace) {
     // The last node in the n_stack has key equivalent to `key`.
     // Replace its entry without changing the tree structure.
@@ -235,177 +235,177 @@ proto.set = function (key, value) {
   return new RedBlackTree(cmp, n_stack[0]);
 };
 
-//Visit all nodes inorder
-function doVisitFull(visit, node) {
-  if (node.left) {
-    var v = doVisitFull(visit, node.left);
-    if (v) {
-      return v;
-    }
-  }
-  var v = visit(node.key, node.value);
-  if (v) {
-    return v;
-  }
-  if (node.right) {
-    return doVisitFull(visit, node.right);
-  }
-}
+// //Visit all nodes inorder
+// function doVisitFull(visit, node) {
+//   if (node.left) {
+//     var v = doVisitFull(visit, node.left);
+//     if (v) {
+//       return v;
+//     }
+//   }
+//   var v = visit(node.key, node.value);
+//   if (v) {
+//     return v;
+//   }
+//   if (node.right) {
+//     return doVisitFull(visit, node.right);
+//   }
+// }
 
-//Visit half nodes in order
-function doVisitHalf(lo, compare, visit, node) {
-  var l = compare(lo, node.key);
-  if (l <= 0) {
-    if (node.left) {
-      var v = doVisitHalf(lo, compare, visit, node.left);
-      if (v) {
-        return v;
-      }
-    }
-    var v = visit(node.key, node.value);
-    if (v) {
-      return v;
-    }
-  }
-  if (node.right) {
-    return doVisitHalf(lo, compare, visit, node.right);
-  }
-}
+// //Visit half nodes in order
+// function doVisitHalf(lo, compare, visit, node) {
+//   var l = compare(lo, node.key);
+//   if (l <= 0) {
+//     if (node.left) {
+//       var v = doVisitHalf(lo, compare, visit, node.left);
+//       if (v) {
+//         return v;
+//       }
+//     }
+//     var v = visit(node.key, node.value);
+//     if (v) {
+//       return v;
+//     }
+//   }
+//   if (node.right) {
+//     return doVisitHalf(lo, compare, visit, node.right);
+//   }
+// }
 
-//Visit all nodes within a range
-function doVisit(lo, hi, compare, visit, node) {
-  var l = compare(lo, node.key);
-  var h = compare(hi, node.key);
-  var v;
-  if (l <= 0) {
-    if (node.left) {
-      v = doVisit(lo, hi, compare, visit, node.left);
-      if (v) {
-        return v;
-      }
-    }
-    if (h > 0) {
-      v = visit(node.key, node.value);
-      if (v) {
-        return v;
-      }
-    }
-  }
-  if (h > 0 && node.right) {
-    return doVisit(lo, hi, compare, visit, node.right);
-  }
-}
+// //Visit all nodes within a range
+// function doVisit(lo, hi, compare, visit, node) {
+//   var l = compare(lo, node.key);
+//   var h = compare(hi, node.key);
+//   var v;
+//   if (l <= 0) {
+//     if (node.left) {
+//       v = doVisit(lo, hi, compare, visit, node.left);
+//       if (v) {
+//         return v;
+//       }
+//     }
+//     if (h > 0) {
+//       v = visit(node.key, node.value);
+//       if (v) {
+//         return v;
+//       }
+//     }
+//   }
+//   if (h > 0 && node.right) {
+//     return doVisit(lo, hi, compare, visit, node.right);
+//   }
+// }
 
-proto.forEach = function rbTreeForEach(visit, lo, hi) {
-  if (!this.root) {
-    return;
-  }
-  switch (arguments.length) {
-    case 1:
-      return doVisitFull(visit, this.root);
-      break;
+// proto.forEach = function rbTreeForEach(visit, lo, hi) {
+//   if (!this.root) {
+//     return;
+//   }
+//   switch (arguments.length) {
+//     case 1:
+//       return doVisitFull(visit, this.root);
+//       break;
 
-    case 2:
-      return doVisitHalf(lo, this._compare, visit, this.root);
-      break;
+//     case 2:
+//       return doVisitHalf(lo, this._compare, visit, this.root);
+//       break;
 
-    case 3:
-      if (this._compare(lo, hi) >= 0) {
-        return;
-      }
-      return doVisit(lo, hi, this._compare, visit, this.root);
-      break;
-  }
-};
+//     case 3:
+//       if (this._compare(lo, hi) >= 0) {
+//         return;
+//       }
+//       return doVisit(lo, hi, this._compare, visit, this.root);
+//       break;
+//   }
+// };
 
-//First item in list
-Object.defineProperty(proto, "begin", {
-  get: function () {
-    var stack = [];
-    var n = this.root;
-    while (n) {
-      stack.push(n);
-      n = n.left;
-    }
-    return new RedBlackTreeIterator(this, stack);
-  },
-});
+// //First item in list
+// Object.defineProperty(proto, "begin", {
+//   get: function () {
+//     var stack = [];
+//     var n = this.root;
+//     while (n) {
+//       stack.push(n);
+//       n = n.left;
+//     }
+//     return new RedBlackTreeIterator(this, stack);
+//   },
+// });
 
-//Last item in list
-Object.defineProperty(proto, "end", {
-  get: function () {
-    var stack = [];
-    var n = this.root;
-    while (n) {
-      stack.push(n);
-      n = n.right;
-    }
-    return new RedBlackTreeIterator(this, stack);
-  },
-});
+// //Last item in list
+// Object.defineProperty(proto, "end", {
+//   get: function () {
+//     var stack = [];
+//     var n = this.root;
+//     while (n) {
+//       stack.push(n);
+//       n = n.right;
+//     }
+//     return new RedBlackTreeIterator(this, stack);
+//   },
+// });
 
-proto.ge = function (key) {
-  var cmp = this._compare;
-  var n = this.root;
-  var stack = [];
-  var last_ptr = 0;
-  while (n) {
-    var d = cmp(key, n.key);
-    stack.push(n);
-    if (d <= 0) {
-      last_ptr = stack.length;
-    }
-    if (d <= 0) {
-      n = n.left;
-    } else {
-      n = n.right;
-    }
-  }
-  stack.length = last_ptr;
-  return new RedBlackTreeIterator(this, stack);
-};
+// proto.ge = function (key) {
+//   var cmp = this._compare;
+//   var n = this.root;
+//   var stack = [];
+//   var last_ptr = 0;
+//   while (n) {
+//     var d = cmp(key, n.key);
+//     stack.push(n);
+//     if (d <= 0) {
+//       last_ptr = stack.length;
+//     }
+//     if (d <= 0) {
+//       n = n.left;
+//     } else {
+//       n = n.right;
+//     }
+//   }
+//   stack.length = last_ptr;
+//   return new RedBlackTreeIterator(this, stack);
+// };
 
-proto.gt = function (key) {
-  var cmp = this._compare;
-  var n = this.root;
-  var stack = [];
-  var last_ptr = 0;
-  while (n) {
-    var d = cmp(key, n.key);
-    stack.push(n);
-    if (d < 0) {
-      last_ptr = stack.length;
-    }
-    if (d < 0) {
-      n = n.left;
-    } else {
-      n = n.right;
-    }
-  }
-  stack.length = last_ptr;
-  return new RedBlackTreeIterator(this, stack);
-};
+// proto.gt = function (key) {
+//   var cmp = this._compare;
+//   var n = this.root;
+//   var stack = [];
+//   var last_ptr = 0;
+//   while (n) {
+//     var d = cmp(key, n.key);
+//     stack.push(n);
+//     if (d < 0) {
+//       last_ptr = stack.length;
+//     }
+//     if (d < 0) {
+//       n = n.left;
+//     } else {
+//       n = n.right;
+//     }
+//   }
+//   stack.length = last_ptr;
+//   return new RedBlackTreeIterator(this, stack);
+// };
 
-proto.lt = function (key) {
-  var cmp = this._compare;
-  var n = this.root;
-  var stack = [];
-  var last_ptr = 0;
-  while (n) {
-    var d = cmp(key, n.key);
-    stack.push(n);
-    if (d > 0) {
-      last_ptr = stack.length;
-    }
-    if (d <= 0) {
-      n = n.left;
-    } else {
-      n = n.right;
-    }
-  }
-  stack.length = last_ptr;
-  return new RedBlackTreeIterator(this, stack);
-};
+// proto.lt = function (key) {
+//   var cmp = this._compare;
+//   var n = this.root;
+//   var stack = [];
+//   var last_ptr = 0;
+//   while (n) {
+//     var d = cmp(key, n.key);
+//     stack.push(n);
+//     if (d > 0) {
+//       last_ptr = stack.length;
+//     }
+//     if (d <= 0) {
+//       n = n.left;
+//     } else {
+//       n = n.right;
+//     }
+//   }
+//   stack.length = last_ptr;
+//   return new RedBlackTreeIterator(this, stack);
+// };
 
 proto.le = function (key) {
   var cmp = this._compare;
@@ -451,10 +451,7 @@ proto.find = function (key) {
 //Removes item with key from tree
 proto.remove = function (key) {
   var iter = this.find(key);
-  if (iter) {
-    return iter.remove();
-  }
-  return this;
+  return iter.remove();
 };
 
 //Returns the item at `key`
@@ -483,28 +480,28 @@ function RedBlackTreeIterator(tree, stack) {
 
 var iproto = RedBlackTreeIterator.prototype;
 
-//Test if iterator is valid
-Object.defineProperty(iproto, "valid", {
-  get: function () {
-    return this._stack.length > 0;
-  },
-});
+// //Test if iterator is valid
+// Object.defineProperty(iproto, "valid", {
+//   get: function () {
+//     return this._stack.length > 0;
+//   },
+// });
 
-//Node of the iterator
-Object.defineProperty(iproto, "node", {
-  get: function () {
-    if (this._stack.length > 0) {
-      return this._stack[this._stack.length - 1];
-    }
-    return null;
-  },
-  enumerable: true,
-});
+// //Node of the iterator
+// Object.defineProperty(iproto, "node", {
+//   get: function () {
+//     if (this._stack.length > 0) {
+//       return this._stack[this._stack.length - 1];
+//     }
+//     return null;
+//   },
+//   enumerable: true,
+// });
 
-//Makes a copy of an iterator
-iproto.clone = function () {
-  return new RedBlackTreeIterator(this.tree, this._stack.slice());
-};
+// //Makes a copy of an iterator
+// iproto.clone = function () {
+//   return new RedBlackTreeIterator(this.tree, this._stack.slice());
+// };
 
 //Swaps two nodes
 function swapNode(n, v) {
@@ -816,126 +813,126 @@ Object.defineProperty(iproto, "value", {
   enumerable: true,
 });
 
-//Advances iterator to next element in list
-iproto.next = function () {
-  var stack = this._stack;
-  if (stack.length === 0) {
-    return;
-  }
-  var n = stack[stack.length - 1];
-  if (n.right) {
-    n = n.right;
-    while (n) {
-      stack.push(n);
-      n = n.left;
-    }
-  } else {
-    stack.pop();
-    while (stack.length > 0 && stack[stack.length - 1].right === n) {
-      n = stack[stack.length - 1];
-      stack.pop();
-    }
-  }
-};
+// //Advances iterator to next element in list
+// iproto.next = function () {
+//   var stack = this._stack;
+//   if (stack.length === 0) {
+//     return;
+//   }
+//   var n = stack[stack.length - 1];
+//   if (n.right) {
+//     n = n.right;
+//     while (n) {
+//       stack.push(n);
+//       n = n.left;
+//     }
+//   } else {
+//     stack.pop();
+//     while (stack.length > 0 && stack[stack.length - 1].right === n) {
+//       n = stack[stack.length - 1];
+//       stack.pop();
+//     }
+//   }
+// };
 
-//Checks if iterator is at end of tree
-Object.defineProperty(iproto, "hasNext", {
-  get: function () {
-    var stack = this._stack;
-    if (stack.length === 0) {
-      return false;
-    }
-    if (stack[stack.length - 1].right) {
-      return true;
-    }
-    for (var s = stack.length - 1; s > 0; --s) {
-      if (stack[s - 1].left === stack[s]) {
-        return true;
-      }
-    }
-    return false;
-  },
-});
+// //Checks if iterator is at end of tree
+// Object.defineProperty(iproto, "hasNext", {
+//   get: function () {
+//     var stack = this._stack;
+//     if (stack.length === 0) {
+//       return false;
+//     }
+//     if (stack[stack.length - 1].right) {
+//       return true;
+//     }
+//     for (var s = stack.length - 1; s > 0; --s) {
+//       if (stack[s - 1].left === stack[s]) {
+//         return true;
+//       }
+//     }
+//     return false;
+//   },
+// });
 
-//Update value
-iproto.update = function (value) {
-  var stack = this._stack;
-  if (stack.length === 0) {
-    throw new Error("Can't update empty node!");
-  }
-  var cstack = new Array(stack.length);
-  var n = stack[stack.length - 1];
-  cstack[cstack.length - 1] = new RBNode(
-    n._color,
-    n.key,
-    value,
-    n.left,
-    n.right
-  );
-  for (var i = stack.length - 2; i >= 0; --i) {
-    n = stack[i];
-    if (n.left === stack[i + 1]) {
-      cstack[i] = new RBNode(n._color, n.key, n.value, cstack[i + 1], n.right);
-    } else {
-      cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i + 1]);
-    }
-  }
-  return new RedBlackTree(this.tree._compare, cstack[0]);
-};
+// //Update value
+// iproto.update = function (value) {
+//   var stack = this._stack;
+//   if (stack.length === 0) {
+//     throw new Error("Can't update empty node!");
+//   }
+//   var cstack = new Array(stack.length);
+//   var n = stack[stack.length - 1];
+//   cstack[cstack.length - 1] = new RBNode(
+//     n._color,
+//     n.key,
+//     value,
+//     n.left,
+//     n.right
+//   );
+//   for (var i = stack.length - 2; i >= 0; --i) {
+//     n = stack[i];
+//     if (n.left === stack[i + 1]) {
+//       cstack[i] = new RBNode(n._color, n.key, n.value, cstack[i + 1], n.right);
+//     } else {
+//       cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i + 1]);
+//     }
+//   }
+//   return new RedBlackTree(this.tree._compare, cstack[0]);
+// };
 
-//Moves iterator backward one element
-iproto.prev = function () {
-  var stack = this._stack;
-  if (stack.length === 0) {
-    return;
-  }
-  var n = stack[stack.length - 1];
-  if (n.left) {
-    n = n.left;
-    while (n) {
-      stack.push(n);
-      n = n.right;
-    }
-  } else {
-    stack.pop();
-    while (stack.length > 0 && stack[stack.length - 1].left === n) {
-      n = stack[stack.length - 1];
-      stack.pop();
-    }
-  }
-};
+// //Moves iterator backward one element
+// iproto.prev = function () {
+//   var stack = this._stack;
+//   if (stack.length === 0) {
+//     return;
+//   }
+//   var n = stack[stack.length - 1];
+//   if (n.left) {
+//     n = n.left;
+//     while (n) {
+//       stack.push(n);
+//       n = n.right;
+//     }
+//   } else {
+//     stack.pop();
+//     while (stack.length > 0 && stack[stack.length - 1].left === n) {
+//       n = stack[stack.length - 1];
+//       stack.pop();
+//     }
+//   }
+// };
 
-//Checks if iterator is at start of tree
-Object.defineProperty(iproto, "hasPrev", {
-  get: function () {
-    var stack = this._stack;
-    if (stack.length === 0) {
-      return false;
-    }
-    if (stack[stack.length - 1].left) {
-      return true;
-    }
-    for (var s = stack.length - 1; s > 0; --s) {
-      if (stack[s - 1].right === stack[s]) {
-        return true;
-      }
-    }
-    return false;
-  },
-});
+// //Checks if iterator is at start of tree
+// Object.defineProperty(iproto, "hasPrev", {
+//   get: function () {
+//     var stack = this._stack;
+//     if (stack.length === 0) {
+//       return false;
+//     }
+//     if (stack[stack.length - 1].left) {
+//       return true;
+//     }
+//     for (var s = stack.length - 1; s > 0; --s) {
+//       if (stack[s - 1].right === stack[s]) {
+//         return true;
+//       }
+//     }
+//     return false;
+//   },
+// });
 
-//Default comparison function
-function defaultCompare(a, b) {
-  if (a < b) {
-    return -1;
-  }
-  if (a > b) {
-    return 1;
-  }
-  return 0;
-}
+// //Default comparison function
+// function defaultCompare(a, b) {
+//   if (a < b) {
+//     return -1;
+//   }
+//   if (a > b) {
+//     return 1;
+//   }
+//   return 0;
+// }
 
 //Build a tree
 function createRBTree(compare) {
-  return new RedBlackTree(compare || defaultCompare, null);
+  return new RedBlackTree(compare, null);
 }
