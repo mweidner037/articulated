@@ -30,9 +30,7 @@ export class LeafMap {
   }
 
   set(leaf: LeafNode, seq: number): LeafMap {
-    // TODO: Vendor functional-red-black-tree and add our own set method
-    // so we can avoid this 2x penalty.
-    return new LeafMap(this.tree.remove(leaf).insert(leaf, seq));
+    return new LeafMap(this.tree.set(leaf, seq));
   }
 
   delete(leaf: LeafNode): LeafMap {

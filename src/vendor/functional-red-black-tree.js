@@ -51,25 +51,45 @@ Object.defineProperty(proto, "values", {
   },
 });
 
-//Insert a new item into the tree
-proto.insert = function (key, value) {
+//Set a key-value pair
+proto.set = function (key, value) {
   var cmp = this._compare;
-  //Find point to insert new node at
+  //Find point to insert/replace node
   var n = this.root;
   var n_stack = [];
   var d_stack = [];
+  let d = 0;
   while (n) {
-    var d = cmp(key, n.key);
+    d = cmp(key, n.key);
     n_stack.push(n);
     d_stack.push(d);
-    if (d <= 0) {
+    // If the keys are equivalent, skip straight to the replace = true case.
+    if (d == 0) break;
+    else if (d < 0) {
       n = n.left;
     } else {
       n = n.right;
     }
   }
+
+  const replace = d == 0 && n_stack.length > 0;
+  if (replace) {
+    // The last node in the n_stack has key equivalent to `key`.
+    // Replace its entry without changing the tree structure.
+    const lastN = n_stack[n_stack.length - 1];
+    if (lastN.key === key && lastN.value === value) return this;
+    n_stack[n_stack.length - 1] = new RBNode(
+      lastN._color,
+      key,
+      value,
+      lastN.left,
+      lastN.right
+    );
+  } else {
+    n_stack.push(new RBNode(RED, key, value, null, null));
+  }
+
   //Rebuild path to leaf node
-  n_stack.push(new RBNode(RED, key, value, null, null));
   for (var s = n_stack.length - 2; s >= 0; --s) {
     var n = n_stack[s];
     if (d_stack[s] <= 0) {
@@ -84,6 +104,9 @@ proto.insert = function (key, value) {
       n_stack[s] = new RBNode(n._color, n.key, n.value, n.left, n_stack[s + 1]);
     }
   }
+
+  if (replace) return new RedBlackTree(cmp, n_stack[0]);
+
   //Rebalance tree using rotations
   //console.log("start insert", key, d_stack)
   for (var s = n_stack.length - 1; s > 1; --s) {

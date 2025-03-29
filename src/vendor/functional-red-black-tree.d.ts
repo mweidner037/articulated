@@ -14,13 +14,14 @@ declare namespace createRBTree {
     readonly values: V[];
 
     /**
-     * Creates a new tree with the new `key/value` pair inserted.
+     * Creates a new tree with `key` set to `value`, overwriting any
+     * existing value.
      *
      * @param key The key of the item to insert.
      * @param value The value of the item to insert.
-     * @returns A new tree with `key` and `value` inserted.
+     * @returns A new tree with `key` set to `value`.
      */
-    insert: (key: K, value: V) => Tree<K, V>;
+    set: (key: K, value: V) => Tree<K, V>;
 
     /**
      * Walks a visitor function over the nodes of the tree in order.

@@ -28,9 +28,7 @@ export class SeqMap {
   }
 
   set(seq: number, value: number): SeqMap {
-    // TODO: Vendor functional-red-black-tree and add our own set method
-    // so we can avoid this 2x penalty.
-    return new SeqMap(this.tree.remove(seq).insert(seq, value), this.nextSeq);
+    return new SeqMap(this.tree.set(seq, value), this.nextSeq);
   }
 
   // delete(seq: number): SeqMap {
