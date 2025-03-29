@@ -56,18 +56,7 @@ export async function insertAfterCustom() {
 
       sender = sender.insertAfter(before, id);
 
-      update = "i" + id.bunchId + " " + id.counter.toString(36) + " ";
-      if (before === null) {
-        update += "A";
-      } else if (id.bunchId === before?.bunchId) {
-        if (id.counter == before.counter + 1) {
-          update += "B";
-        } else {
-          update += "C" + before.counter.toString(36);
-        }
-      } else {
-        update += "D" + before.bunchId + " " + before.counter.toString(36);
-      }
+      update = encodeInsertAfter(id, before);
     } else {
       const id = sender.at(edit[0]);
       sender = sender.delete(id);
@@ -96,34 +85,7 @@ export async function insertAfterCustom() {
   for (const update of updates) {
     if (update[0] === "i") {
       // type "insertAfter"
-      const parts = update.slice(1).split(" ");
-      const id: ElementId = {
-        bunchId: parts[0],
-        counter: Number.parseInt(parts[1], 36),
-      };
-      let before: ElementId | null;
-      switch (parts[2][0]) {
-        case "A":
-          before = null;
-          break;
-        case "B":
-          before = { bunchId: id.bunchId, counter: id.counter - 1 };
-          break;
-        case "C":
-          before = {
-            bunchId: id.bunchId,
-            counter: Number.parseInt(parts[2].slice(1), 36),
-          };
-          break;
-        case "D":
-          before = {
-            bunchId: parts[2].slice(1),
-            counter: Number.parseInt(parts[3], 36),
-          };
-          break;
-        default:
-          throw new Error("parse error");
-      }
+      const { id, before } = decodeInsertAfter(update);
       receiver = receiver.insertAfter(before, id);
       // To simulate events, also compute the inserted index.
       void receiver.indexOf(id);
@@ -159,6 +121,59 @@ export async function insertAfterCustom() {
   saveLoad(receiver, true);
 
   await memory(savedState);
+}
+
+function encodeInsertAfter(id: ElementId, before: ElementId | null): Update {
+  let update = "i" + id.bunchId + " " + id.counter.toString(36) + " ";
+  if (before === null) {
+    update += "A";
+  } else if (id.bunchId === before?.bunchId) {
+    if (id.counter == before.counter + 1) {
+      update += "B";
+    } else {
+      update += "C" + before.counter.toString(36);
+    }
+  } else {
+    update += "D" + before.bunchId + " " + before.counter.toString(36);
+  }
+  return update;
+}
+
+function decodeInsertAfter(update: Update): {
+  id: ElementId;
+  before: ElementId | null;
+} {
+  const parts = update.slice(1).split(" ");
+  const id: ElementId = {
+    bunchId: parts[0],
+    counter: Number.parseInt(parts[1], 36),
+  };
+
+  let before: ElementId | null;
+  switch (parts[2][0]) {
+    case "A":
+      before = null;
+      break;
+    case "B":
+      before = { bunchId: id.bunchId, counter: id.counter - 1 };
+      break;
+    case "C":
+      before = {
+        bunchId: id.bunchId,
+        counter: Number.parseInt(parts[2].slice(1), 36),
+      };
+      break;
+    case "D":
+      before = {
+        bunchId: parts[2].slice(1),
+        counter: Number.parseInt(parts[3], 36),
+      };
+      break;
+    default:
+      throw new Error("parse error");
+  }
+
+  return { id, before };
 }
 
 function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {

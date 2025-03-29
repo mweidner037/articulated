@@ -1,5 +1,7 @@
 import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
+import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
+import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
@@ -28,6 +30,13 @@ import { SavedIdList } from "./saved_id_list";
  and its knownSize (# of known ids). These allow indexed access in log time.
 
  Unlike some B+Trees, we do not store a linked list of leaves. Iteration instead uses a depth-first search.
+
+ Finally, we also store a "bottom-up" view of the B+Tree, in order to quickly find the leaf or
+ tree path corresponding to an ElementId. Each inner node is assigned a unique sequence number
+ (seq), and we store a persistent map from each leaf to its parent's seq (leafMap)
+ and from each inner node's seq to its parent's seq (parentSeqs). Because leafMap is sorted
+ by (LeafNode.bunchId, LeafNode.startCounter), we can also use it to lookup the leaf corresponding
+ to an ElementId, e.g., for IdList.has.
 */
 
 export interface LeafNode {
@@ -49,12 +58,28 @@ export class InnerNodeInner {
   readonly size: number;
   readonly knownSize: number;
 
-  constructor(readonly children: readonly InnerNode[]) {
+  constructor(
+    /**
+     * A unique identifer for this node within its IdTree.
+     */
+    readonly seq: number,
+    readonly children: readonly InnerNode[],
+    /**
+     * We add entries for the children to this map, overwriting any existing parentSeqs.
+     *
+     * Pass null to skip when you are doing it yourself. Regardless, you need to
+     * delete any outdated entries yourself.
+     */
+    parentSeqsMut: MutableSeqMap | null
+  ) {
     let size = 0;
     let knownSize = 0;
     for (const child of children) {
       size += child.size;
       knownSize += child.knownSize;
+      if (parentSeqsMut) {
+        parentSeqsMut.value = parentSeqsMut.value.set(child.seq, seq);
+      }
     }
     this.size = size;
     this.knownSize = knownSize;
@@ -68,12 +93,27 @@ export class InnerNodeLeaf {
   readonly size: number;
   readonly knownSize: number;
 
-  constructor(readonly children: readonly LeafNode[]) {
+  constructor(
+    /**
+     * A unique identifer for this node within its IdTree.
+     */
+    readonly seq: number,
+    readonly children: readonly LeafNode[],
+    /**
+     * We add entries for the children to this map, overwriting any existing parentSeqs.
+     *
+     * Pass null to skip when you are doing it yourself.
+     */
+    leafMapMut: MutableLeafMap | null
+  ) {
     let size = 0;
     let knownSize = 0;
     for (const child of children) {
       size += child.present.count();
       knownSize += child.count;
+      if (leafMapMut) {
+        leafMapMut.value = leafMapMut.value.set(child, seq);
+      }
     }
     this.size = size;
     this.knownSize = knownSize;
@@ -81,6 +121,12 @@ export class InnerNodeLeaf {
 }
 
 export type InnerNode = InnerNodeInner | InnerNodeLeaf;
+
+type Located = [
+  { node: LeafNode; indexInParent: number },
+  // Index 1 will be an InnerNodeLeaf if it exists.
+  ...{ node: InnerNode; indexInParent: number }[]
+];
 
 /**
  * The B+Tree's branching factor, i.e., the max number of children of a node.
@@ -119,9 +165,27 @@ export const M = 8;
  */
 export class IdList {
   /**
+   * A persistent map from each InnerNode's seq to its parent node's seq.
+   *
+   * We map the root's seq to 0 (in our constructor).
+   */
+  private readonly parentSeqs: SeqMap;
+
+  /**
    * Internal - construct an IdList using a static method (e.g. `IdList.new`).
    */
-  private constructor(private readonly root: InnerNode) {}
+  private constructor(
+    private readonly root: InnerNode,
+    /**
+     * A persistent sorted map from each leaf to its parent node's seq.
+     *
+     * Besides parentSeqs, we also use this to lookup leaves by ElementId.
+     */
+    private readonly leafMap: LeafMap,
+    parentSeqs: SeqMap
+  ) {
+    this.parentSeqs = parentSeqs.set(root.seq, 0);
+  }
 
   /**
    * Constructs an empty list.
@@ -130,7 +194,13 @@ export class IdList {
    * or {@link IdList.load}.
    */
   static new() {
-    return new this(new InnerNodeLeaf([]));
+    const leafMapMut = { value: LeafMap.new() };
+    const parentSeqsMut = { value: SeqMap.new() };
+    return new this(
+      new InnerNodeLeaf(getAndBumpNextSeq(parentSeqsMut), [], leafMapMut),
+      leafMapMut.value,
+      parentSeqsMut.value
+    );
   }
 
   /**
@@ -204,7 +274,7 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+    if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
@@ -215,15 +285,18 @@ export class IdList {
         // Insert the first leaf as a child of root.
         const present = SparseIndices.new();
         present.set(newId.counter, count);
+        const leaf: LeafNode = {
+          bunchId: newId.bunchId,
+          startCounter: newId.counter,
+          count,
+          present,
+        };
+
+        const leafMapMut = { value: this.leafMap };
         return new IdList(
-          new InnerNodeLeaf([
-            {
-              bunchId: newId.bunchId,
-              startCounter: newId.counter,
-              count,
-              present,
-            },
-          ])
+          new InnerNodeLeaf(this.root.seq, [leaf], leafMapMut),
+          leafMapMut.value,
+          this.parentSeqs
         );
       } else {
         // Insert before the first known id.
@@ -231,7 +304,7 @@ export class IdList {
       }
     }
 
-    const located = locate(before, this.root);
+    const located = this.locate(before);
     if (located === null) {
       throw new Error("before is not known");
     }
@@ -316,7 +389,7 @@ export class IdList {
     if (!(Number.isSafeInteger(count) && count >= 0)) {
       throw new Error(`Invalid count: ${count}`);
     }
-    if (count !== 0 && isAnyKnown(newId, count, this.root)) {
+    if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
@@ -331,7 +404,7 @@ export class IdList {
       );
     }
 
-    const located = locate(after, this.root);
+    const located = this.locate(after);
     if (located === null) {
       throw new Error("after is not known");
     }
@@ -411,7 +484,7 @@ export class IdList {
    * If `id` is already deleted or is not known, this method does nothing.
    */
   delete(id: ElementId) {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) return this;
 
     const leaf = located[0].node;
@@ -434,7 +507,7 @@ export class IdList {
    * @throws If `id` is not known.
    */
   undelete(id: ElementId) {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) {
       throw new Error("id is not known");
     }
@@ -449,13 +522,78 @@ export class IdList {
   }
 
   /**
+   * Returns the path from id's leaf node to the root, or null if id is not found.
+   *
+   * The path contains each node and its index in its parent's node, starting with id's
+   * LeafNode and ending at a child of the root.
+   */
+  private locate(id: ElementId): Located | null {
+    // Find the leaf containing id, if any.
+    const [leaf, parentSeq] = this.leafMap.getLeaf(id.bunchId, id.counter);
+    if (leaf === undefined) return null;
+    if (
+      !(
+        leaf.bunchId === id.bunchId &&
+        leaf.startCounter <= id.counter &&
+        id.counter < leaf.startCounter + leaf.count
+      )
+    ) {
+      return null;
+    }
+
+    // Find the seqs on the path (leaf, root].
+    const innerSeqs: number[] = [];
+    let curSeq = parentSeq;
+    while (curSeq !== 0) {
+      innerSeqs.push(curSeq);
+      curSeq = this.parentSeqs.get(curSeq);
+    }
+
+    // Find the nodes and indexInParent's on the path (root, leaf),
+    // using seqs to find the appropriate child of each node.
+    const innerNodes: { node: InnerNode; indexInParent: number }[] = [];
+    let curParent = this.root;
+    // Start at the root child's seq and proceed to the leaf parent's seq.
+    for (let i = innerSeqs.length - 2; i >= 0; i--) {
+      const children = (curParent as InnerNodeInner).children;
+      const childIndex = children.findIndex(
+        (child) => child.seq === innerSeqs[i]
+      );
+      if (childIndex === -1) throw new Error("Internal error");
+      const child = children[childIndex];
+
+      innerNodes.push({ node: child, indexInParent: childIndex });
+      curParent = child;
+    }
+
+    // Now curParent is the leaf's parent. Find leaf in its children and return.
+    const leafChildIndex = (curParent as InnerNodeLeaf).children.indexOf(leaf);
+    if (leafChildIndex === -1) throw new Error("Internal error");
+    return [
+      { node: leaf, indexInParent: leafChildIndex },
+      ...innerNodes.reverse(),
+    ];
+  }
+
+  /**
    * Replaces the leaf at the given path with newLeaves.
    * Returns a proper (sufficiently balanced) B+Tree with updated sizes.
    *
    * newLeaves.length must be in [1, M].
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
-    return new IdList(replaceNode(located, this.root, newLeaves, 0));
+    const leafMapMut = { value: this.leafMap };
+    const parentSeqsMut = { value: this.parentSeqs };
+
+    const newRoot = replaceNode(
+      located,
+      this.root,
+      leafMapMut,
+      parentSeqsMut,
+      newLeaves,
+      0
+    );
+    return new IdList(newRoot, leafMapMut.value, parentSeqsMut.value);
   }
 
   // Accessors
@@ -468,9 +606,13 @@ export class IdList {
    * Compare to {@link isKnown}.
    */
   has(id: ElementId): boolean {
-    const located = locate(id, this.root);
-    if (located === null) return false;
-    return located[0].node.present.has(id.counter);
+    // Find the LeafNode that would contain id if known.
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
+    if (leaf && leaf.bunchId === id.bunchId) {
+      return leaf.present.has(id.counter);
+    }
+
+    return false;
   }
 
   /**
@@ -479,7 +621,40 @@ export class IdList {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return locate(id, this.root) !== null;
+    // Find the LeafNode that would contain id if known.
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter);
+    if (leaf && leaf.bunchId === id.bunchId) {
+      return (
+        leaf.startCounter <= id.counter &&
+        id.counter < leaf.startCounter + leaf.count
+      );
+    }
+
+    return false;
+  }
+
+  // TODO: Make public?
+  /**
+   * Returns true if any of the given bulk ids are known.
+   */
+  private isAnyKnown(id: ElementId, count: number): boolean {
+    if (count === 0) return false;
+
+    // Find the leaf containing the last id, or the previous leaf.
+    // If any leaf knows any of the ids, this leaf must know an id too.
+    const [leaf] = this.leafMap.getLeaf(id.bunchId, id.counter + count - 1);
+
+    if (leaf && leaf.bunchId === id.bunchId) {
+      // Test if there is any overlap between the leaf's counter range [a, b]
+      // and the bulk ids' counter range [c, d].
+      const a = leaf.startCounter;
+      const b = leaf.startCounter + leaf.count - 1;
+      const c = id.counter;
+      const d = id.counter + count - 1;
+      return a <= d && c <= b;
+    }
+
+    return false;
   }
 
   /**
@@ -546,7 +721,7 @@ export class IdList {
    * @throws If `id` is not known.
    */
   indexOf(id: ElementId, bias: "none" | "left" | "right" = "none"): number {
-    const located = locate(id, this.root);
+    const located = this.locate(id);
     if (located === null) throw new Error("id is not known");
 
     /**
@@ -646,7 +821,7 @@ export class IdList {
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
-    // 1. Determine the leaves.
+    // 1. Determine the leaves in list order.
 
     const leaves: LeafNode[] = [];
     for (let i = 0; i < savedState.length; i++) {
@@ -692,18 +867,27 @@ export class IdList {
     }
 
     // 2. Create a B+Tree with the given leaves.
-    // We do a "direct" balanced construction that takes O(n) time, instead of inserting
-    // leaves one-by-one, which would take O(n log(n)) time.
+    // We do a "direct" balanced construction that takes O(L) time, instead of inserting
+    // leaves one-by-one, which would take O(L log(L)) time.
+    // However, constructing the sorted leafMap brings the overall runtime to O(L log(L)).
 
     if (leaves.length === 0) return IdList.new();
 
+    // TODO: Test the aux data structures after loading.
+    // E.g. reload and then call checkAll again.
+    // Also should do insertions to test splitting of the full tree.
+
+    const leafMapMut = { value: LeafMap.new() };
+    const parentSeqsMut = { value: SeqMap.new() };
+
     // Depth of the B+Tree (number of non-root nodes on any path from a leaf to the root).
-    // A fully balanced B+Tree of depth d has between [M^{d-1} + 1, M^d] leaves.
+    // A full B+Tree of depth d has between [M^{d-1} + 1, M^d] leaves.
     const depth =
       leaves.length === 1
         ? 1
         : Math.ceil(Math.log(leaves.length) / Math.log(M));
-    return new IdList(buildTree(leaves, 0, depth));
+    const root = buildTree(leaves, leafMapMut, parentSeqsMut, 0, depth);
+    return new IdList(root, leafMapMut.value, parentSeqsMut.value);
   }
 }
 
@@ -773,7 +957,8 @@ export class KnownIdView {
    * Returns the index of `id` in this view, or -1 if it is not known.
    */
   indexOf(id: ElementId): number {
-    const located = locate(id, this.root);
+    // @ts-expect-error Ignore private
+    const located = this.list.locate(id);
     if (located === null) throw new Error("id is not known");
 
     /**
@@ -861,77 +1046,19 @@ function lastId(node: InnerNode): ElementId {
   };
 }
 
-type Located = [
-  { node: LeafNode; indexInParent: number },
-  // Index 1 will be an InnerNodeLeaf if it exists.
-  ...{ node: InnerNode; indexInParent: number }[]
-];
-
-/**
- * Returns the path from id's leaf node to the root, or null if id is not found.
- *
- * The path contains each node and its index in its parent's node, starting with id's
- * LeafNode and ending at a child of the root.
- */
-export function locate(id: ElementId, node: InnerNode): Located | null {
-  if (node instanceof InnerNodeInner) {
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
-      const childLocated = locate(id, child);
-      if (childLocated !== null) {
-        childLocated.push({ node: child, indexInParent: i });
-        return childLocated;
-      }
-    }
-  } else {
-    for (let i = 0; i < node.children.length; i++) {
-      const child = node.children[i];
-      if (
-        child.bunchId === id.bunchId &&
-        child.startCounter <= id.counter &&
-        id.counter < child.startCounter + child.count
-      ) {
-        return [{ node: child, indexInParent: i }];
-      }
-    }
-  }
-  return null;
-}
-
-/**
- * Returns true if any of the given bulk ids are known within node's subtree.
- *
- * Assumes count > 0.
- */
-function isAnyKnown(id: ElementId, count: number, node: InnerNode): boolean {
-  if (node instanceof InnerNodeInner) {
-    for (const child of node.children) {
-      if (isAnyKnown(id, count, child)) return true;
-    }
-  } else {
-    for (const child of node.children) {
-      if (child.bunchId === id.bunchId) {
-        // Test if there is any overlap between the child's counter range [a, b]
-        // and the bulk id's counter range [c, d].
-        const a = child.startCounter;
-        const b = child.startCounter + child.count - 1;
-        const c = id.counter;
-        const d = id.counter + count - 1;
-        if (a <= d && c <= b) return true;
-      }
-    }
-  }
-  return false;
-}
-
 /**
  * Replace located[i].node with newNodes.
  *
  * newNodes.length must be in [1, M].
+ *
+ * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
+ * but the node itself is not (since we don't know its parent here).
  */
 function replaceNode(
   located: Located,
   root: InnerNode,
+  leafMapMut: MutableLeafMap,
+  parentSeqsMut: MutableSeqMap,
   newNodes: InnerNode[] | LeafNode[],
   i: number
 ): InnerNode {
@@ -945,31 +1072,82 @@ function replaceNode(
 
   if (newChildren.length > M) {
     // Split the parent to maintain BTree property (# children <= M).
+    // Treat the right parent as "new", getting a new seq.
     const split = Math.ceil(newChildren.length / 2);
+    const seqs = [parent.seq, getAndBumpNextSeq(parentSeqsMut)];
     const newParents = [
       newChildren.slice(0, split),
       newChildren.slice(split),
-    ].map((children) =>
+    ].map((children, j) =>
       i === 0
-        ? new InnerNodeLeaf(children as LeafNode[])
-        : new InnerNodeInner(children as InnerNode[])
+        ? new InnerNodeLeaf(seqs[j], children as LeafNode[], leafMapMut)
+        : new InnerNodeInner(seqs[j], children as InnerNode[], parentSeqsMut)
     );
     if (i === located.length - 1) {
       // newParents replace root. We need a new root to hold them.
-      return new InnerNodeInner(newParents);
+      return new InnerNodeInner(
+        getAndBumpNextSeq(parentSeqsMut),
+        newParents,
+        parentSeqsMut
+      );
     } else {
-      return replaceNode(located, root, newParents, i + 1);
+      return replaceNode(
+        located,
+        root,
+        leafMapMut,
+        parentSeqsMut,
+        newParents,
+        i + 1
+      );
     }
   } else {
-    const newParent =
-      i === 0
-        ? new InnerNodeLeaf(newChildren as LeafNode[])
-        : new InnerNodeInner(newChildren as InnerNode[]);
+    // "Replace" parent, reusing its seq.
+    // To avoid doing newChildren.length sets every time (which makes replaceLeaf
+    // do >=(M/2)*log(L) total sets, even when none were necessary),
+    // we bypass the InnerNode constructors' leafMap/parentSeq operations,
+    // instead doing them ourselves only on the changed children.
+    let newParent: InnerNode;
+    if (i === 0) {
+      newParent = new InnerNodeLeaf(
+        parent.seq,
+        newChildren as LeafNode[],
+        null
+      );
+      // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
+      leafMapMut.value = leafMapMut.value.delete(located[0].node);
+      for (const newNode of newNodes as LeafNode[]) {
+        leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
+      }
+    } else {
+      newParent = new InnerNodeInner(
+        parent.seq,
+        newChildren as InnerNode[],
+        null
+      );
+      for (const newNode of newNodes as InnerNode[]) {
+        if (newNode.seq !== (located[i].node as InnerNode).seq) {
+          parentSeqsMut.value = parentSeqsMut.value.set(
+            newNode.seq,
+            parent.seq
+          );
+        }
+      }
+      // If the replaced node isn't represented in newNodes (i.e., same seq is not reused),
+      // we could delete its entry to save memory, but it is not necessary.
+    }
+
     if (i === located.length - 1) {
       // Replaces root.
       return newParent;
     } else {
-      return replaceNode(located, root, [newParent], i + 1);
+      return replaceNode(
+        located,
+        root,
+        leafMapMut,
+        parentSeqsMut,
+        [newParent],
+        i + 1
+      );
     }
   }
 }
@@ -1125,25 +1303,44 @@ function pushSaveItem(acc: SavedIdList, item: SavedIdList[number]) {
 /**
  * Builds a tree with the given leaves. Used by IdList.load.
  *
- * In contrast to inserting the leaves one-by-one, this function balances the
- * tree, with full inner nodes (M children) whenever possible,
- * and runs in O(L) time instead of O(L log(L)).
+ * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
+ * but not the node itself (since we don't know its parent here).
+ *
+ * In contrast to inserting the leaves one-by-one, this function fills nodes
+ * with M children whenever possible,
+ * and the B+Tree parts run in O(L) time instead of O(L log(L)).
+ * However, the overall runtime is O(L log(L)) from constructing the sorted leafMap.
  */
 function buildTree(
   leaves: LeafNode[],
+  leafMapMut: MutableLeafMap,
+  parentSeqsMut: MutableSeqMap,
   startIndex: number,
   depthRemaining: number
 ): InnerNode {
+  const parentSeq = getAndBumpNextSeq(parentSeqsMut);
   if (depthRemaining === 1) {
-    return new InnerNodeLeaf(leaves.slice(startIndex, startIndex + M));
+    return new InnerNodeLeaf(
+      parentSeq,
+      leaves.slice(startIndex, startIndex + M),
+      leafMapMut
+    );
   } else {
     const children: InnerNode[] = [];
     const childLeafCount = Math.pow(M, depthRemaining - 1);
     for (let i = 0; i < M; i++) {
       const childStartIndex = startIndex + i * childLeafCount;
       if (childStartIndex >= leaves.length) break;
-      children.push(buildTree(leaves, childStartIndex, depthRemaining - 1));
+      children.push(
+        buildTree(
+          leaves,
+          leafMapMut,
+          parentSeqsMut,
+          childStartIndex,
+          depthRemaining - 1
+        )
+      );
     }
-    return new InnerNodeInner(children);
+    return new InnerNodeInner(parentSeq, children, parentSeqsMut);
   }
 }
