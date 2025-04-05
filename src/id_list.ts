@@ -954,7 +954,9 @@ export class KnownIdView {
   }
 
   /**
-   * Returns the index of `id` in this view, or -1 if it is not known.
+   * Returns the index of `id` in this view.
+   *
+   * @throws If `id` is not known.
    */
   indexOf(id: ElementId): number {
     // @ts-expect-error Ignore private
