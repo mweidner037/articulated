@@ -60,6 +60,14 @@ export class Fuzzer {
       ...this.simple.knownIds.values(),
     ]);
 
+    const allBunchIds = new Set<string>();
+    for (const id of this.simple.knownIds) allBunchIds.add(id.bunchId);
+    for (const bunchId of allBunchIds) {
+      expect(this.list.maxCounter(bunchId)).to.equal(
+        this.simple.maxCounter(bunchId)
+      );
+    }
+
     // Check loaded state as well.
     expect([
       ...IdList.load(this.list.save()).valuesWithIsDeleted(),

@@ -36,7 +36,6 @@ export async function insertAfterCustom() {
   const updates: string[] = [];
   let startTime = process.hrtime.bigint();
   let sender = IdList.new();
-  const lastCounters = new Map<string, number>();
   for (const edit of edits) {
     let update: Update;
     if (edit[2] !== undefined) {
@@ -45,14 +44,13 @@ export async function insertAfterCustom() {
       // Try to extend before's bunch, so that it will be compressed.
       if (
         before !== null &&
-        lastCounters.get(before.bunchId) === before.counter
+        sender.maxCounter(before.bunchId) === before.counter
       ) {
         id = { bunchId: before.bunchId, counter: before.counter + 1 };
       } else {
         // id = { bunchId: uuidv4(), counter: 0 };
         id = { bunchId: nextBunchId(), counter: 0 };
       }
-      lastCounters.set(id.bunchId, id.counter);
 
       sender = sender.insertAfter(before, id);
 

@@ -658,6 +658,21 @@ export class IdList {
   }
 
   /**
+   * Returns the maximum counter across all known ElementIds with the given bunchId,
+   * or undefined if no such ElementIds are known.
+   *
+   * This method is useful when creating ElementIds.
+   */
+  maxCounter(bunchId: string): number | undefined {
+    // Find the greatest-counter leaf containing bunchId.
+    const [leaf] = this.leafMap.getLeaf(bunchId, Number.MAX_SAFE_INTEGER);
+    if (leaf && leaf.bunchId === bunchId) {
+      return leaf.startCounter + leaf.count - 1;
+    }
+    return undefined;
+  }
+
+  /**
    * The length of the list, counting only present ids.
    *
    * To include known but deleted ids, use `this.knownIds.length`.

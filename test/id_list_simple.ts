@@ -239,6 +239,22 @@ export class IdListSimple {
   }
 
   /**
+   * Returns the maximum counter across all known ElementIds with the given bunchId,
+   * or undefined if no such ElementIds are known.
+   *
+   * This method is useful when creating ElementIds.
+   */
+  maxCounter(bunchId: string): number | undefined {
+    let max: number | undefined = undefined;
+    for (const { id } of this.state) {
+      if (id.bunchId === bunchId) {
+        if (max === undefined || id.counter > max) max = id.counter;
+      }
+    }
+    return max;
+  }
+
+  /**
    * Returns the id at the given index in the list.
    *
    * @throws If index is out of bounds.

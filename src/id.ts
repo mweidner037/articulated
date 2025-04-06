@@ -28,6 +28,7 @@ export interface ElementId {
    *
    * Typically, you will assign sequential counters 0, 1, 2, ... to list elements
    * that are initially inserted in a left-to-right order.
+   * (IdList.maxCounter(bunchId) can help with this.)
    * IdList is optimized for this case, but it is not mandatory.
    * In particular, it is okay if future edits cause the sequential ids to be
    * separated, partially deleted, or even reordered.

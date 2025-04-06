@@ -340,6 +340,15 @@ describe("IdList", () => {
       const unknownId: ElementId = { bunchId: "xyz", counter: 1 };
       expect(() => list.indexOf(unknownId)).to.throw();
     });
+
+    it("should return maxCounter", () => {
+      expect(list.maxCounter("abc")).to.equal(1);
+      expect(list.maxCounter("def")).to.equal(1);
+      expect(list.maxCounter("ghi")).to.equal(1);
+
+      // Non-existent bunchId.
+      expect(list.maxCounter("non-existent")).to.be.undefined;
+    });
   });
 
   describe("iteration", () => {
