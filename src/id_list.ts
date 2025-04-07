@@ -688,7 +688,7 @@ export class IdList {
    */
   at(index: number): ElementId {
     if (!(Number.isSafeInteger(index) && 0 <= index && index < this.length)) {
-      throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
+      throw new Error(`Index out of bounds: ${index} (length: ${this.length})`);
     }
 
     let remaining = index;
@@ -933,7 +933,7 @@ export class KnownIdView {
    */
   at(index: number): ElementId {
     if (!(Number.isSafeInteger(index) && 0 <= index && index < this.length)) {
-      throw new Error(`Index out of bounds: ${index} (length: ${this.length}`);
+      throw new Error(`Index out of bounds: ${index} (length: ${this.length})`);
     }
 
     let remaining = index;
