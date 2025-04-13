@@ -70,15 +70,16 @@ To enable easy and efficient rollbacks, such as in a [server reconciliation](htt
 
 #### Basic Operations
 
-- `insertAfter(before, newId): IdList`: Insert after a specific ElementId
-- `insertBefore(after, newId): IdList`: Insert before a specific ElementId
-- `delete(id): IdList`: Mark an ElementId as deleted (remains known)
-- `undelete(id): IdList`: Restore a deleted ElementId
+- `insertAfter(before, newId): IdList`: Insert after a specific ElementId.
+- `insertBefore(after, newId): IdList`: Insert before a specific ElementId.
+- `delete(id): IdList`: Mark an ElementId as deleted (it remains known).
+- `undelete(id): IdList`: Restore a deleted ElementId.
+- `uninsert(id): IdList`: Undo an insertion, making the ElementId no longer known. Use `delete(id)` instead in most cases (see method docs).
 
 #### Basic Accessors
 
-- `at(index)`: Get the ElementId at a specific index
-- `indexOf(id, bias: "none" | "left" | "right" = "none")`: Get the index of an ElementId, with optional bias for deleted-but-known ElementIds
+- `at(index)`: Get the ElementId at a specific index.
+- `indexOf(id, bias: "none" | "left" | "right" = "none")`: Get the index of an ElementId, with optional bias for deleted-but-known ElementIds.
 
 #### Bulk Operations
 
