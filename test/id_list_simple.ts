@@ -176,12 +176,12 @@ export class IdListSimple {
     let ans: IdListSimple = this;
     for (let i = count - 1; i >= 0; i--) {
       const curId: ElementId = { bunchId: id.bunchId, counter: id.counter + i };
-      const index = this.state.findIndex((elt) => equalsId(elt.id, curId));
-      if (index != -1) {
-        const elt = this.state[index];
-        const newState = this.state.slice();
+      const index = ans.state.findIndex((elt) => equalsId(elt.id, curId));
+      if (index !== -1) {
+        const elt = ans.state[index];
+        const newState = ans.state.slice();
         newState.splice(index, 1);
-        ans = new IdListSimple(newState, this.length - (elt.isDeleted ? 0 : 1));
+        ans = new IdListSimple(newState, ans.length - (elt.isDeleted ? 0 : 1));
       }
     }
     return ans;

@@ -506,10 +506,12 @@ export class IdList {
           return this.replaceLeaf(located);
         } else {
           // Shrink the right end of leaf.
-          // It's okay to keep the out-of-range counters in leaf.present.
+          const present = leaf.present.clone();
+          present.delete(id.counter, count);
           return this.replaceLeaf(located, {
             ...leaf,
             count: id.counter - leaf.startCounter,
+            present,
           });
         }
       }
@@ -532,15 +534,23 @@ export class IdList {
     const newLeaves: LeafNode[] = [];
     if (leaf.startCounter < id.counter) {
       // The part of leaf before id.
-      // It's okay to keep the out-of-range counters in leaf.present.
-      newLeaves.push({ ...leaf, count: id.counter - leaf.startCounter });
+      const present = leaf.present.clone();
+      present.delete(id.counter, present.length);
+      newLeaves.push({
+        ...leaf,
+        count: id.counter - leaf.startCounter,
+        present,
+      });
     }
     if (id.counter + 1 < leaf.startCounter + leaf.count) {
       // The part of leaf after id.
+      const present = leaf.present.clone();
+      present.delete(0, id.counter + 1);
       newLeaves.push({
         ...leaf,
         startCounter: id.counter + 1,
         count: leaf.startCounter + leaf.count - (id.counter + 1),
+        present,
       });
     }
     return this.replaceLeaf(located, ...newLeaves);
@@ -663,6 +673,9 @@ export class IdList {
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     const leafMapMut = { value: this.leafMap };
     const parentSeqsMut = { value: this.parentSeqs };
+
+    // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
+    leafMapMut.value = leafMapMut.value.delete(located[0].node);
 
     const newRoot = replaceNode(
       located,
@@ -1151,6 +1164,8 @@ function lastId(node: InnerNode): ElementId {
  *
  * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
  * but the node itself is not (since we don't know its parent here).
+ * Also, we don't delete the replaced node from those collections; this is okay
+ * for parentSeqsMut, while the caller must update leafMapMut.
  */
 function replaceNode(
   located: Located,
@@ -1219,10 +1234,6 @@ function replaceNode(
         newChildren as LeafNode[],
         null
       );
-      // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
-      // TODO: Should we do this in the split-node case above too? Maybe should be replaceLeaf's responsibility
-      // (before calling replaceNode).
-      leafMapMut.value = leafMapMut.value.delete(located[0].node);
       for (const newNode of newNodes as LeafNode[]) {
         leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
       }
@@ -1240,8 +1251,6 @@ function replaceNode(
           );
         }
       }
-      // If the replaced node isn't represented in newNodes (i.e., same seq is not reused),
-      // we could delete its entry to save memory, but it is not necessary.
     }
 
     if (i === located.length - 1) {

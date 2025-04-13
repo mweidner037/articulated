@@ -115,6 +115,16 @@ export class Fuzzer {
     );
   }
 
+  uninsert(id: ElementId, count?: number) {
+    if (DEBUG) {
+      console.log("uninsert", id, count);
+    }
+    return new Fuzzer(
+      () => this.list.uninsert(id, count),
+      () => this.simple.uninsert(id, count)
+    );
+  }
+
   delete(id: ElementId) {
     if (DEBUG) {
       console.log("delete", id);

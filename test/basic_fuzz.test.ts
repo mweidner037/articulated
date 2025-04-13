@@ -1,6 +1,6 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
-import { ElementId, IdList } from "../src";
+import { ElementId, equalsId, IdList } from "../src";
 import { Fuzzer } from "./fuzzer";
 import { IdListSimple } from "./id_list_simple";
 
@@ -44,7 +44,7 @@ describe("IdList Fuzzer Tests", () => {
           fuzzer.checkAll();
         }
 
-        const operation = Math.floor(prng() * 4); // 0-3 for different operations
+        const operation = Math.floor(prng() * 5); // 0-4 for different operations
 
         switch (operation) {
           case 0: // insertAfter
@@ -101,7 +101,28 @@ describe("IdList Fuzzer Tests", () => {
             }
             break;
 
-          case 2: // delete
+          case 2: // uninsert
+            if (knownIds.length > 0) {
+              const count = Math.floor(prng() * 3) + 1; // 1-3 elements
+              const index = Math.floor(prng() * knownIds.length);
+              const id = knownIds[index];
+              fuzzer = fuzzer.uninsert(id, count);
+
+              // Delete the uninserted IDs from our known list
+              for (let j = 0; j < count; j++) {
+                const jId: ElementId = {
+                  bunchId: id.bunchId,
+                  counter: id.counter + j,
+                };
+                const jIndex = knownIds.findIndex((otherId) =>
+                  equalsId(otherId, jId)
+                );
+                if (jIndex !== -1) knownIds.splice(jIndex, 1);
+              }
+            }
+            break;
+
+          case 3: // delete
             if (knownIds.length > 0) {
               const index = Math.floor(prng() * knownIds.length);
               const id = knownIds[index];
@@ -110,7 +131,7 @@ describe("IdList Fuzzer Tests", () => {
             }
             break;
 
-          case 3: // undelete
+          case 4: // undelete
             if (knownIds.length > 0) {
               const index = Math.floor(prng() * knownIds.length);
               const id = knownIds[index];
@@ -144,7 +165,7 @@ describe("IdList Fuzzer Tests", () => {
         const knownIds: ElementId[] = [];
 
         for (let i = 0; i < operationCount; i++) {
-          const operation = Math.floor(prng() * 4);
+          const operation = Math.floor(prng() * 5);
 
           if (i % 10 === 0) {
             fuzzer.checkAll();
@@ -193,14 +214,35 @@ describe("IdList Fuzzer Tests", () => {
                 }
                 break;
 
-              case 2: // delete
+              case 2: // uninsert
+                if (knownIds.length > 0) {
+                  const count = Math.floor(prng() * 3) + 1; // 1-3 elements
+                  const index = Math.floor(prng() * knownIds.length);
+                  const id = knownIds[index];
+                  fuzzer = fuzzer.uninsert(id, count);
+
+                  // Delete the uninserted IDs from our known list
+                  for (let j = 0; j < count; j++) {
+                    const jId: ElementId = {
+                      bunchId: id.bunchId,
+                      counter: id.counter + j,
+                    };
+                    const jIndex = knownIds.findIndex((otherId) =>
+                      equalsId(otherId, jId)
+                    );
+                    if (jIndex !== -1) knownIds.splice(jIndex, 1);
+                  }
+                }
+                break;
+
+              case 3: // delete
                 if (knownIds.length > 0) {
                   const index = Math.floor(prng() * knownIds.length);
                   fuzzer = fuzzer.delete(knownIds[index]);
                 }
                 break;
 
-              case 3: // undelete
+              case 4: // undelete
                 if (knownIds.length > 0) {
                   const index = Math.floor(prng() * knownIds.length);
                   fuzzer = fuzzer.undelete(knownIds[index]);
@@ -622,7 +664,7 @@ describe("IdList Fuzzer Tests", () => {
 
         // Perform more operations
         for (let i = 0; i < 5; i++) {
-          const operation = Math.floor(prng() * 4);
+          const operation = Math.floor(prng() * 5);
 
           switch (operation) {
             case 0: // insertAfter
@@ -657,14 +699,35 @@ describe("IdList Fuzzer Tests", () => {
               }
               break;
 
-            case 2: // delete
+            case 2: // uninsert
+              if (ids.length > 0) {
+                const count = Math.floor(prng() * 3) + 1; // 1-3 elements
+                const index = Math.floor(prng() * ids.length);
+                const id = ids[index];
+                fuzzer = fuzzer.uninsert(id, count);
+
+                // Delete the uninserted IDs from our known list
+                for (let j = 0; j < count; j++) {
+                  const jId: ElementId = {
+                    bunchId: id.bunchId,
+                    counter: id.counter + j,
+                  };
+                  const jIndex = ids.findIndex((otherId) =>
+                    equalsId(otherId, jId)
+                  );
+                  if (jIndex !== -1) ids.splice(jIndex, 1);
+                }
+              }
+              break;
+
+            case 3: // delete
               if (ids.length > 0) {
                 const idx = Math.floor(prng() * ids.length);
                 fuzzer = fuzzer.delete(ids[idx]);
               }
               break;
 
-            case 3: // undelete
+            case 4: // undelete
               if (ids.length > 0) {
                 const idx = Math.floor(prng() * ids.length);
                 try {
