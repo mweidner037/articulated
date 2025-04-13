@@ -174,7 +174,7 @@ export class IdListSimple {
   uninsert(id: ElementId, count = 1) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdListSimple = this;
-    for (let i = 0; i < count; i++) {
+    for (let i = count - 1; i >= 0; i--) {
       const curId: ElementId = { bunchId: id.bunchId, counter: id.counter + i };
       const index = this.state.findIndex((elt) => equalsId(elt.id, curId));
       if (index != -1) {

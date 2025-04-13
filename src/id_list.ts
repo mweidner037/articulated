@@ -488,7 +488,62 @@ export class IdList {
    * `uninsert(id, count)` is an exact inverse to `insertAfter(-, id, count)` or `insertBefore(-, id, count)`.
    */
   uninsert(id: ElementId, count = 1) {
-    // TODO
+    if (!(Number.isSafeInteger(count) && count >= 0)) {
+      throw new Error(`Invalid count: ${count}`);
+    }
+    if (count === 0) return this;
+
+    // We optimize for the case where you are undoing the most recent insert operation.
+    // In that case:
+    // - All of the bulk ids are known and still together in one leaf.
+    // - The bulk ids are at the right end of their leaf (assuming normal LtR ElementId generation).
+    const located = this.locate(id);
+    if (located) {
+      const leaf = located[0].node;
+      if (leaf.startCounter + leaf.count === id.counter + count) {
+        if (leaf.startCounter === id.counter) {
+          // Uninsert the entire leaf.
+          return this.replaceLeaf(located);
+        } else {
+          // Shrink the right end of leaf.
+          // It's okay to keep the out-of-range counters in leaf.present.
+          return this.replaceLeaf(located, {
+            ...leaf,
+            count: id.counter - leaf.startCounter,
+          });
+        }
+      }
+    }
+
+    // Fallback for the general case.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    for (let i = count - 1; i >= 0; i--) {
+      ans = ans.uninsertOne({ bunchId: id.bunchId, counter: id.counter + i });
+    }
+    return ans;
+  }
+
+  private uninsertOne(id: ElementId) {
+    const located = this.locate(id);
+    if (located === null) return this;
+
+    const leaf = located[0].node;
+    const newLeaves: LeafNode[] = [];
+    if (leaf.startCounter < id.counter) {
+      // The part of leaf before id.
+      // It's okay to keep the out-of-range counters in leaf.present.
+      newLeaves.push({ ...leaf, count: id.counter - leaf.startCounter });
+    }
+    if (id.counter + 1 < leaf.startCounter + leaf.count) {
+      // The part of leaf after id.
+      newLeaves.push({
+        ...leaf,
+        startCounter: id.counter + 1,
+        count: leaf.startCounter + leaf.count - (id.counter + 1),
+      });
+    }
+    return this.replaceLeaf(located, ...newLeaves);
   }
 
   /**
@@ -599,7 +654,11 @@ export class IdList {
    * Replaces the leaf at the given path with newLeaves.
    * Returns a proper (sufficiently balanced) B+Tree with updated sizes.
    *
-   * newLeaves.length must be in [1, M].
+   * Exception: If you delete the leaf (newLeaves is empty), we don't prevent
+   * nodes from going under M/2 children. This lets us avoid implementing B+Tree
+   * deletes; any performance penalty goes away after reloading.
+   *
+   * newLeaves.length must be at most M.
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     const leafMapMut = { value: this.leafMap };
@@ -1083,10 +1142,12 @@ function lastId(node: InnerNode): ElementId {
   };
 }
 
+// TODO: Test inner nodes that go down to 0 children. Incl root.
+
 /**
  * Replace located[i].node with newNodes.
  *
- * newNodes.length must be in [1, M].
+ * newNodes.length must be at most M.
  *
  * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
  * but the node itself is not (since we don't know its parent here).
@@ -1137,6 +1198,14 @@ function replaceNode(
         i + 1
       );
     }
+  } else if (newChildren.length === 0) {
+    // parent holds no content, so it can be replaced with nothing.
+    if (i === located.length - 1) {
+      // Instead of deleting the root, replace it with an empty node.
+      return new InnerNodeInner(parent.seq, [], parentSeqsMut);
+    } else {
+      return replaceNode(located, root, leafMapMut, parentSeqsMut, [], i + 1);
+    }
   } else {
     // "Replace" parent, reusing its seq.
     // To avoid doing newChildren.length sets every time (which makes replaceLeaf
@@ -1151,6 +1220,8 @@ function replaceNode(
         null
       );
       // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
+      // TODO: Should we do this in the split-node case above too? Maybe should be replaceLeaf's responsibility
+      // (before calling replaceNode).
       leafMapMut.value = leafMapMut.value.delete(located[0].node);
       for (const newNode of newNodes as LeafNode[]) {
         leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
