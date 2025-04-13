@@ -1,6 +1,7 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId, equalsId, IdList } from "../src";
+import { M } from "../src/id_list";
 import { Fuzzer } from "./fuzzer";
 import { IdListSimple } from "./id_list_simple";
 
@@ -13,7 +14,7 @@ describe("IdList Fuzzer Tests", () => {
 
   // Helper to create random ElementIds
   const createRandomId = (): ElementId => {
-    const bunchId = `bunch-${Math.floor(prng() * 10)}`;
+    const bunchId = `bunch-${Math.floor(prng() * 1000)}`;
     const counter = Math.floor(prng() * 100);
     return { bunchId, counter };
   };
@@ -37,7 +38,7 @@ describe("IdList Fuzzer Tests", () => {
       const knownIds: ElementId[] = [];
 
       // Perform a sequence of random operations
-      const operationCount = 100;
+      const operationCount = 1000;
       for (let i = 0; i < operationCount; i++) {
         // Every 10 operations, check all accessors
         if (i % 10 === 0) {
@@ -157,7 +158,7 @@ describe("IdList Fuzzer Tests", () => {
       this.timeout(5000); // Increase timeout for this test
 
       const seeds = ["42", "1337", "2468", "9876"];
-      const operationCount = 50; // Reduced to keep test time reasonable
+      const operationCount = 500;
 
       for (const seed of seeds) {
         prng = seedrandom(seed);
@@ -268,7 +269,7 @@ describe("IdList Fuzzer Tests", () => {
 
       let fuzzer = Fuzzer.new();
       const batchSize = 10; // Number of elements to insert in each batch
-      const batchCount = 10; // Number of batches to insert
+      const batchCount = 100; // Number of batches to insert
 
       // This should create enough elements to force multiple tree levels
       for (let batch = 0; batch < batchCount; batch++) {
@@ -318,10 +319,7 @@ describe("IdList Fuzzer Tests", () => {
     });
 
     it("should handle operations near B+Tree node boundaries", function () {
-      this.timeout(5000);
-
       let fuzzer = Fuzzer.new();
-      const M = 8; // The B+Tree branching factor used in IdList
 
       // Create a list with exactly M elements
       const ids = createSequentialIds(M);
@@ -390,7 +388,7 @@ describe("IdList Fuzzer Tests", () => {
       fuzzer.checkAll();
 
       // Insert small batches at various positions
-      for (let i = 0; i < 10; i++) {
+      for (let i = 0; i < 100; i++) {
         const targetIndex = Math.floor(prng() * baseIds.length);
         const targetId = baseIds[targetIndex];
         const newId = { bunchId: `batch-${i}`, counter: 0 };
@@ -440,8 +438,6 @@ describe("IdList Fuzzer Tests", () => {
     });
 
     it("should handle extensive deletion and reinsertion", function () {
-      this.timeout(5000);
-
       // Create a list with sequential elements
       const ids = createSequentialIds(30);
       let fuzzer = Fuzzer.fromIds(ids);
@@ -527,7 +523,7 @@ describe("IdList Fuzzer Tests", () => {
     it("should handle a parameterized complex sequence of operations", function () {
       this.timeout(10000); // Adjust timeout based on iterationCount
 
-      const iterationCount = 20; // Parameter to adjust test intensity
+      const iterationCount = 50; // Parameter to adjust test intensity
       let fuzzer = Fuzzer.new();
       const knownIds: ElementId[] = [];
 
