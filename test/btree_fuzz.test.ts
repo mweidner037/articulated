@@ -1,6 +1,7 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId } from "../src";
+import { M } from "../src/id_list";
 import { Fuzzer } from "./fuzzer";
 
 describe("IdList B+Tree Specific Fuzz Tests", () => {
@@ -20,7 +21,6 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should correctly handle splits at various tree levels", function () {
       this.timeout(10000);
 
-      const M = 8; // B+Tree branching factor in IdList
       let fuzzer = Fuzzer.new();
 
       // Start with M elements
@@ -66,7 +66,6 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       this.timeout(5000);
 
       let fuzzer = Fuzzer.new();
-      const M = 8; // B+Tree branching factor
 
       // Create initial structure with M-1 elements
       for (let i = 0; i < M - 1; i++) {
@@ -127,7 +126,6 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       this.timeout(5000);
 
       let fuzzer = Fuzzer.new();
-      const M = 8; // B+Tree branching factor
 
       // Create initial structure with half M elements
       for (let i = 0; i < M / 2; i++) {
@@ -162,7 +160,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should handle deep tree restructuring with mixed operations", function () {
       this.timeout(10000);
 
-      const operationCount = 100; // Parameter to adjust test intensity
+      const operationCount = 500; // Parameter to adjust test intensity
       let fuzzer = Fuzzer.new();
       const ids: ElementId[] = [];
 
@@ -185,7 +183,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
       // Now perform random operations targeting different tree levels
       for (let op = 0; op < operationCount; op++) {
-        const operation = Math.floor(prng() * 4);
+        const operation = Math.floor(prng() * 5);
 
         if (op % 10 === 0) {
           fuzzer.checkAll();
@@ -247,7 +245,34 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
             }
             break;
 
-          case 2: // Delete in patterns
+          case 2: // Uninsert in patterns
+            {
+              const pattern = Math.floor(prng() * 3); // 0=start, 1=every-nth, 2=range
+
+              if (pattern === 0 && ids.length > 10) {
+                // Uninsert first few elements
+                const count = 1 + Math.floor(prng() * 3); // 1-3 elements
+                for (let i = 0; i < count; i++) {
+                  fuzzer = fuzzer.uninsert(ids[i]);
+                }
+              } else if (pattern === 1 && ids.length > 10) {
+                // Uninsert every nth element
+                const nth = 2 + Math.floor(prng() * 5); // Every 2nd to 6th
+                for (let i = 0; i < ids.length; i += nth) {
+                  fuzzer = fuzzer.uninsert(ids[i]);
+                }
+              } else if (ids.length > 10) {
+                // Uninsert a range
+                const start = Math.floor(prng() * (ids.length / 2));
+                const count = 1 + Math.floor(prng() * 5); // 1-5 elements
+                for (let i = 0; i < count && start + i < ids.length; i++) {
+                  fuzzer = fuzzer.uninsert(ids[start + i]);
+                }
+              }
+            }
+            break;
+
+          case 3: // Delete in patterns
             {
               const pattern = Math.floor(prng() * 3); // 0=start, 1=every-nth, 2=range
 
@@ -274,7 +299,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
             }
             break;
 
-          case 3: // Undelete
+          case 4: // Undelete
             {
               // Undelete a few random elements
               const count = 1 + Math.floor(prng() * 3); // 1-3 elements
@@ -397,6 +422,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       fuzzer.checkAll();
 
       // Merge sequences by inserting elements with matching bunchIds
+      const inserted: { id: ElementId; count: number }[] = [];
       for (let i = 0; i < 5; i++) {
         // Find the last element with this bunchId
         let lastIdx = -1;
@@ -413,11 +439,20 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
           // Insert elements that continue the sequence
           const id = createId(`bunch${i}`, lastCounter + 1);
           fuzzer = fuzzer.insertAfter(ids[lastIdx], id, 3);
+          inserted.push({ id, count: 3 });
 
           for (let j = 0; j < 3; j++) {
             ids.push({ bunchId: id.bunchId, counter: id.counter + j });
           }
         }
+      }
+
+      fuzzer.checkAll();
+
+      // Undo the latest inserts in reverse order.
+      for (let i = inserted.length - 1; i >= 0; i--) {
+        const { id, count } = inserted[i];
+        fuzzer.uninsert(id, count);
       }
 
       fuzzer.checkAll();
@@ -427,7 +462,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       this.timeout(10000);
 
       // Parameter to control test intensity
-      const batchCount = 5;
+      const batchCount = 50;
       const batchSize = 20;
 
       let fuzzer = Fuzzer.new();

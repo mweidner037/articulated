@@ -1155,8 +1155,6 @@ function lastId(node: InnerNode): ElementId {
   };
 }
 
-// TODO: Test inner nodes that go down to 0 children. Incl root.
-
 /**
  * Replace located[i].node with newNodes.
  *
