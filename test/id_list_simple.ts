@@ -1,4 +1,4 @@
-import { ElementId, equalsId, SavedIdList } from "../src";
+import { ElementId, equalsId, expandIds, SavedIdList } from "../src";
 
 interface ListElement {
   readonly id: ElementId;
@@ -174,8 +174,7 @@ export class IdListSimple {
   uninsert(id: ElementId, count = 1) {
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdListSimple = this;
-    for (let i = count - 1; i >= 0; i--) {
-      const curId: ElementId = { bunchId: id.bunchId, counter: id.counter + i };
+    for (const curId of expandIds(id, count)) {
       const index = ans.state.findIndex((elt) => equalsId(elt.id, curId));
       if (index !== -1) {
         const elt = ans.state[index];
