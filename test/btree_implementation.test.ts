@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import { ElementId, expandIds, IdList } from "../src";
 import { InnerNode, InnerNodeInner, InnerNodeLeaf, M } from "../src/id_list";
 
 describe("IdList B+Tree Implementation", () => {
@@ -292,6 +292,288 @@ describe("IdList B+Tree Implementation", () => {
       expect(loaded.has(createId("bunch", 7))).to.be.true;
       expect(loaded.has(createId("bunch", 8))).to.be.true;
       expect(loaded.has(createId("bunch", 9))).to.be.true;
+    });
+  });
+
+  describe("Uninsert Operations", () => {
+    it("should maintain tree integrity when uninsert leaves an empty list", () => {
+      let list = IdList.new();
+
+      // Create a small list with sequential IDs
+      list = list.insertAfter(null, createId("bunch", 0), 5);
+
+      // Uninsert all elements
+      list = list.uninsert(createId("bunch", 0), 5);
+
+      // Verify the list is empty
+      expect(list.length).to.equal(0);
+
+      // The root should still exist but be empty
+      const root = list["root"];
+      expect(root.children.length).to.equal(0);
+
+      // Insert an element into the empty list to verify it still works
+      list = list.insertAfter(null, createId("new", 0));
+      expect(list.length).to.equal(1);
+      expect(list.has(createId("new", 0))).to.be.true;
+    });
+
+    it("should maintain tree balancing after uninsert operations", () => {
+      let list = IdList.new();
+
+      // Create a list with enough elements to have at least 3 levels in the tree
+      for (let i = 0; i < 100; i++) {
+        list = list.insertBefore(null, createId(`id${i}`, 0));
+      }
+
+      // Perform various uninsert operations to test tree balancing
+      list = list.uninsert(createId(`id0`, 0)); // First element
+      list = list.uninsert(createId(`id99`, 0)); // Last element
+      list = list.uninsert(createId(`id50`, 0)); // Middle element
+
+      // Uninsert a range
+      for (let i = 20; i < 30; i++) {
+        list = list.uninsert(createId(`id${i}`, 0));
+      }
+
+      // Helper to check node properties recursively
+      function checkNodeProperties(node: InnerNode): {
+        height: number;
+        maxChildren: number;
+      } {
+        // No node should exceed the branching factor M (8)
+        expect(node.children.length).to.be.at.most(M);
+
+        // If this is an inner node with inner children
+        if (node instanceof InnerNodeInner && node.children.length > 0) {
+          const childStats = node.children.map((child) =>
+            checkNodeProperties(child)
+          );
+
+          // All children should have the same height (balanced tree property)
+          if (childStats.length > 0) {
+            const heights = childStats.map((s) => s.height);
+            const firstHeight = heights[0];
+            expect(
+              heights.every((h) => h === firstHeight),
+              "Children heights should be equal"
+            ).to.be.true;
+          }
+
+          // Return this node's height and max children count
+          return {
+            height: 1 + (childStats.length > 0 ? childStats[0].height : 0),
+            maxChildren: Math.max(
+              node.children.length,
+              ...childStats.map((s) => s.maxChildren)
+            ),
+          };
+        } else {
+          // Leaf level or level just above leaves
+          return { height: 1, maxChildren: node.children.length };
+        }
+      }
+
+      const root = list["root"];
+      checkNodeProperties(root);
+
+      // Verify the tree is still balanced
+      expect(root.children.length).to.be.at.most(M);
+
+      // Verify all remaining elements are accessible
+      for (let i = 1; i < 99; i++) {
+        if (i < 20 || i >= 30) {
+          if (i !== 50) {
+            expect(list.isKnown(createId(`id${i}`, 0))).to.be.true;
+          }
+        }
+      }
+
+      // Verify the elements we uninserted are no longer known
+      expect(list.isKnown(createId(`id0`, 0))).to.be.false;
+      expect(list.isKnown(createId(`id99`, 0))).to.be.false;
+      expect(list.isKnown(createId(`id50`, 0))).to.be.false;
+      for (let i = 20; i < 30; i++) {
+        expect(list.isKnown(createId(`id${i}`, 0))).to.be.false;
+      }
+    });
+
+    it("should properly handle uninsert of an entire leaf node", () => {
+      let list = IdList.new();
+
+      // Insert multiple bunches to create distinct leaf nodes
+      list = list.insertAfter(null, createId("bunch1", 0), 10);
+      list = list.insertAfter(createId("bunch1", 9), createId("bunch2", 0), 10);
+      list = list.insertAfter(createId("bunch2", 9), createId("bunch3", 0), 10);
+
+      // The middle bunch should be in its own leaf
+      // Uninsert the entire middle bunch
+      list = list.uninsert(createId("bunch2", 0), 10);
+
+      // Verify all middle bunch elements are removed
+      for (let i = 0; i < 10; i++) {
+        expect(list.isKnown(createId("bunch2", i))).to.be.false;
+      }
+
+      // Verify all other elements are still there
+      for (let i = 0; i < 10; i++) {
+        expect(list.has(createId("bunch1", i))).to.be.true;
+        expect(list.has(createId("bunch3", i))).to.be.true;
+      }
+
+      // The total count should be correct
+      expect(list.length).to.equal(20);
+
+      // Verify the ordering is correct - bunch1 followed by bunch3
+      for (let i = 0; i < 10; i++) {
+        expect(list.indexOf(createId("bunch1", i))).to.equal(i);
+        expect(list.indexOf(createId("bunch3", i))).to.equal(i + 10);
+      }
+
+      // Verify the leaf is gone, not empty
+      expect(list["root"].children.length).to.equal(2);
+    });
+
+    it("should handle uninsert that removes all children of an inner node", () => {
+      let list = IdList.new();
+
+      // Create a list with enough elements to guarantee multiple levels
+      for (let i = 0; i < 2 * M * M; i++) {
+        list = list.insertBefore(null, createId(`id${i}`, 0));
+      }
+
+      // Uninsert all ids descended from the root's first child node (an inner node)
+      function allIds(node: InnerNode): ElementId[] {
+        const ans: ElementId[] = [];
+        if (node instanceof InnerNodeInner) {
+          for (const child of node.children) {
+            ans.push(...allIds(child));
+          }
+        } else {
+          for (const child of node.children) {
+            ans.push(
+              ...expandIds(
+                { bunchId: child.bunchId, counter: child.startCounter },
+                child.count
+              )
+            );
+          }
+        }
+        return ans;
+      }
+      const list1 = list;
+      const firstChild = list1["root"].children[0] as InnerNode;
+      const toUninsert = allIds(firstChild).reverse();
+
+      for (const id of toUninsert) {
+        list = list.uninsert(id);
+      }
+
+      // The emptied node should be gone entirely
+      const list2 = list;
+      const root2 = list2["root"];
+      expect(root2.children.length).to.equal(list1["root"].children.length - 1);
+
+      // Check the list state
+      const toUninsertSet = new Set(toUninsert.map((id) => JSON.stringify(id)));
+      for (const id of list1.knownIds) {
+        expect(list2.isKnown(id)).to.equal(
+          !toUninsertSet.has(JSON.stringify(id)),
+          JSON.stringify(id)
+        );
+      }
+
+      // We can still add elements to the tree
+      list = list.insertAfter(null, createId("new", 0));
+
+      // And the new element is accessible
+      expect(list.has(createId("new", 0))).to.be.true;
+    });
+
+    it("should handle sequential uninsert operations efficiently", () => {
+      let list = IdList.new();
+
+      // Insert a large sequence that will result in a compressed structure
+      list = list.insertAfter(null, createId("seq", 0), 100);
+
+      // Get saved state before uninsert to check compression
+      const savedBefore = list.save();
+      expect(savedBefore.length).to.equal(1); // Should be a single entry
+
+      // Uninsert a range in the middle
+      list = list.uninsert(createId("seq", 40), 20);
+
+      // Get saved state after uninsert
+      const savedAfter = list.save();
+
+      // The uninsert should result in at most 2 entries
+      // One for 0-39 and one for 60-99
+      expect(savedAfter.length).to.be.lessThanOrEqual(2);
+
+      // Verify the structure
+      for (let i = 0; i < 100; i++) {
+        if (i >= 40 && i < 60) {
+          expect(list.isKnown(createId("seq", i))).to.be.false;
+        } else {
+          expect(list.has(createId("seq", i))).to.be.true;
+        }
+      }
+
+      // Verify total count
+      expect(list.length).to.equal(80);
+    });
+
+    it("should handle uninsert of a discontinuous run that was inserted in bulk", () => {
+      let list = IdList.new();
+
+      // Insert initial sequence
+      list = list.insertAfter(null, createId("seq", 0), 20);
+
+      // Delete and uninsert some elements to make it discontinuous
+      list = list.uninsert(createId("seq", 5));
+      list = list.delete(createId("seq", 10));
+      list = list.uninsert(createId("seq", 15));
+      list = list.delete(createId("seq", 6));
+
+      // Uninsert the entire sequence
+      list = list.uninsert(createId("seq", 0), 20);
+
+      // Verify all elements are gone
+      for (let i = 0; i < 20; i++) {
+        expect(list.isKnown(createId("seq", i))).to.be.false;
+      }
+
+      // List should be empty
+      expect(list.length).to.equal(0);
+    });
+
+    it("should optimize uninsert when removing the most recent bulk insert", () => {
+      let list = IdList.new();
+
+      // Initial sequence
+      list = list.insertAfter(null, createId("first", 0), 10);
+
+      // Add a second sequence
+      list = list.insertAfter(createId("first", 9), createId("second", 0), 10);
+
+      // Uninsert the second sequence (the most recently added bulk)
+      list = list.uninsert(createId("second", 0), 10);
+
+      // Verify only the second sequence is gone
+      for (let i = 0; i < 10; i++) {
+        expect(list.has(createId("first", i))).to.be.true;
+        expect(list.isKnown(createId("second", i))).to.be.false;
+      }
+
+      // The list should have exactly the first sequence
+      expect(list.length).to.equal(10);
+
+      // Verify efficient compression by checking tree structure
+      expect(list["root"].children.length).to.equal(1);
+
+      // Also check compression of saved state
+      const saved = list.save();
+      expect(saved.length).to.equal(1);
     });
   });
 

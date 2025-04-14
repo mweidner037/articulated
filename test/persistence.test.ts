@@ -98,6 +98,179 @@ describe("IdList Persistence", () => {
     });
   });
 
+  describe("uninsert", () => {
+    it("returns a new data structure without modifying the original", () => {
+      // Create an initial list with multiple IDs
+      const id1 = createId("bunch1", 0);
+      const id2 = createId("bunch1", 1);
+      const initialList = IdList.fromIds([id1, id2]);
+
+      // Uninsert one element
+      const newList = initialList.uninsert(id1);
+
+      // Assert the new list has completely removed the item (not just marked deleted)
+      expect(newList.has(id1)).to.be.false;
+      expect(newList.isKnown(id1)).to.be.false; // Not known anymore (unlike delete)
+
+      // Assert the original list is unchanged
+      expect(initialList.has(id1)).to.be.true;
+      expect(initialList.isKnown(id1)).to.be.true;
+      expect(initialList.length).to.equal(2);
+      expect(newList.length).to.equal(1);
+
+      // Verify iterating over the lists produces the expected elements
+      expect([...initialList]).to.deep.equal([id1, id2]);
+      expect([...newList]).to.deep.equal([id2]);
+    });
+
+    it("handles bulk uninsert without modifying the original", () => {
+      // Create an initial list with sequential IDs
+      const bunchId = "bunch1";
+      const ids = Array.from({ length: 5 }, (_, i) => createId(bunchId, i));
+      const initialList = IdList.fromIds(ids);
+
+      // Bulk uninsert the middle 3 elements
+      const startId = createId(bunchId, 1); // Start at the second element
+      const count = 3;
+      const newList = initialList.uninsert(startId, count);
+
+      // Assert the new list has removed the specified IDs
+      expect(newList.length).to.equal(2); // 5 - 3 = 2 remaining
+
+      // Check specific IDs
+      expect(newList.isKnown(createId(bunchId, 0))).to.be.true; // First ID remains
+      expect(newList.isKnown(createId(bunchId, 1))).to.be.false; // Removed
+      expect(newList.isKnown(createId(bunchId, 2))).to.be.false; // Removed
+      expect(newList.isKnown(createId(bunchId, 3))).to.be.false; // Removed
+      expect(newList.isKnown(createId(bunchId, 4))).to.be.true; // Last ID remains
+
+      // Assert the original list is unchanged
+      expect(initialList.length).to.equal(5);
+      for (const id of ids) {
+        expect(initialList.has(id)).to.be.true;
+      }
+    });
+
+    it("can uninsert multiple items without modifying originals", () => {
+      // Create an initial list with multiple IDs
+      const id1 = createId("bunch1", 0);
+      const id2 = createId("bunch2", 0);
+      const id3 = createId("bunch3", 0);
+      const initialList = IdList.fromIds([id1, id2, id3]);
+
+      // Uninsert in sequence to test persistence across multiple operations
+      const list1 = initialList.uninsert(id1);
+      const list2 = list1.uninsert(id2);
+
+      // Each list should have the correct state
+      expect(initialList.length).to.equal(3);
+      expect(list1.length).to.equal(2);
+      expect(list2.length).to.equal(1);
+
+      expect([...initialList]).to.deep.equal([id1, id2, id3]);
+      expect([...list1]).to.deep.equal([id2, id3]);
+      expect([...list2]).to.deep.equal([id3]);
+
+      // Verify knowledge state
+      expect(initialList.isKnown(id1)).to.be.true;
+      expect(list1.isKnown(id1)).to.be.false;
+      expect(list2.isKnown(id1)).to.be.false;
+      expect(list2.isKnown(id2)).to.be.false;
+    });
+
+    it("verifies uninsert is inverse of insert by comparing snapshots", () => {
+      // Start with an empty list
+      const emptyList = IdList.new();
+
+      // Create some IDs
+      const id1 = createId("bunch1", 0);
+      const id2 = createId("bunch2", 0);
+
+      // Insert id1
+      const list1 = emptyList.insertAfter(null, id1);
+
+      // Insert id2 after id1
+      const list2 = list1.insertAfter(id1, id2);
+
+      // Uninsert id2 - should revert to list1 state
+      const list3 = list2.uninsert(id2);
+
+      // Verify list3 is equivalent to list1 (but not the same object)
+      expect(list3).not.to.equal(list1); // Different objects
+      expect(list3.length).to.equal(list1.length);
+      expect([...list3]).to.deep.equal([...list1]);
+
+      // Original lists are unchanged
+      expect(list1.length).to.equal(1);
+      expect(list2.length).to.equal(2);
+    });
+
+    it("maintains insertion order when uninsert removes elements", () => {
+      // Create a list with multiple sequential bunch IDs
+      const ids = [
+        createId("bunch1", 0),
+        createId("bunch2", 0),
+        createId("bunch3", 0),
+        createId("bunch4", 0),
+        createId("bunch5", 0),
+      ];
+
+      const initialList = IdList.fromIds(ids);
+
+      // Uninsert elements 1 and 3 (zero-indexed)
+      const newList = initialList.uninsert(ids[1]).uninsert(ids[3]);
+
+      // Verify correct elements were removed and order is maintained
+      expect(newList.length).to.equal(3);
+      expect([...newList]).to.deep.equal([ids[0], ids[2], ids[4]]);
+
+      // Original list is unchanged
+      expect(initialList.length).to.equal(5);
+      expect([...initialList]).to.deep.equal(ids);
+    });
+
+    it("handles uninsert in branching operations correctly", () => {
+      // Start with a common ancestor
+      const id1 = createId("bunch1", 0);
+      const id2 = createId("bunch2", 0);
+      const ancestor = IdList.fromIds([id1, id2]);
+
+      // Branch A: Uninsert id1
+      const branchA = ancestor.uninsert(id1);
+
+      // Branch B: Uninsert id2
+      const branchB = ancestor.uninsert(id2);
+
+      // Branch C: Uninsert both ids
+      const branchC = ancestor.uninsert(id1).uninsert(id2);
+
+      // Verify each branch has its correct state
+      expect(ancestor.length).to.equal(2);
+      expect([...ancestor]).to.deep.equal([id1, id2]);
+
+      expect(branchA.length).to.equal(1);
+      expect([...branchA]).to.deep.equal([id2]);
+
+      expect(branchB.length).to.equal(1);
+      expect([...branchB]).to.deep.equal([id1]);
+
+      expect(branchC.length).to.equal(0);
+      expect([...branchC]).to.deep.equal([]);
+
+      // Add a new element to branch C
+      const id3 = createId("bunch3", 0);
+      const branchC2 = branchC.insertAfter(null, id3);
+
+      // Verify all other branches remain unchanged
+      expect(ancestor.length).to.equal(2);
+      expect(branchA.length).to.equal(1);
+      expect(branchB.length).to.equal(1);
+      expect(branchC.length).to.equal(0);
+      expect(branchC2.length).to.equal(1);
+      expect([...branchC2]).to.deep.equal([id3]);
+    });
+  });
+
   describe("delete", () => {
     it("returns a new data structure without modifying the original", () => {
       // Create an initial list with multiple IDs

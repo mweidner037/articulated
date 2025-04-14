@@ -227,6 +227,174 @@ describe("IdList", () => {
     });
   });
 
+  describe("uninsert operations", () => {
+    it("should completely remove an element", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id);
+      expect(list.length).to.equal(1);
+      expect(list.isKnown(id)).to.be.true;
+
+      list = list.uninsert(id);
+      expect(list.length).to.equal(0);
+      expect(list.isKnown(id)).to.be.false; // Unlike delete, the id is no longer known
+    });
+
+    it("should do nothing when uninsert is called on an unknown ID", () => {
+      const list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      const newList = list.uninsert(id);
+      expect(newList).to.equal(list); // Should return the same list without changes
+      expect(list.isKnown(id)).to.be.false;
+    });
+
+    it("should bulk uninsert multiple elements", () => {
+      let list = IdList.new();
+      const startId: ElementId = { bunchId: "abc", counter: 1 };
+
+      // Insert 3 sequential IDs
+      list = list.insertAfter(null, startId, 3);
+      expect(list.length).to.equal(3);
+
+      // Uninsert all 3
+      list = list.uninsert(startId, 3);
+
+      expect(list.length).to.equal(0);
+      expect(list.isKnown({ bunchId: "abc", counter: 1 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 2 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 3 })).to.be.false;
+    });
+
+    it("should throw on uninsert with an invalid count", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id);
+
+      expect(() => list.uninsert(id, -1)).to.throw();
+      expect(() => list.uninsert(id, 3.5)).to.throw();
+      expect(() => list.uninsert(id, NaN)).to.throw();
+    });
+
+    it("should handle uninsert with count = 0 as a no-op", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id);
+      const newList = list.uninsert(id, 0);
+
+      expect(newList).to.equal(list); // Should return the same list
+      expect(list.isKnown(id)).to.be.true; // ID should still be known
+    });
+
+    it("should be the exact inverse of insertAfter", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 5 };
+
+      // Insert some elements
+      list = list.insertAfter(null, id1);
+      const beforeInsert = list;
+
+      // Insert a bunch of elements after id1
+      list = list.insertAfter(id1, id2, 3);
+      expect(list.length).to.equal(4); // id1 + 3 new elements
+
+      // Uninsert should revert to the original state
+      list = list.uninsert(id2, 3);
+      expect(list.length).to.equal(1); // Only id1 remains
+
+      // The list should be equivalent to beforeInsert
+      expect([...list]).to.deep.equal([...beforeInsert]);
+    });
+
+    it("should be the exact inverse of insertBefore", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 5 };
+
+      // Insert some elements
+      list = list.insertAfter(null, id1);
+      const beforeInsert = list;
+
+      // Insert a bunch of elements before id1
+      list = list.insertBefore(id1, id2, 3);
+      expect(list.length).to.equal(4); // id1 + 3 new elements
+
+      // Uninsert should revert to the original state
+      list = list.uninsert(id2, 3);
+      expect(list.length).to.equal(1); // Only id1 remains
+
+      // The list should be equivalent to beforeInsert
+      expect([...list]).to.deep.equal([...beforeInsert]);
+    });
+
+    it("should handle partial uninsert from a bulk insertion", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+
+      // Insert 5 sequential IDs
+      list = list.insertAfter(null, id1, 5);
+      expect(list.length).to.equal(5);
+
+      // Uninsert the middle 2
+      const middleId: ElementId = { bunchId: "abc", counter: 2 };
+      list = list.uninsert(middleId, 2);
+
+      expect(list.length).to.equal(3);
+      expect(list.isKnown({ bunchId: "abc", counter: 1 })).to.be.true;
+      expect(list.isKnown({ bunchId: "abc", counter: 2 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 3 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 4 })).to.be.true;
+      expect(list.isKnown({ bunchId: "abc", counter: 5 })).to.be.true;
+
+      // Check that the IDs are in the correct order
+      const ids = [...list];
+      expect(ids).to.have.length(3);
+      expect(ids[0].counter).to.equal(1);
+      expect(ids[1].counter).to.equal(4);
+      expect(ids[2].counter).to.equal(5);
+
+      // Uninsert the whole bunch
+      list = list.uninsert(id1, 5);
+      expect(list.length).to.equal(0);
+      expect(list.knownIds.length).to.equal(0);
+      expect(list.isKnown({ bunchId: "abc", counter: 1 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 2 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 3 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 4 })).to.be.false;
+      expect(list.isKnown({ bunchId: "abc", counter: 5 })).to.be.false;
+    });
+
+    it("should handle uninsert of IDs from different leaves", () => {
+      let list = IdList.new();
+
+      // Insert IDs with different bunchIds to ensure they're in different leaves
+      list = list.insertAfter(null, { bunchId: "abc", counter: 1 });
+      list = list.insertAfter(
+        { bunchId: "abc", counter: 1 },
+        { bunchId: "def", counter: 1 }
+      );
+      list = list.insertAfter(
+        { bunchId: "def", counter: 1 },
+        { bunchId: "def", counter: 2 }
+      );
+
+      expect(list.length).to.equal(3);
+
+      // Uninsert one from each bunch
+      list = list.uninsert({ bunchId: "abc", counter: 1 });
+      list = list.uninsert({ bunchId: "def", counter: 2 });
+
+      expect(list.length).to.equal(1);
+      expect(list.isKnown({ bunchId: "abc", counter: 1 })).to.be.false;
+      expect(list.isKnown({ bunchId: "def", counter: 1 })).to.be.true;
+      expect(list.isKnown({ bunchId: "def", counter: 2 })).to.be.false;
+    });
+  });
+
   describe("delete operations", () => {
     it("should mark an element as deleted", () => {
       let list = IdList.new();

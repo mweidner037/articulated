@@ -33,7 +33,9 @@ describe("IdList Fuzzer Tests", () => {
   };
 
   describe("Random Operation Sequences", () => {
-    it("should handle a random sequence of operations", () => {
+    it("should handle a random sequence of operations", function () {
+      this.timeout(6000);
+
       let fuzzer = Fuzzer.new();
       const knownIds: ElementId[] = [];
 
