@@ -17,6 +17,9 @@ export class Fuzzer {
       this.list = makeList();
       this.simple = makeSimple();
     } catch (e) {
+      if (DEBUG) {
+        console.log("An implementation threw error", e);
+      }
       // If one throws, they both should throw.
       // E.g. you tried to insert a known id.
       expect(makeList).to.throw((e as Error).message);
@@ -112,6 +115,16 @@ export class Fuzzer {
     return new Fuzzer(
       () => this.list.insertBefore(after, newId, count),
       () => this.simple.insertBefore(after, newId, count)
+    );
+  }
+
+  uninsert(id: ElementId, count?: number) {
+    if (DEBUG) {
+      console.log("uninsert", id, count);
+    }
+    return new Fuzzer(
+      () => this.list.uninsert(id, count),
+      () => this.simple.uninsert(id, count)
     );
   }
 

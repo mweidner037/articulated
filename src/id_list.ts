@@ -472,6 +472,91 @@ export class IdList {
   }
 
   /**
+   * Undoes the insertion of `id`, making it no longer known.
+   *
+   * This method is an exact inverse to `insertAfter(-, id)` or `insertBefore(-, id)`,
+   * unlike `delete(id)`, which merely marks `id` as deleted.
+   * You almost always want to use delete instead of uninsert, unless you are rolling
+   * back the IdList state as part of a [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
+   * architecture. (Even then, you may find it easier to restore a snapshot instead
+   * of explicitly undoing operations, making use of persistence.)
+   *
+   * If `id` is already not known, this method does nothing.
+   *
+   * @param count Provide this to bulk-uninsert `count` ids,
+   * starting with id and proceeding with the same bunchId and sequential counters.
+   * `uninsert(id, count)` is an exact inverse to `insertAfter(-, id, count)` or `insertBefore(-, id, count)`.
+   */
+  uninsert(id: ElementId, count = 1) {
+    if (!(Number.isSafeInteger(count) && count >= 0)) {
+      throw new Error(`Invalid count: ${count}`);
+    }
+    if (count === 0) return this;
+
+    // We optimize for the case where you are undoing the most recent insert operation.
+    // In that case:
+    // - All of the bulk ids are known and still together in one leaf.
+    // - The bulk ids are at the right end of their leaf (assuming normal LtR ElementId generation).
+    const located = this.locate(id);
+    if (located) {
+      const leaf = located[0].node;
+      if (leaf.startCounter + leaf.count === id.counter + count) {
+        if (leaf.startCounter === id.counter) {
+          // Uninsert the entire leaf.
+          return this.replaceLeaf(located);
+        } else {
+          // Shrink the right end of leaf.
+          const present = leaf.present.clone();
+          present.delete(id.counter, count);
+          return this.replaceLeaf(located, {
+            ...leaf,
+            count: id.counter - leaf.startCounter,
+            present,
+          });
+        }
+      }
+    }
+
+    // Fallback for the general case.
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    for (let i = count - 1; i >= 0; i--) {
+      ans = ans.uninsertOne({ bunchId: id.bunchId, counter: id.counter + i });
+    }
+    return ans;
+  }
+
+  private uninsertOne(id: ElementId) {
+    const located = this.locate(id);
+    if (located === null) return this;
+
+    const leaf = located[0].node;
+    const newLeaves: LeafNode[] = [];
+    if (leaf.startCounter < id.counter) {
+      // The part of leaf before id.
+      const present = leaf.present.clone();
+      present.delete(id.counter, present.length);
+      newLeaves.push({
+        ...leaf,
+        count: id.counter - leaf.startCounter,
+        present,
+      });
+    }
+    if (id.counter + 1 < leaf.startCounter + leaf.count) {
+      // The part of leaf after id.
+      const present = leaf.present.clone();
+      present.delete(0, id.counter + 1);
+      newLeaves.push({
+        ...leaf,
+        startCounter: id.counter + 1,
+        count: leaf.startCounter + leaf.count - (id.counter + 1),
+        present,
+      });
+    }
+    return this.replaceLeaf(located, ...newLeaves);
+  }
+
+  /**
    * Marks `id` as deleted from this list.
    * A new IdList is returned and the current list remains unchanged.
    *
@@ -579,11 +664,18 @@ export class IdList {
    * Replaces the leaf at the given path with newLeaves.
    * Returns a proper (sufficiently balanced) B+Tree with updated sizes.
    *
-   * newLeaves.length must be in [1, M].
+   * Exception: If you delete the leaf (newLeaves is empty), we don't prevent
+   * nodes from going under M/2 children. This lets us avoid implementing B+Tree
+   * deletes; any performance penalty goes away after reloading.
+   *
+   * newLeaves.length must be at most M.
    */
   private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
     const leafMapMut = { value: this.leafMap };
     const parentSeqsMut = { value: this.parentSeqs };
+
+    // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
+    leafMapMut.value = leafMapMut.value.delete(located[0].node);
 
     const newRoot = replaceNode(
       located,
@@ -1066,10 +1158,12 @@ function lastId(node: InnerNode): ElementId {
 /**
  * Replace located[i].node with newNodes.
  *
- * newNodes.length must be in [1, M].
+ * newNodes.length must be at most M.
  *
  * The returned node's descendants are recorded in leafMapMut and parentSeqsMut,
  * but the node itself is not (since we don't know its parent here).
+ * Also, we don't delete the replaced node from those collections; this is okay
+ * for parentSeqsMut, while the caller must update leafMapMut.
  */
 function replaceNode(
   located: Located,
@@ -1117,6 +1211,14 @@ function replaceNode(
         i + 1
       );
     }
+  } else if (newChildren.length === 0) {
+    // parent holds no content, so it can be replaced with nothing.
+    if (i === located.length - 1) {
+      // Instead of deleting the root, replace it with an empty node.
+      return new InnerNodeInner(parent.seq, [], parentSeqsMut);
+    } else {
+      return replaceNode(located, root, leafMapMut, parentSeqsMut, [], i + 1);
+    }
   } else {
     // "Replace" parent, reusing its seq.
     // To avoid doing newChildren.length sets every time (which makes replaceLeaf
@@ -1130,8 +1232,6 @@ function replaceNode(
         newChildren as LeafNode[],
         null
       );
-      // Important to delete the replaced leaf's entry, so that it doesn't corrupt by-ElementId searches.
-      leafMapMut.value = leafMapMut.value.delete(located[0].node);
       for (const newNode of newNodes as LeafNode[]) {
         leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
       }
@@ -1149,8 +1249,6 @@ function replaceNode(
           );
         }
       }
-      // If the replaced node isn't represented in newNodes (i.e., same seq is not reused),
-      // we could delete its entry to save memory, but it is not necessary.
     }
 
     if (i === located.length - 1) {

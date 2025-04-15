@@ -1,4 +1,4 @@
-import { ElementId, equalsId, SavedIdList } from "../src";
+import { ElementId, equalsId, expandIds, SavedIdList } from "../src";
 
 interface ListElement {
   readonly id: ElementId;
@@ -153,6 +153,37 @@ export class IdListSimple {
     const newState = this.state.slice();
     newState.splice(index, 0, ...expandElements(newId, false, count));
     return new IdListSimple(newState, this.length + count);
+  }
+
+  /**
+   * Undoes the insertion of `id`, making it no longer known.
+   *
+   * This method is an exact inverse to `insertAfter(-, id)` or `insertBefore(-, id)`,
+   * unlike `delete(id)`, which merely marks `id` as deleted.
+   * You almost always want to use delete instead of uninsert, unless you are rolling
+   * back the IdList state as part of a [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
+   * architecture. (Even then, you may find it easier to restore a snapshot instead
+   * of explicitly undoing operations, making use of persistence.)
+   *
+   * If `id` is already not known, this method does nothing.
+   *
+   * @param count Provide this to bulk-uninsert `count` ids,
+   * starting with id and proceeding with the same bunchId and sequential counters.
+   * `uninsert(id, count)` is an exact inverse to `insertAfter(-, id, count)` or `insertBefore(-, id, count)`.
+   */
+  uninsert(id: ElementId, count = 1) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdListSimple = this;
+    for (const curId of expandIds(id, count)) {
+      const index = ans.state.findIndex((elt) => equalsId(elt.id, curId));
+      if (index !== -1) {
+        const elt = ans.state[index];
+        const newState = ans.state.slice();
+        newState.splice(index, 1);
+        ans = new IdListSimple(newState, ans.length - (elt.isDeleted ? 0 : 1));
+      }
+    }
+    return ans;
   }
 
   /**
