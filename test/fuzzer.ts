@@ -1,5 +1,5 @@
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import { ElementId, IdList, SavedIdList } from "../src";
 import { IdListSimple } from "./id_list_simple";
 
 const DEBUG = false;
@@ -9,25 +9,36 @@ const DEBUG = false;
  * erroring if the resulting states differ.
  */
 export class Fuzzer {
-  readonly list: IdList;
-  readonly simple: IdListSimple;
+  private constructor(public list: IdList, readonly simple: IdListSimple) {}
 
-  constructor(makeList: () => IdList, makeSimple: () => IdListSimple) {
+  private mutate(makeList: () => IdList, mutateSimple: () => void) {
+    let listError: unknown = null;
     try {
       this.list = makeList();
-      this.simple = makeSimple();
     } catch (e) {
+      listError = e;
+    }
+
+    let simpleError: unknown = null;
+    try {
+      mutateSimple();
+    } catch (e) {
+      simpleError = e;
+    }
+
+    const anyError = simpleError ?? listError;
+    if (anyError) {
       if (DEBUG) {
-        console.log("An implementation threw error", e);
+        console.log("An implementation threw error", anyError);
       }
       // If one throws, they both should throw.
       // E.g. you tried to insert a known id.
-      expect(makeList).to.throw((e as Error).message);
-      expect(makeSimple).to.throw((e as Error).message);
+      expect(listError).to.not.equal(null, (anyError as Error).message);
+      expect(simpleError).to.not.equal(null, (anyError as Error).message);
 
       // Throw the original error for the caller.
       // Our tests usually filter out non-AssertionErrors.
-      throw e;
+      throw anyError;
     }
 
     // Check that states agree.
@@ -75,76 +86,87 @@ export class Fuzzer {
     expect([
       ...IdList.load(this.list.save()).valuesWithIsDeleted(),
     ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
+
+    if (DEBUG) console.log("checkAll passed");
   }
 
   static new() {
-    return new Fuzzer(
-      () => IdList.new(),
-      () => IdListSimple.new()
-    );
+    return new Fuzzer(IdList.new(), IdListSimple.new());
   }
 
   static from(knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>) {
-    return new Fuzzer(
-      () => IdList.from(knownIds),
-      () => IdListSimple.from(knownIds)
-    );
+    return new Fuzzer(IdList.from(knownIds), IdListSimple.from(knownIds));
   }
 
   static fromIds(ids: Iterable<ElementId>) {
-    return new Fuzzer(
-      () => IdList.fromIds(ids),
-      () => IdListSimple.fromIds(ids)
-    );
+    return new Fuzzer(IdList.fromIds(ids), IdListSimple.fromIds(ids));
   }
 
-  insertAfter(before: ElementId | null, newId: ElementId, count?: number) {
+  insertAfter(
+    before: ElementId | null,
+    newId: ElementId,
+    count?: number
+  ): void {
     if (DEBUG) {
       console.log("insertAfter", before, newId, count);
     }
-    return new Fuzzer(
+    this.mutate(
       () => this.list.insertAfter(before, newId, count),
       () => this.simple.insertAfter(before, newId, count)
     );
   }
 
-  insertBefore(after: ElementId | null, newId: ElementId, count?: number) {
+  insertBefore(
+    after: ElementId | null,
+    newId: ElementId,
+    count?: number
+  ): void {
     if (DEBUG) {
       console.log("insertBefore", after, newId, count);
     }
-    return new Fuzzer(
+    this.mutate(
       () => this.list.insertBefore(after, newId, count),
       () => this.simple.insertBefore(after, newId, count)
     );
   }
 
-  uninsert(id: ElementId, count?: number) {
+  uninsert(id: ElementId, count?: number): void {
     if (DEBUG) {
       console.log("uninsert", id, count);
     }
-    return new Fuzzer(
+    this.mutate(
       () => this.list.uninsert(id, count),
       () => this.simple.uninsert(id, count)
     );
   }
 
-  delete(id: ElementId) {
+  delete(id: ElementId): void {
     if (DEBUG) {
       console.log("delete", id);
     }
-    return new Fuzzer(
+    this.mutate(
       () => this.list.delete(id),
       () => this.simple.delete(id)
     );
   }
 
-  undelete(id: ElementId) {
+  undelete(id: ElementId): void {
     if (DEBUG) {
       console.log("undelete", id);
     }
-    return new Fuzzer(
+    this.mutate(
       () => this.list.undelete(id),
       () => this.simple.undelete(id)
+    );
+  }
+
+  load(savedState: SavedIdList) {
+    if (DEBUG) {
+      console.log("load");
+    }
+    this.mutate(
+      () => IdList.load(savedState),
+      () => this.simple.load(savedState)
     );
   }
 }

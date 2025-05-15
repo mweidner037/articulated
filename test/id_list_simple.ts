@@ -2,34 +2,12 @@ import { ElementId, equalsId, expandIds, SavedIdList } from "../src";
 
 interface ListElement {
   readonly id: ElementId;
-  readonly isDeleted: boolean;
+  isDeleted: boolean;
 }
 
-// Simpler implementation of IdList, used for illustration purposes and fuzz testing.
-
 /**
- * A list of ElementIds, as a persistent (immutable) data structure.
- *
- * An IdListSimple helps you assign a unique immutable id to each element of a list, such
- * as a todo-list or a text document (= list of characters). That way, you can keep track
- * of those elements even as their (array) indices change due to insert/delete operations
- * earlier in the list.
- *
- * Any id that has been inserted into an IdListSimple remains **known** to that list indefinitely,
- * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
- * merely marks an id as deleted (= not present); it remains in memory as a "tombstone".
- * This is useful in collaborative settings, since another user might instruct you to
- * call `insertAfter(before, newId)` when you have already deleted `before` locally.
- *
- * To enable easy and efficient rollbacks, such as in a
- * [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
- * architecture, IdListSimple is a persistent (immutable) data structure. Mutating methods
- * return a new IdListSimple, sharing memory with the old IdListSimple where possible.
- *
- * See {@link ElementId} for advice on generating ElementIds. IdListSimple is optimized for
- * the case where sequential ElementIds often have the same bunchId and sequential counters.
- * However, you are not required to order ids in this way - it is okay if future edits
- * cause such ids to be separated, partially deleted, or even reordered.
+ * Simplified implementation of IdList, used for illustration purposes and fuzz testing.
+ * It omits IdList's optimizations and persistence but otherwise has identical behavior.
  */
 export class IdListSimple {
   /**
@@ -37,7 +15,7 @@ export class IdListSimple {
    */
   private constructor(
     private readonly state: ListElement[],
-    readonly length: number
+    private _length: number
   ) {}
 
   /**
@@ -82,7 +60,6 @@ export class IdListSimple {
 
   /**
    * Inserts `newId` immediately after the given id (`before`), which may be deleted.
-   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * All ids to the right of `before` are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
@@ -95,10 +72,10 @@ export class IdListSimple {
    * @throws If `before` is not known.
    * @throws If any inserted id is already known.
    */
-  insertAfter(before: ElementId | null, newId: ElementId, count = 1) {
+  insertAfter(before: ElementId | null, newId: ElementId, count = 1): void {
     let index: number;
     if (before === null) {
-      // -1 so index + 1 is 0: insert at the beginning of the list.
+      // -1 so that index + 1 is 0: insert at the beginning of the list.
       index = -1;
     } else {
       index = this.state.findIndex((elt) => equalsId(elt.id, before));
@@ -107,19 +84,17 @@ export class IdListSimple {
       }
     }
 
-    if (count === 0) return this;
+    if (count === 0) return;
     if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
-    const newState = this.state.slice();
-    newState.splice(index + 1, 0, ...expandElements(newId, false, count));
-    return new IdListSimple(newState, this.length + count);
+    this.state.splice(index + 1, 0, ...expandElements(newId, false, count));
+    this._length += count;
   }
 
   /**
    * Inserts `newId` immediately before the given id (`after`), which may be deleted.
-   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * All ids to the right of `after`, plus `after` itself, are shifted one index to the right, in the manner
    * of [Array.splice](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice).
@@ -133,7 +108,7 @@ export class IdListSimple {
    * @throws If `after` is not known.
    * @throws If any inserted id is already known.
    */
-  insertBefore(after: ElementId | null, newId: ElementId, count = 1) {
+  insertBefore(after: ElementId | null, newId: ElementId, count = 1): void {
     let index: number;
     if (after === null) {
       index = this.state.length;
@@ -144,15 +119,14 @@ export class IdListSimple {
       }
     }
 
-    if (count === 0) return this;
+    if (count === 0) return;
     if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
 
     // We insert the bunch from left-to-right even though it's insertBefore.
-    const newState = this.state.slice();
-    newState.splice(index, 0, ...expandElements(newId, false, count));
-    return new IdListSimple(newState, this.length + count);
+    this.state.splice(index, 0, ...expandElements(newId, false, count));
+    this._length += count;
   }
 
   /**
@@ -163,7 +137,7 @@ export class IdListSimple {
    * You almost always want to use delete instead of uninsert, unless you are rolling
    * back the IdList state as part of a [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
    * architecture. (Even then, you may find it easier to restore a snapshot instead
-   * of explicitly undoing operations, making use of persistence.)
+   * of explicitly undoing operations.)
    *
    * If `id` is already not known, this method does nothing.
    *
@@ -171,24 +145,19 @@ export class IdListSimple {
    * starting with id and proceeding with the same bunchId and sequential counters.
    * `uninsert(id, count)` is an exact inverse to `insertAfter(-, id, count)` or `insertBefore(-, id, count)`.
    */
-  uninsert(id: ElementId, count = 1) {
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let ans: IdListSimple = this;
+  uninsert(id: ElementId, count = 1): void {
     for (const curId of expandIds(id, count)) {
-      const index = ans.state.findIndex((elt) => equalsId(elt.id, curId));
+      const index = this.state.findIndex((elt) => equalsId(elt.id, curId));
       if (index !== -1) {
-        const elt = ans.state[index];
-        const newState = ans.state.slice();
-        newState.splice(index, 1);
-        ans = new IdListSimple(newState, ans.length - (elt.isDeleted ? 0 : 1));
+        const elt = this.state[index];
+        this.state.splice(index, 1);
+        if (!elt.isDeleted) this._length--;
       }
     }
-    return ans;
   }
 
   /**
    * Marks `id` as deleted from this list.
-   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * The id remains known (a "tombstone").
    * Because `id` is still known, you can reference it in future insertAfter/insertBefore
@@ -197,23 +166,19 @@ export class IdListSimple {
    *
    * If `id` is already deleted or not known, this method does nothing.
    */
-  delete(id: ElementId) {
+  delete(id: ElementId): void {
     const index = this.state.findIndex((elt) => equalsId(elt.id, id));
     if (index != -1) {
       const elt = this.state[index];
       if (!elt.isDeleted) {
-        const newState = this.state.slice();
-        newState.splice(index, 1, { id: elt.id, isDeleted: true });
-        return new IdListSimple(newState, this.length - 1);
+        elt.isDeleted = true;
+        this._length--;
       }
     }
-
-    return this;
   }
 
   /**
    * Un-marks `id` as deleted from this list, making it present again.
-   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * This method is an exact inverse to {@link delete}.
    *
@@ -221,19 +186,16 @@ export class IdListSimple {
    *
    * @throws If `id` is not known.
    */
-  undelete(id: ElementId) {
+  undelete(id: ElementId): void {
     const index = this.state.findIndex((elt) => equalsId(elt.id, id));
     if (index == -1) {
       throw new Error("id is not known");
     }
     const elt = this.state[index];
     if (elt.isDeleted) {
-      const newState = this.state.slice();
-      newState.splice(index, 1, { id: elt.id, isDeleted: false });
-      return new IdListSimple(newState, this.length + 1);
+      elt.isDeleted = false;
+      this._length++;
     }
-
-    return this;
   }
 
   // Accessors
@@ -257,7 +219,7 @@ export class IdListSimple {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return this.isAnyKnown(id, 1);
+    return this.state.some((elt) => equalsId(elt.id, id));
   }
 
   private isAnyKnown(id: ElementId, count: number): boolean {
@@ -283,6 +245,10 @@ export class IdListSimple {
       }
     }
     return max;
+  }
+
+  get length(): number {
+    return this._length;
   }
 
   /**
@@ -421,11 +387,11 @@ export class IdListSimple {
   }
 
   /**
-   * Loads a saved state returned by {@link save}.
+   * Loads a saved state returned by {@link save}, **overwriting** the current list state.
    */
-  static load(savedState: SavedIdList) {
-    const state: ListElement[] = [];
-    let length = 0;
+  load(savedState: SavedIdList): void {
+    this.state.splice(0, this.state.length);
+    this._length = 0;
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
       if (!(Number.isSafeInteger(count) && count >= 0)) {
@@ -436,15 +402,13 @@ export class IdListSimple {
       }
 
       for (let i = 0; i < count; i++) {
-        state.push({
+        this.state.push({
           id: { bunchId, counter: startCounter + i },
           isDeleted,
         });
       }
-      if (!isDeleted) length += count;
+      if (!isDeleted) this._length += count;
     }
-
-    return new IdListSimple(state, length);
   }
 }
 
@@ -453,8 +417,7 @@ export class IdListSimple {
  * That is, this class ignores the underlying list's isDeleted status when computing list indices.
  * Access using {@link IdListSimple.knownIds}.
  *
- * Like IdListSimple, KnownIdView is immutable. To mutate, use a mutating method on the original IdListSimple
- * and access the returned list's `knownIds`.
+ * This view is live-updating. To mutate, use a mutating method on the original IdListSimple.
  */
 export class KnownIdView {
   /**
