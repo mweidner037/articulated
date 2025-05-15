@@ -21,24 +21,19 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should correctly handle splits at various tree levels", function () {
       this.timeout(10000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Start with M elements
       for (let i = 0; i < M; i++) {
         const id = createId(`id${i}`, 0);
-        fuzzer =
-          i === 0
-            ? fuzzer.insertAfter(null, id)
-            : fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
+        if (i === 0) fuzzer.insertAfter(null, id);
+        else fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
       }
 
       fuzzer.checkAll();
 
       // Force a split by adding one more element
-      fuzzer = fuzzer.insertAfter(
-        createId(`id${M - 1}`, 0),
-        createId(`id${M}`, 0)
-      );
+      fuzzer.insertAfter(createId(`id${M - 1}`, 0), createId(`id${M}`, 0));
       fuzzer.checkAll();
 
       // Now add enough elements to force multiple levels in the tree
@@ -48,7 +43,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
       for (let i = M + 1; i < secondLevelSplitTarget + 10; i++) {
         const id = createId(`id${i}`, 0);
-        fuzzer = fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
+        fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
 
         // Check more frequently near expected split points
         if (
@@ -65,15 +60,13 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should maintain tree integrity during interleaved insert/delete at boundaries", function () {
       this.timeout(5000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Create initial structure with M-1 elements
       for (let i = 0; i < M - 1; i++) {
         const id = createId(`id${i}`, 0);
-        fuzzer =
-          i === 0
-            ? fuzzer.insertAfter(null, id)
-            : fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
+        if (i === 0) fuzzer.insertAfter(null, id);
+        else fuzzer.insertAfter(createId(`id${i - 1}`, 0), id);
       }
 
       fuzzer.checkAll();
@@ -83,7 +76,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       for (let cycle = 0; cycle < 10; cycle++) {
         // Add element to trigger potential split
         const triggerSplitId = createId(`trigger${cycle}`, 0);
-        fuzzer = fuzzer.insertAfter(createId(`id${M - 2}`, 0), triggerSplitId);
+        fuzzer.insertAfter(createId(`id${M - 2}`, 0), triggerSplitId);
         fuzzer.checkAll();
 
         // Delete from potential boundary points
@@ -91,13 +84,13 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
         if (boundaryIndex === 0) {
           // Delete from beginning
-          fuzzer = fuzzer.delete(createId(`id0`, 0));
+          fuzzer.delete(createId(`id0`, 0));
         } else if (boundaryIndex === 1) {
           // Delete from middle
-          fuzzer = fuzzer.delete(createId(`id${Math.floor(M / 2)}`, 0));
+          fuzzer.delete(createId(`id${Math.floor(M / 2)}`, 0));
         } else {
           // Delete from end
-          fuzzer = fuzzer.delete(triggerSplitId);
+          fuzzer.delete(triggerSplitId);
         }
 
         fuzzer.checkAll();
@@ -108,14 +101,14 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
         if (insertIndex === 0) {
           // Insert at beginning
-          fuzzer = fuzzer.insertBefore(createId(`id1`, 0), newId);
+          fuzzer.insertBefore(createId(`id1`, 0), newId);
         } else if (insertIndex === 1) {
           // Insert in middle
           const midId = createId(`id${Math.floor(M / 2) + 1}`, 0);
-          fuzzer = fuzzer.insertBefore(midId, newId);
+          fuzzer.insertBefore(midId, newId);
         } else {
           // Insert at end
-          fuzzer = fuzzer.insertAfter(createId(`id${M - 2}`, 0), newId);
+          fuzzer.insertAfter(createId(`id${M - 2}`, 0), newId);
         }
 
         fuzzer.checkAll();
@@ -125,15 +118,13 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should handle bulk insertions that cause complex splits", function () {
       this.timeout(5000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Create initial structure with half M elements
       for (let i = 0; i < M / 2; i++) {
         const id = createId(`base${i}`, 0);
-        fuzzer =
-          i === 0
-            ? fuzzer.insertAfter(null, id)
-            : fuzzer.insertAfter(createId(`base${i - 1}`, 0), id);
+        if (i === 0) fuzzer.insertAfter(null, id);
+        else fuzzer.insertAfter(createId(`base${i - 1}`, 0), id);
       }
 
       fuzzer.checkAll();
@@ -146,9 +137,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         const batchId = createId(`batch${batch}`, 0);
 
         if (batch % 2 === 0) {
-          fuzzer = fuzzer.insertAfter(referenceId, batchId, batchSize);
+          fuzzer.insertAfter(referenceId, batchId, batchSize);
         } else {
-          fuzzer = fuzzer.insertBefore(referenceId, batchId, batchSize);
+          fuzzer.insertBefore(referenceId, batchId, batchSize);
         }
 
         fuzzer.checkAll();
@@ -161,16 +152,16 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       this.timeout(10000);
 
       const operationCount = 500; // Parameter to adjust test intensity
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const ids: ElementId[] = [];
 
       // First create a tree large enough to have multiple levels
       for (let i = 0; i < 50; i++) {
         const id = createId(`base${i}`, 0);
         if (i === 0) {
-          fuzzer = fuzzer.insertAfter(null, id);
+          fuzzer.insertAfter(null, id);
         } else {
-          fuzzer = fuzzer.insertAfter(ids[i - 1], id);
+          fuzzer.insertAfter(ids[i - 1], id);
         }
         ids.push(id);
 
@@ -198,16 +189,16 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
               try {
                 if (position === 0) {
                   // Insert at start
-                  fuzzer = fuzzer.insertBefore(ids[0], id);
+                  fuzzer.insertBefore(ids[0], id);
                 } else if (position === 1) {
                   // Insert in middle
                   const midIdx =
                     Math.floor(ids.length / 2) + Math.floor(prng() * 10) - 5;
                   const refIdx = Math.max(0, Math.min(ids.length - 1, midIdx));
-                  fuzzer = fuzzer.insertAfter(ids[refIdx], id);
+                  fuzzer.insertAfter(ids[refIdx], id);
                 } else {
                   // Insert at end
-                  fuzzer = fuzzer.insertAfter(ids[ids.length - 1], id);
+                  fuzzer.insertAfter(ids[ids.length - 1], id);
                 }
                 ids.push(id);
               } catch (e) {
@@ -227,9 +218,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
               try {
                 if (prng() > 0.5) {
-                  fuzzer = fuzzer.insertAfter(ids[refIdx], id, count);
+                  fuzzer.insertAfter(ids[refIdx], id, count);
                 } else {
-                  fuzzer = fuzzer.insertBefore(ids[refIdx], id, count);
+                  fuzzer.insertBefore(ids[refIdx], id, count);
                 }
 
                 // Add new IDs to known list
@@ -253,20 +244,20 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
                 // Uninsert first few elements
                 const count = 1 + Math.floor(prng() * 3); // 1-3 elements
                 for (let i = 0; i < count; i++) {
-                  fuzzer = fuzzer.uninsert(ids[i]);
+                  fuzzer.uninsert(ids[i]);
                 }
               } else if (pattern === 1 && ids.length > 10) {
                 // Uninsert every nth element
                 const nth = 2 + Math.floor(prng() * 5); // Every 2nd to 6th
                 for (let i = 0; i < ids.length; i += nth) {
-                  fuzzer = fuzzer.uninsert(ids[i]);
+                  fuzzer.uninsert(ids[i]);
                 }
               } else if (ids.length > 10) {
                 // Uninsert a range
                 const start = Math.floor(prng() * (ids.length / 2));
                 const count = 1 + Math.floor(prng() * 5); // 1-5 elements
                 for (let i = 0; i < count && start + i < ids.length; i++) {
-                  fuzzer = fuzzer.uninsert(ids[start + i]);
+                  fuzzer.uninsert(ids[start + i]);
                 }
               }
             }
@@ -280,20 +271,20 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
                 // Delete first few elements
                 const count = 1 + Math.floor(prng() * 3); // 1-3 elements
                 for (let i = 0; i < count; i++) {
-                  fuzzer = fuzzer.delete(ids[i]);
+                  fuzzer.delete(ids[i]);
                 }
               } else if (pattern === 1 && ids.length > 10) {
                 // Delete every nth element
                 const nth = 2 + Math.floor(prng() * 5); // Every 2nd to 6th
                 for (let i = 0; i < ids.length; i += nth) {
-                  fuzzer = fuzzer.delete(ids[i]);
+                  fuzzer.delete(ids[i]);
                 }
               } else if (ids.length > 10) {
                 // Delete a range
                 const start = Math.floor(prng() * (ids.length / 2));
                 const count = 1 + Math.floor(prng() * 5); // 1-5 elements
                 for (let i = 0; i < count && start + i < ids.length; i++) {
-                  fuzzer = fuzzer.delete(ids[start + i]);
+                  fuzzer.delete(ids[start + i]);
                 }
               }
             }
@@ -306,7 +297,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
               for (let i = 0; i < count; i++) {
                 const idx = Math.floor(prng() * ids.length);
                 try {
-                  fuzzer = fuzzer.undelete(ids[idx]);
+                  fuzzer.undelete(ids[idx]);
                 } catch (e) {
                   if (e instanceof AssertionError) {
                     throw e;
@@ -325,13 +316,13 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should maintain tree integrity with sequential run operations", function () {
       this.timeout(5000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Create sequential runs with same bunchId but varying patterns
       // This tests the compression and run handling logic
 
       // First create a base run
-      fuzzer = fuzzer.insertAfter(null, createId("run", 0), 20);
+      fuzzer.insertAfter(null, createId("run", 0), 20);
       fuzzer.checkAll();
 
       // Delete elements to create gaps in the run
@@ -343,36 +334,36 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
       for (const pattern of deletePatterns) {
         for (const idx of pattern) {
-          fuzzer = fuzzer.delete(createId("run", idx));
+          fuzzer.delete(createId("run", idx));
         }
         fuzzer.checkAll();
       }
 
       // Insert elements that extend the run
-      fuzzer = fuzzer.insertAfter(createId("run", 19), createId("run", 20), 10);
+      fuzzer.insertAfter(createId("run", 19), createId("run", 20), 10);
       fuzzer.checkAll();
 
       // Insert elements that create a gap, then fill it
-      fuzzer = fuzzer.insertAfter(createId("run", 29), createId("run", 40), 10);
+      fuzzer.insertAfter(createId("run", 29), createId("run", 40), 10);
       fuzzer.checkAll();
 
       // Fill the gap
-      fuzzer = fuzzer.insertAfter(createId("run", 29), createId("run", 30), 10);
+      fuzzer.insertAfter(createId("run", 29), createId("run", 30), 10);
       fuzzer.checkAll();
 
       // Delete elements at the boundaries
-      fuzzer = fuzzer.delete(createId("run", 0));
-      fuzzer = fuzzer.delete(createId("run", 19));
-      fuzzer = fuzzer.delete(createId("run", 20));
-      fuzzer = fuzzer.delete(createId("run", 29));
-      fuzzer = fuzzer.delete(createId("run", 30));
-      fuzzer = fuzzer.delete(createId("run", 49));
+      fuzzer.delete(createId("run", 0));
+      fuzzer.delete(createId("run", 19));
+      fuzzer.delete(createId("run", 20));
+      fuzzer.delete(createId("run", 29));
+      fuzzer.delete(createId("run", 30));
+      fuzzer.delete(createId("run", 49));
       fuzzer.checkAll();
 
       // Undelete some elements
-      fuzzer = fuzzer.undelete(createId("run", 0));
-      fuzzer = fuzzer.undelete(createId("run", 29));
-      fuzzer = fuzzer.undelete(createId("run", 49));
+      fuzzer.undelete(createId("run", 0));
+      fuzzer.undelete(createId("run", 29));
+      fuzzer.undelete(createId("run", 49));
       fuzzer.checkAll();
     });
   });
@@ -381,7 +372,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
     it("should handle interleaved sequences that affect leaf structure", function () {
       this.timeout(5000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const ids: ElementId[] = [];
 
       // Create an interleaved sequence of different bunchIds
@@ -392,9 +383,9 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         const id = createId(bunchId, counter);
 
         if (i === 0) {
-          fuzzer = fuzzer.insertAfter(null, id);
+          fuzzer.insertAfter(null, id);
         } else {
-          fuzzer = fuzzer.insertAfter(ids[ids.length - 1], id);
+          fuzzer.insertAfter(ids[ids.length - 1], id);
         }
 
         ids.push(id);
@@ -404,7 +395,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
 
       // Delete elements in a pattern that affects multiple bunches
       for (let i = 0; i < 30; i += 6) {
-        fuzzer = fuzzer.delete(ids[i]);
+        fuzzer.delete(ids[i]);
       }
 
       fuzzer.checkAll();
@@ -414,7 +405,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         const insertIdx = 2 * i + 1;
         if (insertIdx < ids.length) {
           const id = createId(`insert${i}`, 0);
-          fuzzer = fuzzer.insertAfter(ids[insertIdx], id);
+          fuzzer.insertAfter(ids[insertIdx], id);
           ids.push(id);
         }
       }
@@ -438,7 +429,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         if (lastIdx >= 0) {
           // Insert elements that continue the sequence
           const id = createId(`bunch${i}`, lastCounter + 1);
-          fuzzer = fuzzer.insertAfter(ids[lastIdx], id, 3);
+          fuzzer.insertAfter(ids[lastIdx], id, 3);
           inserted.push({ id, count: 3 });
 
           for (let j = 0; j < 3; j++) {
@@ -465,7 +456,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       const batchCount = 50;
       const batchSize = 20;
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const ids: ElementId[] = [];
 
       // Add batches of elements that will force the tree to grow
@@ -475,17 +466,17 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         // Choose where to insert the batch
         if (batch === 0 || ids.length === 0) {
           // First batch at the beginning
-          fuzzer = fuzzer.insertAfter(null, batchId, batchSize);
+          fuzzer.insertAfter(null, batchId, batchSize);
         } else if (batch === 1) {
           // Second batch at the end
-          fuzzer = fuzzer.insertAfter(ids[ids.length - 1], batchId, batchSize);
+          fuzzer.insertAfter(ids[ids.length - 1], batchId, batchSize);
         } else {
           // Other batches at random positions
           const position = Math.floor(prng() * ids.length);
           if (prng() > 0.5) {
-            fuzzer = fuzzer.insertAfter(ids[position], batchId, batchSize);
+            fuzzer.insertAfter(ids[position], batchId, batchSize);
           } else {
-            fuzzer = fuzzer.insertBefore(ids[position], batchId, batchSize);
+            fuzzer.insertBefore(ids[position], batchId, batchSize);
           }
         }
 
@@ -505,7 +496,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
           for (let i = 0; i < deleteCount; i++) {
             const deletePosition = targetBatch * batchSize + i * 2; // Delete every other element
             if (deletePosition < ids.length) {
-              fuzzer = fuzzer.delete(ids[deletePosition]);
+              fuzzer.delete(ids[deletePosition]);
             }
           }
 
@@ -519,7 +510,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       const boundaryCandidates = [0, 8, 16, 24, 32, 40, 48, 56];
       for (const boundary of boundaryCandidates) {
         if (boundary < ids.length) {
-          fuzzer = fuzzer.delete(ids[boundary]);
+          fuzzer.delete(ids[boundary]);
         }
       }
 
@@ -530,7 +521,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         if (boundary < ids.length) {
           const id = createId(`boundary${boundary}`, 0);
           try {
-            fuzzer = fuzzer.insertBefore(ids[boundary], id);
+            fuzzer.insertBefore(ids[boundary], id);
             ids.push(id);
           } catch (e) {
             if (e instanceof AssertionError) {
@@ -547,22 +538,22 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       if (ids.length > 20) {
         const midpoint = Math.floor(ids.length / 2);
         const id = createId("middle", 0);
-        fuzzer = fuzzer.insertAfter(ids[midpoint], id, 30);
+        fuzzer.insertAfter(ids[midpoint], id, 30);
 
         fuzzer.checkAll();
       }
     });
 
     it("should handle interleaved operations on a deep tree", () => {
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Create a deep tree with many elements
-      fuzzer = fuzzer.insertAfter(null, createId("base", 0), 100);
+      fuzzer.insertAfter(null, createId("base", 0), 100);
 
       // Insert elements with varying patterns in the middle
       for (let i = 0; i < 20; i++) {
         const baseIndex = 10 + i * 4;
-        fuzzer = fuzzer.insertAfter(
+        fuzzer.insertAfter(
           createId("base", baseIndex),
           createId(`interleaved${i}`, 0),
           (i % 3) + 1 // Insert 1, 2, or 3 elements
@@ -573,7 +564,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
       // Delete some elements to create fragmentation in leaves' presence
       for (let i = 0; i < 30; i++) {
         if (i % 7 === 0) {
-          fuzzer = fuzzer.delete(createId("base", i));
+          fuzzer.delete(createId("base", i));
         }
       }
       fuzzer.checkAll();

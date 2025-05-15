@@ -473,6 +473,7 @@ export class IdList {
 
   /**
    * Undoes the insertion of `id`, making it no longer known.
+   * A new IdListSimple is returned and the current list remains unchanged.
    *
    * This method is an exact inverse to `insertAfter(-, id)` or `insertBefore(-, id)`,
    * unlike `delete(id)`, which merely marks `id` as deleted.

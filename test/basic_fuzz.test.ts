@@ -1,9 +1,8 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
-import { ElementId, equalsId, IdList } from "../src";
+import { ElementId, equalsId } from "../src";
 import { M } from "../src/id_list";
 import { Fuzzer } from "./fuzzer";
-import { IdListSimple } from "./id_list_simple";
 
 describe("IdList Fuzzer Tests", () => {
   let prng!: seedrandom.PRNG;
@@ -36,7 +35,7 @@ describe("IdList Fuzzer Tests", () => {
     it("should handle a random sequence of operations", function () {
       this.timeout(6000);
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const knownIds: ElementId[] = [];
 
       // Perform a sequence of random operations
@@ -59,7 +58,7 @@ describe("IdList Fuzzer Tests", () => {
               const count = Math.floor(prng() * 3) + 1; // 1-3 elements
 
               try {
-                fuzzer = fuzzer.insertAfter(before, newId, count);
+                fuzzer.insertAfter(before, newId, count);
                 // Add the new IDs to our known list
                 for (let j = 0; j < count; j++) {
                   knownIds.push({
@@ -86,7 +85,7 @@ describe("IdList Fuzzer Tests", () => {
               const count = Math.floor(prng() * 3) + 1; // 1-3 elements
 
               try {
-                fuzzer = fuzzer.insertBefore(after, newId, count);
+                fuzzer.insertBefore(after, newId, count);
                 // Add the new IDs to our known list
                 for (let j = 0; j < count; j++) {
                   knownIds.push({
@@ -109,7 +108,7 @@ describe("IdList Fuzzer Tests", () => {
               const count = Math.floor(prng() * 3) + 1; // 1-3 elements
               const index = Math.floor(prng() * knownIds.length);
               const id = knownIds[index];
-              fuzzer = fuzzer.uninsert(id, count);
+              fuzzer.uninsert(id, count);
 
               // Delete the uninserted IDs from our known list
               for (let j = 0; j < count; j++) {
@@ -129,7 +128,7 @@ describe("IdList Fuzzer Tests", () => {
             if (knownIds.length > 0) {
               const index = Math.floor(prng() * knownIds.length);
               const id = knownIds[index];
-              fuzzer = fuzzer.delete(id);
+              fuzzer.delete(id);
               // We keep the ID in knownIds since it's still known, just deleted
             }
             break;
@@ -139,7 +138,7 @@ describe("IdList Fuzzer Tests", () => {
               const index = Math.floor(prng() * knownIds.length);
               const id = knownIds[index];
               try {
-                fuzzer = fuzzer.undelete(id);
+                fuzzer.undelete(id);
               } catch (e) {
                 if (e instanceof AssertionError) {
                   throw e;
@@ -164,7 +163,7 @@ describe("IdList Fuzzer Tests", () => {
 
       for (const seed of seeds) {
         prng = seedrandom(seed);
-        let fuzzer = Fuzzer.new();
+        const fuzzer = Fuzzer.new();
         const knownIds: ElementId[] = [];
 
         for (let i = 0; i < operationCount; i++) {
@@ -187,7 +186,7 @@ describe("IdList Fuzzer Tests", () => {
                     beforeIndex >= 0 ? knownIds[beforeIndex] : null;
                   const count = Math.floor(prng() * 3) + 1;
 
-                  fuzzer = fuzzer.insertAfter(before, newId, count);
+                  fuzzer.insertAfter(before, newId, count);
                   for (let j = 0; j < count; j++) {
                     knownIds.push({
                       bunchId: newId.bunchId,
@@ -207,7 +206,7 @@ describe("IdList Fuzzer Tests", () => {
                   const after = afterIndex >= 0 ? knownIds[afterIndex] : null;
                   const count = Math.floor(prng() * 3) + 1;
 
-                  fuzzer = fuzzer.insertBefore(after, newId, count);
+                  fuzzer.insertBefore(after, newId, count);
                   for (let j = 0; j < count; j++) {
                     knownIds.push({
                       bunchId: newId.bunchId,
@@ -222,7 +221,7 @@ describe("IdList Fuzzer Tests", () => {
                   const count = Math.floor(prng() * 3) + 1; // 1-3 elements
                   const index = Math.floor(prng() * knownIds.length);
                   const id = knownIds[index];
-                  fuzzer = fuzzer.uninsert(id, count);
+                  fuzzer.uninsert(id, count);
 
                   // Delete the uninserted IDs from our known list
                   for (let j = 0; j < count; j++) {
@@ -241,14 +240,14 @@ describe("IdList Fuzzer Tests", () => {
               case 3: // delete
                 if (knownIds.length > 0) {
                   const index = Math.floor(prng() * knownIds.length);
-                  fuzzer = fuzzer.delete(knownIds[index]);
+                  fuzzer.delete(knownIds[index]);
                 }
                 break;
 
               case 4: // undelete
                 if (knownIds.length > 0) {
                   const index = Math.floor(prng() * knownIds.length);
-                  fuzzer = fuzzer.undelete(knownIds[index]);
+                  fuzzer.undelete(knownIds[index]);
                 }
                 break;
             }
@@ -269,7 +268,7 @@ describe("IdList Fuzzer Tests", () => {
     it("should handle large sequential insertions to force tree growth", function () {
       this.timeout(5000); // This test may take longer
 
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const batchSize = 10; // Number of elements to insert in each batch
       const batchCount = 100; // Number of batches to insert
 
@@ -282,14 +281,14 @@ describe("IdList Fuzzer Tests", () => {
 
         const batchId = createRandomId();
         try {
-          fuzzer = fuzzer.insertAfter(null, batchId, batchSize);
+          fuzzer.insertAfter(null, batchId, batchSize);
         } catch (e) {
           if (e instanceof AssertionError) {
             throw e;
           }
           // If this insertion fails, try with a different ID
           const alternateBatchId = createRandomId();
-          fuzzer = fuzzer.insertAfter(null, alternateBatchId, batchSize);
+          fuzzer.insertAfter(null, alternateBatchId, batchSize);
         }
       }
 
@@ -297,11 +296,11 @@ describe("IdList Fuzzer Tests", () => {
     });
 
     it("should handle interleaved insertions that cause leaf splits", () => {
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // First create a sequential list of elements
       const baseId = { bunchId: "base", counter: 0 };
-      fuzzer = fuzzer.insertAfter(null, baseId, 20);
+      fuzzer.insertAfter(null, baseId, 20);
       fuzzer.checkAll();
 
       // Now interleave new elements between existing ones to force leaf splits
@@ -309,7 +308,7 @@ describe("IdList Fuzzer Tests", () => {
         const targetId = { bunchId: "base", counter: i };
         const newId = { bunchId: `interleave-${i}`, counter: 0 };
 
-        fuzzer = fuzzer.insertAfter(targetId, newId);
+        fuzzer.insertAfter(targetId, newId);
 
         // Check occasionally
         if (i % 6 === 0) {
@@ -321,38 +320,36 @@ describe("IdList Fuzzer Tests", () => {
     });
 
     it("should handle operations near B+Tree node boundaries", function () {
-      let fuzzer = Fuzzer.new();
-
       // Create a list with exactly M elements
       const ids = createSequentialIds(M);
-      fuzzer = Fuzzer.fromIds(ids);
+      const fuzzer = Fuzzer.fromIds(ids);
       fuzzer.checkAll();
 
       // Insert at the boundary to force a split
-      fuzzer = fuzzer.insertAfter(ids[M - 1], {
+      fuzzer.insertAfter(ids[M - 1], {
         bunchId: "boundary",
         counter: 0,
       });
       fuzzer.checkAll();
 
       // Insert at the middle of a leaf
-      fuzzer = fuzzer.insertAfter(ids[Math.floor(M / 2)], {
+      fuzzer.insertAfter(ids[Math.floor(M / 2)], {
         bunchId: "middle",
         counter: 0,
       });
       fuzzer.checkAll();
 
       // Delete elements at potential boundaries
-      fuzzer = fuzzer.delete(ids[M - 1]);
-      fuzzer = fuzzer.delete(ids[0]);
+      fuzzer.delete(ids[M - 1]);
+      fuzzer.delete(ids[0]);
       fuzzer.checkAll();
 
       // Reinsert at those boundaries
-      fuzzer = fuzzer.insertBefore(ids[1], {
+      fuzzer.insertBefore(ids[1], {
         bunchId: "reinsertion",
         counter: 0,
       });
-      fuzzer = fuzzer.insertAfter(ids[M - 2], {
+      fuzzer.insertAfter(ids[M - 2], {
         bunchId: "reinsertion",
         counter: 1,
       });
@@ -360,33 +357,19 @@ describe("IdList Fuzzer Tests", () => {
     });
 
     it("should handle bulk insertions at different tree positions", () => {
-      let fuzzer = Fuzzer.new();
-
       // Create a base tree with some elements
       const baseIds = createSequentialIds(15);
-      fuzzer = Fuzzer.fromIds(baseIds);
+      const fuzzer = Fuzzer.fromIds(baseIds);
       fuzzer.checkAll();
 
       // Insert bulk elements at the beginning, middle, and end
-      fuzzer = fuzzer.insertBefore(
-        baseIds[0],
-        { bunchId: "start", counter: 0 },
-        5
-      );
+      fuzzer.insertBefore(baseIds[0], { bunchId: "start", counter: 0 }, 5);
       fuzzer.checkAll();
 
-      fuzzer = fuzzer.insertAfter(
-        baseIds[7],
-        { bunchId: "middle", counter: 0 },
-        5
-      );
+      fuzzer.insertAfter(baseIds[7], { bunchId: "middle", counter: 0 }, 5);
       fuzzer.checkAll();
 
-      fuzzer = fuzzer.insertAfter(
-        baseIds[14],
-        { bunchId: "end", counter: 0 },
-        5
-      );
+      fuzzer.insertAfter(baseIds[14], { bunchId: "end", counter: 0 }, 5);
       fuzzer.checkAll();
 
       // Insert small batches at various positions
@@ -397,9 +380,9 @@ describe("IdList Fuzzer Tests", () => {
         const count = 1 + Math.floor(prng() * 3); // 1-3 elements
 
         if (prng() > 0.5) {
-          fuzzer = fuzzer.insertAfter(targetId, newId, count);
+          fuzzer.insertAfter(targetId, newId, count);
         } else {
-          fuzzer = fuzzer.insertBefore(targetId, newId, count);
+          fuzzer.insertBefore(targetId, newId, count);
         }
       }
 
@@ -409,45 +392,45 @@ describe("IdList Fuzzer Tests", () => {
 
   describe("Edge Case Fuzzing", () => {
     it("should handle operations on empty and near-empty lists", () => {
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       fuzzer.checkAll();
 
       // Insert and delete to empty
       const id1 = createRandomId();
-      fuzzer = fuzzer.insertAfter(null, id1);
+      fuzzer.insertAfter(null, id1);
       fuzzer.checkAll();
 
-      fuzzer = fuzzer.delete(id1);
+      fuzzer.delete(id1);
       fuzzer.checkAll();
 
       // Insert, delete, then undelete
       const id2 = createRandomId();
-      fuzzer = fuzzer.insertAfter(null, id2);
-      fuzzer = fuzzer.delete(id2);
-      fuzzer = fuzzer.undelete(id2);
+      fuzzer.insertAfter(null, id2);
+      fuzzer.delete(id2);
+      fuzzer.undelete(id2);
       fuzzer.checkAll();
 
       // Insert after a deleted ID
       const id3 = createRandomId();
-      fuzzer = fuzzer.insertAfter(id2, id3);
+      fuzzer.insertAfter(id2, id3);
       fuzzer.checkAll();
 
       // Insert before a deleted ID
       const id4 = createRandomId();
-      fuzzer = fuzzer.delete(id2);
-      fuzzer = fuzzer.insertBefore(id2, id4);
+      fuzzer.delete(id2);
+      fuzzer.insertBefore(id2, id4);
       fuzzer.checkAll();
     });
 
     it("should handle extensive deletion and reinsertion", function () {
       // Create a list with sequential elements
       const ids = createSequentialIds(30);
-      let fuzzer = Fuzzer.fromIds(ids);
+      const fuzzer = Fuzzer.fromIds(ids);
       fuzzer.checkAll();
 
       // Delete elements in a pattern
       for (let i = 0; i < 30; i += 3) {
-        fuzzer = fuzzer.delete(ids[i]);
+        fuzzer.delete(ids[i]);
 
         if (i % 9 === 0) {
           fuzzer.checkAll();
@@ -461,9 +444,9 @@ describe("IdList Fuzzer Tests", () => {
         const newId = { bunchId: "reinsert", counter: i };
 
         if (i % 2 === 0) {
-          fuzzer = fuzzer.insertAfter(ids[i], newId);
+          fuzzer.insertAfter(ids[i], newId);
         } else {
-          fuzzer = fuzzer.insertBefore(ids[i], newId);
+          fuzzer.insertBefore(ids[i], newId);
         }
 
         if (i % 9 === 0) {
@@ -475,21 +458,21 @@ describe("IdList Fuzzer Tests", () => {
 
       // Undelete some of the original deleted elements
       for (let i = 0; i < 30; i += 6) {
-        fuzzer = fuzzer.undelete(ids[i]);
+        fuzzer.undelete(ids[i]);
       }
 
       fuzzer.checkAll();
     });
 
     it("should handle sequential ID compression edge cases", () => {
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
 
       // Insert sequences with the same bunchId but gaps in counters
-      fuzzer = fuzzer.insertAfter(null, { bunchId: "sequence", counter: 0 }, 5);
+      fuzzer.insertAfter(null, { bunchId: "sequence", counter: 0 }, 5);
       fuzzer.checkAll();
 
       // Insert a gap
-      fuzzer = fuzzer.insertAfter(
+      fuzzer.insertAfter(
         { bunchId: "sequence", counter: 4 },
         { bunchId: "sequence", counter: 10 },
         5
@@ -497,7 +480,7 @@ describe("IdList Fuzzer Tests", () => {
       fuzzer.checkAll();
 
       // Fill some of the gap
-      fuzzer = fuzzer.insertAfter(
+      fuzzer.insertAfter(
         { bunchId: "sequence", counter: 4 },
         { bunchId: "sequence", counter: 5 },
         2
@@ -508,13 +491,13 @@ describe("IdList Fuzzer Tests", () => {
       for (let i = 0; i < 15; i += 2) {
         if (i !== 6 && i !== 8) {
           // Skip the gap
-          fuzzer = fuzzer.delete({ bunchId: "sequence", counter: i });
+          fuzzer.delete({ bunchId: "sequence", counter: i });
         }
       }
       fuzzer.checkAll();
 
       // Reinsert some elements with the same bunchId
-      fuzzer = fuzzer.insertAfter(
+      fuzzer.insertAfter(
         { bunchId: "sequence", counter: 3 },
         { bunchId: "sequence", counter: 20 },
         3
@@ -526,7 +509,7 @@ describe("IdList Fuzzer Tests", () => {
       this.timeout(10000); // Adjust timeout based on iterationCount
 
       const iterationCount = 50; // Parameter to adjust test intensity
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const knownIds: ElementId[] = [];
 
       for (let iteration = 0; iteration < iterationCount; iteration++) {
@@ -537,7 +520,7 @@ describe("IdList Fuzzer Tests", () => {
         const batchSize = 5 + Math.floor(prng() * 10); // 5-14 elements
 
         try {
-          fuzzer = fuzzer.insertAfter(null, batchId, batchSize);
+          fuzzer.insertAfter(null, batchId, batchSize);
           for (let i = 0; i < batchSize; i++) {
             knownIds.push({ bunchId: batchId.bunchId, counter: i });
           }
@@ -557,7 +540,7 @@ describe("IdList Fuzzer Tests", () => {
           const deleteCount = 2 + Math.floor(prng() * 5); // 2-6 elements
           for (let i = 0; i < deleteCount; i++) {
             const idx = Math.floor(prng() * knownIds.length);
-            fuzzer = fuzzer.delete(knownIds[idx]);
+            fuzzer.delete(knownIds[idx]);
           }
         }
 
@@ -574,9 +557,9 @@ describe("IdList Fuzzer Tests", () => {
 
             try {
               if (prng() > 0.5) {
-                fuzzer = fuzzer.insertAfter(referenceId, newId);
+                fuzzer.insertAfter(referenceId, newId);
               } else {
-                fuzzer = fuzzer.insertBefore(referenceId, newId);
+                fuzzer.insertBefore(referenceId, newId);
               }
               knownIds.push(newId);
             } catch (e) {
@@ -594,7 +577,7 @@ describe("IdList Fuzzer Tests", () => {
           for (let i = 0; i < undeleteCount; i++) {
             const idx = Math.floor(prng() * knownIds.length);
             try {
-              fuzzer = fuzzer.undelete(knownIds[idx]);
+              fuzzer.undelete(knownIds[idx]);
             } catch (e) {
               if (e instanceof AssertionError) {
                 throw e;
@@ -619,17 +602,14 @@ describe("IdList Fuzzer Tests", () => {
       this.timeout(5000);
 
       // Create an initial list with random operations
-      let fuzzer = Fuzzer.new();
+      const fuzzer = Fuzzer.new();
       const ids: ElementId[] = [];
 
       // Perform some initial operations
       for (let i = 0; i < 20; i++) {
         const id = createRandomId();
         try {
-          fuzzer = fuzzer.insertAfter(
-            ids.length > 0 ? ids[ids.length - 1] : null,
-            id
-          );
+          fuzzer.insertAfter(ids.length > 0 ? ids[ids.length - 1] : null, id);
           ids.push(id);
         } catch (e) {
           if (e instanceof AssertionError) {
@@ -642,7 +622,7 @@ describe("IdList Fuzzer Tests", () => {
       // Delete some elements
       for (let i = 0; i < 5; i++) {
         const idx = Math.floor(prng() * ids.length);
-        fuzzer = fuzzer.delete(ids[idx]);
+        fuzzer.delete(ids[idx]);
       }
 
       fuzzer.checkAll();
@@ -652,11 +632,8 @@ describe("IdList Fuzzer Tests", () => {
         // Get saved state from the current fuzzer
         const savedState = fuzzer.list.save();
 
-        // Create a new fuzzer from the saved state
-        fuzzer = new Fuzzer(
-          () => IdList.load(savedState),
-          () => IdListSimple.load(savedState)
-        );
+        // Reload the fuzzer from the saved state
+        fuzzer.load(savedState);
 
         fuzzer.checkAll();
 
@@ -670,7 +647,7 @@ describe("IdList Fuzzer Tests", () => {
                 const id = createRandomId();
                 const idx = Math.floor(prng() * ids.length);
                 try {
-                  fuzzer = fuzzer.insertAfter(ids[idx], id);
+                  fuzzer.insertAfter(ids[idx], id);
                   ids.push(id);
                 } catch (e) {
                   if (e instanceof AssertionError) {
@@ -686,7 +663,7 @@ describe("IdList Fuzzer Tests", () => {
                 const id = createRandomId();
                 const idx = Math.floor(prng() * ids.length);
                 try {
-                  fuzzer = fuzzer.insertBefore(ids[idx], id);
+                  fuzzer.insertBefore(ids[idx], id);
                   ids.push(id);
                 } catch (e) {
                   if (e instanceof AssertionError) {
@@ -702,7 +679,7 @@ describe("IdList Fuzzer Tests", () => {
                 const count = Math.floor(prng() * 3) + 1; // 1-3 elements
                 const index = Math.floor(prng() * ids.length);
                 const id = ids[index];
-                fuzzer = fuzzer.uninsert(id, count);
+                fuzzer.uninsert(id, count);
 
                 // Delete the uninserted IDs from our known list
                 for (let j = 0; j < count; j++) {
@@ -721,7 +698,7 @@ describe("IdList Fuzzer Tests", () => {
             case 3: // delete
               if (ids.length > 0) {
                 const idx = Math.floor(prng() * ids.length);
-                fuzzer = fuzzer.delete(ids[idx]);
+                fuzzer.delete(ids[idx]);
               }
               break;
 
@@ -729,7 +706,7 @@ describe("IdList Fuzzer Tests", () => {
               if (ids.length > 0) {
                 const idx = Math.floor(prng() * ids.length);
                 try {
-                  fuzzer = fuzzer.undelete(ids[idx]);
+                  fuzzer.undelete(ids[idx]);
                 } catch (e) {
                   if (e instanceof AssertionError) {
                     throw e;
