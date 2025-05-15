@@ -5,26 +5,9 @@ interface ListElement {
   isDeleted: boolean;
 }
 
-// Simpler implementation of IdList, used for illustration purposes and fuzz testing.
-
 /**
- * A list of ElementIds, as a mutable data structure.
- *
- * An IdListSimple helps you assign a unique immutable id to each element of a list, such
- * as a todo-list or a text document (= list of characters). That way, you can keep track
- * of those elements even as their (array) indices change due to insert/delete operations
- * earlier in the list.
- *
- * Any id that has been inserted into an IdListSimple remains **known** to that list indefinitely,
- * allowing you to reference it in insertAfter/insertBefore operations. Calling {@link delete}
- * merely marks an id as deleted (= not present); it remains in memory as a "tombstone".
- * This is useful in collaborative settings, since another user might instruct you to
- * call `insertAfter(before, newId)` when you have already deleted `before` locally.
- *
- * See {@link ElementId} for advice on generating ElementIds. IdListSimple is optimized for
- * the case where sequential ElementIds often have the same bunchId and sequential counters.
- * However, you are not required to order ids in this way - it is okay if future edits
- * cause such ids to be separated, partially deleted, or even reordered.
+ * Simplified implementation of IdList, used for illustration purposes and fuzz testing.
+ * It omits IdList's optimizations and persistence but otherwise has identical behavior.
  */
 export class IdListSimple {
   /**
@@ -92,7 +75,7 @@ export class IdListSimple {
   insertAfter(before: ElementId | null, newId: ElementId, count = 1): void {
     let index: number;
     if (before === null) {
-      // -1 so index + 1 is 0: insert at the beginning of the list.
+      // -1 so that index + 1 is 0: insert at the beginning of the list.
       index = -1;
     } else {
       index = this.state.findIndex((elt) => equalsId(elt.id, before));
@@ -154,7 +137,7 @@ export class IdListSimple {
    * You almost always want to use delete instead of uninsert, unless you are rolling
    * back the IdList state as part of a [server reconciliation](https://mattweidner.com/2024/06/04/server-architectures.html#1-server-reconciliation)
    * architecture. (Even then, you may find it easier to restore a snapshot instead
-   * of explicitly undoing operations, making use of persistence.)
+   * of explicitly undoing operations.)
    *
    * If `id` is already not known, this method does nothing.
    *
@@ -236,7 +219,7 @@ export class IdListSimple {
    * Compare to {@link has}.
    */
   isKnown(id: ElementId): boolean {
-    return this.isAnyKnown(id, 1);
+    return this.state.some((elt) => equalsId(elt.id, id));
   }
 
   private isAnyKnown(id: ElementId, count: number): boolean {
@@ -434,8 +417,7 @@ export class IdListSimple {
  * That is, this class ignores the underlying list's isDeleted status when computing list indices.
  * Access using {@link IdListSimple.knownIds}.
  *
- * Like IdListSimple, KnownIdView is immutable. To mutate, use a mutating method on the original IdListSimple
- * and access the returned list's `knownIds`.
+ * This view is live-updating. To mutate, use a mutating method on the original IdListSimple.
  */
 export class KnownIdView {
   /**
