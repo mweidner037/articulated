@@ -86,6 +86,8 @@ export class Fuzzer {
     expect([
       ...IdList.load(this.list.save()).valuesWithIsDeleted(),
     ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
+
+    if (DEBUG) console.log("checkAll passed");
   }
 
   static new() {

@@ -716,6 +716,7 @@ describe("IdList Fuzzer Tests", () => {
               }
               break;
           }
+          fuzzer.checkAll();
         }
 
         fuzzer.checkAll();

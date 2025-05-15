@@ -2,7 +2,7 @@ import { ElementId, equalsId, expandIds, SavedIdList } from "../src";
 
 interface ListElement {
   readonly id: ElementId;
-  readonly isDeleted: boolean;
+  isDeleted: boolean;
 }
 
 // Simpler implementation of IdList, used for illustration purposes and fuzz testing.
@@ -30,7 +30,10 @@ export class IdListSimple {
   /**
    * Internal - construct an IdListSimple using a static method (e.g. `IdListSimple.new`).
    */
-  private constructor(private state: ListElement[], private _length: number) {}
+  private constructor(
+    private readonly state: ListElement[],
+    private _length: number
+  ) {}
 
   /**
    * Constructs an empty list.
@@ -185,7 +188,7 @@ export class IdListSimple {
     if (index != -1) {
       const elt = this.state[index];
       if (!elt.isDeleted) {
-        this.state.splice(index, 1, { id: elt.id, isDeleted: true });
+        elt.isDeleted = true;
         this._length--;
       }
     }
@@ -207,7 +210,7 @@ export class IdListSimple {
     }
     const elt = this.state[index];
     if (elt.isDeleted) {
-      this.state.splice(index, 1, { id: elt.id, isDeleted: false });
+      elt.isDeleted = false;
       this._length++;
     }
   }
@@ -404,7 +407,7 @@ export class IdListSimple {
    * Loads a saved state returned by {@link save}, **overwriting** the current list state.
    */
   load(savedState: SavedIdList): void {
-    this.state = [];
+    this.state.splice(0, this.state.length);
     this._length = 0;
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
