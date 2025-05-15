@@ -131,6 +131,6 @@ Asymptotic runtimes are given in terms of the number of leaves `L` and the maxim
 - load: `O(S * log(S))`
   - The bottleneck is constructing the bottom-up tree: specifically, the map from each leaf to its parent's sequence number (`leafMap`). That map is itself a sorted tree, hence takes `O(L * log(L))` time to construct, and `L <= S`.
 
-If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds, and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
+If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
 
 <!-- TODO: related work: CRDTs, ropes, list-positions, ?? -->
