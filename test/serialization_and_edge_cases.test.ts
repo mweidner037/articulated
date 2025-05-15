@@ -1,6 +1,11 @@
 import { expect } from "chai";
-import { ElementId, IdList, SavedIdList } from "../src";
-import { InnerNode, InnerNodeInner, LeafNode, M } from "../src/id_list";
+import { ElementId, PersistentIdList, SavedIdList } from "../src";
+import {
+  InnerNode,
+  InnerNodeInner,
+  LeafNode,
+  M,
+} from "../src/persistent_id_list";
 
 describe("IdList Serialization and Edge Cases", () => {
   // Helper to create ElementIds
@@ -9,7 +14,7 @@ describe("IdList Serialization and Edge Cases", () => {
     counter,
   });
 
-  function checkIterators(loaded: IdList, list: IdList) {
+  function checkIterators(loaded: PersistentIdList, list: PersistentIdList) {
     expect([...loaded.values()]).to.deep.equal([...list.values()]);
     expect([...loaded.knownIds.values()]).to.deep.equal([
       ...list.knownIds.values(),
@@ -21,7 +26,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("saveNode function", () => {
     it("should properly serialize deleted elements at the end of leaves", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -47,7 +52,7 @@ describe("IdList Serialization and Edge Cases", () => {
       expect(hasDeletedEntries).to.be.true;
 
       // Load and verify
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
 
       // Verify deleted elements are still known
       for (let i = 7; i < 10; i++) {
@@ -59,7 +64,7 @@ describe("IdList Serialization and Edge Cases", () => {
     });
 
     it("should handle complex patterns of present and deleted elements", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 20);
@@ -82,7 +87,7 @@ describe("IdList Serialization and Edge Cases", () => {
       }
 
       // Load and verify
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
 
       // Check all elements
       for (let i = 0; i < 20; i++) {
@@ -99,7 +104,7 @@ describe("IdList Serialization and Edge Cases", () => {
     });
 
     it("should handle interleaving bunchIds correctly", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create an interleaved pattern of bunchIds
       for (let i = 0; i < 10; i++) {
@@ -117,7 +122,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
       // Save and load
       const saved = list.save();
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
 
       // Verify the pattern is preserved
       for (let i = 0; i < 10; i++) {
@@ -134,7 +139,7 @@ describe("IdList Serialization and Edge Cases", () => {
     it("should handle non-merged leaves correctly", () => {
       // See typedoc for pushSaveItem.
 
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create un-merged leaves.
       list = list.insertAfter(null, createId("a", 0));
@@ -149,7 +154,7 @@ describe("IdList Serialization and Edge Cases", () => {
       expect(saved.length).to.equal(1);
 
       // Verify the loading "fixes" the un-merged leaves.
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
       expect(loaded["root"].children.length).to.equal(1);
 
       checkIterators(loaded, list);
@@ -159,7 +164,7 @@ describe("IdList Serialization and Edge Cases", () => {
   describe("load function", () => {
     it("should correctly handle empty SavedIdList", () => {
       const saved: SavedIdList = [];
-      const list = IdList.load(saved);
+      const list = PersistentIdList.load(saved);
 
       expect(list.length).to.equal(0);
     });
@@ -180,7 +185,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
       ];
 
-      const list = IdList.load(saved);
+      const list = PersistentIdList.load(saved);
 
       // Should only have the second entry
       expect(list.length).to.equal(5);
@@ -198,7 +203,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved1)).to.throw();
+      expect(() => PersistentIdList.load(saved1)).to.throw();
 
       // Non-integer count
       const saved2 = [
@@ -209,7 +214,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved2)).to.throw();
+      expect(() => PersistentIdList.load(saved2)).to.throw();
 
       // Negative startCounter
       const saved3 = [
@@ -220,7 +225,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved3)).to.throw();
+      expect(() => PersistentIdList.load(saved3)).to.throw();
 
       // Non-integer startCounter
       const saved4 = [
@@ -231,7 +236,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved4)).to.throw();
+      expect(() => PersistentIdList.load(saved4)).to.throw();
     });
 
     it("should merge adjacent entries with the same bunchId", () => {
@@ -250,7 +255,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
       ];
 
-      const list = IdList.load(saved);
+      const list = PersistentIdList.load(saved);
 
       // Should be merged into a single saved item
       expect(list.length).to.equal(10);
@@ -277,7 +282,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
       ];
 
-      const list = IdList.load(saved);
+      const list = PersistentIdList.load(saved);
 
       // Should be merged into a single leaf
       expect(list["root"].children.length).to.equal(1);
@@ -312,7 +317,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
       ];
 
-      const list = IdList.load(saved);
+      const list = PersistentIdList.load(saved);
 
       expect(list.length).to.equal(15);
 
@@ -337,7 +342,7 @@ describe("IdList Serialization and Edge Cases", () => {
           });
         }
 
-        const list = IdList.load(saved);
+        const list = PersistentIdList.load(saved);
 
         const root = list["root"];
 
@@ -400,7 +405,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("splitPresent function edge cases", () => {
     it("should handle splitting with sparse present values", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -442,7 +447,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("iterateNode functions", () => {
     it("should correctly iterate through nodes with mixed present/deleted values", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -483,7 +488,7 @@ describe("IdList Serialization and Edge Cases", () => {
     });
 
     it("should handle iteration after complex operations and tree restructuring", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert elements that will force tree restructuring
       for (let i = 0; i < 50; i++) {
@@ -542,7 +547,7 @@ describe("IdList Serialization and Edge Cases", () => {
 
   describe("compression during save", () => {
     it("should optimally compress sequential runs during save", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 100);

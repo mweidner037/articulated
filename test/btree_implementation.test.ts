@@ -1,8 +1,13 @@
 import { expect } from "chai";
-import { ElementId, expandIds, IdList } from "../src";
-import { InnerNode, InnerNodeInner, InnerNodeLeaf, M } from "../src/id_list";
+import { ElementId, expandIds, PersistentIdList } from "../src";
+import {
+  InnerNode,
+  InnerNodeInner,
+  InnerNodeLeaf,
+  M,
+} from "../src/persistent_id_list";
 
-describe("IdList B+Tree Implementation", () => {
+describe("PersistentIdList B+Tree Implementation", () => {
   // Helper to create ElementIds
   const createId = (bunchId: string, counter: number): ElementId => ({
     bunchId,
@@ -11,7 +16,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Tree Structure and Balancing", () => {
     it("should maintain balanced structure after many insertions", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert enough elements to force multiple levels in the B+Tree
       // M = 8, so we'll insert more than enough to cause splits
@@ -83,7 +88,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should force a node split when exceeding the branching factor", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert exactly M elements (where M=8 is the branching factor)
       for (let i = 0; i < M; i++) {
@@ -119,7 +124,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Leaf Node Splitting", () => {
     it("should correctly split a leaf when inserting after in the middle", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential elements in a single bunch (single leaf)
       list = list.insertAfter(null, createId("bunch", 0), 6);
@@ -148,7 +153,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should correctly split a leaf when inserting before in the middle", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential elements in a single bunch (single leaf)
       list = list.insertAfter(null, createId("bunch", 0), 6);
@@ -177,7 +182,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle multiple splits in a complex insertion pattern", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a bunch of sequential IDs
       list = list.insertAfter(null, createId("seq", 0), 15);
@@ -204,7 +209,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle insertion at leaf boundaries", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list where elements are likely to be distributed across multiple leaves
       // Using different bunchIds to prevent run compression
@@ -229,7 +234,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Sequential ID Compression and Storage", () => {
     it("should compress sequential IDs in the same bunch", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -247,7 +252,7 @@ describe("IdList B+Tree Implementation", () => {
       });
 
       // Load and verify
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
       expect(loaded.length).to.equal(10);
 
       for (let i = 0; i < 10; i++) {
@@ -256,7 +261,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should preserve compression after complex operations", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -279,7 +284,7 @@ describe("IdList B+Tree Implementation", () => {
       expect(bunchEntries.length).to.be.lessThanOrEqual(3);
 
       // Verify all elements are preserved after load
-      const loaded = IdList.load(saved);
+      const loaded = PersistentIdList.load(saved);
 
       expect(loaded.has(createId("bunch", 0))).to.be.true;
       expect(loaded.has(createId("bunch", 1))).to.be.true;
@@ -297,7 +302,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Uninsert Operations", () => {
     it("should maintain tree integrity when uninsert leaves an empty list", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a small list with sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 5);
@@ -319,7 +324,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should maintain tree balancing after uninsert operations", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with enough elements to have at least 3 levels in the tree
       for (let i = 0; i < 100; i++) {
@@ -399,7 +404,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should properly handle uninsert of an entire leaf node", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert multiple bunches to create distinct leaf nodes
       list = list.insertAfter(null, createId("bunch1", 0), 10);
@@ -435,7 +440,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle uninsert that removes all children of an inner node", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with enough elements to guarantee multiple levels
       for (let i = 0; i < 2 * M * M; i++) {
@@ -491,7 +496,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle sequential uninsert operations efficiently", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a large sequence that will result in a compressed structure
       list = list.insertAfter(null, createId("seq", 0), 100);
@@ -524,7 +529,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle uninsert of a discontinuous run that was inserted in bulk", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert initial sequence
       list = list.insertAfter(null, createId("seq", 0), 20);
@@ -548,7 +553,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should optimize uninsert when removing the most recent bulk insert", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Initial sequence
       list = list.insertAfter(null, createId("first", 0), 10);
@@ -579,7 +584,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Edge Cases and Boundary Conditions", () => {
     it("should handle extending runs with insertions at boundaries", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a run
       list = list.insertAfter(null, createId("bunch", 5), 5); // IDs 5-9
@@ -607,7 +612,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should correctly handle the locate function with deleted elements", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -637,18 +642,24 @@ describe("IdList B+Tree Implementation", () => {
 
     it("should handle insertions in empty lists", () => {
       // Empty list insertAfter with null
-      const list1 = IdList.new().insertAfter(null, createId("first", 0));
+      const list1 = PersistentIdList.new().insertAfter(
+        null,
+        createId("first", 0)
+      );
       expect(list1.length).to.equal(1);
       expect(list1.at(0)).to.deep.equal(createId("first", 0));
 
       // Empty list insertBefore with null
-      const list2 = IdList.new().insertBefore(null, createId("first", 0));
+      const list2 = PersistentIdList.new().insertBefore(
+        null,
+        createId("first", 0)
+      );
       expect(list2.length).to.equal(1);
       expect(list2.at(0)).to.deep.equal(createId("first", 0));
     });
 
     it("should handle very large bulk insertions", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a large number of sequential IDs as one bulk op
       const largeCount = 1000;
@@ -672,7 +683,7 @@ describe("IdList B+Tree Implementation", () => {
     });
 
     it("should handle very large sequential insertions", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a large number of sequential IDs as sequential ops
       const largeCount = 1000;
@@ -703,7 +714,7 @@ describe("IdList B+Tree Implementation", () => {
 
   describe("Advanced Operations and Combined Cases", () => {
     it("should maintain tree integrity with complex insertion/deletion patterns", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a pattern of IDs with differing bunchIds to test tree integrity
       for (let i = 0; i < 50; i++) {

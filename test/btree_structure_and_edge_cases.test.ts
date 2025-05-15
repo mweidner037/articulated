@@ -1,13 +1,13 @@
 import { expect } from "chai";
-import { ElementId, IdList, SavedIdList } from "../src";
+import { ElementId, PersistentIdList, SavedIdList } from "../src";
 import {
   InnerNode,
   InnerNodeInner,
   InnerNodeLeaf,
   LeafNode,
-} from "../src/id_list";
+} from "../src/persistent_id_list";
 
-describe("IdList Internal Structure", () => {
+describe("PersistentIdList Internal Structure", () => {
   // Helper to create ElementIds
   const createId = (bunchId: string, counter: number): ElementId => ({
     bunchId,
@@ -16,7 +16,7 @@ describe("IdList Internal Structure", () => {
 
   describe("locate function and traversal", () => {
     it("should correctly locate elements after tree restructuring", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert enough elements to force multiple levels in the B+Tree
       const ids: ElementId[] = [];
@@ -48,7 +48,7 @@ describe("IdList Internal Structure", () => {
     });
 
     it("should correctly update paths after insertions and splits", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert elements to create a specific structure
       for (let i = 0; i < 20; i++) {
@@ -91,7 +91,7 @@ describe("IdList Internal Structure", () => {
 
   describe("replaceLeaf function", () => {
     it("should properly replace a leaf node with multiple nodes", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 5);
@@ -109,7 +109,7 @@ describe("IdList Internal Structure", () => {
     });
 
     it("should maintain correct sizes when replacing leaves", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -168,7 +168,7 @@ describe("IdList Internal Structure", () => {
 
   describe("splitPresent function", () => {
     it("should correctly split present values", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with sequential IDs
       list = list.insertAfter(null, createId("bunch", 0), 10);
@@ -203,7 +203,7 @@ describe("IdList Internal Structure", () => {
 
   describe("save and load with edge cases", () => {
     it("should correctly serialize and deserialize complex tree structures", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Create a list with elements that force a multi-level tree
       for (let i = 0; i < 50; i++) {
@@ -232,7 +232,7 @@ describe("IdList Internal Structure", () => {
       const saved = list.save();
 
       // Load the saved state
-      const loadedList = IdList.load(saved);
+      const loadedList = PersistentIdList.load(saved);
 
       // Verify the loaded list matches the original
       expect(loadedList.length).to.equal(list.length);
@@ -242,7 +242,7 @@ describe("IdList Internal Structure", () => {
     });
 
     it("should correct handle serializing deleted items at end of leaf nodes", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("seq", 0), 10);
@@ -254,7 +254,7 @@ describe("IdList Internal Structure", () => {
 
       // Save and load
       const saved = list.save();
-      const loadedList = IdList.load(saved);
+      const loadedList = PersistentIdList.load(saved);
 
       // Verify that save has two items
       expect(saved.length).to.equal(2);
@@ -284,8 +284,8 @@ describe("IdList Internal Structure", () => {
         });
       }
 
-      // Load into a new IdList
-      const list = IdList.load(savedState);
+      // Load into a new PersistentIdList
+      const list = PersistentIdList.load(savedState);
 
       const root = list["root"];
 
@@ -336,7 +336,7 @@ describe("IdList Internal Structure", () => {
 
   describe("KnownIdView", () => {
     it("should correctly handle at() and indexOf() with deleted elements", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("seq", 0), 10);
@@ -358,7 +358,7 @@ describe("IdList Internal Structure", () => {
     });
 
     it("should maintain knownIds view across complex operations", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert sequential IDs
       list = list.insertAfter(null, createId("seq", 0), 10);

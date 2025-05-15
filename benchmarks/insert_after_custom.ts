@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { v4 as uuidv4 } from "uuid";
-import { ElementId, IdList, SavedIdList } from "../src";
+import { ElementId, PersistentIdList, SavedIdList } from "../src";
 import {
   avg,
   getMemUsed,
@@ -35,7 +35,7 @@ export async function insertAfterCustom() {
   // Perform the whole trace, sending all updates.
   const updates: string[] = [];
   let startTime = process.hrtime.bigint();
-  let sender = IdList.new();
+  let sender = PersistentIdList.new();
   for (const edit of edits) {
     let update: Update;
     if (edit[2] !== undefined) {
@@ -79,7 +79,7 @@ export async function insertAfterCustom() {
 
   // Receive all updates.
   startTime = process.hrtime.bigint();
-  let receiver = IdList.new();
+  let receiver = PersistentIdList.new();
   for (const update of updates) {
     if (update[0] === "i") {
       // type "insertAfter"
@@ -174,7 +174,7 @@ function decodeInsertAfter(update: Update): {
   return { id, before };
 }
 
-function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
+function saveLoad(saver: PersistentIdList, gzip: boolean): string | Uint8Array {
   // Save.
   let startTime = process.hrtime.bigint();
   const savedStateObj = saver.save();
@@ -199,7 +199,7 @@ function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
     ? gunzipString(savedState as Uint8Array)
     : (savedState as string);
   const toLoadObj = JSON.parse(toLoadStr) as SavedIdList;
-  void IdList.load(toLoadObj);
+  void PersistentIdList.load(toLoadObj);
 
   console.log(
     `- Load time ${gzip ? "GZIP'd " : ""}(ms):`,
@@ -219,12 +219,12 @@ async function memory(savedState: string) {
   await sleep(1000);
   const startMem = getMemUsed();
 
-  let loader: IdList | null = null;
+  let loader: PersistentIdList | null = null;
   // Keep the parsed saved state in a separate scope so it can be GC'd
   // before we measure memory.
   (function () {
     const savedStateObj = JSON.parse(savedState) as SavedIdList;
-    loader = IdList.load(savedStateObj);
+    loader = PersistentIdList.load(savedStateObj);
   })();
 
   console.log(

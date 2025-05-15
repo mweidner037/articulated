@@ -1,7 +1,7 @@
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import { ElementId, PersistentIdList } from "../src";
 
-describe("IdList Persistence", () => {
+describe("PersistentIdList Persistence", () => {
   // Helper to create ElementIds
   const createId = (bunchId: string, counter: number): ElementId => ({
     bunchId,
@@ -12,7 +12,7 @@ describe("IdList Persistence", () => {
     it("returns a new data structure without modifying the original", () => {
       // Create an initial list with some IDs
       const initialId = createId("bunch1", 0);
-      const initialList = IdList.fromIds([initialId]);
+      const initialList = PersistentIdList.fromIds([initialId]);
 
       // Perform insertAfter
       const newId = createId("bunch2", 0);
@@ -34,7 +34,7 @@ describe("IdList Persistence", () => {
     it("handles bulk insertion without modifying the original", () => {
       // Create an initial list with some IDs
       const initialId = createId("bunch1", 0);
-      const initialList = IdList.fromIds([initialId]);
+      const initialList = PersistentIdList.fromIds([initialId]);
 
       // Perform bulk insertAfter
       const newId = createId("bunch2", 0);
@@ -57,7 +57,7 @@ describe("IdList Persistence", () => {
     it("returns a new data structure without modifying the original", () => {
       // Create an initial list with some IDs
       const initialId = createId("bunch1", 0);
-      const initialList = IdList.fromIds([initialId]);
+      const initialList = PersistentIdList.fromIds([initialId]);
 
       // Perform insertBefore
       const newId = createId("bunch2", 0);
@@ -79,7 +79,7 @@ describe("IdList Persistence", () => {
     it("handles bulk insertion without modifying the original", () => {
       // Create an initial list with some IDs
       const initialId = createId("bunch1", 0);
-      const initialList = IdList.fromIds([initialId]);
+      const initialList = PersistentIdList.fromIds([initialId]);
 
       // Perform bulk insertBefore
       const newId = createId("bunch2", 0);
@@ -103,7 +103,7 @@ describe("IdList Persistence", () => {
       // Create an initial list with multiple IDs
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch1", 1);
-      const initialList = IdList.fromIds([id1, id2]);
+      const initialList = PersistentIdList.fromIds([id1, id2]);
 
       // Uninsert one element
       const newList = initialList.uninsert(id1);
@@ -127,7 +127,7 @@ describe("IdList Persistence", () => {
       // Create an initial list with sequential IDs
       const bunchId = "bunch1";
       const ids = Array.from({ length: 5 }, (_, i) => createId(bunchId, i));
-      const initialList = IdList.fromIds(ids);
+      const initialList = PersistentIdList.fromIds(ids);
 
       // Bulk uninsert the middle 3 elements
       const startId = createId(bunchId, 1); // Start at the second element
@@ -156,7 +156,7 @@ describe("IdList Persistence", () => {
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch2", 0);
       const id3 = createId("bunch3", 0);
-      const initialList = IdList.fromIds([id1, id2, id3]);
+      const initialList = PersistentIdList.fromIds([id1, id2, id3]);
 
       // Uninsert in sequence to test persistence across multiple operations
       const list1 = initialList.uninsert(id1);
@@ -180,7 +180,7 @@ describe("IdList Persistence", () => {
 
     it("verifies uninsert is inverse of insert by comparing snapshots", () => {
       // Start with an empty list
-      const emptyList = IdList.new();
+      const emptyList = PersistentIdList.new();
 
       // Create some IDs
       const id1 = createId("bunch1", 0);
@@ -215,7 +215,7 @@ describe("IdList Persistence", () => {
         createId("bunch5", 0),
       ];
 
-      const initialList = IdList.fromIds(ids);
+      const initialList = PersistentIdList.fromIds(ids);
 
       // Uninsert elements 1 and 3 (zero-indexed)
       const newList = initialList.uninsert(ids[1]).uninsert(ids[3]);
@@ -233,7 +233,7 @@ describe("IdList Persistence", () => {
       // Start with a common ancestor
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch2", 0);
-      const ancestor = IdList.fromIds([id1, id2]);
+      const ancestor = PersistentIdList.fromIds([id1, id2]);
 
       // Branch A: Uninsert id1
       const branchA = ancestor.uninsert(id1);
@@ -276,7 +276,7 @@ describe("IdList Persistence", () => {
       // Create an initial list with multiple IDs
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch1", 1);
-      const initialList = IdList.fromIds([id1, id2]);
+      const initialList = PersistentIdList.fromIds([id1, id2]);
 
       // Delete one element
       const newList = initialList.delete(id1);
@@ -300,7 +300,7 @@ describe("IdList Persistence", () => {
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch1", 1);
       const id3 = createId("bunch1", 2);
-      const initialList = IdList.fromIds([id1, id2, id3]);
+      const initialList = PersistentIdList.fromIds([id1, id2, id3]);
 
       // Delete in sequence to test persistence across multiple operations
       const list1 = initialList.delete(id1);
@@ -321,7 +321,7 @@ describe("IdList Persistence", () => {
       // on two different branches results in equivalent but separate objects
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch1", 1);
-      const initialList = IdList.fromIds([id1, id2]);
+      const initialList = PersistentIdList.fromIds([id1, id2]);
 
       // Branch 1: Delete id1
       const branch1 = initialList.delete(id1);
@@ -344,7 +344,7 @@ describe("IdList Persistence", () => {
       // Create a list with a deleted item
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch1", 1);
-      let list = IdList.fromIds([id1, id2]);
+      let list = PersistentIdList.fromIds([id1, id2]);
       list = list.delete(id1); // Now id1 is deleted
 
       // Undelete the item
@@ -368,7 +368,7 @@ describe("IdList Persistence", () => {
   describe("complex operations", () => {
     it("maintains independence through a series of transformations", () => {
       // Start with an empty list
-      const emptyList = IdList.new();
+      const emptyList = PersistentIdList.new();
 
       // Insert at the beginning
       const id1 = createId("bunch1", 0);
@@ -411,7 +411,7 @@ describe("IdList Persistence", () => {
     it("allows multiple independent branches of operations", () => {
       // Start with a common ancestor
       const id1 = createId("bunch1", 0);
-      const ancestor = IdList.fromIds([id1]);
+      const ancestor = PersistentIdList.fromIds([id1]);
 
       // Branch A: Insert new id after id1
       const idA = createId("branchA", 0);
@@ -462,7 +462,7 @@ describe("IdList Persistence", () => {
       // Create a list with some operations
       const id1 = createId("bunch1", 0);
       const id2 = createId("bunch2", 0);
-      const originalList = IdList.new()
+      const originalList = PersistentIdList.new()
         .insertAfter(null, id1)
         .insertAfter(id1, id2);
 
@@ -470,7 +470,7 @@ describe("IdList Persistence", () => {
       const savedState = originalList.save();
 
       // Load the list
-      const loadedList = IdList.load(savedState);
+      const loadedList = PersistentIdList.load(savedState);
 
       // Verify the loaded list matches the original
       expect(loadedList.length).to.equal(originalList.length);

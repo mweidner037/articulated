@@ -110,7 +110,7 @@ let newList = IdList.load(savedState);
 
 ## Internals
 
-IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./src/id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
+IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./src/persistent_id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
 
 To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees from [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
 

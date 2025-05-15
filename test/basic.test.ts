@@ -1,5 +1,11 @@
 import { assert, expect } from "chai";
-import { ElementId, equalsId, expandIds, IdList, SavedIdList } from "../src";
+import {
+  ElementId,
+  equalsId,
+  expandIds,
+  PersistentIdList,
+  SavedIdList,
+} from "../src";
 
 describe("ElementId utilities", () => {
   describe("equalsId", () => {
@@ -49,10 +55,10 @@ describe("ElementId utilities", () => {
   });
 });
 
-describe("IdList", () => {
+describe("PersistentIdList", () => {
   describe("constructor and static factory methods", () => {
     it("should create an empty list with default constructor", () => {
-      const list = IdList.new();
+      const list = PersistentIdList.new();
       expect(list.length).to.equal(0);
     });
 
@@ -63,7 +69,7 @@ describe("IdList", () => {
         { bunchId: "def", counter: 1 },
       ];
 
-      const list = IdList.fromIds(ids);
+      const list = PersistentIdList.fromIds(ids);
       expect(list.length).to.equal(3);
       expect([...list].map((id) => id.counter)).to.deep.equal([1, 2, 1]);
       expect([...list].map((id) => id.bunchId)).to.deep.equal([
@@ -80,7 +86,7 @@ describe("IdList", () => {
         { id: { bunchId: "def", counter: 1 }, isDeleted: false },
       ];
 
-      const list = IdList.from(elements);
+      const list = PersistentIdList.from(elements);
       expect(list.length).to.equal(2); // Only non-deleted elements count toward length
 
       // First one should be present
@@ -97,7 +103,7 @@ describe("IdList", () => {
 
   describe("insert operations", () => {
     it("should insert at the beginning with insertAfter(null)", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -106,7 +112,7 @@ describe("IdList", () => {
     });
 
     it("should insert after a specific element", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -119,7 +125,7 @@ describe("IdList", () => {
     });
 
     it("should insert at the end with insertBefore(null)", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -132,7 +138,7 @@ describe("IdList", () => {
     });
 
     it("should insert before a specific element", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -145,7 +151,7 @@ describe("IdList", () => {
     });
 
     it("should insert before the end", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -164,7 +170,7 @@ describe("IdList", () => {
     });
 
     it("should bulk insert multiple elements", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const startId: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, startId, 3);
@@ -176,7 +182,7 @@ describe("IdList", () => {
     });
 
     it("should throw when inserting an ID that is already known", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -185,7 +191,7 @@ describe("IdList", () => {
     });
 
     it("should throw when inserting after an ID that is not known", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -193,7 +199,7 @@ describe("IdList", () => {
     });
 
     it("should throw when inserting before an ID that is not known", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
@@ -201,7 +207,7 @@ describe("IdList", () => {
     });
 
     it("should throw on bulk insertAfter with an invalid count", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       expect(() => (list = list.insertAfter(null, id, -7))).to.throw();
@@ -214,7 +220,7 @@ describe("IdList", () => {
     });
 
     it("should throw on bulk insertBefore with an invalid count", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       expect(() => (list = list.insertBefore(null, id, -7))).to.throw();
@@ -229,7 +235,7 @@ describe("IdList", () => {
 
   describe("uninsert operations", () => {
     it("should completely remove an element", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -242,7 +248,7 @@ describe("IdList", () => {
     });
 
     it("should do nothing when uninsert is called on an unknown ID", () => {
-      const list = IdList.new();
+      const list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       const newList = list.uninsert(id);
@@ -251,7 +257,7 @@ describe("IdList", () => {
     });
 
     it("should bulk uninsert multiple elements", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const startId: ElementId = { bunchId: "abc", counter: 1 };
 
       // Insert 3 sequential IDs
@@ -268,7 +274,7 @@ describe("IdList", () => {
     });
 
     it("should throw on uninsert with an invalid count", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -279,7 +285,7 @@ describe("IdList", () => {
     });
 
     it("should handle uninsert with count = 0 as a no-op", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -290,7 +296,7 @@ describe("IdList", () => {
     });
 
     it("should be the exact inverse of insertAfter", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 5 };
 
@@ -311,7 +317,7 @@ describe("IdList", () => {
     });
 
     it("should be the exact inverse of insertBefore", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
       const id2: ElementId = { bunchId: "def", counter: 5 };
 
@@ -332,7 +338,7 @@ describe("IdList", () => {
     });
 
     it("should handle partial uninsert from a bulk insertion", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
 
       // Insert 5 sequential IDs
@@ -369,7 +375,7 @@ describe("IdList", () => {
     });
 
     it("should handle uninsert of IDs from different leaves", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert IDs with different bunchIds to ensure they're in different leaves
       list = list.insertAfter(null, { bunchId: "abc", counter: 1 });
@@ -397,7 +403,7 @@ describe("IdList", () => {
 
   describe("delete operations", () => {
     it("should mark an element as deleted", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -410,7 +416,7 @@ describe("IdList", () => {
     });
 
     it("should do nothing when deleting an unknown ID", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.delete(id);
@@ -419,7 +425,7 @@ describe("IdList", () => {
     });
 
     it("should do nothing when deleting an already deleted ID", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -433,7 +439,7 @@ describe("IdList", () => {
 
   describe("undelete operations", () => {
     it("should restore a deleted element", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -445,14 +451,14 @@ describe("IdList", () => {
     });
 
     it("should throw when undeleting an unknown ID", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       expect(() => (list = list.undelete(id))).to.throw();
     });
 
     it("should do nothing when undeleting an already present ID", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       list = list.insertAfter(null, id);
@@ -464,13 +470,13 @@ describe("IdList", () => {
   });
 
   describe("accessor operations", () => {
-    let list: IdList;
+    let list: PersistentIdList;
     const id1: ElementId = { bunchId: "abc", counter: 1 };
     const id2: ElementId = { bunchId: "def", counter: 1 };
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = IdList.new();
+      list = PersistentIdList.new();
       list = list.insertAfter(null, id1);
       list = list.insertAfter(id1, id2);
       list = list.insertAfter(id2, id3);
@@ -520,13 +526,13 @@ describe("IdList", () => {
   });
 
   describe("iteration", () => {
-    let list: IdList;
+    let list: PersistentIdList;
     const id1: ElementId = { bunchId: "abc", counter: 1 };
     const id2: ElementId = { bunchId: "def", counter: 1 };
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = IdList.new();
+      list = PersistentIdList.new();
       list = list.insertAfter(null, id1);
       list = list.insertAfter(id1, id2);
       list = list.insertAfter(id2, id3);
@@ -556,13 +562,13 @@ describe("IdList", () => {
   });
 
   describe("KnownIdView", () => {
-    let list: IdList;
+    let list: PersistentIdList;
     const id1: ElementId = { bunchId: "abc", counter: 1 };
     const id2: ElementId = { bunchId: "def", counter: 1 };
     const id3: ElementId = { bunchId: "ghi", counter: 1 };
 
     beforeEach(() => {
-      list = IdList.new();
+      list = PersistentIdList.new();
       list = list.insertAfter(null, id1);
       list = list.insertAfter(id1, id2);
       list = list.insertAfter(id2, id3);
@@ -605,7 +611,7 @@ describe("IdList", () => {
 
   describe("save and load", () => {
     it("should save and load a list state", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a sequential bunch
       const startId: ElementId = { bunchId: "abc", counter: 1 };
@@ -624,7 +630,7 @@ describe("IdList", () => {
       const savedState = list.save();
 
       // Create a new list and load the state
-      const newList = IdList.load(savedState);
+      const newList = PersistentIdList.load(savedState);
 
       // Check that the new list has the same state
       expect(newList.length).to.equal(5);
@@ -638,7 +644,7 @@ describe("IdList", () => {
     });
 
     it("should handle compression of sequential IDs", () => {
-      let list = IdList.new();
+      let list = PersistentIdList.new();
 
       // Insert a large sequential bunch
       const startId: ElementId = { bunchId: "abc", counter: 1 };
@@ -657,7 +663,7 @@ describe("IdList", () => {
       });
 
       // Create a new list and load the state
-      const newList = IdList.load(savedState);
+      const newList = PersistentIdList.load(savedState);
 
       // Check that the new list has all 100 elements
       expect(newList.length).to.equal(100);
@@ -672,7 +678,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(savedState1)).to.throw();
+      expect(() => PersistentIdList.load(savedState1)).to.throw();
 
       const savedState2: SavedIdList = [
         {
@@ -682,7 +688,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(savedState2)).to.throw();
+      expect(() => PersistentIdList.load(savedState2)).to.throw();
 
       const savedState3: SavedIdList = [
         {
@@ -692,7 +698,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(savedState3)).to.throw();
+      expect(() => PersistentIdList.load(savedState3)).to.throw();
 
       // 0 count is ignored but okay.
       const savedState4: SavedIdList = [
@@ -703,7 +709,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect([...IdList.load(savedState4)]).to.deep.equal([]);
+      expect([...PersistentIdList.load(savedState4)]).to.deep.equal([]);
 
       // // Negative counters are okay.
       // const savedState5: SavedIdList = [
@@ -714,7 +720,7 @@ describe("IdList", () => {
       //     isDeleted: false,
       //   },
       // ];
-      // expect([...IdList.load(savedState5)]).to.deep.equal([
+      // expect([...PersistentIdList.load(savedState5)]).to.deep.equal([
       //   { bunchId: "abc", counter: -1 },
       //   { bunchId: "abc", counter: 0 },
       //   { bunchId: "abc", counter: 1 },
@@ -729,7 +735,7 @@ describe("IdList", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(savedState5)).to.throw();
+      expect(() => PersistentIdList.load(savedState5)).to.throw();
     });
   });
 });

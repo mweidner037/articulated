@@ -163,7 +163,7 @@ export const M = 8;
  * However, you are not required to order ids in this way - it is okay if future edits
  * cause such ids to be separated, partially deleted, or even reordered.
  */
-export class IdList {
+export class PersistentIdList {
   /**
    * A persistent map from each InnerNode's seq to its parent node's seq.
    *
@@ -190,8 +190,8 @@ export class IdList {
   /**
    * Constructs an empty list.
    *
-   * To begin with a non-empty list, use {@link IdList.from}, {@link IdList.fromIds},
-   * or {@link IdList.load}.
+   * To begin with a non-empty list, use {@link PersistentIdList.from}, {@link PersistentIdList.fromIds},
+   * or {@link PersistentIdList.load}.
    */
   static new() {
     const leafMapMut = { value: LeafMap.new() };
@@ -208,7 +208,7 @@ export class IdList {
    */
   static from(
     knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>
-  ): IdList {
+  ): PersistentIdList {
     // Convert knownIds to a saved state and load that.
     const savedState: SavedIdList = [];
 
@@ -234,17 +234,17 @@ export class IdList {
       });
     }
 
-    return IdList.load(savedState);
+    return PersistentIdList.load(savedState);
   }
 
   /**
    * Constructs a list with the given present ids.
    *
-   * Typically, you instead want {@link IdList.from}, which allows you to also
+   * Typically, you instead want {@link PersistentIdList.from}, which allows you to also
    * specify known-but-deleted ids. That way, you can reference the known-but-deleted ids
    * in future insertAfter/insertBefore operations.
    */
-  static fromIds(ids: Iterable<ElementId>): IdList {
+  static fromIds(ids: Iterable<ElementId>): PersistentIdList {
     return this.from(
       (function* () {
         for (const id of ids) yield { id, isDeleted: false };
@@ -267,7 +267,11 @@ export class IdList {
    * @throws If `before` is not known.
    * @throws If any inserted id is already known.
    */
-  insertAfter(before: ElementId | null, newId: ElementId, count = 1): IdList {
+  insertAfter(
+    before: ElementId | null,
+    newId: ElementId,
+    count = 1
+  ): PersistentIdList {
     if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
       throw new Error(`Invalid counter: ${newId.counter}`);
     }
@@ -293,7 +297,7 @@ export class IdList {
         };
 
         const leafMapMut = { value: this.leafMap };
-        return new IdList(
+        return new PersistentIdList(
           new InnerNodeLeaf(this.root.seq, [leaf], leafMapMut),
           leafMapMut.value,
           this.parentSeqs
@@ -382,7 +386,11 @@ export class IdList {
    * @throws If `after` is not known.
    * @throws If `newId` is already known.
    */
-  insertBefore(after: ElementId | null, newId: ElementId, count = 1): IdList {
+  insertBefore(
+    after: ElementId | null,
+    newId: ElementId,
+    count = 1
+  ): PersistentIdList {
     if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
       throw new Error(`Invalid counter: ${newId.counter}`);
     }
@@ -520,7 +528,7 @@ export class IdList {
 
     // Fallback for the general case.
     // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let ans: IdList = this;
+    let ans: PersistentIdList = this;
     for (let i = count - 1; i >= 0; i--) {
       ans = ans.uninsertOne({ bunchId: id.bunchId, counter: id.counter + i });
     }
@@ -671,7 +679,10 @@ export class IdList {
    *
    * newLeaves.length must be at most M.
    */
-  private replaceLeaf(located: Located, ...newLeaves: LeafNode[]): IdList {
+  private replaceLeaf(
+    located: Located,
+    ...newLeaves: LeafNode[]
+  ): PersistentIdList {
     const leafMapMut = { value: this.leafMap };
     const parentSeqsMut = { value: this.parentSeqs };
 
@@ -686,7 +697,7 @@ export class IdList {
       newLeaves,
       0
     );
-    return new IdList(newRoot, leafMapMut.value, parentSeqsMut.value);
+    return new PersistentIdList(newRoot, leafMapMut.value, parentSeqsMut.value);
   }
 
   // Accessors
@@ -979,7 +990,7 @@ export class IdList {
     // leaves one-by-one, which would take O(L log(L)) time.
     // However, constructing the sorted leafMap brings the overall runtime to O(L log(L)).
 
-    if (leaves.length === 0) return IdList.new();
+    if (leaves.length === 0) return PersistentIdList.new();
 
     // TODO: Test the aux data structures after loading.
     // E.g. reload and then call checkAll again.
@@ -995,23 +1006,26 @@ export class IdList {
         ? 1
         : Math.ceil(Math.log(leaves.length) / Math.log(M));
     const root = buildTree(leaves, leafMapMut, parentSeqsMut, 0, depth);
-    return new IdList(root, leafMapMut.value, parentSeqsMut.value);
+    return new PersistentIdList(root, leafMapMut.value, parentSeqsMut.value);
   }
 }
 
 /**
  * A view of an IdList that treats all known ids as present.
  * That is, this class ignores the underlying list's is-deleted status when computing list indices.
- * Access using {@link IdList.knownIds}.
+ * Access using {@link PersistentIdList.knownIds}.
  *
  * Like IdList, KnownIdView is immutable. To mutate, use a mutating method on the original IdList
  * and access the returned list's `knownIds`.
  */
 export class KnownIdView {
   /**
-   * Internal use only. Use {@link IdList.knownIds} instead.
+   * Internal use only. Use {@link PersistentIdList.knownIds} instead.
    */
-  constructor(readonly list: IdList, private readonly root: InnerNode) {}
+  constructor(
+    readonly list: PersistentIdList,
+    private readonly root: InnerNode
+  ) {}
 
   // Mutators are omitted - mutate this.list instead.
 

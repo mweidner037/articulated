@@ -1,7 +1,7 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
 import { ElementId } from "../src";
-import { M } from "../src/id_list";
+import { M } from "../src/persistent_id_list";
 import { Fuzzer } from "./fuzzer";
 
 describe("IdList B+Tree Specific Fuzz Tests", () => {

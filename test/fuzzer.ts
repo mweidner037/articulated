@@ -1,17 +1,20 @@
 import { expect } from "chai";
-import { ElementId, IdList, SavedIdList } from "../src";
+import { ElementId, PersistentIdList, SavedIdList } from "../src";
 import { IdListSimple } from "./id_list_simple";
 
 const DEBUG = false;
 
 /**
- * Applies mutations to both IdList and IdListSimple (a simpler, known-good implementation),
+ * Applies mutations to both PersistentIdList and IdListSimple (a simpler, known-good implementation),
  * erroring if the resulting states differ.
  */
 export class Fuzzer {
-  private constructor(public list: IdList, readonly simple: IdListSimple) {}
+  private constructor(
+    public list: PersistentIdList,
+    readonly simple: IdListSimple
+  ) {}
 
-  private mutate(makeList: () => IdList, mutateSimple: () => void) {
+  private mutate(makeList: () => PersistentIdList, mutateSimple: () => void) {
     let listError: unknown = null;
     try {
       this.list = makeList();
@@ -84,22 +87,25 @@ export class Fuzzer {
 
     // Check loaded state as well.
     expect([
-      ...IdList.load(this.list.save()).valuesWithIsDeleted(),
+      ...PersistentIdList.load(this.list.save()).valuesWithIsDeleted(),
     ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
 
     if (DEBUG) console.log("checkAll passed");
   }
 
   static new() {
-    return new Fuzzer(IdList.new(), IdListSimple.new());
+    return new Fuzzer(PersistentIdList.new(), IdListSimple.new());
   }
 
   static from(knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>) {
-    return new Fuzzer(IdList.from(knownIds), IdListSimple.from(knownIds));
+    return new Fuzzer(
+      PersistentIdList.from(knownIds),
+      IdListSimple.from(knownIds)
+    );
   }
 
   static fromIds(ids: Iterable<ElementId>) {
-    return new Fuzzer(IdList.fromIds(ids), IdListSimple.fromIds(ids));
+    return new Fuzzer(PersistentIdList.fromIds(ids), IdListSimple.fromIds(ids));
   }
 
   insertAfter(
@@ -165,7 +171,7 @@ export class Fuzzer {
       console.log("load");
     }
     this.mutate(
-      () => IdList.load(savedState),
+      () => PersistentIdList.load(savedState),
       () => this.simple.load(savedState)
     );
   }

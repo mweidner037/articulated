@@ -1,5 +1,5 @@
+import type { LeafNode } from "../persistent_id_list";
 import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
-import type { LeafNode } from "../id_list";
 
 /**
  * A persistent sorted map from each LeafNode to its parent's seq.
