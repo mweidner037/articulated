@@ -1,6 +1,7 @@
 import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
+import { checkCount } from "./internal/misc";
 import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 
@@ -271,9 +272,7 @@ export class IdList {
     if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
       throw new Error(`Invalid counter: ${newId.counter}`);
     }
-    if (!(Number.isSafeInteger(count) && count >= 0)) {
-      throw new Error(`Invalid count: ${count}`);
-    }
+    checkCount(count);
     if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
@@ -386,9 +385,7 @@ export class IdList {
     if (!(Number.isSafeInteger(newId.counter) && newId.counter >= 0)) {
       throw new Error(`Invalid counter: ${newId.counter}`);
     }
-    if (!(Number.isSafeInteger(count) && count >= 0)) {
-      throw new Error(`Invalid count: ${count}`);
-    }
+    checkCount(count);
     if (this.isAnyKnown(newId, count)) {
       throw new Error("An inserted id is already known");
     }
@@ -489,9 +486,7 @@ export class IdList {
    * `uninsert(id, count)` is an exact inverse to `insertAfter(-, id, count)` or `insertBefore(-, id, count)`.
    */
   uninsert(id: ElementId, count = 1) {
-    if (!(Number.isSafeInteger(count) && count >= 0)) {
-      throw new Error(`Invalid count: ${count}`);
-    }
+    checkCount(count);
     if (count === 0) return this;
 
     // We optimize for the case where you are undoing the most recent insert operation.
@@ -568,8 +563,23 @@ export class IdList {
    * This does have a memory cost, but it is compressed in common cases.
    *
    * If `id` is already deleted or is not known, this method does nothing.
+   *
+   * @param count Provide this to bulk-delete `count` ids,
+   * starting with newId and proceeding with the same bunchId and sequential counters.
+   * __Note__: To delete multiple ids at sequential *indexes*, use deleteRange.
    */
-  delete(id: ElementId) {
+  delete(id: ElementId, count = 1) {
+    checkCount(count);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    for (let i = 0; i < count; i++) {
+      ans = ans.deleteOne({ bunchId: id.bunchId, counter: id.counter + i });
+    }
+    return ans;
+  }
+
+  private deleteOne(id: ElementId) {
     const located = this.locate(id);
     if (located === null) return this;
 
@@ -590,9 +600,22 @@ export class IdList {
    *
    * If `id` is already present, this method does nothing.
    *
-   * @throws If `id` is not known.
+   * @param count Provide this to bulk-undelete `count` ids,
+   * starting with newId and proceeding with the same bunchId and sequential counters.
+   * @throws If any deleted id is not known.
    */
-  undelete(id: ElementId) {
+  undelete(id: ElementId, count = 1) {
+    checkCount(count);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    for (let i = count - 1; i >= 0; i--) {
+      ans = ans.undeleteOne({ bunchId: id.bunchId, counter: id.counter + i });
+    }
+    return ans;
+  }
+
+  private undeleteOne(id: ElementId) {
     const located = this.locate(id);
     if (located === null) {
       throw new Error("id is not known");
