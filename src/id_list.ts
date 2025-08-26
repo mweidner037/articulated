@@ -794,8 +794,6 @@ export class IdList {
   /**
    * Returns the maximum counter across all known ElementIds with the given bunchId,
    * or undefined if no such ElementIds are known.
-   *
-   * This method is useful when creating ElementIds.
    */
   maxCounter(bunchId: string): number | undefined {
     // Find the greatest-counter leaf containing bunchId.
