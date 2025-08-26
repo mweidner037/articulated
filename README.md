@@ -55,13 +55,29 @@ An `ElementId` is a globally unique identifier for a list element, composed of:
 - `bunchId`: A string UUID or similar globally unique ID
 - `counter`: A numeric value to distinguish ElementIds in the same bunch
 
-For optimal compression, when inserting multiple ElementIds in a left-to-right sequence, use the same `bunchId` with sequential `counter` values.
+For optimal compression, when inserting multiple ElementIds in a left-to-right sequence, use the same `bunchId` with sequential `counter` values. Use `ElementIdGenerator` to help with that.
 
 ```typescript
-// Example of IDs that will compress well
+// Example of IDs that will compress well:
 const id1 = { bunchId: "abc123", counter: 0 };
 const id2 = { bunchId: "abc123", counter: 1 };
 const id3 = { bunchId: "abc123", counter: 2 };
+```
+
+To automatically generate ElementIds like these when appropriate, use `ElementIdGenerator`.
+
+```ts
+import { ElementIdGenerator } from "articulated";
+
+const generator = new ElementIdGenerator(() => crypto.randomUUID());
+
+// Specify the id you're going to insert-after as an optimization hint.
+const id1 = generator.generateAfter(null);
+const id2 = generator.generateAfter(id1);
+const id3 = generator.generateAfter(id2);
+// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 0 },
+// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 1 },
+// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 2 }
 ```
 
 ### IdList Operations

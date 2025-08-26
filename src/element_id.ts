@@ -13,6 +13,8 @@
  * `{ bunchId, counter: 0 }, { bunchId, counter: 1 }, { bunchId, counter: 2 }, ...`.
  * An IdList will store all of these as a single object instead of
  * one object per ElementId.
+ *
+ * See ElementIdGenerator for help generating these optimized ElementIds.
  */
 export interface ElementId {
   /**

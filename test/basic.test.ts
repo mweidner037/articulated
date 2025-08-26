@@ -429,6 +429,42 @@ describe("IdList", () => {
       expect(list.length).to.equal(0);
       expect(list.isKnown(id)).to.be.true;
     });
+
+    it("should bulk delete elements", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id, 5);
+      expect(list.length).to.equal(5);
+
+      list = list.delete(id, 3);
+      expect(list.length).to.equal(2);
+      expect(list.has(id)).to.be.false;
+      expect(list.isKnown(id)).to.be.true;
+      expect(list.has({ bunchId: id.bunchId, counter: id.counter + 3 })).to.be
+        .true;
+    });
+
+    it("should delete a range of elements", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+
+      list = list.insertAfter(null, id1, 5);
+      list = list.insertAfter({ bunchId: id1.bunchId, counter: 3 }, id2, 5);
+      expect(list.length).to.equal(10);
+
+      // Delete the first 5 elements, 3 from id1's bunch and 2 from id2's bunch.
+      list = list.deleteRange(0, 5);
+
+      expect([...list.values()]).to.deep.equal([
+        { bunchId: id2.bunchId, counter: 3 },
+        { bunchId: id2.bunchId, counter: 4 },
+        { bunchId: id2.bunchId, counter: 5 },
+        { bunchId: id1.bunchId, counter: 4 },
+        { bunchId: id1.bunchId, counter: 5 },
+      ]);
+    });
   });
 
   describe("undelete operations", () => {
@@ -460,6 +496,27 @@ describe("IdList", () => {
 
       expect(list.length).to.equal(1);
       expect(list.has(id)).to.be.true;
+    });
+
+    it("should bulk undelete elements", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id, 5);
+      expect(list.length).to.equal(5);
+
+      list = list.delete(id, 3);
+      expect(list.length).to.equal(2);
+      expect(list.has(id)).to.be.false;
+      expect(list.isKnown(id)).to.be.true;
+      expect(list.has({ bunchId: id.bunchId, counter: id.counter + 3 })).to.be
+        .true;
+
+      list = list.undelete(id, 3);
+      expect(list.length).to.equal(5);
+      expect(list.has(id)).to.be.true;
+      expect(list.has({ bunchId: id.bunchId, counter: id.counter + 3 })).to.be
+        .true;
     });
   });
 
