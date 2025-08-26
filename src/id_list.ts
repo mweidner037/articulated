@@ -1,5 +1,5 @@
 import { SparseIndices } from "sparse-array-rled";
-import { ElementId } from "./id";
+import { ElementId } from "./element_id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
