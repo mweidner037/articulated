@@ -593,6 +593,24 @@ export class IdList {
   }
 
   /**
+   * Deletes all ids with indexes in the range [from, to).
+   *
+   * @throws If any deleted index is out of bounds.
+   */
+  deleteRange(from: number, to: number) {
+    const allIds: ElementId[] = [];
+    for (let i = from; i < to; i++) {
+      allIds.push(this.at(i));
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    for (const id of allIds) ans = ans.delete(id);
+
+    return ans;
+  }
+
+  /**
    * Un-marks `id` as deleted from this list, making it present again.
    * A new IdList is returned and the current list remains unchanged.
    *
