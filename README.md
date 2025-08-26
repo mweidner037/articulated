@@ -71,7 +71,7 @@ import { ElementIdGenerator } from "articulated";
 
 const generator = new ElementIdGenerator(() => crypto.randomUUID());
 
-// Specify the id you're going to insert-after as an optimization hint.
+// Specify the id you're planning to insert-after as an optimization hint.
 const id1 = generator.generateAfter(null);
 const id2 = generator.generateAfter(id1);
 const id3 = generator.generateAfter(id2);
