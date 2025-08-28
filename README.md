@@ -97,6 +97,14 @@ To enable easy and efficient rollbacks, such as in a [server reconciliation](htt
 - `at(index)`: Get the ElementId at a specific index.
 - `indexOf(id, bias: "none" | "left" | "right" = "none")`: Get the index of an ElementId, with optional bias for deleted-but-known ElementIds.
 
+#### Cursors
+
+A **cursor** points to a gap between two list elements - e.g., a cursor in a text document.
+
+Internally, a cursor is represented as the ElementId on the left side of the gap, or null if it is at the start of the list. The cursor's index changes as the id's index changes, and it also "shifts left" if that id becomes deleted. (To bind to the id on the right instead, pass `bind = "right"` to the cursor methods.)
+
+Convert indices to cursors and back using the methods `cursorAt` and `cursorIndex`. These are wrappers around `at` and `indexOf` that get the edge cases correct.
+
 #### Bulk Operations
 
 ```typescript
