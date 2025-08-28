@@ -576,6 +576,109 @@ describe("IdList", () => {
     });
   });
 
+  describe("cursors", () => {
+    it("should create cursor and read index back (left bind)", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+      const id3: ElementId = { bunchId: "ghi", counter: 1 };
+
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+
+      const cursor = list.cursorAt(1);
+      expect(list.cursorIndex(cursor)).to.equal(1);
+
+      list = list.insertBefore(id2, { bunchId: "xyz", counter: 1 });
+      expect(list.cursorIndex(cursor)).to.equal(1);
+
+      list = list.delete(id1);
+      expect(list.cursorIndex(cursor)).to.equal(0);
+    });
+
+    it("should create cursor and read index back (right bind)", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+      const id3: ElementId = { bunchId: "ghi", counter: 1 };
+
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+
+      const cursor = list.cursorAt(1, "right");
+      expect(list.cursorIndex(cursor, "right")).to.equal(1);
+
+      list = list.insertBefore(id2, { bunchId: "xyz", counter: 1 });
+      expect(list.cursorIndex(cursor, "right")).to.equal(2);
+
+      list = list.delete(id2);
+      expect(list.cursorIndex(cursor, "right")).to.equal(2);
+    });
+
+    it("should handle extreme cursor values (index 0 and list.length)", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+      const id3: ElementId = { bunchId: "ghi", counter: 1 };
+
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+      list = list.insertAfter(id2, id3);
+
+      // Test index 0 with left binding (cursor should be null)
+      const cursor0Left = list.cursorAt(0, "left");
+      expect(cursor0Left).to.be.null;
+      expect(list.cursorIndex(cursor0Left, "left")).to.equal(0);
+
+      // Test index 0 with right binding (cursor should be id1)
+      const cursor0Right = list.cursorAt(0, "right");
+      expect(cursor0Right).to.deep.equal(id1);
+      expect(list.cursorIndex(cursor0Right, "right")).to.equal(0);
+
+      // Test index list.length with left binding (cursor should be id3)
+      const cursorEndLeft = list.cursorAt(list.length, "left");
+      expect(cursorEndLeft).to.deep.equal(id3);
+      expect(list.cursorIndex(cursorEndLeft, "left")).to.equal(list.length);
+
+      // Test index list.length with right binding (cursor should be null)
+      const cursorEndRight = list.cursorAt(list.length, "right");
+      expect(cursorEndRight).to.be.null;
+      expect(list.cursorIndex(cursorEndRight, "right")).to.equal(list.length);
+    });
+
+    it("should throw for invalid cursor operations", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id2: ElementId = { bunchId: "def", counter: 1 };
+
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id2);
+
+      // cursorAt should throw for out-of-bounds index
+      expect(() => list.cursorAt(-1, "left")).to.throw("Index out of bounds");
+      expect(() => list.cursorAt(-1, "right")).to.throw("Index out of bounds");
+      expect(() => list.cursorAt(3, "left")).to.throw("Index out of bounds"); // list.length is 2
+      expect(() => list.cursorAt(3, "right")).to.throw("Index out of bounds");
+
+      // cursorIndex should throw for unknown ElementId
+      const unknownId: ElementId = { bunchId: "xyz", counter: 99 };
+      expect(() => list.cursorIndex(unknownId)).to.throw("id is not known");
+      expect(() => list.cursorIndex(unknownId, "left")).to.throw(
+        "id is not known"
+      );
+      expect(() => list.cursorIndex(unknownId, "right")).to.throw(
+        "id is not known"
+      );
+
+      // cursorIndex should NOT throw for null (valid cursor)
+      expect(() => list.cursorIndex(null)).to.not.throw();
+      expect(() => list.cursorIndex(null, "left")).to.not.throw();
+      expect(() => list.cursorIndex(null, "right")).to.not.throw();
+    });
+  });
+
   describe("iteration", () => {
     let list: IdList;
     const id1: ElementId = { bunchId: "abc", counter: 1 };
