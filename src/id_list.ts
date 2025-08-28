@@ -911,6 +911,44 @@ export class IdList {
     }
   }
 
+  /**
+   * Returns the cursor at the given index within the list, i.e., between `index - 1` and `index`.
+   * See [Cursors](https://github.com/mweidner037/articulated#cursors).
+   *
+   * Invert with {@link cursorIndex}.
+   *
+   * @param bind Whether to bind to the left or the right side of the gap, in case ids
+   * later appear between `index - 1` and `index`. Default: `"left"`, which is typical for text cursors.
+   * @throws If index is not in the range `[0, list.length]`.
+   */
+  cursorAt(index: number, bind: "left" | "right" = "left"): ElementId | null {
+    if (bind === "left") {
+      return index === 0 ? null : this.at(index - 1);
+    } else {
+      return index === this.length ? null : this.at(index);
+    }
+  }
+
+  /**
+   * Returns the current index of the given cursor within the list.
+   * That is, the cursor is in the gap between `index - 1` and `index`.
+   *
+   * Inverts {@link cursorAt}.
+   *
+   * @param bind The `bind` value that was used with {@link cursorAt}, if any.
+   * @throws If `cursor` is an ElementId that is not known.
+   */
+  cursorIndex(
+    cursor: ElementId | null,
+    bind: "left" | "right" = "left"
+  ): number {
+    if (bind === "left") {
+      return cursor === null ? 0 : this.indexOf(cursor, "left") + 1;
+    } else {
+      return cursor === null ? this.length : this.indexOf(cursor, "right");
+    }
+  }
+
   // Iterators and views
 
   /**
