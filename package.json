@@ -1,6 +1,6 @@
 {
   "name": "articulated",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "A TypeScript library for managing stable element identifiers in mutable lists",
   "author": "Matthew Weidner",
   "license": "MIT",
