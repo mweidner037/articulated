@@ -167,6 +167,13 @@ describe("ElementIdGenerator", () => {
       // Next ID should skip the reserved space (counters 3, 4 are reserved)
       const id4 = generator.generateAfter(id3);
       expect(id4).to.deep.equal({ bunchId: "test-uuid-2", counter: 0 });
+
+      // But you can extend the last ID from the bulk generation
+      const id5 = generator.generateAfter({
+        bunchId: id3.bunchId,
+        counter: id3.counter + 2,
+      });
+      expect(id5).to.deep.equal({ bunchId: "test-uuid-1", counter: 5 });
     });
 
     it("should handle count option when starting a new bunch", () => {
@@ -177,6 +184,13 @@ describe("ElementIdGenerator", () => {
       // Next generation should create new bunch since space is reserved
       const id2 = generator.generateAfter(id1);
       expect(id2).to.deep.equal({ bunchId: "test-uuid-2", counter: 0 });
+
+      // But you can extend the last ID from the bulk generation
+      const id3 = generator.generateAfter({
+        bunchId: id1.bunchId,
+        counter: id1.counter + 4,
+      });
+      expect(id3).to.deep.equal({ bunchId: "test-uuid-1", counter: 5 });
     });
 
     it("should throw error for invalid count values", () => {
