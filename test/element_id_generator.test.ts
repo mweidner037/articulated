@@ -149,4 +149,62 @@ describe("ElementIdGenerator", () => {
       expect(chain2Next.counter).to.equal(1);
     });
   });
+
+  describe("count option", () => {
+    it("should reserve space for multiple IDs when count > 1", () => {
+      // Generate first ID with count=1 (default behavior)
+      const id1 = generator.generateAfter(null);
+      expect(id1).to.deep.equal({ bunchId: "test-uuid-1", counter: 0 });
+
+      // Generate next ID normally - should be counter 1
+      const id2 = generator.generateAfter(id1);
+      expect(id2).to.deep.equal({ bunchId: "test-uuid-1", counter: 1 });
+
+      // Generate ID with count=3, reserving space for 3 IDs
+      const id3 = generator.generateAfter(id2, 3);
+      expect(id3).to.deep.equal({ bunchId: "test-uuid-1", counter: 2 });
+
+      // Next ID should skip the reserved space (counters 3, 4 are reserved)
+      const id4 = generator.generateAfter(id3);
+      expect(id4).to.deep.equal({ bunchId: "test-uuid-2", counter: 0 });
+    });
+
+    it("should handle count option when starting a new bunch", () => {
+      // Start with count=5 on a new bunch
+      const id1 = generator.generateAfter(null, 5);
+      expect(id1).to.deep.equal({ bunchId: "test-uuid-1", counter: 0 });
+
+      // Next generation should create new bunch since space is reserved
+      const id2 = generator.generateAfter(id1);
+      expect(id2).to.deep.equal({ bunchId: "test-uuid-2", counter: 0 });
+    });
+
+    it("should throw error for invalid count values", () => {
+      expect(() => generator.generateAfter(null, 0)).to.throw(
+        "Invalid count: 0"
+      );
+      expect(() => generator.generateAfter(null, -1)).to.throw(
+        "Invalid count: -1"
+      );
+      expect(() => generator.generateAfter(null, 1.5)).to.throw(
+        "Invalid count: 1.5"
+      );
+    });
+
+    it("should work correctly with count=1 (default behavior)", () => {
+      const id1 = generator.generateAfter(null, 1);
+      const id1Default = generator.generateAfter(null);
+
+      // Both should create new bunches and return counter 0
+      expect(id1).to.deep.equal({ bunchId: "test-uuid-1", counter: 0 });
+      expect(id1Default).to.deep.equal({ bunchId: "test-uuid-2", counter: 0 });
+
+      // When extending, both explicit count=1 and default should behave the same
+      const id2 = generator.generateAfter(id1, 1);
+      const id2Default = generator.generateAfter(id1Default);
+
+      expect(id2).to.deep.equal({ bunchId: "test-uuid-1", counter: 1 });
+      expect(id2Default).to.deep.equal({ bunchId: "test-uuid-2", counter: 1 });
+    });
+  });
 });
