@@ -570,6 +570,23 @@ export class IdList {
    */
   delete(id: ElementId, count = 1) {
     checkCount(count);
+    if (count === 0) return this;
+
+    const located = this.locate(id);
+    if (located === null) return this;
+
+    const leaf = located[0].node;
+    // Check if all ids are in the same leaf, then they can be bulk deleted
+    if (
+      leaf.bunchId === id.bunchId &&
+      id.counter >= leaf.startCounter &&
+      id.counter + count <= leaf.startCounter + leaf.count
+    ) {
+      const newPresent = leaf.present.clone();
+      newPresent.delete(id.counter, count);
+
+      return this.replaceLeaf(located, { ...leaf, present: newPresent });
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdList = this;
@@ -624,6 +641,25 @@ export class IdList {
    */
   undelete(id: ElementId, count = 1) {
     checkCount(count);
+    if (count === 0) return this;
+
+    const located = this.locate(id);
+    if (located === null) {
+      throw new Error("id is not known");
+    }
+
+    const leaf = located[0].node;
+    // Check if all ids are in the same leaf, then they can be bulk undeleted
+    if (
+      leaf.bunchId === id.bunchId &&
+      id.counter >= leaf.startCounter &&
+      id.counter + count <= leaf.startCounter + leaf.count
+    ) {
+      const newPresent = leaf.present.clone();
+      newPresent.set(id.counter, count);
+
+      return this.replaceLeaf(located, { ...leaf, present: newPresent });
+    }
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdList = this;
