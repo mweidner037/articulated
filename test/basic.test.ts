@@ -445,6 +445,23 @@ describe("IdList", () => {
         .true;
     });
 
+    it("should bulk delete elements not all known", () => {
+      let list = IdList.new();
+      const bunchStartId = { bunchId: "abc", counter: 0 };
+      const id: ElementId = { bunchId: "abc", counter: 5 };
+
+      // Insert counters 5..9; counters 0..4 are not known.
+      list = list.insertAfter(null, id, 5);
+      expect(list.length).to.equal(5);
+
+      // Delete the whole bunch starting at counter 0.
+      list = list.delete(bunchStartId, 10);
+      expect(list.length).to.equal(0);
+      expect(list.has(id)).to.be.false;
+      expect(list.isKnown(id)).to.be.true;
+      expect(list.isKnown(bunchStartId)).to.be.false;
+    });
+
     it("should delete a range of elements", () => {
       let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
