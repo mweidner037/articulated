@@ -573,19 +573,19 @@ export class IdList {
     if (count === 0) return this;
 
     const located = this.locate(id);
-    if (located === null) return this;
-
-    const leaf = located[0].node;
-    // Check if all ids are in the same leaf, then they can be bulk deleted
-    if (
-      leaf.bunchId === id.bunchId &&
-      id.counter >= leaf.startCounter &&
-      id.counter + count <= leaf.startCounter + leaf.count
-    ) {
-      const newPresent = leaf.present.clone();
-      newPresent.delete(id.counter, count);
-
-      return this.replaceLeaf(located, { ...leaf, present: newPresent });
+    if (located !== null) {
+      const leaf = located[0].node;
+      // Check if all ids are in the same leaf, then they can be bulk deleted
+      if (
+        leaf.bunchId === id.bunchId &&
+        id.counter >= leaf.startCounter &&
+        id.counter + count <= leaf.startCounter + leaf.count
+      ) {
+        const newPresent = leaf.present.clone();
+        newPresent.delete(id.counter, count);
+  
+        return this.replaceLeaf(located, { ...leaf, present: newPresent });
+      }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
