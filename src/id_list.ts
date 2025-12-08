@@ -580,7 +580,10 @@ export class IdList {
       const located = ans.locate(currentId);
       if (located === null) {
         // Id is not known, skip
-        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        currentId = {
+          bunchId: currentId.bunchId,
+          counter: currentId.counter + 1,
+        };
         remaining--;
         continue;
       }
@@ -598,14 +601,20 @@ export class IdList {
         newPresent.delete(currentId.counter, canDeleteInLeaf);
 
         ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
-        
+
         // Move to the next batch
-        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + canDeleteInLeaf };
+        currentId = {
+          bunchId: currentId.bunchId,
+          counter: currentId.counter + canDeleteInLeaf,
+        };
         remaining -= canDeleteInLeaf;
       } else {
         // Fall back to deleting one by one
         ans = ans.deleteOne(currentId);
-        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        currentId = {
+          bunchId: currentId.bunchId,
+          counter: currentId.counter + 1,
+        };
         remaining--;
       }
     }
@@ -673,7 +682,10 @@ export class IdList {
       const leaf = located[0].node;
       // Calculate how many ids can be undeleted in this leaf
       const leafEnd = leaf.startCounter + leaf.count;
-      const canUndeleteInLeaf = Math.min(leafEnd - currentId.counter, remaining);
+      const canUndeleteInLeaf = Math.min(
+        leafEnd - currentId.counter,
+        remaining
+      );
 
       if (
         leaf.bunchId === currentId.bunchId &&
@@ -686,12 +698,18 @@ export class IdList {
         ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
 
         // Move to the next batch
-        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + canUndeleteInLeaf };
+        currentId = {
+          bunchId: currentId.bunchId,
+          counter: currentId.counter + canUndeleteInLeaf,
+        };
         remaining -= canUndeleteInLeaf;
       } else {
         // Fall back to undeleting one by one
         ans = ans.undeleteOne(currentId);
-        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        currentId = {
+          bunchId: currentId.bunchId,
+          counter: currentId.counter + 1,
+        };
         remaining--;
       }
     }
