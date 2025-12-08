@@ -462,6 +462,24 @@ describe("IdList", () => {
       expect(list.isKnown(bunchStartId)).to.be.false;
     });
 
+    it("should bulk delete across multiple leaves", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "test", counter: 0 }, 10);
+      list = list.insertAfter(
+        { bunchId: "test", counter: 9 },
+        { bunchId: "test", counter: 100 },
+        10
+      );
+      // Leaf 1: counters 0..9
+      // Leaf 2: counters 100..109
+      expect(list.length).to.equal(20);
+      console.log(JSON.stringify(list.save(), null, 2));
+
+      // Delete across multiple leaves
+      list = list.delete({ bunchId: "test", counter: 5 }, 100);
+      expect(list.length).to.equal(10);
+    });
+
     it("should delete a range of elements", () => {
       let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
@@ -534,6 +552,33 @@ describe("IdList", () => {
       expect(list.has(id)).to.be.true;
       expect(list.has({ bunchId: id.bunchId, counter: id.counter + 3 })).to.be
         .true;
+    });
+
+    it("should bulk undelete across multiple leaves", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "test", counter: 0 }, 20);
+      list = list.insertAfter(
+        { bunchId: "test", counter: 9 },
+        { bunchId: "test", counter: 100 },
+        1
+      );
+      // Leaf A: counter 0..9
+      // Leaf B: counter 100
+      // Leaf C: counter 10..19
+      expect(list.length).to.equal(21);
+
+      // Delete counters 5..15
+      list = list.delete({ bunchId: "test", counter: 5 }, 11);
+      expect(list.length).to.equal(10);
+
+      // Undelete counters 5..15
+      list = list.undelete({ bunchId: "test", counter: 5 }, 11);
+      expect(list.length).to.equal(21);
+
+      for (let i = 0; i < 20; i++) {
+        expect(list.has({ bunchId: "test", counter: i })).to.be.true;
+      }
+      expect(list.has({ bunchId: "test", counter: 100 })).to.be.true;
     });
   });
 
