@@ -572,27 +572,44 @@ export class IdList {
     checkCount(count);
     if (count === 0) return this;
 
-    const located = this.locate(id);
-    if (located !== null) {
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let ans: IdList = this;
+    let remaining = count;
+    let currentId = id;
+    while (remaining > 0) {
+      const located = ans.locate(currentId);
+      if (located === null) {
+        // Id is not known, skip
+        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        remaining--;
+        continue;
+      }
+
       const leaf = located[0].node;
-      // Check if all ids are in the same leaf, then they can be bulk deleted
+      // Calculate how many ids can be deleted in this leaf
+      const leafEnd = leaf.startCounter + leaf.count;
+      const canDeleteInLeaf = Math.min(leafEnd - currentId.counter, remaining);
       if (
-        leaf.bunchId === id.bunchId &&
-        id.counter >= leaf.startCounter &&
-        id.counter + count <= leaf.startCounter + leaf.count
+        leaf.bunchId === currentId.bunchId &&
+        currentId.counter >= leaf.startCounter &&
+        canDeleteInLeaf > 0
       ) {
         const newPresent = leaf.present.clone();
-        newPresent.delete(id.counter, count);
-  
-        return this.replaceLeaf(located, { ...leaf, present: newPresent });
+        newPresent.delete(currentId.counter, canDeleteInLeaf);
+
+        ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
+        
+        // Move to the next batch
+        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + canDeleteInLeaf };
+        remaining -= canDeleteInLeaf;
+      } else {
+        // Fall back to deleting one by one
+        ans = ans.deleteOne(currentId);
+        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        remaining--;
       }
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-this-alias
-    let ans: IdList = this;
-    for (let i = 0; i < count; i++) {
-      ans = ans.deleteOne({ bunchId: id.bunchId, counter: id.counter + i });
-    }
     return ans;
   }
 
@@ -643,29 +660,42 @@ export class IdList {
     checkCount(count);
     if (count === 0) return this;
 
-    const located = this.locate(id);
-    if (located === null) {
-      throw new Error("id is not known");
-    }
-
-    const leaf = located[0].node;
-    // Check if all ids are in the same leaf, then they can be bulk undeleted
-    if (
-      leaf.bunchId === id.bunchId &&
-      id.counter >= leaf.startCounter &&
-      id.counter + count <= leaf.startCounter + leaf.count
-    ) {
-      const newPresent = leaf.present.clone();
-      newPresent.set(id.counter, count);
-
-      return this.replaceLeaf(located, { ...leaf, present: newPresent });
-    }
-
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdList = this;
-    for (let i = count - 1; i >= 0; i--) {
-      ans = ans.undeleteOne({ bunchId: id.bunchId, counter: id.counter + i });
+    let remaining = count;
+    let currentId = id;
+    while (remaining > 0) {
+      const located = ans.locate(currentId);
+      if (located === null) {
+        throw new Error("id is not known");
+      }
+
+      const leaf = located[0].node;
+      // Calculate how many ids can be undeleted in this leaf
+      const leafEnd = leaf.startCounter + leaf.count;
+      const canUndeleteInLeaf = Math.min(leafEnd - currentId.counter, remaining);
+
+      if (
+        leaf.bunchId === currentId.bunchId &&
+        currentId.counter >= leaf.startCounter &&
+        canUndeleteInLeaf > 0
+      ) {
+        const newPresent = leaf.present.clone();
+        newPresent.set(currentId.counter, canUndeleteInLeaf);
+
+        ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
+
+        // Move to the next batch
+        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + canUndeleteInLeaf };
+        remaining -= canUndeleteInLeaf;
+      } else {
+        // Fall back to undeleting one by one
+        ans = ans.undeleteOne(currentId);
+        currentId = { bunchId: currentId.bunchId, counter: currentId.counter + 1 };
+        remaining--;
+      }
     }
+
     return ans;
   }
 
