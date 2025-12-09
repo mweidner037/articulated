@@ -473,7 +473,6 @@ describe("IdList", () => {
       // Leaf 1: counters 0..9
       // Leaf 2: counters 100..109
       expect(list.length).to.equal(20);
-      console.log(JSON.stringify(list.save(), null, 2));
 
       // Delete across multiple leaves
       list = list.delete({ bunchId: "test", counter: 5 }, 100);
