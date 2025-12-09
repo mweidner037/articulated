@@ -58,6 +58,7 @@ export interface LeafNode {
 export class InnerNodeInner {
   readonly size: number;
   readonly knownSize: number;
+  private readonly seqToIndex: Map<number, number>;
 
   constructor(
     /**
@@ -75,15 +76,22 @@ export class InnerNodeInner {
   ) {
     let size = 0;
     let knownSize = 0;
-    for (const child of children) {
+    const seqToIndex = new Map<number, number>();
+    for (const [index, child] of children.entries()) {
       size += child.size;
       knownSize += child.knownSize;
+      seqToIndex.set(child.seq, index);
       if (parentSeqsMut) {
         parentSeqsMut.value = parentSeqsMut.value.set(child.seq, seq);
       }
     }
+    this.seqToIndex = seqToIndex;
     this.size = size;
     this.knownSize = knownSize;
+  }
+
+  findChildIndex(seq: number): number {
+    return this.seqToIndex.get(seq) ?? -1;
   }
 }
 
@@ -683,8 +691,8 @@ export class IdList {
     // Start at the root child's seq and proceed to the leaf parent's seq.
     for (let i = innerSeqs.length - 2; i >= 0; i--) {
       const children = (curParent as InnerNodeInner).children;
-      const childIndex = children.findIndex(
-        (child) => child.seq === innerSeqs[i]
+      const childIndex = (curParent as InnerNodeInner).findChildIndex(
+        innerSeqs[i]
       );
       if (childIndex === -1) throw new Error("Internal error");
       const child = children[childIndex];
