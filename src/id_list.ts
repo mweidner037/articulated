@@ -605,19 +605,6 @@ export class IdList {
     return ans;
   }
 
-  private deleteOne(id: ElementId) {
-    const located = this.locate(id);
-    if (located === null) return this;
-
-    const leaf = located[0].node;
-    if (!leaf.present.has(id.counter)) return this;
-
-    const newPresent = leaf.present.clone();
-    newPresent.delete(id.counter);
-
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
-  }
-
   /**
    * Deletes all ids with indexes in the range [from, to).
    *
@@ -680,21 +667,6 @@ export class IdList {
     }
 
     return ans;
-  }
-
-  private undeleteOne(id: ElementId) {
-    const located = this.locate(id);
-    if (located === null) {
-      throw new Error("id is not known");
-    }
-
-    const leaf = located[0].node;
-    if (leaf.present.has(id.counter)) return this;
-
-    const newPresent = leaf.present.clone();
-    newPresent.set(id.counter);
-
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
   }
 
   /**
