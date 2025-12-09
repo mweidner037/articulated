@@ -1,16 +1,15 @@
 # articulated
 
-A TypeScript library for managing stable element identifiers in mutable lists, perfect for collaborative editing and other applications where elements need persistent identities despite insertions and deletions.
+A TypeScript library for managing stable element identifiers in mutable lists, intended for collaborative editing and other applications where elements need persistent identities despite insertions and deletions.
 
 [Demos](https://github.com/mweidner037/articulated-demos)
 
 ## Features
 
-- **Stable identifiers**: Elements keep their identity even as their indices change
-- **Efficient storage**: Optimized compression for sequential IDs
-- **Collaborative-ready**: Supports concurrent operations from multiple sources
-- **Tombstone support**: Deleted elements remain addressable
-- **TypeScript-first**: Full type safety and excellent IDE integration
+- **Stable identifiers**: Elements keep their identity even as their indices change.
+- **Efficient storage**: Optimized compression for sequential IDs.
+- **Collaboration-ready**: Designed to handle operations from multiple sources.
+- **Tombstone support**: Deleted elements remain addressable.
 
 ## Installation
 
@@ -131,6 +130,8 @@ let newList = IdList.load(savedState);
 - Todo lists with collaborative editing
 - Any list where elements' positions change but need stable identifiers
 - Conflict-free replicated data type (CRDT) implementations
+
+**Note**: IdList is not itself a CRDT. Concurrent insertAfter operations with the same `before` ID will _not_ commute with each other. However, you can implement a list/text CRDT on top of IdList, by processing collaborative insertAfter and delete operations in an [eventually consistent total order](https://mattweidner.com/2025/05/21/text-without-crdts.html#decentralized-variants).
 
 ## Internals
 
