@@ -570,26 +570,39 @@ export class IdList {
    */
   delete(id: ElementId, count = 1) {
     checkCount(count);
+    if (count === 0) return this;
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdList = this;
-    for (let i = 0; i < count; i++) {
-      ans = ans.deleteOne({ bunchId: id.bunchId, counter: id.counter + i });
+    let currentCounter = id.counter;
+    while (currentCounter < id.counter + count) {
+      const currentId: ElementId = {
+        bunchId: id.bunchId,
+        counter: currentCounter,
+      };
+      const located = ans.locate(currentId);
+      if (located === null) {
+        // Id is not known, skip
+        currentCounter++;
+        continue;
+      }
+
+      const leaf = located[0].node;
+
+      // Calculate how many ids can be deleted in this leaf
+      const leafEnd = leaf.startCounter + leaf.count;
+      const remaining = id.counter + count - currentCounter;
+      const canDeleteInLeaf = Math.min(leafEnd - currentCounter, remaining);
+
+      const newPresent = leaf.present.clone();
+      newPresent.delete(currentCounter, canDeleteInLeaf);
+      ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
+
+      // Move to the next batch
+      currentCounter += canDeleteInLeaf;
     }
+
     return ans;
-  }
-
-  private deleteOne(id: ElementId) {
-    const located = this.locate(id);
-    if (located === null) return this;
-
-    const leaf = located[0].node;
-    if (!leaf.present.has(id.counter)) return this;
-
-    const newPresent = leaf.present.clone();
-    newPresent.delete(id.counter);
-
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
   }
 
   /**
@@ -624,28 +637,36 @@ export class IdList {
    */
   undelete(id: ElementId, count = 1) {
     checkCount(count);
+    if (count === 0) return this;
 
     // eslint-disable-next-line @typescript-eslint/no-this-alias
     let ans: IdList = this;
-    for (let i = count - 1; i >= 0; i--) {
-      ans = ans.undeleteOne({ bunchId: id.bunchId, counter: id.counter + i });
+    let currentCounter = id.counter;
+    while (currentCounter < id.counter + count) {
+      const currentId: ElementId = {
+        bunchId: id.bunchId,
+        counter: currentCounter,
+      };
+      const located = ans.locate(currentId);
+      if (located === null) {
+        throw new Error("id is not known");
+      }
+
+      const leaf = located[0].node;
+      // Calculate how many ids can be undeleted in this leaf
+      const leafEnd = leaf.startCounter + leaf.count;
+      const remaining = id.counter + count - currentCounter;
+      const canUndeleteInLeaf = Math.min(leafEnd - currentCounter, remaining);
+
+      const newPresent = leaf.present.clone();
+      newPresent.set(currentCounter, canUndeleteInLeaf);
+      ans = ans.replaceLeaf(located, { ...leaf, present: newPresent });
+
+      // Move to the next batch
+      currentCounter += canUndeleteInLeaf;
     }
+
     return ans;
-  }
-
-  private undeleteOne(id: ElementId) {
-    const located = this.locate(id);
-    if (located === null) {
-      throw new Error("id is not known");
-    }
-
-    const leaf = located[0].node;
-    if (leaf.present.has(id.counter)) return this;
-
-    const newPresent = leaf.present.clone();
-    newPresent.set(id.counter);
-
-    return this.replaceLeaf(located, { ...leaf, present: newPresent });
   }
 
   /**

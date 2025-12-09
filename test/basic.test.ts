@@ -445,6 +445,98 @@ describe("IdList", () => {
         .true;
     });
 
+    it("should bulk delete elements not all known", () => {
+      let list = IdList.new();
+      const bunchStartId = { bunchId: "abc", counter: 0 };
+      const id: ElementId = { bunchId: "abc", counter: 5 };
+
+      // Insert counters 5..9; counters 0..4 are not known.
+      list = list.insertAfter(null, id, 5);
+      expect(list.length).to.equal(5);
+
+      // Delete the whole bunch starting at counter 0.
+      list = list.delete(bunchStartId, 10);
+      expect(list.length).to.equal(0);
+      expect(list.has(id)).to.be.false;
+      expect(list.isKnown(id)).to.be.true;
+      expect(list.isKnown(bunchStartId)).to.be.false;
+    });
+
+    it("should bulk delete across multiple leaves", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "test", counter: 0 }, 10);
+      list = list.insertAfter(
+        { bunchId: "test", counter: 9 },
+        { bunchId: "test", counter: 100 },
+        10
+      );
+      // Leaf 1: counters 0..9
+      // Leaf 2: counters 100..109
+      expect(list.length).to.equal(20);
+
+      // Delete across multiple leaves
+      list = list.delete({ bunchId: "test", counter: 5 }, 100);
+      expect(list.length).to.equal(10);
+    });
+
+    it("should bulk delete and undelete across split leaves", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "abc", counter: 0 }, 10);
+      // Split the leaf with a different bunch.
+      list = list.insertAfter(
+        { bunchId: "abc", counter: 5 },
+        { bunchId: "def", counter: 0 },
+        10
+      );
+      expect(list.length).to.equal(20);
+
+      // Delete the original bunch.
+      list = list.delete({ bunchId: "abc", counter: 0 }, 10);
+
+      expect(list.length).to.equal(10);
+      for (const id of list.values()) {
+        expect(id.bunchId).to.equal("def");
+      }
+
+      // Undelete.
+      list = list.undelete({ bunchId: "abc", counter: 0 }, 10);
+      expect(list.length).to.equal(20);
+      expect(list.at(5)).to.deep.equal({ bunchId: "abc", counter: 5 });
+      expect(list.at(16)).to.deep.equal({ bunchId: "abc", counter: 6 });
+    });
+
+    it("should bulk delete and undelete across split leaves 2", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "abc", counter: 0 }, 10);
+      // Split the leaf with a different bunch.
+      list = list.insertAfter(
+        { bunchId: "abc", counter: 5 },
+        { bunchId: "def", counter: 0 },
+        10
+      );
+      expect(list.length).to.equal(20);
+
+      // Delete part of the original bunch, crossing the split.
+      list = list.delete({ bunchId: "abc", counter: 2 }, 6);
+
+      expect(list.length).to.equal(14);
+      for (let i = 0; i < 2; i++) {
+        expect(list.at(i).bunchId).to.equal("abc");
+      }
+      for (let i = 2; i < 12; i++) {
+        expect(list.at(i).bunchId).to.equal("def");
+      }
+      for (let i = 12; i < 14; i++) {
+        expect(list.at(i).bunchId).to.equal("abc");
+      }
+
+      // Undelete.
+      list = list.undelete({ bunchId: "abc", counter: 2 }, 6);
+      expect(list.length).to.equal(20);
+      expect(list.at(5)).to.deep.equal({ bunchId: "abc", counter: 5 });
+      expect(list.at(16)).to.deep.equal({ bunchId: "abc", counter: 6 });
+    });
+
     it("should delete a range of elements", () => {
       let list = IdList.new();
       const id1: ElementId = { bunchId: "abc", counter: 1 };
@@ -464,6 +556,18 @@ describe("IdList", () => {
         { bunchId: id1.bunchId, counter: 4 },
         { bunchId: id1.bunchId, counter: 5 },
       ]);
+    });
+
+    it("should do nothing when count = 0", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id);
+      expect(list.length).to.equal(1);
+
+      list = list.delete(id, 0);
+      expect(list.length).to.equal(1);
+      expect(list.has(id)).to.be.true;
     });
   });
 
@@ -485,6 +589,17 @@ describe("IdList", () => {
       const id: ElementId = { bunchId: "abc", counter: 1 };
 
       expect(() => (list = list.undelete(id))).to.throw();
+    });
+
+    it("should throw when any bulk ID is unknown", () => {
+      let list = IdList.new();
+      const id1: ElementId = { bunchId: "abc", counter: 1 };
+      const id3: ElementId = { bunchId: "abc", counter: 3 };
+      list = list.insertAfter(null, id1);
+      list = list.insertAfter(id1, id3);
+
+      // Counter 2 is not known.
+      expect(() => (list = list.undelete(id1, 3))).to.throw();
     });
 
     it("should do nothing when undeleting an already present ID", () => {
@@ -517,6 +632,46 @@ describe("IdList", () => {
       expect(list.has(id)).to.be.true;
       expect(list.has({ bunchId: id.bunchId, counter: id.counter + 3 })).to.be
         .true;
+    });
+
+    it("should bulk undelete across multiple leaves", () => {
+      let list = IdList.new();
+      list = list.insertAfter(null, { bunchId: "test", counter: 0 }, 20);
+      list = list.insertAfter(
+        { bunchId: "test", counter: 9 },
+        { bunchId: "test", counter: 100 },
+        1
+      );
+      // Leaf A: counter 0..9
+      // Leaf B: counter 100
+      // Leaf C: counter 10..19
+      expect(list.length).to.equal(21);
+
+      // Delete counters 5..15
+      list = list.delete({ bunchId: "test", counter: 5 }, 11);
+      expect(list.length).to.equal(10);
+
+      // Undelete counters 5..15
+      list = list.undelete({ bunchId: "test", counter: 5 }, 11);
+      expect(list.length).to.equal(21);
+
+      for (let i = 0; i < 20; i++) {
+        expect(list.has({ bunchId: "test", counter: i })).to.be.true;
+      }
+      expect(list.has({ bunchId: "test", counter: 100 })).to.be.true;
+    });
+
+    it("should do nothing when count = 0", () => {
+      let list = IdList.new();
+      const id: ElementId = { bunchId: "abc", counter: 1 };
+
+      list = list.insertAfter(null, id).delete(id);
+      expect(list.length).to.equal(0);
+
+      list = list.undelete(id, 0);
+      expect(list.length).to.equal(0);
+      expect(list.has(id)).to.be.false;
+      expect(list.isKnown(id)).to.be.true;
     });
   });
 
