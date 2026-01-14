@@ -14,15 +14,15 @@ Note: This is not a fair comparison to list/text CRDTs. The executions benchmark
 Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only.
 Updates and saved states use JSON encoding, with optional GZIP for saved states.
 
-- Sender time (ms): 2229
+- Sender time (ms): 1440
 - Avg update size (bytes): 147.3
-- Receiver time (ms): 2214
-- Save time (ms): 14
+- Receiver time (ms): 1545
+- Save time (ms): 8
 - Save size (bytes): 1177551
-- Load time (ms): 28
-- Save time GZIP'd (ms): 83
-- Save size GZIP'd (bytes): 65897
-- Load time GZIP'd (ms): 53
+- Load time (ms): 14
+- Save time GZIP'd (ms): 43
+- Save size GZIP'd (bytes): 65895
+- Load time GZIP'd (ms): 27
 - Mem used estimate (MB): 2.7
 
 ## Insert-After, Custom Encoding
@@ -30,13 +30,13 @@ Updates and saved states use JSON encoding, with optional GZIP for saved states.
 Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only.
 Updates use a custom string encoding; saved states use JSON with optional GZIP.
 
-- Sender time (ms): 1943
+- Sender time (ms): 1201
 - Avg update size (bytes): 45.6
-- Receiver time (ms): 3237
-- Save time (ms): 13
+- Receiver time (ms): 2548
+- Save time (ms): 7
 - Save size (bytes): 1177551
-- Load time (ms): 19
-- Save time GZIP'd (ms): 57
-- Save size GZIP'd (bytes): 65889
-- Load time GZIP'd (ms): 49
+- Load time (ms): 15
+- Save time GZIP'd (ms): 41
+- Save size GZIP'd (bytes): 65895
+- Load time GZIP'd (ms): 26
 - Mem used estimate (MB): 2.7

@@ -1,6 +1,6 @@
 import { assert } from "chai";
 import { v4 as uuidv4 } from "uuid";
-import { ElementId, IdList, SavedIdList } from "../src";
+import { ElementId, ElementIdGenerator, IdList, SavedIdList } from "../src";
 import {
   avg,
   getMemUsed,
@@ -10,7 +10,7 @@ import {
   sleep,
 } from "./internal/util";
 
-const { edits, finalText } = realTextTraceEdits();
+const { edits } = realTextTraceEdits();
 
 type Update =
   | {
@@ -38,6 +38,8 @@ export async function insertAfterJson() {
     return replicaId + replicaCounter++;
   }
 
+  const idGenerator = new ElementIdGenerator(nextBunchId);
+
   // Perform the whole trace, sending all updates.
   const updates: string[] = [];
   let startTime = process.hrtime.bigint();
@@ -46,17 +48,7 @@ export async function insertAfterJson() {
     let updateObj: Update;
     if (edit[2] !== undefined) {
       const before = edit[0] === 0 ? null : sender.at(edit[0] - 1);
-      let id: ElementId;
-      // Try to extend before's bunch, so that it will be compressed.
-      if (
-        before !== null &&
-        sender.maxCounter(before.bunchId) === before.counter
-      ) {
-        id = { bunchId: before.bunchId, counter: before.counter + 1 };
-      } else {
-        // id = { bunchId: uuidv4(), counter: 0 };
-        id = { bunchId: nextBunchId(), counter: 0 };
-      }
+      const id = idGenerator.generateAfter(before);
 
       sender = sender.insertAfter(before, id);
 
