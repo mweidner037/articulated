@@ -14,10 +14,10 @@ const { edits } = realTextTraceEdits();
 
 type Update =
   | {
-      type: "insertAfter";
-      id: ElementId;
-      before: ElementId | null;
-    }
+    type: "insertAfter";
+    id: ElementId;
+    before: ElementId | null;
+  }
   | { type: "delete"; id: ElementId };
 
 export async function insertAfterJson() {
@@ -29,7 +29,16 @@ export async function insertAfterJson() {
     "Updates and saved states use JSON encoding, with optional GZIP for saved states.\n"
   );
 
-  const idGenerator = new ElementIdGenerator(() => uuidv4());
+  // TODO: Deterministic randomness.
+  const replicaId = uuidv4();
+  let replicaCounter = 0;
+  function nextBunchId(): string {
+    // This is unrealistic (more than one replica will edit a document this large)
+    // but the closest comparison to existing CRDT / list-positions benchmarks.
+    return replicaId + replicaCounter++;
+  }
+
+  const idGenerator = new ElementIdGenerator(nextBunchId);
 
   // Perform the whole trace, sending all updates.
   const updates: string[] = [];
