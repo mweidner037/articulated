@@ -14,10 +14,10 @@ const { edits } = realTextTraceEdits();
 
 type Update =
   | {
-    type: "insertAfter";
-    id: ElementId;
-    before: ElementId | null;
-  }
+      type: "insertAfter";
+      id: ElementId;
+      before: ElementId | null;
+    }
   | { type: "delete"; id: ElementId };
 
 export async function insertAfterJson() {
