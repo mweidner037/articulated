@@ -9,7 +9,7 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 - **Stable identifiers**: Elements keep their identity even as their indices change.
 - **Efficient storage**: Optimized compression for sequential IDs.
 - **Collaboration-ready**: Designed to handle operations from multiple sources.
-- **Tombstone support**: Deleted elements remain addressable.
+- **Persistent (immutable) data structure**: Mutating methods return a new list while sharing memory where possible.
 
 ## Installation
 
