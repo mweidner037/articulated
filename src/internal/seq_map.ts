@@ -1,4 +1,4 @@
-import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
+import { RedBlackTree } from "../vendor/functional-red-black-tree";
 
 /**
  * A persistent map from an InnerNode's seq to its parent's seq
@@ -8,13 +8,13 @@ import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
  */
 export class SeqMap {
   constructor(
-    private readonly tree: Tree<number, number>,
+    private readonly tree: RedBlackTree<number, number>,
     private readonly nextSeq: number
   ) {}
 
   static new(): SeqMap {
     return new this(
-      createRBTree((a, b) => a - b),
+      RedBlackTree.new((a, b) => a - b),
       1
     );
   }
