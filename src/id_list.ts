@@ -2,7 +2,7 @@ import { SparseIndices } from "sparse-array-rled";
 import { ElementId } from "./element_id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
-import { getAndBumpNextSeq, MutableSeqMap, SeqMap } from "./internal/seq_map";
+import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
@@ -40,6 +40,9 @@ import { SavedIdList } from "./saved_id_list";
  to an ElementId, e.g., for IdList.has.
 */
 
+/**
+ * @private Only exported for internal use and tests.
+ */
 export interface LeafNode {
   readonly bunchId: string;
   readonly startCounter: number;
@@ -54,6 +57,8 @@ export interface LeafNode {
 
 /**
  * An inner node with inner-node children.
+ *
+ * @private Only exported for tests.
  */
 export class InnerNodeInner {
   readonly size: number;
@@ -89,6 +94,8 @@ export class InnerNodeInner {
 
 /**
  * An inner node with leaf children.
+ *
+ * @private Only exported for tests.
  */
 export class InnerNodeLeaf {
   readonly size: number;
@@ -121,6 +128,9 @@ export class InnerNodeLeaf {
   }
 }
 
+/**
+ * @private Only exported for tests.
+ */
 export type InnerNode = InnerNodeInner | InnerNodeLeaf;
 
 type Located = [
@@ -137,6 +147,8 @@ type Located = [
  * Wiki B+Tree: "B+ trees can also be used for data stored in RAM.
  * In this case a reasonable choice for block size would be the size of [the] processor's cache line."
  * (64 byte cache line) / (8 byte pointer) = 8.
+ *
+ * @private Only exported for tests.
  */
 export const M = 8;
 
