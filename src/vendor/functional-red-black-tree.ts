@@ -9,9 +9,12 @@ const RED = 0;
 const BLACK = 1;
 type Color = typeof RED | typeof BLACK;
 
-class RBNode<K, V> {
+/**
+ * @private Only exported for tests.
+ */
+export class RBNode<K, V> {
   constructor(
-    public _color: Color,
+    public color: Color,
     /** The key associated with the node. */
     public key: K,
     /** The value associated with the node. */
@@ -24,7 +27,7 @@ class RBNode<K, V> {
 }
 
 function cloneNode<K, V>(node: RBNode<K, V>): RBNode<K, V> {
-  return new RBNode(node._color, node.key, node.value, node.left, node.right);
+  return new RBNode(node.color, node.key, node.value, node.left, node.right);
 }
 
 function repaint<K, V>(color: Color, node: RBNode<K, V>): RBNode<K, V> {
@@ -83,7 +86,7 @@ export class RedBlackTree<K, V> {
       const lastN = n_stack[n_stack.length - 1];
       if (lastN.key === key && lastN.value === value) return this;
       n_stack[n_stack.length - 1] = new RBNode(
-        lastN._color,
+        lastN.color,
         key,
         value,
         lastN.left,
@@ -99,7 +102,7 @@ export class RedBlackTree<K, V> {
       n = n_stack[s];
       if (d_stack[s] <= 0) {
         n_stack[s] = new RBNode(
-          n._color,
+          n.color,
           n.key,
           n.value,
           n_stack[s + 1],
@@ -107,7 +110,7 @@ export class RedBlackTree<K, V> {
         );
       } else {
         n_stack[s] = new RBNode(
-          n._color,
+          n.color,
           n.key,
           n.value,
           n.left,
@@ -123,24 +126,24 @@ export class RedBlackTree<K, V> {
     for (s = n_stack.length - 1; s > 1; --s) {
       const p = n_stack[s - 1];
       n = n_stack[s];
-      if (p._color === BLACK || n._color === BLACK) {
+      if (p.color === BLACK || n.color === BLACK) {
         break;
       }
       const pp = n_stack[s - 2];
       if (pp.left === p) {
         if (p.left === n) {
           const y = pp.right;
-          if (y && y._color === RED) {
+          if (y && y.color === RED) {
             //console.log("LLr")
-            p._color = BLACK;
+            p.color = BLACK;
             pp.right = repaint(BLACK, y);
-            pp._color = RED;
+            pp.color = RED;
             s -= 1;
           } else {
             //console.log("LLb")
-            pp._color = RED;
+            pp.color = RED;
             pp.left = p.right;
-            p._color = BLACK;
+            p.color = BLACK;
             p.right = pp;
             n_stack[s - 2] = p;
             n_stack[s - 1] = n;
@@ -156,18 +159,18 @@ export class RedBlackTree<K, V> {
           }
         } else {
           const y = pp.right;
-          if (y && y._color === RED) {
+          if (y && y.color === RED) {
             //console.log("LRr")
-            p._color = BLACK;
+            p.color = BLACK;
             pp.right = repaint(BLACK, y);
-            pp._color = RED;
+            pp.color = RED;
             s -= 1;
           } else {
             //console.log("LRb")
             p.right = n.left;
-            pp._color = RED;
+            pp.color = RED;
             pp.left = n.right;
-            n._color = BLACK;
+            n.color = BLACK;
             n.left = p;
             n.right = pp;
             n_stack[s - 2] = n;
@@ -186,17 +189,17 @@ export class RedBlackTree<K, V> {
       } else {
         if (p.right === n) {
           const y = pp.left;
-          if (y && y._color === RED) {
+          if (y && y.color === RED) {
             //console.log("RRr", y.key)
-            p._color = BLACK;
+            p.color = BLACK;
             pp.left = repaint(BLACK, y);
-            pp._color = RED;
+            pp.color = RED;
             s -= 1;
           } else {
             //console.log("RRb")
-            pp._color = RED;
+            pp.color = RED;
             pp.right = p.left;
-            p._color = BLACK;
+            p.color = BLACK;
             p.left = pp;
             n_stack[s - 2] = p;
             n_stack[s - 1] = n;
@@ -212,18 +215,18 @@ export class RedBlackTree<K, V> {
           }
         } else {
           const y = pp.left;
-          if (y && y._color === RED) {
+          if (y && y.color === RED) {
             //console.log("RLr")
-            p._color = BLACK;
+            p.color = BLACK;
             pp.left = repaint(BLACK, y);
-            pp._color = RED;
+            pp.color = RED;
             s -= 1;
           } else {
             //console.log("RLb")
             p.left = n.right;
-            pp._color = RED;
+            pp.color = RED;
             pp.right = n.left;
-            n._color = BLACK;
+            n.color = BLACK;
             n.right = p;
             n.left = pp;
             n_stack[s - 2] = n;
@@ -242,7 +245,7 @@ export class RedBlackTree<K, V> {
       }
     }
     //Return new tree
-    n_stack[0]._color = BLACK;
+    n_stack[0].color = BLACK;
     return new RedBlackTree<K, V>(cmp, n_stack[0]);
   }
 
@@ -337,7 +340,7 @@ function swapNode<K, V>(n: RBNode<K, V>, v: RBNode<K, V>): void {
   n.value = v.value;
   n.left = v.left;
   n.right = v.right;
-  n._color = v._color;
+  n.color = v.color;
 }
 
 //Fix up a double black node in a tree
@@ -346,7 +349,7 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
   for (let i = stack.length - 1; i >= 0; --i) {
     n = stack[i];
     if (i === 0) {
-      n._color = BLACK;
+      n.color = BLACK;
       return;
     }
     //console.log("visit node:", n.key, i, stack[i].key, stack[i-1].key)
@@ -354,17 +357,17 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
     if (p.left === n) {
       //console.log("left child")
       s = p.right!;
-      if (s.right && s.right._color === RED) {
+      if (s.right && s.right.color === RED) {
         //console.log("case 1: right sibling child red")
         s = p.right = cloneNode(s);
         z = s.right = cloneNode(s.right!);
         p.right = s.left;
         s.left = p;
         s.right = z;
-        s._color = p._color;
-        n._color = BLACK;
-        p._color = BLACK;
-        z._color = BLACK;
+        s.color = p.color;
+        n.color = BLACK;
+        p.color = BLACK;
+        z.color = BLACK;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.left === p) {
@@ -375,7 +378,7 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         }
         stack[i - 1] = s;
         return;
-      } else if (s.left && s.left._color === RED) {
+      } else if (s.left && s.left.color === RED) {
         //console.log("case 1: left sibling child red")
         s = p.right = cloneNode(s);
         z = s.left = cloneNode(s.left!);
@@ -383,10 +386,10 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         s.left = z.right;
         z.left = p;
         z.right = s;
-        z._color = p._color;
-        p._color = BLACK;
-        s._color = BLACK;
-        n._color = BLACK;
+        z.color = p.color;
+        p.color = BLACK;
+        s.color = BLACK;
+        n.color = BLACK;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.left === p) {
@@ -398,10 +401,10 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         stack[i - 1] = z;
         return;
       }
-      if (s._color === BLACK) {
-        if (p._color === RED) {
+      if (s.color === BLACK) {
+        if (p.color === RED) {
           //console.log("case 2: black sibling, red parent", p.right.value)
-          p._color = BLACK;
+          p.color = BLACK;
           p.right = repaint(RED, s);
           return;
         } else {
@@ -414,8 +417,8 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         s = cloneNode(s);
         p.right = s.left;
         s.left = p;
-        s._color = p._color;
-        p._color = RED;
+        s.color = p.color;
+        p.color = RED;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.left === p) {
@@ -436,17 +439,17 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
     } else {
       //console.log("right child")
       s = p.left!;
-      if (s.left && s.left._color === RED) {
-        //console.log("case 1: left sibling child red", p.value, p._color)
+      if (s.left && s.left.color === RED) {
+        //console.log("case 1: left sibling child red", p.value, p.color)
         s = p.left = cloneNode(s);
         z = s.left = cloneNode(s.left!);
         p.left = s.right;
         s.right = p;
         s.left = z;
-        s._color = p._color;
-        n._color = BLACK;
-        p._color = BLACK;
-        z._color = BLACK;
+        s.color = p.color;
+        n.color = BLACK;
+        p.color = BLACK;
+        z.color = BLACK;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.right === p) {
@@ -457,7 +460,7 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         }
         stack[i - 1] = s;
         return;
-      } else if (s.right && s.right._color === RED) {
+      } else if (s.right && s.right.color === RED) {
         //console.log("case 1: right sibling child red")
         s = p.left = cloneNode(s);
         z = s.right = cloneNode(s.right!);
@@ -465,10 +468,10 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         s.right = z.left;
         z.right = p;
         z.left = s;
-        z._color = p._color;
-        p._color = BLACK;
-        s._color = BLACK;
-        n._color = BLACK;
+        z.color = p.color;
+        p.color = BLACK;
+        s.color = BLACK;
+        n.color = BLACK;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.right === p) {
@@ -480,10 +483,10 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         stack[i - 1] = z;
         return;
       }
-      if (s._color === BLACK) {
-        if (p._color === RED) {
+      if (s.color === BLACK) {
+        if (p.color === RED) {
           //console.log("case 2: black sibling, red parent")
-          p._color = BLACK;
+          p.color = BLACK;
           p.left = repaint(RED, s);
           return;
         } else {
@@ -496,8 +499,8 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         s = cloneNode(s);
         p.left = s.right;
         s.right = p;
-        s._color = p._color;
-        p._color = RED;
+        s.color = p.color;
+        p.color = RED;
         if (i > 1) {
           const pp = stack[i - 2];
           if (pp.right === p) {
@@ -541,7 +544,7 @@ export class RedBlackTreeIterator<K, V> {
     const cstack = new Array<RBNode<K, V>>(stack.length);
     let n = stack[stack.length - 1];
     cstack[cstack.length - 1] = new RBNode(
-      n._color,
+      n.color,
       n.key,
       n.value,
       n.left,
@@ -551,15 +554,9 @@ export class RedBlackTreeIterator<K, V> {
     for (i = stack.length - 2; i >= 0; --i) {
       n = stack[i];
       if (n.left === stack[i + 1]) {
-        cstack[i] = new RBNode(
-          n._color,
-          n.key,
-          n.value,
-          cstack[i + 1],
-          n.right
-        );
+        cstack[i] = new RBNode(n.color, n.key, n.value, cstack[i + 1], n.right);
       } else {
-        cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i + 1]);
+        cstack[i] = new RBNode(n.color, n.key, n.value, n.left, cstack[i + 1]);
       }
     }
 
@@ -580,14 +577,14 @@ export class RedBlackTreeIterator<K, V> {
       }
       //Copy path to leaf
       const v = cstack[split - 1];
-      cstack.push(new RBNode(n._color, v.key, v.value, n.left, n.right));
+      cstack.push(new RBNode(n.color, v.key, v.value, n.left, n.right));
       cstack[split - 1].key = n.key;
       cstack[split - 1].value = n.value;
 
       //Fix up stack
       for (i = cstack.length - 2; i >= split; --i) {
         n = cstack[i];
-        cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i + 1]);
+        cstack[i] = new RBNode(n.color, n.key, n.value, n.left, cstack[i + 1]);
       }
       cstack[split - 1].left = cstack[split];
     }
@@ -595,7 +592,7 @@ export class RedBlackTreeIterator<K, V> {
 
     //Remove leaf node
     n = cstack[cstack.length - 1];
-    if (n._color === RED) {
+    if (n.color === RED) {
       //Easy case: removing red leaf
       //console.log("RED leaf")
       const p = cstack[cstack.length - 2];
@@ -616,7 +613,7 @@ export class RedBlackTreeIterator<K, V> {
           swapNode(n, n.right);
         }
         //Child must be red, so repaint it black to balance color
-        n._color = BLACK;
+        n.color = BLACK;
         return new RedBlackTree<K, V>(this.tree.compare, cstack[0]);
       } else if (cstack.length === 1) {
         //Third easy case: root

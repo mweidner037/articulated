@@ -1,5 +1,8 @@
 import { expect } from "chai";
-import { RedBlackTree } from "../../src/vendor/functional-red-black-tree";
+import {
+  RBNode,
+  RedBlackTree,
+} from "../../src/vendor/functional-red-black-tree";
 
 // Tests adapted from the upstream functional-red-black-tree test suite:
 // https://github.com/mikolalysenko/functional-red-black-tree/blob/master/test/test.js
@@ -13,16 +16,6 @@ import { RedBlackTree } from "../../src/vendor/functional-red-black-tree";
 
 const RED = 0;
 const BLACK = 1;
-
-// The internal node shape, mirrored from the (non-exported) RBNode class so we
-// can verify the red-black invariants directly.
-interface RBNode<K, V> {
-  _color: number;
-  key: K;
-  value: V;
-  left: RBNode<K, V> | null;
-  right: RBNode<K, V> | null;
-}
 
 function getRoot<K, V>(tree: RedBlackTree<K, V>): RBNode<K, V> | null {
   return tree["root"] as unknown as RBNode<K, V> | null;
@@ -53,22 +46,22 @@ function toValues<K, V>(tree: RedBlackTree<K, V>): V[] {
 function checkTree<K, V>(tree: RedBlackTree<K, V>): void {
   const root = getRoot(tree);
   if (!root) return;
-  expect(root._color, "root is black").to.equal(BLACK);
+  expect(root.color, "root is black").to.equal(BLACK);
 
   // Returns the black-height (number of black nodes along any path to a leaf).
   function checkNode(node: RBNode<K, V> | null): number {
     if (!node) return 1;
-    if (node._color === RED) {
+    if (node.color === RED) {
       expect(
-        !node.left || node.left._color === BLACK,
+        !node.left || node.left.color === BLACK,
         "children of red node must be black"
       ).to.equal(true);
       expect(
-        !node.right || node.right._color === BLACK,
+        !node.right || node.right.color === BLACK,
         "children of red node must be black"
       ).to.equal(true);
     } else {
-      expect(node._color, "node color must be red or black").to.equal(BLACK);
+      expect(node.color, "node color must be red or black").to.equal(BLACK);
     }
     if (node.left) {
       expect(
@@ -88,7 +81,7 @@ function checkTree<K, V>(tree: RedBlackTree<K, V>): void {
       cl,
       "number of black nodes along all paths to root must be constant"
     ).to.equal(cr);
-    return cl + node._color;
+    return cl + node.color;
   }
   checkNode(root);
 }
