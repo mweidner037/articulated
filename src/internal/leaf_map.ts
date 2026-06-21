@@ -1,4 +1,4 @@
-import createRBTree, { Tree } from "../vendor/functional-red-black-tree";
+import { RedBlackTree } from "../vendor/functional-red-black-tree";
 import type { LeafNode } from "../id_list";
 
 /**
@@ -9,10 +9,10 @@ import type { LeafNode } from "../id_list";
  * even though the LeafNode might start at a lower counter.
  */
 export class LeafMap {
-  private constructor(private readonly tree: Tree<LeafNode, number>) {}
+  private constructor(private readonly tree: RedBlackTree<LeafNode, number>) {}
 
   static new() {
-    return new this(createRBTree(compareLeaves));
+    return new this(RedBlackTree.new(compareLeaves));
   }
 
   /**

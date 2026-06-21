@@ -5,19 +5,48 @@
 // https://github.com/DefinitelyTyped/DefinitelyTyped/blob/master/types/functional-red-black-tree/functional-red-black-tree-tests.ts
 // which is MIT Licensed.
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable no-var */
-/* eslint-disable import/no-default-export */
+const RED = 0;
+const BLACK = 1;
+type Color = typeof RED | typeof BLACK;
+
+class RBNode<K, V> {
+  constructor(
+    public _color: Color,
+    /** The key associated with the node. */
+    public key: K,
+    /** The value associated with the node. */
+    public value: V,
+    /** The left subtree of the node. */
+    public left: RBNode<K, V> | null,
+    /** The right subtree of the node. */
+    public right: RBNode<K, V> | null
+  ) {}
+}
+
+function cloneNode<K, V>(node: RBNode<K, V>): RBNode<K, V> {
+  return new RBNode(node._color, node.key, node.value, node.left, node.right);
+}
+
+function repaint<K, V>(color: Color, node: RBNode<K, V>): RBNode<K, V> {
+  return new RBNode(color, node.key, node.value, node.left, node.right);
+}
 
 /** Represents a functional red-black tree. */
-export interface Tree<K, V> {
-  /** Returns the root node of the tree. */
-  root: Node<K, V>;
+export class RedBlackTree<K, V> {
+  constructor(
+    readonly compare: (key1: K, key2: K) => number,
+    private readonly root: RBNode<K, V> | null
+  ) {}
+
+  /**
+   * Creates an empty red-black tree.
+   *
+   * @param compare Comparison function, same semantics as array.sort().
+   * @returns An empty tree ordered by `compare`.
+   */
+  static new<K, V>(compare: (key1: K, key2: K) => number): RedBlackTree<K, V> {
+    return new RedBlackTree<K, V>(compare, null);
+  }
 
   /**
    * Creates a new tree with `key` set to `value`, overwriting any
@@ -27,116 +56,12 @@ export interface Tree<K, V> {
    * @param value The value of the item to insert.
    * @returns A new tree with `key` set to `value`.
    */
-  set: (key: K, value: V) => Tree<K, V>;
-
-  /**
-   * Finds the last item in the tree whose key is <= `key`.
-   *
-   * @param key The key to search for.
-   * @returns An iterator at the given element.
-   */
-  le: (key: K) => Iterator<K, V>;
-
-  /**
-   * @returns An iterator pointing to the first item in the tree with `key`, otherwise null.
-   */
-  find: (key: K) => Iterator<K, V>;
-
-  /**
-   * Removes the first item with `key` in the tree.
-   *
-   * @param key The key of the item to remove.
-   * @returns A new tree with the given item removed, if it exists.
-   */
-  remove: (key: K) => Tree<K, V>;
-
-  /**
-   * Retrieves the value associated with `key`.
-   *
-   * @param key The key of the item to look up.
-   * @returns The value of the first node associated with `key`.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
-  get: (key: K) => V | void;
-}
-
-/** Iterates through the nodes in a red-black tree. */
-export interface Iterator<K, V> {
-  /** The tree associated with the iterator. */
-  tree: Tree<K, V>;
-
-  /**
-   * Removes the iterator's current item form the tree.
-   *
-   * @returns A new binary search tree with the item removed.
-   */
-  remove: () => Tree<K, V>;
-
-  /** The key of the iterator's current item. */
-  readonly key?: K | undefined;
-
-  /** The value of the iterator's current item. */
-  readonly value?: V | undefined;
-}
-
-/** Represents a node in a red-black tree. */
-export interface Node<K, V> {
-  /** The key associated with the node. */
-  key: K;
-
-  /** The value associated with the node. */
-  value: V;
-
-  /** The left subtree of the node. */
-  left: Tree<K, V>;
-
-  /** The right subtree of the node. */
-  right: Tree<K, V>;
-}
-
-const RED = 0;
-const BLACK = 1;
-
-class RBNode {
-  _color: any;
-  key: any;
-  value: any;
-  left: any;
-  right: any;
-
-  constructor(color: any, key: any, value: any, left: any, right: any) {
-    this._color = color;
-    this.key = key;
-    this.value = value;
-    this.left = left;
-    this.right = right;
-  }
-}
-
-function cloneNode(node: any): any {
-  return new RBNode(node._color, node.key, node.value, node.left, node.right);
-}
-
-function repaint(color: any, node: any): any {
-  return new RBNode(color, node.key, node.value, node.left, node.right);
-}
-
-class RedBlackTree<K, V> implements Tree<K, V> {
-  _compare: any;
-  root: any;
-
-  constructor(compare: any, root: any) {
-    this._compare = compare;
-    this.root = root;
-  }
-
-  //Set a key-value pair
-  set(key: K, value: V): Tree<K, V> {
-    var cmp = this._compare;
+  set(key: K, value: V): RedBlackTree<K, V> {
+    const cmp = this.compare;
     //Find point to insert/replace node
-    var n = this.root;
-    var n_stack: any[] = [];
-    var d_stack: any[] = [];
+    let n = this.root;
+    const n_stack: RBNode<K, V>[] = [];
+    const d_stack: number[] = [];
     let d = 0;
     while (n) {
       d = cmp(key, n.key);
@@ -162,14 +87,15 @@ class RedBlackTree<K, V> implements Tree<K, V> {
         key,
         value,
         lastN.left,
-        lastN.right,
+        lastN.right
       );
     } else {
       n_stack.push(new RBNode(RED, key, value, null, null));
     }
 
     //Rebuild path to leaf node
-    for (var s = n_stack.length - 2; s >= 0; --s) {
+    let s: number;
+    for (s = n_stack.length - 2; s >= 0; --s) {
       n = n_stack[s];
       if (d_stack[s] <= 0) {
         n_stack[s] = new RBNode(
@@ -177,7 +103,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
           n.key,
           n.value,
           n_stack[s + 1],
-          n.right,
+          n.right
         );
       } else {
         n_stack[s] = new RBNode(
@@ -185,7 +111,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
           n.key,
           n.value,
           n.left,
-          n_stack[s + 1],
+          n_stack[s + 1]
         );
       }
     }
@@ -195,15 +121,15 @@ class RedBlackTree<K, V> implements Tree<K, V> {
     //Rebalance tree using rotations
     //console.log("start insert", key, d_stack)
     for (s = n_stack.length - 1; s > 1; --s) {
-      var p = n_stack[s - 1];
+      const p = n_stack[s - 1];
       n = n_stack[s];
       if (p._color === BLACK || n._color === BLACK) {
         break;
       }
-      var pp = n_stack[s - 2];
+      const pp = n_stack[s - 2];
       if (pp.left === p) {
         if (p.left === n) {
-          var y = pp.right;
+          const y = pp.right;
           if (y && y._color === RED) {
             //console.log("LLr")
             p._color = BLACK;
@@ -219,7 +145,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             n_stack[s - 2] = p;
             n_stack[s - 1] = n;
             if (s >= 3) {
-              var ppp = n_stack[s - 3];
+              const ppp = n_stack[s - 3];
               if (ppp.left === pp) {
                 ppp.left = p;
               } else {
@@ -229,7 +155,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             break;
           }
         } else {
-          y = pp.right;
+          const y = pp.right;
           if (y && y._color === RED) {
             //console.log("LRr")
             p._color = BLACK;
@@ -247,7 +173,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             n_stack[s - 2] = n;
             n_stack[s - 1] = p;
             if (s >= 3) {
-              ppp = n_stack[s - 3];
+              const ppp = n_stack[s - 3];
               if (ppp.left === pp) {
                 ppp.left = n;
               } else {
@@ -259,7 +185,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
         }
       } else {
         if (p.right === n) {
-          y = pp.left;
+          const y = pp.left;
           if (y && y._color === RED) {
             //console.log("RRr", y.key)
             p._color = BLACK;
@@ -275,7 +201,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             n_stack[s - 2] = p;
             n_stack[s - 1] = n;
             if (s >= 3) {
-              ppp = n_stack[s - 3];
+              const ppp = n_stack[s - 3];
               if (ppp.right === pp) {
                 ppp.right = p;
               } else {
@@ -285,7 +211,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             break;
           }
         } else {
-          y = pp.left;
+          const y = pp.left;
           if (y && y._color === RED) {
             //console.log("RLr")
             p._color = BLACK;
@@ -303,7 +229,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
             n_stack[s - 2] = n;
             n_stack[s - 1] = p;
             if (s >= 3) {
-              ppp = n_stack[s - 3];
+              const ppp = n_stack[s - 3];
               if (ppp.right === pp) {
                 ppp.right = n;
               } else {
@@ -320,13 +246,19 @@ class RedBlackTree<K, V> implements Tree<K, V> {
     return new RedBlackTree<K, V>(cmp, n_stack[0]);
   }
 
-  le(key: K): Iterator<K, V> {
-    var cmp = this._compare;
-    var n = this.root;
-    var stack: any[] = [];
-    var last_ptr = 0;
+  /**
+   * Finds the last item in the tree whose key is <= `key`.
+   *
+   * @param key The key to search for.
+   * @returns An iterator at the given element.
+   */
+  le(key: K): RedBlackTreeIterator<K, V> {
+    const cmp = this.compare;
+    let n = this.root;
+    const stack: RBNode<K, V>[] = [];
+    let last_ptr = 0;
     while (n) {
-      var d = cmp(key, n.key);
+      const d = cmp(key, n.key);
       stack.push(n);
       if (d >= 0) {
         last_ptr = stack.length;
@@ -341,13 +273,15 @@ class RedBlackTree<K, V> implements Tree<K, V> {
     return new RedBlackTreeIterator<K, V>(this, stack);
   }
 
-  //Finds the item with key if it exists
-  find(key: K): Iterator<K, V> {
-    var cmp = this._compare;
-    var n = this.root;
-    var stack: any[] = [];
+  /**
+   * @returns An iterator pointing to the first item in the tree with `key`, otherwise null.
+   */
+  find(key: K): RedBlackTreeIterator<K, V> {
+    const cmp = this.compare;
+    let n = this.root;
+    const stack: RBNode<K, V>[] = [];
     while (n) {
-      var d = cmp(key, n.key);
+      const d = cmp(key, n.key);
       stack.push(n);
       if (d === 0) {
         return new RedBlackTreeIterator<K, V>(this, stack);
@@ -361,19 +295,29 @@ class RedBlackTree<K, V> implements Tree<K, V> {
     return new RedBlackTreeIterator<K, V>(this, []);
   }
 
-  //Removes item with key from tree
-  remove(key: K): Tree<K, V> {
-    var iter = this.find(key);
+  /**
+   * Removes the first item with `key` in the tree.
+   *
+   * @param key The key of the item to remove.
+   * @returns A new tree with the given item removed, if it exists.
+   */
+  remove(key: K): RedBlackTree<K, V> {
+    const iter = this.find(key);
     return iter.remove();
   }
 
-  //Returns the item at `key`
+  /**
+   * Retrieves the value associated with `key`.
+   *
+   * @param key The key of the item to look up.
+   * @returns The value of the first node associated with `key`.
+   */
   // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   get(key: K): V | void {
-    var cmp = this._compare;
-    var n = this.root;
+    const cmp = this.compare;
+    let n = this.root;
     while (n) {
-      var d = cmp(key, n.key);
+      const d = cmp(key, n.key);
       if (d === 0) {
         return n.value;
       }
@@ -388,7 +332,7 @@ class RedBlackTree<K, V> implements Tree<K, V> {
 }
 
 //Swaps two nodes
-function swapNode(n: any, v: any): void {
+function swapNode<K, V>(n: RBNode<K, V>, v: RBNode<K, V>): void {
   n.key = v.key;
   n.value = v.value;
   n.left = v.left;
@@ -397,9 +341,9 @@ function swapNode(n: any, v: any): void {
 }
 
 //Fix up a double black node in a tree
-function fixDoubleBlack(stack: any[]): void {
-  var n, p, s, z;
-  for (var i = stack.length - 1; i >= 0; --i) {
+function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
+  let n: RBNode<K, V>, p: RBNode<K, V>, s: RBNode<K, V>, z: RBNode<K, V>;
+  for (let i = stack.length - 1; i >= 0; --i) {
     n = stack[i];
     if (i === 0) {
       n._color = BLACK;
@@ -409,11 +353,11 @@ function fixDoubleBlack(stack: any[]): void {
     p = stack[i - 1];
     if (p.left === n) {
       //console.log("left child")
-      s = p.right;
+      s = p.right!;
       if (s.right && s.right._color === RED) {
         //console.log("case 1: right sibling child red")
         s = p.right = cloneNode(s);
-        z = s.right = cloneNode(s.right);
+        z = s.right = cloneNode(s.right!);
         p.right = s.left;
         s.left = p;
         s.right = z;
@@ -422,7 +366,7 @@ function fixDoubleBlack(stack: any[]): void {
         p._color = BLACK;
         z._color = BLACK;
         if (i > 1) {
-          var pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.left === p) {
             pp.left = s;
           } else {
@@ -434,7 +378,7 @@ function fixDoubleBlack(stack: any[]): void {
       } else if (s.left && s.left._color === RED) {
         //console.log("case 1: left sibling child red")
         s = p.right = cloneNode(s);
-        z = s.left = cloneNode(s.left);
+        z = s.left = cloneNode(s.left!);
         p.right = z.left;
         s.left = z.right;
         z.left = p;
@@ -444,7 +388,7 @@ function fixDoubleBlack(stack: any[]): void {
         s._color = BLACK;
         n._color = BLACK;
         if (i > 1) {
-          pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.left === p) {
             pp.left = z;
           } else {
@@ -473,7 +417,7 @@ function fixDoubleBlack(stack: any[]): void {
         s._color = p._color;
         p._color = RED;
         if (i > 1) {
-          pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.left === p) {
             pp.left = s;
           } else {
@@ -491,11 +435,11 @@ function fixDoubleBlack(stack: any[]): void {
       }
     } else {
       //console.log("right child")
-      s = p.left;
+      s = p.left!;
       if (s.left && s.left._color === RED) {
         //console.log("case 1: left sibling child red", p.value, p._color)
         s = p.left = cloneNode(s);
-        z = s.left = cloneNode(s.left);
+        z = s.left = cloneNode(s.left!);
         p.left = s.right;
         s.right = p;
         s.left = z;
@@ -504,7 +448,7 @@ function fixDoubleBlack(stack: any[]): void {
         p._color = BLACK;
         z._color = BLACK;
         if (i > 1) {
-          pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.right === p) {
             pp.right = s;
           } else {
@@ -516,7 +460,7 @@ function fixDoubleBlack(stack: any[]): void {
       } else if (s.right && s.right._color === RED) {
         //console.log("case 1: right sibling child red")
         s = p.left = cloneNode(s);
-        z = s.right = cloneNode(s.right);
+        z = s.right = cloneNode(s.right!);
         p.left = z.right;
         s.right = z.left;
         z.right = p;
@@ -526,7 +470,7 @@ function fixDoubleBlack(stack: any[]): void {
         s._color = BLACK;
         n._color = BLACK;
         if (i > 1) {
-          pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.right === p) {
             pp.right = z;
           } else {
@@ -555,7 +499,7 @@ function fixDoubleBlack(stack: any[]): void {
         s._color = p._color;
         p._color = RED;
         if (i > 1) {
-          pp = stack[i - 2];
+          const pp = stack[i - 2];
           if (pp.right === p) {
             pp.right = s;
           } else {
@@ -575,33 +519,36 @@ function fixDoubleBlack(stack: any[]): void {
   }
 }
 
-//Iterator for red black tree
-class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
-  tree: any;
-  _stack: any[];
+/** Iterates through the nodes in a red-black tree. */
+export class RedBlackTreeIterator<K, V> {
+  constructor(
+    /** The tree associated with the iterator. */
+    readonly tree: RedBlackTree<K, V>,
+    private readonly stack: RBNode<K, V>[]
+  ) {}
 
-  constructor(tree: any, stack: any[]) {
-    this.tree = tree;
-    this._stack = stack;
-  }
-
-  //Removes item at iterator from tree
-  remove(): Tree<K, V> {
-    var stack = this._stack;
+  /**
+   * Removes the iterator's current item form the tree.
+   *
+   * @returns A new binary search tree with the item removed.
+   */
+  remove(): RedBlackTree<K, V> {
+    const stack = this.stack;
     if (stack.length === 0) {
       return this.tree;
     }
     //First copy path to node
-    var cstack = new Array(stack.length);
-    var n = stack[stack.length - 1];
+    const cstack = new Array<RBNode<K, V>>(stack.length);
+    let n = stack[stack.length - 1];
     cstack[cstack.length - 1] = new RBNode(
       n._color,
       n.key,
       n.value,
       n.left,
-      n.right,
+      n.right
     );
-    for (var i = stack.length - 2; i >= 0; --i) {
+    let i: number;
+    for (i = stack.length - 2; i >= 0; --i) {
       n = stack[i];
       if (n.left === stack[i + 1]) {
         cstack[i] = new RBNode(
@@ -609,7 +556,7 @@ class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
           n.key,
           n.value,
           cstack[i + 1],
-          n.right,
+          n.right
         );
       } else {
         cstack[i] = new RBNode(n._color, n.key, n.value, n.left, cstack[i + 1]);
@@ -625,14 +572,14 @@ class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
       //console.log("moving to leaf")
 
       //First walk to previous leaf
-      var split = cstack.length;
+      const split = cstack.length;
       n = n.left;
       while (n.right) {
         cstack.push(n);
         n = n.right;
       }
       //Copy path to leaf
-      var v = cstack[split - 1];
+      const v = cstack[split - 1];
       cstack.push(new RBNode(n._color, v.key, v.value, n.left, n.right));
       cstack[split - 1].key = n.key;
       cstack[split - 1].value = n.value;
@@ -651,14 +598,14 @@ class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
     if (n._color === RED) {
       //Easy case: removing red leaf
       //console.log("RED leaf")
-      var p = cstack[cstack.length - 2];
+      const p = cstack[cstack.length - 2];
       if (p.left === n) {
         p.left = null;
       } else if (p.right === n) {
         p.right = null;
       }
       cstack.pop();
-      return new RedBlackTree<K, V>(this.tree._compare, cstack[0]);
+      return new RedBlackTree<K, V>(this.tree.compare, cstack[0]);
     } else {
       if (n.left || n.right) {
         //Second easy case:  Single child black parent
@@ -670,15 +617,15 @@ class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
         }
         //Child must be red, so repaint it black to balance color
         n._color = BLACK;
-        return new RedBlackTree<K, V>(this.tree._compare, cstack[0]);
+        return new RedBlackTree<K, V>(this.tree.compare, cstack[0]);
       } else if (cstack.length === 1) {
         //Third easy case: root
         //console.log("ROOT")
-        return new RedBlackTree<K, V>(this.tree._compare, null);
+        return new RedBlackTree<K, V>(this.tree.compare, null);
       } else {
         //Hard case: Repaint n, and then do some nasty stuff
         //console.log("BLACK leaf no children")
-        var parent = cstack[cstack.length - 2];
+        const parent = cstack[cstack.length - 2];
         fixDoubleBlack(cstack);
         //Fix up links
         if (parent.left === n) {
@@ -688,34 +635,22 @@ class RedBlackTreeIterator<K, V> implements Iterator<K, V> {
         }
       }
     }
-    return new RedBlackTree<K, V>(this.tree._compare, cstack[0]);
+    return new RedBlackTree<K, V>(this.tree.compare, cstack[0]);
   }
 
-  //Returns key
+  /** The key of the iterator's current item. */
   get key(): K | undefined {
-    if (this._stack.length > 0) {
-      return this._stack[this._stack.length - 1].key;
+    if (this.stack.length > 0) {
+      return this.stack[this.stack.length - 1].key;
     }
     return;
   }
 
-  //Returns value
+  /** The value of the iterator's current item. */
   get value(): V | undefined {
-    if (this._stack.length > 0) {
-      return this._stack[this._stack.length - 1].value;
+    if (this.stack.length > 0) {
+      return this.stack[this.stack.length - 1].value;
     }
     return;
   }
-}
-
-/**
- * Creates an empty red-black tree.
- *
- * @param compare Comparison function, same semantics as array.sort().
- * @returns An empty tree ordered by `compare`.
- */
-export default function createRBTree<K, V>(
-  compare: (key1: K, key2: K) => number,
-): Tree<K, V> {
-  return new RedBlackTree<K, V>(compare, null);
 }
