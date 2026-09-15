@@ -124,6 +124,29 @@ const savedState = list.save();
 let newList = IdList.load(savedState);
 ```
 
+For lower snapshot memory and compact MongoDB storage, use the opt-in binary format:
+
+```ts
+import { IdList, PackedIdList } from "articulated";
+
+const bytes = list.saveBinary(); // Uint8Array; store as BSON Binary in MongoDB.
+const restored = IdList.loadBinary(bytes); // Rebuild the editing tree.
+
+// Or retain/read a compact snapshot without creating the editing tree:
+const snapshot = PackedIdList.load(bytes);
+if (snapshot.runCount > 0) {
+  console.log(snapshot.bunchIdAt(0), snapshot.countAt(0));
+}
+```
+
+The binary snapshot stores each distinct ID once, packs run fields into numeric
+columns, and uses one deletion bit per run. Arbitrary string IDs, including nanoids,
+are supported. JSON `save()`/`load()` remain unchanged. Binary snapshots do not
+replace the live editing tree with a packed data structure.
+
+See [the worked example and binary format](./binary_snapshots.md) and
+[reproducible BSON/JS memory benchmarks](./benchmark_storage_results.md).
+
 ## Use Cases
 
 - Text editors where characters need stable identities

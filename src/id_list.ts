@@ -4,6 +4,7 @@ import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
+import { PackedIdList } from "./packed_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1036,15 +1037,34 @@ export class IdList {
   }
 
   /**
+   * Encode a binary snapshot with dictionary IDs, packed numeric columns and
+   * deletion bits. Currently materializes save() while encoding; this does not
+   * change the live editing tree's memory usage.
+   */
+  saveBinary(): Uint8Array {
+    return PackedIdList.fromSaved(this.save()).toBytes();
+  }
+
+  /**
+   * Load binary v1 directly into the editing tree, consuming one run at a time
+   * without retaining an intermediate SavedIdList array. The bytes are not retained.
+   */
+  static loadBinary(bytes: Uint8Array): IdList {
+    return IdList.loadRuns(PackedIdList.load(bytes, { copy: false }));
+  }
+
+  /**
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
+    return IdList.loadRuns(savedState);
+  }
+
+  private static loadRuns(savedState: Iterable<SavedIdList[number]>) {
     // 1. Determine the leaves in list order.
 
     const leaves: LeafNode[] = [];
-    for (let i = 0; i < savedState.length; i++) {
-      const item = savedState[i];
-
+    for (const item of savedState) {
       if (!(Number.isSafeInteger(item.count) && item.count >= 0)) {
         throw new Error(`Invalid count: ${item.count}`);
       }
