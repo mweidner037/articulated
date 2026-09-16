@@ -14,7 +14,7 @@ import {
   SavedColumnarIdList,
   ElementIdGenerator,
   IdList,
-  PackedIdList,
+  SavedBinaryColumnarIdList,
   SavedIdList,
 } from "../src";
 import { realTextTraceEdits } from "./internal/util";
@@ -25,8 +25,7 @@ type Mode =
   | "tuples"
   | "columns"
   | "typed-columns"
-  | "packed-cold"
-  | "packed-read"
+  | "binary-columns"
   | "json-tree"
   | "columnar-tree"
   | "binary-tree";
@@ -36,8 +35,7 @@ const modes: Mode[] = [
   "tuples",
   "columns",
   "typed-columns",
-  "packed-cold",
-  "packed-read",
+  "binary-columns",
   "json-tree",
   "columnar-tree",
   "binary-tree",
@@ -98,6 +96,15 @@ function bsonSize(value: unknown): number {
   return bytes.byteLength;
 }
 
+function mongoColumns(saved: SavedBinaryColumnarIdList) {
+  return {
+    ...saved,
+    bunchIndexes: new Binary(saved.bunchIndexes),
+    startCounters: new Binary(saved.startCounters),
+    signedCounts: new Binary(saved.signedCounts),
+  };
+}
+
 function verifyMongoArrays(columns: SavedColumnarIdList, saved: SavedIdList) {
   const bytes = serialize({ state: columns });
   const decoded = deserialize(bytes).state as SavedColumnarIdList;
@@ -139,7 +146,14 @@ function memory(style: IdStyle, mode: Mode) {
   const { tuples, columns } = alternatives(saved);
   const tupleJson = JSON.stringify(tuples),
     columnJson = JSON.stringify(columns);
-  const bytes = PackedIdList.fromSaved(saved).toBytes();
+  const binary = ColumnarIdList.fromSaved(saved).toBinary();
+  const dictionaryJson = JSON.stringify(binary.bunchIds);
+  // Parse dictionary strings as in the other browser-facing cases, avoiding
+  // borrowing setup strings only for binary input. Numeric inputs are copied.
+  const binaryInput = (): SavedBinaryColumnarIdList => ({
+    ...binary,
+    bunchIds: JSON.parse(dictionaryJson) as string[],
+  });
   const factory = (): unknown => {
     switch (mode) {
       case "objects":
@@ -152,18 +166,8 @@ function memory(style: IdStyle, mode: Mode) {
         return ColumnarIdList.load(
           JSON.parse(columnJson) as SavedColumnarIdList
         );
-      case "packed-cold":
-        return PackedIdList.load(bytes);
-      case "packed-read": {
-        const packed = PackedIdList.load(bytes);
-        for (let i = 0; i < packed.runCount; i++) {
-          packed.bunchIdAt(i);
-          packed.startCounterAt(i);
-          packed.countAt(i);
-          packed.isDeletedAt(i);
-        }
-        return packed;
-      }
+      case "binary-columns":
+        return ColumnarIdList.loadBinary(binaryInput());
       case "json-tree":
         return IdList.load(JSON.parse(objectJson) as SavedIdList);
       case "columnar-tree":
@@ -171,7 +175,7 @@ function memory(style: IdStyle, mode: Mode) {
           JSON.parse(columnJson) as SavedColumnarIdList
         );
       case "binary-tree":
-        return IdList.loadBinary(bytes);
+        return IdList.loadBinary(binaryInput());
     }
   };
   // Warm constructor/JIT paths before measuring; maintain one root for all results.
@@ -198,6 +202,7 @@ function memory(style: IdStyle, mode: Mode) {
   // from GC of setup data. arrayBuffers is added once, not again via external.
   assert.equal(saved.length, tuples.length);
   assert.equal(columns.bunchIndexes.length, saved.length);
+  assert.equal(binary.bunchIndexes.byteLength, saved.length * 4);
   assert.equal(retained.length, copies);
   return {
     heap: Math.round(median(heap)),
@@ -215,7 +220,7 @@ if (process.argv[2] === "--memory") {
     JSON.stringify(memory(process.argv[3] as IdStyle, process.argv[4] as Mode))
   );
 } else {
-  console.log("# Binary snapshot storage and JS memory benchmarks\n");
+  console.log("# Dictionary and per-array BSON Binary benchmarks\n");
   console.log(
     `Runtime: Node ${process.version}, V8 ${process.versions.v8}, ${process.platform}/${process.arch}.\n`
   );
@@ -234,10 +239,14 @@ if (process.argv[2] === "--memory") {
   for (const style of styles) {
     const list = replay(style),
       saved = list.save();
-    const packed = PackedIdList.fromSaved(saved),
-      bytes = packed.toBytes();
-    assert.deepStrictEqual(packed.toSaved(), saved);
-    assert.deepStrictEqual(IdList.loadBinary(bytes).save(), saved);
+    const snapshot = ColumnarIdList.fromSaved(saved);
+    const binary = snapshot.toBinary();
+    const mongoBinary = mongoColumns(binary);
+    const decoded = deserialize(serialize({ state: mongoBinary }), {
+      promoteBuffers: true,
+    }).state as SavedBinaryColumnarIdList;
+    assert.deepStrictEqual(ColumnarIdList.loadBinary(decoded).toSaved(), saved);
+    assert.deepStrictEqual(IdList.loadBinary(decoded).save(), saved);
     const { tuples, columns } = alternatives(saved);
     const { explicitInts, explicitDoubles } = verifyMongoArrays(columns, saved);
     assert.deepStrictEqual(
@@ -249,7 +258,7 @@ if (process.argv[2] === "--memory") {
     assert.deepStrictEqual(IdList.loadColumnar(columns).save(), saved);
     console.log(`## ${style}\n`);
     console.log(
-      `${packed.runCount} runs, ${packed.bunchCount} distinct IDs; binary column widths (index/start/count): ${bytes[5]}/${bytes[6]}/${bytes[7]} bytes.\n`
+      `${snapshot.runCount} runs, ${snapshot.bunchCount} distinct IDs; independent binary arrays use Uint32 indexes and Float64 starts/signed counts (4/8/8 bytes per run). No column-type metadata.\n`
     );
     console.log("| Format | BSON bytes |\n|---|---:|");
     for (const [name, value] of [
@@ -258,7 +267,7 @@ if (process.argv[2] === "--memory") {
       ["Dictionary + ordinary Mongo arrays (automatic Int32)", columns],
       ["Dictionary + ordinary Mongo arrays (explicit Int32)", explicitInts],
       ["Dictionary + ordinary Mongo arrays (forced Double)", explicitDoubles],
-      ["Packed binary v1", new Binary(bytes)],
+      ["Dictionary + three BSON Binary arrays", mongoBinary],
     ] as const) {
       console.log(`| ${name} | ${bsonSize(value)} |`);
     }
@@ -275,6 +284,17 @@ if (process.argv[2] === "--memory") {
         emptyNumericColumns
       )} dictionary/document/array framing bytes = ${bsonSize(
         columns
+      )} bytes.\n`
+    );
+    const binaryPayload =
+      binary.bunchIndexes.byteLength +
+      binary.startCounters.byteLength +
+      binary.signedCounts.byteLength;
+    console.log(
+      `Separate BSON binaries: ${binaryPayload} numeric payload bytes + ${
+        bsonSize(mongoBinary) - binaryPayload
+      } dictionary/document/binary framing bytes = ${bsonSize(
+        mongoBinary
       )} bytes.\n`
     );
     console.log(
@@ -296,7 +316,7 @@ if (process.argv[2] === "--memory") {
     console.log("");
   }
   console.log(
-    "`typed-columns` retains a string dictionary and adaptive typed arrays after discarding parsed JSON numeric arrays. It uses the same persisted JSON/BSON as `columns`. `packed-cold` retains a validated owned buffer with no cached IDs. `packed-read` additionally caches every decoded ID after accessing every run. The tree rows retain only the loaded editing tree; their snapshot input is excluded.\n"
+    "`typed-columns` and `binary-columns` retain the same adaptive typed JS arrays. The first loads ordinary JSON columns; the second decodes the three separate fixed-schema BSON binary fields, compacts them, and discards the wider temporary arrays. Both parse the dictionary from JSON for comparable string allocation. Storage widths do not dictate retained JS widths. The tree rows retain only the loaded editing tree; snapshot inputs are excluded.\n"
   );
   console.log(
     "The editing tree is not packed by this change. Differences between tree rows can include ID string sharing and allocation effects; they are not evidence of a different tree layout. Save/load allocation peaks, real browser heaps, Mongo compression, indexes, replicas and billing are not measured.\n"

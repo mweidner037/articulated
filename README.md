@@ -138,27 +138,43 @@ const editable = IdList.loadColumnar(persistedJSON);
 Release the parsed JSON after conversion to avoid retaining duplicate numeric
 arrays. The hybrid keeps IDs as strings and needs no binary ID codec.
 
-For compact BSON Binary storage instead, use the opt-in binary format:
+For MongoDB, keep the same dictionary and store each numeric array as its own
+standard BSON Binary field (subtype 0). There is no combined blob or type metadata:
 
 ```ts
-import { IdList, PackedIdList } from "articulated";
+import { ColumnarIdList, IdList } from "articulated";
+import { Binary } from "mongodb";
 
-const bytes = list.saveBinary(); // Uint8Array; store as BSON Binary in MongoDB.
-const restored = IdList.loadBinary(bytes); // Rebuild the editing tree.
+const saved = list.saveBinary(); // Dictionary + three Uint8Array byte buffers.
+await collection.insertOne({
+  state: {
+    ...saved,
+    bunchIndexes: new Binary(saved.bunchIndexes),
+    startCounters: new Binary(saved.startCounters),
+    signedCounts: new Binary(saved.signedCounts),
+  },
+});
 
-// Or retain/read a compact snapshot without creating the editing tree:
-const snapshot = PackedIdList.load(bytes);
-if (snapshot.runCount > 0) {
-  console.log(snapshot.bunchIdAt(0), snapshot.countAt(0));
-}
+const { state } = await collection.findOne({ _id });
+const input = {
+  ...state,
+  bunchIndexes: state.bunchIndexes.value(),
+  startCounters: state.startCounters.value(),
+  signedCounts: state.signedCounts.value(),
+};
+const snapshot = ColumnarIdList.loadBinary(input); // Compacts into owned typed arrays.
+const editable = IdList.loadBinary(input); // Or rebuild the editing tree.
 ```
 
-The binary snapshot stores each distinct ID once, packs run fields into numeric
-columns, and uses one deletion bit per run. Arbitrary string IDs, including nanoids,
-are supported. JSON `save()`/`load()` remain unchanged. Binary snapshots do not
-replace the live editing tree with a packed data structure.
+The stored schema fixes indexes to Uint32 and starts/signed counts to Float64,
+all little-endian. Loading converts those bytes to the narrowest safe typed JS
+arrays and discards the wider temporary arrays. Mongo storage widths do not
+dictate retained JS memory widths. Float64 storage preserves the existing
+safe-integer counter range exactly; negative counts mean deleted. Each ID remains a string in
+`bunchIds`. JSON `save()`/`load()` remain unchanged. This optimizes snapshots, not
+the live editing tree. No MongoDB runtime dependency is added to this library.
 
-See [the worked example and binary format](./binary_snapshots.md) and
+See [the worked example and MongoDB mapping](./binary_snapshots.md) and
 [reproducible BSON/JS memory benchmarks](./benchmark_storage_results.md).
 
 ## Use Cases

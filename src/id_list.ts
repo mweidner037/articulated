@@ -4,8 +4,11 @@ import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
-import { PackedIdList } from "./packed_id_list";
-import { ColumnarIdList, SavedColumnarIdList } from "./columnar_id_list";
+import {
+  ColumnarIdList,
+  SavedColumnarIdList,
+  SavedBinaryColumnarIdList,
+} from "./columnar_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1038,12 +1041,11 @@ export class IdList {
   }
 
   /**
-   * Encode a binary snapshot with dictionary IDs, packed numeric columns and
-   * deletion bits. Currently materializes save() while encoding; this does not
-   * change the live editing tree's memory usage.
+   * Save the string dictionary and three independent binary numeric arrays.
+   * Currently materializes save(); the live editing tree remains unchanged.
    */
-  saveBinary(): Uint8Array {
-    return PackedIdList.fromSaved(this.save()).toBytes();
+  saveBinary(): SavedBinaryColumnarIdList {
+    return ColumnarIdList.fromSaved(this.save()).toBinary();
   }
 
   /** Save readable dictionary/column JSON, also loadable as a typed JS snapshot. */
@@ -1057,11 +1059,11 @@ export class IdList {
   }
 
   /**
-   * Load binary v1 directly into the editing tree, consuming one run at a time
-   * without retaining an intermediate SavedIdList array. The bytes are not retained.
+   * Load a dictionary and three binary columns into the existing editing tree.
+   * No intermediate SavedIdList array is retained.
    */
-  static loadBinary(bytes: Uint8Array): IdList {
-    return IdList.loadRuns(PackedIdList.load(bytes, { copy: false }));
+  static loadBinary(saved: SavedBinaryColumnarIdList): IdList {
+    return IdList.loadRuns(ColumnarIdList.loadBinary(saved));
   }
 
   /**

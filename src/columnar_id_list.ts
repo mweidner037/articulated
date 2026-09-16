@@ -1,4 +1,5 @@
 import { SavedIdList } from "./saved_id_list";
+import { decodeColumn, encodeColumn } from "./binary_columns";
 
 /** Readable JSON storage for a columnar snapshot. Counts are nonzero and signed. */
 export interface SavedColumnarIdList {
@@ -10,10 +11,60 @@ export interface SavedColumnarIdList {
   readonly signedCounts: readonly number[];
 }
 
+/**
+ * The same string dictionary, with a separate raw little-endian byte array for
+ * each numeric column. Store each Uint8Array as a generic BSON Binary (subtype 0).
+ * Schema fixes indexes to Uint32 and starts/signed counts to Float64 (all safe
+ * integers are exact). No per-document numeric type metadata is stored.
+ */
+export interface SavedBinaryColumnarIdList {
+  readonly version: 1;
+  readonly bunchIds: readonly string[];
+  readonly bunchIndexes: Uint8Array;
+  readonly startCounters: Uint8Array;
+  readonly signedCounts: Uint8Array;
+}
+
 type UnsignedColumn = Uint8Array | Uint16Array | Uint32Array | Float64Array;
 type SignedColumn = Int8Array | Int16Array | Int32Array | Float64Array;
 
-function unsigned(values: readonly number[]): UnsignedColumn {
+function validateColumns(saved: {
+  bunchIds: readonly string[];
+  bunchIndexes: ArrayLike<number>;
+  startCounters: ArrayLike<number>;
+  signedCounts: ArrayLike<number>;
+}) {
+  if (!Array.isArray(saved.bunchIds)) throw new Error("Invalid columnar IDs");
+  if (
+    saved.bunchIndexes.length !== saved.startCounters.length ||
+    saved.bunchIndexes.length !== saved.signedCounts.length
+  )
+    throw new Error("Columnar IdList columns have different lengths");
+  for (const id of saved.bunchIds) {
+    if (typeof id !== "string") throw new Error("Invalid columnar ID");
+  }
+  for (let k = 0; k < saved.bunchIndexes.length; k++) {
+    const index = saved.bunchIndexes[k],
+      start = saved.startCounters[k],
+      count = Math.abs(saved.signedCounts[k]);
+    if (
+      !Number.isSafeInteger(index) ||
+      index < 0 ||
+      index >= saved.bunchIds.length
+    )
+      throw new Error("Invalid columnar bunch index");
+    if (
+      !Number.isSafeInteger(start) ||
+      start < 0 ||
+      !Number.isSafeInteger(saved.signedCounts[k]) ||
+      count === 0 ||
+      count - 1 > Number.MAX_SAFE_INTEGER - start
+    )
+      throw new Error("Invalid columnar run counter range");
+  }
+}
+
+function unsigned(values: readonly number[] | UnsignedColumn): UnsignedColumn {
   let max = 0;
   for (const value of values) max = Math.max(max, value);
   if (max <= 0xff) return new Uint8Array(values);
@@ -22,7 +73,7 @@ function unsigned(values: readonly number[]): UnsignedColumn {
   return new Float64Array(values);
 }
 
-function signed(values: readonly number[]): SignedColumn {
+function signed(values: readonly number[] | SignedColumn): SignedColumn {
   let min = 0,
     max = 0;
   for (const value of values) {
@@ -36,8 +87,8 @@ function signed(values: readonly number[]): SignedColumn {
 }
 
 /**
- * A read-only snapshot with a JSON persistence format and typed numeric columns
- * in JS. Stores each ID once as a string. No binary envelope or ID codec is used.
+ * A read-only snapshot with JSON or per-column Binary persistence and typed
+ * numeric columns in JS. Stores each ID once as a string; no binary envelope.
  * Loading does not retain the source numeric arrays; release the source JSON
  * object to realize the retained-memory saving. This is not an editing tree.
  */
@@ -63,40 +114,33 @@ export class ColumnarIdList implements Iterable<SavedIdList[number]> {
     ) {
       throw new Error("Invalid columnar IdList format");
     }
-    if (
-      saved.bunchIndexes.length !== saved.startCounters.length ||
-      saved.bunchIndexes.length !== saved.signedCounts.length
-    ) {
-      throw new Error("Columnar IdList columns have different lengths");
-    }
-    for (const id of saved.bunchIds) {
-      if (typeof id !== "string") throw new Error("Invalid columnar ID");
-    }
-    for (let k = 0; k < saved.bunchIndexes.length; k++) {
-      const index = saved.bunchIndexes[k],
-        start = saved.startCounters[k],
-        count = Math.abs(saved.signedCounts[k]);
-      if (
-        !Number.isSafeInteger(index) ||
-        index < 0 ||
-        index >= saved.bunchIds.length
-      )
-        throw new Error("Invalid columnar bunch index");
-      if (
-        !Number.isSafeInteger(start) ||
-        start < 0 ||
-        !Number.isSafeInteger(saved.signedCounts[k]) ||
-        count === 0 ||
-        count - 1 > Number.MAX_SAFE_INTEGER - start
-      ) {
-        throw new Error("Invalid columnar run counter range");
-      }
-    }
+    validateColumns(saved);
     return new ColumnarIdList(
       saved.bunchIds.slice(),
       unsigned(saved.bunchIndexes),
       unsigned(saved.startCounters),
       signed(saved.signedCounts)
+    );
+  }
+
+  /** Load and compact three independent byte arrays into owned typed columns. */
+  static loadBinary(saved: SavedBinaryColumnarIdList): ColumnarIdList {
+    if (!saved || saved.version !== 1)
+      throw new Error("Invalid binary columnar IdList format");
+    const indexes = decodeColumn(saved.bunchIndexes, Uint32Array);
+    const starts = decodeColumn(saved.startCounters, Float64Array);
+    const counts = decodeColumn(saved.signedCounts, Float64Array);
+    validateColumns({
+      bunchIds: saved.bunchIds,
+      bunchIndexes: indexes,
+      startCounters: starts,
+      signedCounts: counts,
+    });
+    return new ColumnarIdList(
+      saved.bunchIds.slice(),
+      unsigned(indexes),
+      unsigned(starts),
+      signed(counts)
     );
   }
 
@@ -188,6 +232,17 @@ export class ColumnarIdList implements Iterable<SavedIdList[number]> {
 
   toSaved(): SavedIdList {
     return [...this];
+  }
+
+  /** Dictionary plus three independent numeric buffers; all outputs are copies. */
+  toBinary(): SavedBinaryColumnarIdList {
+    return {
+      version: 1,
+      bunchIds: this.bunches.slice(),
+      bunchIndexes: encodeColumn(new Uint32Array(this.indexes)),
+      startCounters: encodeColumn(new Float64Array(this.starts)),
+      signedCounts: encodeColumn(new Float64Array(this.counts)),
+    };
   }
 
   /** Plain JSON arrays for MongoDB or JSON.stringify; returned arrays are copies. */
