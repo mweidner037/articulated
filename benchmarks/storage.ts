@@ -1,7 +1,14 @@
 import assert from "assert";
 import { createHash } from "crypto";
 import { spawnSync } from "child_process";
-import { Binary, calculateObjectSize } from "bson";
+import {
+  Binary,
+  calculateObjectSize,
+  deserialize,
+  Double,
+  Int32,
+  serialize,
+} from "bson";
 import {
   ColumnarIdList,
   SavedColumnarIdList,
@@ -70,6 +77,52 @@ function alternatives(saved: SavedIdList) {
     tuples: saved.map((x) => [x.bunchId, x.startCounter, x.count, x.isDeleted]),
     columns: ColumnarIdList.fromSaved(saved).toJSON(),
   };
+}
+
+function numericColumns<T>(
+  columns: SavedColumnarIdList,
+  convert: (value: number) => T
+) {
+  return {
+    ...columns,
+    bunchIndexes: columns.bunchIndexes.map(convert),
+    startCounters: columns.startCounters.map(convert),
+    signedCounts: columns.signedCounts.map(convert),
+  };
+}
+
+function bsonSize(value: unknown): number {
+  const document = { state: value };
+  const bytes = serialize(document);
+  assert.equal(bytes.byteLength, calculateObjectSize(document));
+  return bytes.byteLength;
+}
+
+function verifyMongoArrays(columns: SavedColumnarIdList, saved: SavedIdList) {
+  const bytes = serialize({ state: columns });
+  const decoded = deserialize(bytes).state as SavedColumnarIdList;
+  assert.deepStrictEqual(decoded, columns);
+  assert.deepStrictEqual(ColumnarIdList.load(decoded).toSaved(), saved);
+  // Verify actual BSON types, not just assumptions about JS numbers.
+  const raw = deserialize(bytes, { promoteValues: false }).state as Record<
+    "bunchIndexes" | "startCounters" | "signedCounts",
+    unknown[]
+  >;
+  for (const key of [
+    "bunchIndexes",
+    "startCounters",
+    "signedCounts",
+  ] as const) {
+    for (const value of raw[key]) assert(value instanceof Int32);
+  }
+  const explicitInts = numericColumns(columns, (value) => new Int32(value));
+  assert.deepStrictEqual(serialize({ state: explicitInts }), bytes);
+  const explicitDoubles = numericColumns(columns, (value) => new Double(value));
+  assert.deepStrictEqual(
+    deserialize(serialize({ state: explicitDoubles })).state,
+    columns
+  );
+  return { explicitInts, explicitDoubles };
 }
 
 function collect() {
@@ -176,7 +229,7 @@ if (process.argv[2] === "--memory") {
     `Memory: fresh child process per case, median of ${samples} samples of ${copies} retained copies after GC. Total = heapUsed + arrayBuffers, not external + arrayBuffers. Min/max show sample variation. Node/V8 proxy, not a browser measurement or peak allocation measurement.\n`
   );
   console.log(
-    "BSON sizes use the official serializer for `{state: value}`, with binary values explicitly wrapped in `Binary`. They are logical document bytes, not measured WiredTiger disk or cache bytes.\n"
+    "BSON sizes are actual serialized byte lengths for `{state: value}`, checked against calculateObjectSize. Ordinary numeric arrays are verified to contain BSON Int32 elements for this trace; explicit Int32 encoding is byte-identical. Binary values are explicitly wrapped in Binary. These are logical document bytes, not measured WiredTiger disk or cache bytes.\n"
   );
   for (const style of styles) {
     const list = replay(style),
@@ -186,6 +239,7 @@ if (process.argv[2] === "--memory") {
     assert.deepStrictEqual(packed.toSaved(), saved);
     assert.deepStrictEqual(IdList.loadBinary(bytes).save(), saved);
     const { tuples, columns } = alternatives(saved);
+    const { explicitInts, explicitDoubles } = verifyMongoArrays(columns, saved);
     assert.deepStrictEqual(
       ColumnarIdList.load(
         JSON.parse(JSON.stringify(columns)) as SavedColumnarIdList
@@ -201,11 +255,28 @@ if (process.argv[2] === "--memory") {
     for (const [name, value] of [
       ["Objects", saved],
       ["Four-tuples", tuples],
-      ["Dictionary + JSON columns", columns],
+      ["Dictionary + ordinary Mongo arrays (automatic Int32)", columns],
+      ["Dictionary + ordinary Mongo arrays (explicit Int32)", explicitInts],
+      ["Dictionary + ordinary Mongo arrays (forced Double)", explicitDoubles],
       ["Packed binary v1", new Binary(bytes)],
     ] as const) {
-      console.log(`| ${name} | ${calculateObjectSize({ state: value })} |`);
+      console.log(`| ${name} | ${bsonSize(value)} |`);
     }
+    const emptyNumericColumns = numericColumns(columns, (value) => value);
+    emptyNumericColumns.bunchIndexes = [];
+    emptyNumericColumns.startCounters = [];
+    emptyNumericColumns.signedCounts = [];
+    const numericPayload = saved.length * 3 * 4;
+    const numericElements = bsonSize(columns) - bsonSize(emptyNumericColumns);
+    console.log(
+      `\nOrdinary Mongo arrays: ${numericPayload} numeric payload bytes + ${
+        numericElements - numericPayload
+      } numeric element type/index-key bytes + ${bsonSize(
+        emptyNumericColumns
+      )} dictionary/document/array framing bytes = ${bsonSize(
+        columns
+      )} bytes.\n`
+    );
     console.log(
       "\n| JS representation | Heap bytes | Buffer bytes | Total bytes | Total min–max |\n|---|---:|---:|---:|---:|"
     );
