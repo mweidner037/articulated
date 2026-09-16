@@ -124,7 +124,21 @@ const savedState = list.save();
 let newList = IdList.load(savedState);
 ```
 
-For lower snapshot memory and compact MongoDB storage, use the opt-in binary format:
+For readable JSON persistence with typed numeric arrays in JS:
+
+```ts
+import { ColumnarIdList, IdList } from "articulated";
+
+const savedJSON = list.saveColumnar(); // Dictionary + columns with descriptive keys.
+const snapshot = ColumnarIdList.load(savedJSON); // Owns compact typed numeric arrays.
+const persistedJSON = snapshot.toJSON(); // Store as an ordinary MongoDB subdocument.
+const editable = IdList.loadColumnar(persistedJSON);
+```
+
+Release the parsed JSON after conversion to avoid retaining duplicate numeric
+arrays. The hybrid keeps IDs as strings and needs no binary ID codec.
+
+For compact BSON Binary storage instead, use the opt-in binary format:
 
 ```ts
 import { IdList, PackedIdList } from "articulated";

@@ -1,4 +1,4 @@
-# Recorded binary snapshot benchmarks
+# Snapshot benchmarks: JSON, typed JS columns, and binary
 
 Measured on 2026-09-15 with Node 22.22.2 on macOS arm64. Reproduce with `npm run benchmarks:storage` after `npm ci`. This measures identifier state only, excluding document text and application metadata.
 
@@ -43,20 +43,68 @@ TypeScript's tuple type does not change this runtime representation.
 
 ```js
 const columns = {
-  v: 2,
-  b: ["aB3dE5fG", "hJ7kL9mN"], // Each distinct ID appears once.
-  i: [0, 1, 0], // Dictionary index for each run.
-  s: [0, 0, 3], // Starting counter for each run.
-  c: [3, 1, -2], // Count; negative means deleted.
+  version: 1,
+  bunchIds: ["aB3dE5fG", "hJ7kL9mN"], // Each distinct ID appears once.
+  bunchIndexes: [0, 1, 0], // Dictionary index for each run.
+  startCounters: [0, 0, 3], // Starting counter for each run.
+  signedCounts: [3, 1, -2], // Count; negative means deleted.
 };
 ```
 
-Read position 2 down the columns: `b[i[2]]` is `"aB3dE5fG"`, `s[2]` is 3, and
-`c[2]` is -2, meaning two deleted IDs. There are a handful of arrays rather than
-one object/array for every run. This is a comparison format in the benchmark,
-not a new public JSON API.
+Read position 2 down the columns: `bunchIds[bunchIndexes[2]]` is `"aB3dE5fG"`,
+`startCounters[2]` is 3, and `signedCounts[2]` is -2, meaning two deleted IDs.
+There are a handful of arrays rather than one object/array for every run.
 
-### D. Packed binary (implemented in this PR)
+### D. The hybrid: JSON in Mongo, typed columns in JS
+
+Persist **the exact readable JSON above**. After loading it, replace the ordinary
+numeric arrays with typed arrays. For this small example, the JS representation is
+conceptually:
+
+```js
+{
+  bunchIds: ["aB3dE5fG", "hJ7kL9mN"],
+  bunchIndexes: new Uint8Array([0, 1, 0]),
+  startCounters: new Uint8Array([0, 0, 3]),
+  signedCounts: new Int8Array([3, 1, -2])
+}
+```
+
+The numeric columns now need **9 backing bytes** in total, plus the string
+dictionary and a few array/view objects. There is no binary header or custom ID
+encoding. Counts use a signed array so negative values can represent deletion;
+indexes and starting counters use unsigned arrays. Wider values select 16/32-bit
+arrays automatically, then Float64 for safe integers outside those ranges. The
+benchmark needs three 16-bit columns, or **70,542 numeric backing bytes**.
+
+The implementation keeps those arrays private so callers cannot corrupt a
+snapshot accidentally:
+
+```ts
+import { ColumnarIdList, IdList } from "articulated";
+
+const snapshot = ColumnarIdList.load(columns);
+snapshot.bunchIdAt(2); // "aB3dE5fG"
+snapshot.startCounterAt(2); // 3
+snapshot.countAt(2); // 2
+snapshot.isDeletedAt(2); // true
+
+const plainJSON = snapshot.toJSON(); // Descriptive keys and ordinary number arrays.
+JSON.stringify(snapshot); // Uses toJSON(), never serializes typed arrays directly.
+
+// Alternatively, use the editing-list conveniences:
+const savedJSON = list.saveColumnar();
+const editable = IdList.loadColumnar(savedJSON);
+```
+
+Store `snapshot.toJSON()` as an ordinary MongoDB subdocument. Release the parsed
+JSON numeric arrays after conversion; retaining both forms gives up some memory
+savings. Conversion temporarily holds both forms, so these retained-memory
+figures do not describe peak loading memory. This hybrid has the **same BSON size**
+as ordinary JSON columns; only the representation held by JS differs. Descriptive
+keys occur once per snapshot and add just 47 BSON bytes compared with one-letter keys.
+
+### E. Packed binary (also implemented in this PR)
 
 The same idea is encoded into one byte buffer. Counts remain unsigned and deletion
 uses a separate bit per run. The small example needs only one byte per number:
@@ -108,10 +156,21 @@ Same 259,778-edit trace, 11,757 saved runs and 5,382 distinct IDs. JS measuremen
 | Current named objects                     |     870.7 KB |           759.0 KB |
 | Four-tuples                               |     529.7 KB |         1,041.1 KB |
 | Dictionary + ordinary JS columns          |     455.9 KB |           332.0 KB |
+| **JSON + typed JS columns (hybrid)**      | **455.9 KB** |       **120.8 KB** |
 | Packed binary, before accessing IDs       |     142.0 KB |           142.5 KB |
 | Packed binary, after reading all runs/IDs |     142.0 KB |           314.9 KB |
 
-Compared with objects, packed snapshots reduce logical BSON by **83.7%** and retained JS memory by **58.5% after all IDs have been read** (81.2% before access). The fully read packed snapshot is only 5.2% smaller in JS than ordinary dictionary-backed columns; the larger benefit over that alternative is in BSON.
+The hybrid reduces retained JS snapshot memory by **84.1%** and logical BSON by
+**47.6%** compared with objects. It keeps readable JSON with descriptive names
+and needs no custom binary envelope or ID codec. Compared with ordinary JSON
+columns, converting only the JS numeric arrays to typed arrays reduces retained
+memory by **63.6%**, with identical Mongo storage.
+
+Full binary still gives the largest logical BSON reduction (**83.7%**), but the
+hybrid uses less retained JS memory in this 8-character-ID benchmark, even with all
+IDs already available as strings. Different layouts/string sharing and binary
+string-cache costs matter; smaller persisted bytes do not guarantee smaller JS
+memory. The full binary snapshot after reading all IDs saves **58.5%** versus objects.
 
 ### Why do four-tuples use more JS memory?
 
@@ -130,10 +189,16 @@ containers instead of replacing each object with an array.
 
 | Loaded editing tree (snapshot discarded) | Retained JS memory |
 | ---------------------------------------- | -----------------: |
-| From JSON                                |         2,190.8 KB |
-| From binary                              |         2,313.6 KB |
+| From named-object JSON                   |         2,190.9 KB |
+| From columnar JSON                       |         2,190.4 KB |
+| From binary                              |         2,313.4 KB |
 
-The live editing tree is unchanged. In this test its binary-loaded form uses **5.6% more** memory. Runtime ID-string sharing/interning can affect the measurements, especially for short strings across 20 copies of the same snapshot. These are incremental per-copy measurements, not the first-load cost of independent documents. Do not infer a live-tree memory improvement from the snapshot results.
+The editing tree structure is unchanged. Columnar JSON loading is effectively
+the same as existing JSON loading here; binary loading uses **5.6% more**.
+Runtime ID-string sharing/interning can affect the measurements, especially for
+short strings across 20 copies of the same snapshot. These are incremental per-copy
+measurements, not the first-load cost of independent documents. Do not infer a
+live-tree memory improvement from the snapshot results.
 
 Logical BSON is not compressed WiredTiger disk usage or a MongoDB cache measurement. JS values are a Node/V8 proxy, not measured browser heaps. Encoding/loading allocation peaks are not measured. Raw sample ranges and methodology follow.
 
@@ -159,18 +224,20 @@ BSON sizes use the official serializer for `{state: value}`, with binary values 
 | ------------------------- | ---------: |
 | Objects                   |    1244366 |
 | Four-tuples               |     903413 |
-| Dictionary + JSON columns |     626969 |
+| Dictionary + JSON columns |     627016 |
 | Packed binary v1          |     313133 |
 
 | JS representation | Heap bytes | Buffer bytes | Total bytes |   Total min–max |
 | ----------------- | ---------: | -----------: | ----------: | --------------: |
-| objects           |    1410906 |            0 |     1410906 | 1395186–1411169 |
-| tuples            |    1693074 |            0 |     1693074 | 1677354–1693337 |
-| columns           |     626890 |            0 |      626890 |   611195–627153 |
-| packed-cold       |        527 |       313116 |      313643 |   290994–313710 |
-| packed-read       |     345090 |       313116 |      658176 |   642639–658225 |
-| json-tree         |    2746972 |            0 |     2746972 | 2724039–2747314 |
-| binary-tree       |    2485736 |            0 |     2485736 | 2462338–2486090 |
+| objects           |    1410906 |            0 |     1410906 | 1395186–1411188 |
+| tuples            |    1693074 |            0 |     1693074 | 1677354–1693378 |
+| columns           |     626890 |            0 |      626890 |   611170–627194 |
+| typed-columns     |     345142 |        70542 |      415684 |   392886–415696 |
+| packed-cold       |        516 |       313116 |      313632 |   291008–313664 |
+| packed-read       |     345076 |       313116 |      658192 |   642639–658290 |
+| json-tree         |    2746842 |            0 |     2746842 | 2724119–2747466 |
+| columnar-tree     |    2485352 |            0 |     2485352 | 2462909–2486356 |
+| binary-tree       |    2485464 |            0 |     2485464 | 2462700–2486305 |
 
 ## uuid
 
@@ -180,18 +247,20 @@ BSON sizes use the official serializer for `{state: value}`, with binary values 
 | ------------------------- | ---------: |
 | Objects                   |    1199878 |
 | Four-tuples               |     858925 |
-| Dictionary + JSON columns |     606551 |
+| Dictionary + JSON columns |     606598 |
 | Packed binary v1          |     185075 |
 
 | JS representation | Heap bytes | Buffer bytes | Total bytes |   Total min–max |
 | ----------------- | ---------: | -----------: | ----------: | --------------: |
-| objects           |    1410906 |            0 |     1410906 | 1401589–1410930 |
-| tuples            |    1693074 |            0 |     1693074 | 1683757–1693098 |
-| columns           |     626890 |            0 |      626890 |   617598–626902 |
-| packed-cold       |        521 |       185058 |      185579 |   176259–185586 |
-| packed-read       |     345082 |       185058 |      530140 |   520783–530197 |
-| json-tree         |    2747249 |            0 |     2747249 | 2737291–2747348 |
-| binary-tree       |    2485871 |            0 |     2485871 | 2468912–2486346 |
+| objects           |    1410906 |            0 |     1410906 | 1401589–1410936 |
+| tuples            |    1693074 |            0 |     1693074 | 1683757–1693104 |
+| columns           |     626890 |            0 |      626890 |   617573–626920 |
+| typed-columns     |     345142 |        70542 |      415684 |   398988–415696 |
+| packed-cold       |        512 |       185058 |      185570 |   176265–185579 |
+| packed-read       |     345105 |       185058 |      530163 |   520782–530216 |
+| json-tree         |    2746730 |            0 |     2746730 | 2731580–2747264 |
+| columnar-tree     |    2485357 |            0 |     2485357 | 2470236–2486451 |
+| binary-tree       |    2485402 |            0 |     2485402 | 2470351–2486505 |
 
 ## nanoid
 
@@ -201,21 +270,23 @@ BSON sizes use the official serializer for `{state: value}`, with binary values 
 | ------------------------- | ---------: |
 | Objects                   |     870682 |
 | Four-tuples               |     529729 |
-| Dictionary + JSON columns |     455855 |
+| Dictionary + JSON columns |     455902 |
 | Packed binary v1          |     142019 |
 
 | JS representation | Heap bytes | Buffer bytes | Total bytes |   Total min–max |
 | ----------------- | ---------: | -----------: | ----------: | --------------: |
-| objects           |     758972 |            0 |      758972 |   751808–758997 |
-| tuples            |    1041140 |            0 |     1041140 | 1033976–1041403 |
-| columns           |     331956 |            0 |      331956 |   324817–331968 |
-| packed-cold       |        520 |       142002 |      142522 |   128139–142759 |
-| packed-read       |     172886 |       142002 |      314856 |   307853–314903 |
-| json-tree         |    2190775 |            0 |     2190775 | 2176372–2191033 |
-| binary-tree       |    2313576 |            0 |     2313576 | 2305772–2314330 |
+| objects           |     758972 |            0 |      758972 |   751808–759276 |
+| tuples            |    1041140 |            0 |     1041140 | 1033976–1041444 |
+| columns           |     331956 |            0 |      331956 |   324792–332238 |
+| typed-columns     |      50209 |        70542 |      120751 |   106497–120763 |
+| packed-cold       |        522 |       142002 |      142524 |   128424–142547 |
+| packed-read       |     172923 |       142002 |      314880 |   307848–314944 |
+| json-tree         |    2190858 |            0 |     2190858 | 2177476–2190945 |
+| columnar-tree     |    2190387 |            0 |     2190387 | 2177698–2191277 |
+| binary-tree       |    2313365 |            0 |     2313365 | 2300258–2313555 |
 
-`packed-cold` retains a validated owned buffer with no cached IDs. `packed-read` additionally caches every decoded ID after accessing every run. Neither materializes an array of run objects. `json-tree` and `binary-tree` retain only the loaded editing tree; their snapshot input is excluded.
+`typed-columns` retains a string dictionary and adaptive typed arrays after discarding parsed JSON numeric arrays. It uses the same persisted JSON/BSON as `columns`. `packed-cold` retains a validated owned buffer with no cached IDs. `packed-read` additionally caches every decoded ID after accessing every run. The tree rows retain only the loaded editing tree; their snapshot input is excluded.
 
 The editing tree is not packed by this change. Differences between tree rows can include ID string sharing and allocation effects; they are not evidence of a different tree layout. Save/load allocation peaks, real browser heaps, Mongo compression, indexes, replicas and billing are not measured.
 
-Exact binary and editing-tree round trips passed for all three trace variants.
+Exact binary, columnar JSON, and editing-tree round trips passed for all three trace variants.

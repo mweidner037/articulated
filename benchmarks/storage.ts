@@ -2,7 +2,14 @@ import assert from "assert";
 import { createHash } from "crypto";
 import { spawnSync } from "child_process";
 import { Binary, calculateObjectSize } from "bson";
-import { ElementIdGenerator, IdList, PackedIdList, SavedIdList } from "../src";
+import {
+  ColumnarIdList,
+  SavedColumnarIdList,
+  ElementIdGenerator,
+  IdList,
+  PackedIdList,
+  SavedIdList,
+} from "../src";
 import { realTextTraceEdits } from "./internal/util";
 
 type IdStyle = "shared-prefix" | "uuid" | "nanoid";
@@ -10,18 +17,22 @@ type Mode =
   | "objects"
   | "tuples"
   | "columns"
+  | "typed-columns"
   | "packed-cold"
   | "packed-read"
   | "json-tree"
+  | "columnar-tree"
   | "binary-tree";
 const styles: IdStyle[] = ["shared-prefix", "uuid", "nanoid"];
 const modes: Mode[] = [
   "objects",
   "tuples",
   "columns",
+  "typed-columns",
   "packed-cold",
   "packed-read",
   "json-tree",
+  "columnar-tree",
   "binary-tree",
 ];
 const copies = 20;
@@ -55,21 +66,9 @@ function replay(style: IdStyle): IdList {
 }
 
 function alternatives(saved: SavedIdList) {
-  const dictionary = new Map<string, number>();
-  const indexes = saved.map((run) => {
-    if (!dictionary.has(run.bunchId))
-      dictionary.set(run.bunchId, dictionary.size);
-    return dictionary.get(run.bunchId)!;
-  });
   return {
     tuples: saved.map((x) => [x.bunchId, x.startCounter, x.count, x.isDeleted]),
-    columns: {
-      v: 2,
-      b: [...dictionary.keys()],
-      i: indexes,
-      s: saved.map((x) => x.startCounter),
-      c: saved.map((x) => (x.isDeleted ? -x.count : x.count)),
-    },
+    columns: ColumnarIdList.fromSaved(saved).toJSON(),
   };
 }
 
@@ -96,6 +95,10 @@ function memory(style: IdStyle, mode: Mode) {
         return JSON.parse(tupleJson) as unknown;
       case "columns":
         return JSON.parse(columnJson) as unknown;
+      case "typed-columns":
+        return ColumnarIdList.load(
+          JSON.parse(columnJson) as SavedColumnarIdList
+        );
       case "packed-cold":
         return PackedIdList.load(bytes);
       case "packed-read": {
@@ -110,6 +113,10 @@ function memory(style: IdStyle, mode: Mode) {
       }
       case "json-tree":
         return IdList.load(JSON.parse(objectJson) as SavedIdList);
+      case "columnar-tree":
+        return IdList.loadColumnar(
+          JSON.parse(columnJson) as SavedColumnarIdList
+        );
       case "binary-tree":
         return IdList.loadBinary(bytes);
     }
@@ -137,7 +144,7 @@ function memory(style: IdStyle, mode: Mode) {
   // Keep fixture graphs alive across both measurements, avoiding false savings
   // from GC of setup data. arrayBuffers is added once, not again via external.
   assert.equal(saved.length, tuples.length);
-  assert.equal(columns.i.length, saved.length);
+  assert.equal(columns.bunchIndexes.length, saved.length);
   assert.equal(retained.length, copies);
   return {
     heap: Math.round(median(heap)),
@@ -179,6 +186,13 @@ if (process.argv[2] === "--memory") {
     assert.deepStrictEqual(packed.toSaved(), saved);
     assert.deepStrictEqual(IdList.loadBinary(bytes).save(), saved);
     const { tuples, columns } = alternatives(saved);
+    assert.deepStrictEqual(
+      ColumnarIdList.load(
+        JSON.parse(JSON.stringify(columns)) as SavedColumnarIdList
+      ).toSaved(),
+      saved
+    );
+    assert.deepStrictEqual(IdList.loadColumnar(columns).save(), saved);
     console.log(`## ${style}\n`);
     console.log(
       `${packed.runCount} runs, ${packed.bunchCount} distinct IDs; binary column widths (index/start/count): ${bytes[5]}/${bytes[6]}/${bytes[7]} bytes.\n`
@@ -211,12 +225,12 @@ if (process.argv[2] === "--memory") {
     console.log("");
   }
   console.log(
-    "`packed-cold` retains a validated owned buffer with no cached IDs. `packed-read` additionally caches every decoded ID after accessing every run. Neither materializes an array of run objects. `json-tree` and `binary-tree` retain only the loaded editing tree; their snapshot input is excluded.\n"
+    "`typed-columns` retains a string dictionary and adaptive typed arrays after discarding parsed JSON numeric arrays. It uses the same persisted JSON/BSON as `columns`. `packed-cold` retains a validated owned buffer with no cached IDs. `packed-read` additionally caches every decoded ID after accessing every run. The tree rows retain only the loaded editing tree; their snapshot input is excluded.\n"
   );
   console.log(
     "The editing tree is not packed by this change. Differences between tree rows can include ID string sharing and allocation effects; they are not evidence of a different tree layout. Save/load allocation peaks, real browser heaps, Mongo compression, indexes, replicas and billing are not measured.\n"
   );
   console.log(
-    "Exact binary and editing-tree round trips passed for all three trace variants."
+    "Exact binary, columnar JSON, and editing-tree round trips passed for all three trace variants."
   );
 }

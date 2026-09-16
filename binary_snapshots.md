@@ -3,6 +3,44 @@
 The target is retained snapshot memory and MongoDB document size. Network transfer
 and gzip are not part of this comparison. The existing JSON format remains supported.
 
+## A middle option: JSON storage with typed arrays in JS
+
+`ColumnarIdList` uses this ordinary JSON schema in MongoDB:
+
+```js
+{
+  version: 1,
+  bunchIds: ["aB3dE5fG", "hJ7kL9mN"],
+  bunchIndexes: [0, 1, 0],
+  startCounters: [0, 0, 3],
+  signedCounts: [3, 1, -2]
+}
+```
+
+`ColumnarIdList.load(json)` copies the dictionary array and converts the numbers
+into three private typed arrays. Indexes and starts choose Uint8/16/32; signed
+counts choose Int8/16/32. Float64 preserves safe integer values beyond those
+ranges. Validation happens before conversion to avoid silent truncation.
+Scalar accessors and iteration match `PackedIdList`; `toJSON()` returns copied
+ordinary arrays, and `JSON.stringify(snapshot)` calls it automatically. Store
+`snapshot.toJSON()` in Mongo rather than the class instance or typed arrays.
+
+The small example needs nine numeric backing bytes. IDs remain ordinary strings;
+no binary string codec or byte header is required. Drop the source JSON after
+conversion if you want only the compact representation in memory. `toSaved()`
+explicitly expands all runs to the old named-object format.
+
+`IdList.saveColumnar()` and `IdList.loadColumnar()` integrate this JSON format
+with the editing tree. Loading consumes one run at a time. The live tree is still
+the existing persistent B+Tree, and save/load peaks are not benchmarked.
+
+JSON cannot preserve deleted zero-count runs using `-0`: `fromSaved()` skips
+zero-count entries, as the existing `IdList.load()` does. The columnar JSON schema
+requires nonzero signed counts. Arbitrary JS string IDs are preserved exactly.
+
+See the [single-file worked examples and comparison tables](./benchmark_storage_results.md)
+for ordinary columns, typed columns, and full binary snapshots.
+
 ## A concrete example
 
 Today a saved list might contain:

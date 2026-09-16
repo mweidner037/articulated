@@ -5,6 +5,7 @@ import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 import { PackedIdList } from "./packed_id_list";
+import { ColumnarIdList, SavedColumnarIdList } from "./columnar_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1043,6 +1044,16 @@ export class IdList {
    */
   saveBinary(): Uint8Array {
     return PackedIdList.fromSaved(this.save()).toBytes();
+  }
+
+  /** Save readable dictionary/column JSON, also loadable as a typed JS snapshot. */
+  saveColumnar(): SavedColumnarIdList {
+    return ColumnarIdList.fromSaved(this.save()).toJSON();
+  }
+
+  /** Load columnar JSON into the existing editing tree, one run at a time. */
+  static loadColumnar(saved: SavedColumnarIdList): IdList {
+    return IdList.loadRuns(ColumnarIdList.load(saved));
   }
 
   /**
