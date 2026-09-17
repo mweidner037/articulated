@@ -1,5 +1,8 @@
 # Snapshot benchmarks: dictionary + separate BSON Binary arrays
 
+For the experimental version-2 bit-packed columns, see
+[the implementation example and combined Mongo/JS comparison](./bit_packed_snapshots.md).
+
 The proposal keeps a normal string dictionary and stores each numeric array in
 its own BSON Binary field. **No whole-snapshot blob and no column-type metadata.**
 The earlier packed-container implementation and its tests have been removed;

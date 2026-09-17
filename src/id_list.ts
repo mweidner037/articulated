@@ -5,6 +5,10 @@ import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
 import {
+  BitPackedIdList,
+  SavedBitPackedColumnarIdList,
+} from "./bit_packed_id_list";
+import {
   ColumnarIdList,
   SavedColumnarIdList,
   SavedBinaryColumnarIdList,
@@ -1046,6 +1050,16 @@ export class IdList {
    */
   saveBinary(): SavedBinaryColumnarIdList {
     return ColumnarIdList.fromSaved(this.save()).toBinary();
+  }
+
+  /** Experimental 13/11/12-bit columns. Throws on overflow; tree is unchanged. */
+  saveBitPacked(): SavedBitPackedColumnarIdList {
+    return BitPackedIdList.fromSaved(this.save()).toBinary();
+  }
+
+  /** Load experimental packed columns into the existing, unpacked editing tree. */
+  static loadBitPacked(saved: SavedBitPackedColumnarIdList): IdList {
+    return IdList.loadRuns(BitPackedIdList.loadBinary(saved));
   }
 
   /** Save readable dictionary/column JSON, also loadable as a typed JS snapshot. */

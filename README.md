@@ -11,6 +11,10 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 - **Collaboration-ready**: Designed to handle operations from multiple sources.
 - **Persistent (immutable) data structure**: Mutating methods return a new list while sharing memory where possible.
 
+For the optional fixed-range bit-packed column prototype, see the
+[worked example, Mongo mapping, limits and benchmarks](./bit_packed_snapshots.md).
+Existing snapshot formats and editing APIs remain unchanged.
+
 ## Installation
 
 ```bash

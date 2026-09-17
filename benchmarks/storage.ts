@@ -10,6 +10,8 @@ import {
   serialize,
 } from "bson";
 import {
+  BitPackedIdList,
+  SavedBitPackedColumnarIdList,
   ColumnarIdList,
   SavedColumnarIdList,
   ElementIdGenerator,
@@ -26,6 +28,7 @@ type Mode =
   | "columns"
   | "typed-columns"
   | "binary-columns"
+  | "bit-packed-columns"
   | "json-tree"
   | "columnar-tree"
   | "binary-tree";
@@ -36,6 +39,7 @@ const modes: Mode[] = [
   "columns",
   "typed-columns",
   "binary-columns",
+  "bit-packed-columns",
   "json-tree",
   "columnar-tree",
   "binary-tree",
@@ -96,7 +100,9 @@ function bsonSize(value: unknown): number {
   return bytes.byteLength;
 }
 
-function mongoColumns(saved: SavedBinaryColumnarIdList) {
+function mongoColumns(
+  saved: SavedBinaryColumnarIdList | SavedBitPackedColumnarIdList
+) {
   return {
     ...saved,
     bunchIndexes: new Binary(saved.bunchIndexes),
@@ -147,6 +153,7 @@ function memory(style: IdStyle, mode: Mode) {
   const tupleJson = JSON.stringify(tuples),
     columnJson = JSON.stringify(columns);
   const binary = ColumnarIdList.fromSaved(saved).toBinary();
+  const bitPacked = BitPackedIdList.fromSaved(saved).toBinary();
   const dictionaryJson = JSON.stringify(binary.bunchIds);
   // Parse dictionary strings as in the other browser-facing cases, avoiding
   // borrowing setup strings only for binary input. Numeric inputs are copied.
@@ -168,6 +175,11 @@ function memory(style: IdStyle, mode: Mode) {
         );
       case "binary-columns":
         return ColumnarIdList.loadBinary(binaryInput());
+      case "bit-packed-columns":
+        return BitPackedIdList.loadBinary({
+          ...bitPacked,
+          bunchIds: JSON.parse(dictionaryJson) as string[],
+        });
       case "json-tree":
         return IdList.load(JSON.parse(objectJson) as SavedIdList);
       case "columnar-tree":
@@ -203,6 +215,7 @@ function memory(style: IdStyle, mode: Mode) {
   assert.equal(saved.length, tuples.length);
   assert.equal(columns.bunchIndexes.length, saved.length);
   assert.equal(binary.bunchIndexes.byteLength, saved.length * 4);
+  assert.equal(BitPackedIdList.loadBinary(bitPacked).runCount, saved.length);
   assert.equal(retained.length, copies);
   return {
     heap: Math.round(median(heap)),
@@ -242,6 +255,16 @@ if (process.argv[2] === "--memory") {
     const snapshot = ColumnarIdList.fromSaved(saved);
     const binary = snapshot.toBinary();
     const mongoBinary = mongoColumns(binary);
+    const packed = BitPackedIdList.fromSaved(saved).toBinary();
+    const mongoPacked = mongoColumns(packed);
+    const decodedPacked = deserialize(serialize({ state: mongoPacked }), {
+      promoteBuffers: true,
+    }).state as SavedBitPackedColumnarIdList;
+    assert.deepStrictEqual(
+      BitPackedIdList.loadBinary(decodedPacked).toSaved(),
+      saved
+    );
+    assert.deepStrictEqual(IdList.loadBitPacked(decodedPacked).save(), saved);
     const decoded = deserialize(serialize({ state: mongoBinary }), {
       promoteBuffers: true,
     }).state as SavedBinaryColumnarIdList;
@@ -268,6 +291,10 @@ if (process.argv[2] === "--memory") {
       ["Dictionary + ordinary Mongo arrays (explicit Int32)", explicitInts],
       ["Dictionary + ordinary Mongo arrays (forced Double)", explicitDoubles],
       ["Dictionary + three BSON Binary arrays", mongoBinary],
+      [
+        "Dictionary + three bit-packed Binary arrays (13/11/12 bits)",
+        mongoPacked,
+      ],
     ] as const) {
       console.log(`| ${name} | ${bsonSize(value)} |`);
     }
@@ -320,6 +347,9 @@ if (process.argv[2] === "--memory") {
   );
   console.log(
     "The editing tree is not packed by this change. Differences between tree rows can include ID string sharing and allocation effects; they are not evidence of a different tree layout. Save/load allocation peaks, real browser heaps, Mongo compression, indexes, replicas and billing are not measured.\n"
+  );
+  console.log(
+    "`bit-packed-columns` retains three packed byte arrays and scalar accessors. Experimental limits: 8192 dictionary entries, starts 0..2047, signed counts -2048..2047 excluding zero. No automatic fallback or widening.\n"
   );
   console.log(
     "Exact binary, columnar JSON, and editing-tree round trips passed for all three trace variants."
