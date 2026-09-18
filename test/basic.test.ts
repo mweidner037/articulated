@@ -1,5 +1,5 @@
 import { assert, expect } from "chai";
-import { ElementId, IdList, SavedIdList, equalsId, expandIds } from "../src";
+import { ElementId, IdList, equalsId, expandIds } from "../src";
 
 describe("ElementId utilities", () => {
   describe("equalsId", () => {
@@ -175,6 +175,24 @@ describe("IdList", () => {
       expect(equalsId(list.at(2), { bunchId: "abc", counter: 3 })).to.be.true;
     });
 
+    it("should skip count = 0 insertions", () => {
+      const startId: ElementId = { bunchId: "abc", counter: 1 };
+      const list = IdList.new().insertAfter(null, startId, 10);
+
+      expect(
+        list.insertAfter(null, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertAfter(startId, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertBefore(null, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertBefore(startId, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+    });
+
     it("should throw when inserting an ID that is already known", () => {
       let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
@@ -190,6 +208,7 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertAfter(id1, id2))).to.throw();
+      expect(() => (list = list.insertAfter(id1, id2, 0))).to.throw();
     });
 
     it("should throw when inserting before an ID that is not known", () => {
@@ -198,6 +217,19 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertBefore(id1, id2))).to.throw();
+      expect(() => (list = list.insertAfter(id1, id2, 0))).to.throw();
+    });
+
+    it("should throw when inserting an ID with invalid counter", () => {
+      let list = IdList.new();
+
+      const id1: ElementId = { bunchId: "abc", counter: -1 };
+      expect(() => (list = list.insertAfter(null, id1))).to.throw();
+      expect(() => (list = list.insertBefore(null, id1))).to.throw();
+
+      const id2: ElementId = { bunchId: "abc", counter: 1.5 };
+      expect(() => (list = list.insertAfter(null, id2))).to.throw();
+      expect(() => (list = list.insertBefore(null, id2))).to.throw();
     });
 
     it("should throw on bulk insertAfter with an invalid count", () => {
