@@ -198,7 +198,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved1)).to.throw();
+      expect(() => IdList.load(saved1)).to.throw(/Invalid/);
 
       // Non-integer count
       const saved2 = [
@@ -209,7 +209,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved2)).to.throw();
+      expect(() => IdList.load(saved2)).to.throw(/Invalid/);
 
       // Negative startCounter
       const saved3 = [
@@ -220,7 +220,7 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved3)).to.throw();
+      expect(() => IdList.load(saved3)).to.throw(/Invalid/);
 
       // Non-integer startCounter
       const saved4 = [
@@ -231,7 +231,171 @@ describe("IdList Serialization and Edge Cases", () => {
           isDeleted: false,
         },
       ];
-      expect(() => IdList.load(saved4)).to.throw();
+      expect(() => IdList.load(saved4)).to.throw(/Invalid/);
+    });
+
+    it("should throw when loading duplicate ids", () => {
+      const test = (savedState: SavedIdList) => {
+        expect(() => IdList.load(savedState)).to.throw(/duplicate ids/);
+      };
+
+      // Overlapping leaves.
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
+
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: true,
+        },
+      ]);
+
+      // Leaf that overwrites another.
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
+
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: true,
+        },
+      ]);
+
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 7,
+          isDeleted: false,
+        },
+      ]);
+
+      // Overlapping leaves that are not adjacent in the list.
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+        { bunchId: "def", startCounter: 0, count: 10, isDeleted: true },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
+
+      // Leaf that overwrites another that is not adjacent in the list.
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        { bunchId: "def", startCounter: 0, count: 10, isDeleted: true },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
+
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        { bunchId: "def", startCounter: 0, count: 10, isDeleted: true },
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 7,
+          isDeleted: false,
+        },
+      ]);
+
+      // Overlapping leaves that are out of order.
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: false,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
+
+      test([
+        {
+          bunchId: "abc",
+          startCounter: 3,
+          count: 5,
+          isDeleted: true,
+        },
+        {
+          bunchId: "abc",
+          startCounter: 0,
+          count: 5,
+          isDeleted: false,
+        },
+      ]);
     });
 
     it("should merge adjacent entries with the same bunchId", () => {
