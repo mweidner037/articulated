@@ -184,21 +184,20 @@ All rows were freshly measured on September 18, 2026. **Decimal KB**.
 11,757 runs / 5,382 eight-character IDs, from the same 259,778-edit trace.
 Every number includes IDs/dictionary. No wire/gzip metrics.
 
-| Mongo representation  | Retained JS representation | Logical BSON KB | Mongo Snappy KB | Mongo Zstd KB | Retained JS KB |
-| --------------------- | -------------------------- | --------------: | --------------: | ------------: | -------------: |
-| Objects               | Objects                    |           870.7 |           196.9 |         110.8 |          759.0 |
-| Tuples                | Ordinary nested arrays     |           529.7 |           186.2 |         106.8 |         1041.1 |
-| Ordinary columns      | Ordinary arrays            |           538.9 |           311.6 |         147.7 |          426.1 |
-| Ordinary columns      | Adaptive typed arrays      |           538.9 |           311.6 |         147.7 |          132.8 |
-| Binary columns        | Adaptive typed arrays      |           348.2 |           151.8 |         104.4 |          132.8 |
-| Flat numeric runs     | Ordinary flat array        |           607.4 |           323.9 |         188.7 |          425.9 |
-| Flat numeric runs     | Typed flat array           |           607.4 |           323.9 |         188.7 |          143.9 |
-| Binary flat runs      | Typed flat array           |           477.4 |           172.2 |         101.8 |          143.9 |
-| Packed 8-byte records | Bytes + scalar decoder     |           195.3 |           147.7 |          90.4 |          143.9 |
-| Packed 5-byte records | Bytes + scalar decoder     |           160.0 |           131.4 |          99.3 |          108.6 |
-| Bit-packed columns    | Bytes + scalar decoder     |           154.2 |           123.2 |          94.4 |          103.3 |
+| Mongo representation  | Retained JS representation | Mongo Snappy KB | Mongo Zstd KB | Retained JS KB |
+| --------------------- | -------------------------- | --------------: | ------------: | -------------: |
+| Objects               | Objects                    |           196.9 |         110.8 |          759.0 |
+| Tuples                | Ordinary nested arrays     |           186.2 |         106.8 |         1041.1 |
+| Ordinary columns      | Ordinary arrays            |           311.6 |         147.7 |          426.1 |
+| Ordinary columns      | Adaptive typed arrays      |           311.6 |         147.7 |          132.8 |
+| Binary columns        | Adaptive typed arrays      |           151.8 |         104.4 |          132.8 |
+| Flat numeric runs     | Ordinary flat array        |           323.9 |         188.7 |          425.9 |
+| Flat numeric runs     | Typed flat array           |           323.9 |         188.7 |          143.9 |
+| Binary flat runs      | Typed flat array           |           172.2 |         101.8 |          143.9 |
+| Packed 8-byte records | Bytes + scalar decoder     |           147.7 |          90.4 |          143.9 |
+| Packed 5-byte records | Bytes + scalar decoder     |           131.4 |          99.3 |          108.6 |
+| Bit-packed columns    | Bytes + scalar decoder     |           123.2 |          94.4 |          103.3 |
 
-Logical BSON is actual serialized `{state: ...}` length without `_id`.
 Mongo is actual allocated collection-file bytes / 100 documents, after
 `compact` and a locked flush. It includes the integer document IDs but excludes
 indexes, journals, replicas and shared server overhead. JS is retained snapshot
