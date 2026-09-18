@@ -1,0 +1,550 @@
+{
+  "family": "four-field",
+  "runtime": "v22.22.2",
+  "v8": "12.4.254.21-node.39",
+  "platform": "darwin",
+  "arch": "arm64",
+  "copies": 20,
+  "samples": 5,
+  "runs": 11757,
+  "bunches": 5382,
+  "rows": [
+    {
+      "variant": "objects",
+      "bsonBytes": 870682,
+      "memory": {
+        "median": {
+          "heap": 758972.4,
+          "buffers": 0,
+          "total": 758972.4
+        },
+        "min": 758972.4,
+        "max": 759143.6,
+        "samples": [
+          {
+            "heap": 759143.6,
+            "buffers": 0,
+            "total": 759143.6
+          },
+          {
+            "heap": 758972.4,
+            "buffers": 0,
+            "total": 758972.4
+          },
+          {
+            "heap": 758972.4,
+            "buffers": 0,
+            "total": 758972.4
+          },
+          {
+            "heap": 758972.4,
+            "buffers": 0,
+            "total": 758972.4
+          },
+          {
+            "heap": 758984.4,
+            "buffers": 0,
+            "total": 758984.4
+          }
+        ]
+      },
+      "example": [
+        {
+          "bunchId": "aB3dE5fG",
+          "startCounter": 0,
+          "count": 3,
+          "isDeleted": false
+        },
+        {
+          "bunchId": "hJ7kL9mN",
+          "startCounter": 0,
+          "count": 1,
+          "isDeleted": false
+        },
+        {
+          "bunchId": "aB3dE5fG",
+          "startCounter": 3,
+          "count": 2,
+          "isDeleted": true
+        }
+      ]
+    },
+    {
+      "variant": "tuples",
+      "bsonBytes": 529729,
+      "memory": {
+        "median": {
+          "heap": 1041140.4,
+          "buffers": 0,
+          "total": 1041140.4
+        },
+        "min": 1041140.4,
+        "max": 1041189.6,
+        "samples": [
+          {
+            "heap": 1041189.6,
+            "buffers": 0,
+            "total": 1041189.6
+          },
+          {
+            "heap": 1041140.4,
+            "buffers": 0,
+            "total": 1041140.4
+          },
+          {
+            "heap": 1041140.4,
+            "buffers": 0,
+            "total": 1041140.4
+          },
+          {
+            "heap": 1041140.4,
+            "buffers": 0,
+            "total": 1041140.4
+          },
+          {
+            "heap": 1041152.4,
+            "buffers": 0,
+            "total": 1041152.4
+          }
+        ]
+      },
+      "example": [
+        ["aB3dE5fG", 0, 3, false],
+        ["hJ7kL9mN", 0, 1, false],
+        ["aB3dE5fG", 3, 2, true]
+      ]
+    },
+    {
+      "variant": "columns",
+      "bsonBytes": 538858,
+      "memory": {
+        "median": {
+          "heap": 426104.8,
+          "buffers": 0,
+          "total": 426104.8
+        },
+        "min": 426104.8,
+        "max": 426150,
+        "samples": [
+          {
+            "heap": 426150,
+            "buffers": 0,
+            "total": 426150
+          },
+          {
+            "heap": 426104.8,
+            "buffers": 0,
+            "total": 426104.8
+          },
+          {
+            "heap": 426104.8,
+            "buffers": 0,
+            "total": 426104.8
+          },
+          {
+            "heap": 426104.8,
+            "buffers": 0,
+            "total": 426104.8
+          },
+          {
+            "heap": 426116.8,
+            "buffers": 0,
+            "total": 426116.8
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "bunchIndexes": [0, 1, 0],
+        "startCounters": [0, 0, 3],
+        "counts": [3, 1, 2],
+        "isDeleted": [false, false, true]
+      }
+    },
+    {
+      "variant": "typed-columns",
+      "bsonBytes": 538858,
+      "memory": {
+        "median": {
+          "heap": 50455.2,
+          "buffers": 82299,
+          "total": 132754.2
+        },
+        "min": 132746.6,
+        "max": 133628.6,
+        "samples": [
+          {
+            "heap": 51329.6,
+            "buffers": 82299,
+            "total": 133628.6
+          },
+          {
+            "heap": 50458.8,
+            "buffers": 82299,
+            "total": 132757.8
+          },
+          {
+            "heap": 50452,
+            "buffers": 82299,
+            "total": 132751
+          },
+          {
+            "heap": 50447.6,
+            "buffers": 82299,
+            "total": 132746.6
+          },
+          {
+            "heap": 50455.2,
+            "buffers": 82299,
+            "total": 132754.2
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "bunchIndexes": [0, 1, 0],
+        "startCounters": [0, 0, 3],
+        "counts": [3, 1, 2],
+        "isDeleted": [0, 0, 1]
+      }
+    },
+    {
+      "variant": "binary-columns",
+      "bsonBytes": 348158,
+      "memory": {
+        "median": {
+          "heap": 50453.6,
+          "buffers": 82299,
+          "total": 132752.6
+        },
+        "min": 132719.4,
+        "max": 133525,
+        "samples": [
+          {
+            "heap": 51226,
+            "buffers": 82299,
+            "total": 133525
+          },
+          {
+            "heap": 50453.6,
+            "buffers": 82299,
+            "total": 132752.6
+          },
+          {
+            "heap": 50420.4,
+            "buffers": 82299,
+            "total": 132719.4
+          },
+          {
+            "heap": 50428.8,
+            "buffers": 82299,
+            "total": 132727.8
+          },
+          {
+            "heap": 50725.2,
+            "buffers": 82299,
+            "total": 133024.2
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "bunchIndexes": [0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0],
+        "startCounters": [
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,
+          64
+        ],
+        "counts": [
+          0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0, 0,
+          0, 64
+        ],
+        "isDeleted": [0, 0, 1]
+      }
+    },
+    {
+      "variant": "flat",
+      "bsonBytes": 607402,
+      "memory": {
+        "median": {
+          "heap": 425928,
+          "buffers": 0,
+          "total": 425928
+        },
+        "min": 425928,
+        "max": 426205.6,
+        "samples": [
+          {
+            "heap": 426205.6,
+            "buffers": 0,
+            "total": 426205.6
+          },
+          {
+            "heap": 425928,
+            "buffers": 0,
+            "total": 425928
+          },
+          {
+            "heap": 425928,
+            "buffers": 0,
+            "total": 425928
+          },
+          {
+            "heap": 425928,
+            "buffers": 0,
+            "total": 425928
+          },
+          {
+            "heap": 425940,
+            "buffers": 0,
+            "total": 425940
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "runs": [0, 0, 3, 0, 1, 0, 1, 0, 0, 3, 2, 1]
+      }
+    },
+    {
+      "variant": "typed-flat",
+      "bsonBytes": 607402,
+      "memory": {
+        "median": {
+          "heap": 49852.8,
+          "buffers": 94056,
+          "total": 143908.8
+        },
+        "min": 143897.6,
+        "max": 144838,
+        "samples": [
+          {
+            "heap": 50782,
+            "buffers": 94056,
+            "total": 144838
+          },
+          {
+            "heap": 49841.6,
+            "buffers": 94056,
+            "total": 143897.6
+          },
+          {
+            "heap": 49852.8,
+            "buffers": 94056,
+            "total": 143908.8
+          },
+          {
+            "heap": 49852,
+            "buffers": 94056,
+            "total": 143908
+          },
+          {
+            "heap": 49857.2,
+            "buffers": 94056,
+            "total": 143913.2
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "runs": [0, 0, 3, 0, 1, 0, 1, 0, 0, 3, 2, 1]
+      }
+    },
+    {
+      "variant": "binary-flat",
+      "bsonBytes": 477428,
+      "memory": {
+        "median": {
+          "heap": 49864.8,
+          "buffers": 94056,
+          "total": 143920.8
+        },
+        "min": 143900.4,
+        "max": 144798.4,
+        "samples": [
+          {
+            "heap": 50742.4,
+            "buffers": 94056,
+            "total": 144798.4
+          },
+          {
+            "heap": 49874,
+            "buffers": 94056,
+            "total": 143930
+          },
+          {
+            "heap": 49848,
+            "buffers": 94056,
+            "total": 143904
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 94056,
+            "total": 143900.4
+          },
+          {
+            "heap": 49864.8,
+            "buffers": 94056,
+            "total": 143920.8
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "runs": [
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8,
+          64, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 240, 63, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+          0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 64, 0, 0, 0, 0, 0, 0, 0, 64, 0, 0,
+          0, 0, 0, 0, 240, 63
+        ]
+      }
+    },
+    {
+      "variant": "packed-eight",
+      "bsonBytes": 195260,
+      "memory": {
+        "median": {
+          "heap": 49844.4,
+          "buffers": 94056,
+          "total": 143900.4
+        },
+        "min": 143900.4,
+        "max": 144294.8,
+        "samples": [
+          {
+            "heap": 50238.8,
+            "buffers": 94056,
+            "total": 144294.8
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 94056,
+            "total": 143900.4
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 94056,
+            "total": 143900.4
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 94056,
+            "total": 143900.4
+          },
+          {
+            "heap": 49856.4,
+            "buffers": 94056,
+            "total": 143912.4
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "runs": [
+          0, 0, 0, 0, 0, 0, 24, 64, 0, 0, 0, 64, 0, 0, 96, 65, 0, 0, 0, 0, 128,
+          2, 200, 64
+        ]
+      }
+    },
+    {
+      "variant": "packed-five",
+      "bsonBytes": 159989,
+      "memory": {
+        "median": {
+          "heap": 49844.4,
+          "buffers": 58785,
+          "total": 108629.4
+        },
+        "min": 108629.4,
+        "max": 109023.8,
+        "samples": [
+          {
+            "heap": 50238.8,
+            "buffers": 58785,
+            "total": 109023.8
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 58785,
+            "total": 108629.4
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 58785,
+            "total": 108629.4
+          },
+          {
+            "heap": 49844.4,
+            "buffers": 58785,
+            "total": 108629.4
+          },
+          {
+            "heap": 49856.4,
+            "buffers": 58785,
+            "total": 108641.4
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "runs": [6, 0, 0, 0, 0, 2, 0, 128, 0, 0, 5, 48, 0, 0, 0]
+      }
+    },
+    {
+      "variant": "bit-columns",
+      "bsonBytes": 154169,
+      "memory": {
+        "median": {
+          "heap": 50420.4,
+          "buffers": 52908,
+          "total": 103328.4
+        },
+        "min": 103328.4,
+        "max": 103690.8,
+        "samples": [
+          {
+            "heap": 50782.8,
+            "buffers": 52908,
+            "total": 103690.8
+          },
+          {
+            "heap": 50420.4,
+            "buffers": 52908,
+            "total": 103328.4
+          },
+          {
+            "heap": 50420.4,
+            "buffers": 52908,
+            "total": 103328.4
+          },
+          {
+            "heap": 50420.4,
+            "buffers": 52908,
+            "total": 103328.4
+          },
+          {
+            "heap": 50432.4,
+            "buffers": 52908,
+            "total": 103340.4
+          }
+        ]
+      },
+      "example": {
+        "version": 1,
+        "bunchIds": ["aB3dE5fG", "hJ7kL9mN"],
+        "bunchIndexes": [0, 32, 0, 0, 0],
+        "startCounters": [0, 0, 192, 0, 0],
+        "counts": [3, 8, 128, 0, 0],
+        "isDeleted": [4]
+      }
+    }
+  ]
+}

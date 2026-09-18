@@ -22,3 +22,4 @@ jobs:
       - run: npm test
       - run: npm run build
       - run: npm run benchmarks
+      - run: npm run benchmarks:storage

@@ -1,0 +1,414 @@
+{
+  "family": "four-field",
+  "mongoVersion": "8.3.3",
+  "documents": 100,
+  "runs": 11757,
+  "bunches": 5382,
+  "rows": [
+    {
+      "name": "none_objects",
+      "variant": "objects",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 87069100,
+      "storageBytes": 87273472,
+      "fileBytes": 87273472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_tuples",
+      "variant": "tuples",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 52973800,
+      "storageBytes": 53276672,
+      "fileBytes": 53276672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_columns",
+      "variant": "columns",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 53886700,
+      "storageBytes": 54095872,
+      "fileBytes": 54095872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_binary_columns",
+      "variant": "binary-columns",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 34816700,
+      "storageBytes": 35254272,
+      "fileBytes": 35254272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_flat",
+      "variant": "flat",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 60741100,
+      "storageBytes": 61059072,
+      "fileBytes": 61059072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_binary_flat",
+      "variant": "binary-flat",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 47743700,
+      "storageBytes": 47951872,
+      "fileBytes": 47951872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_packed_eight",
+      "variant": "packed-eight",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 19526900,
+      "storageBytes": 19861504,
+      "fileBytes": 19861504,
+      "freeBytes": 184320,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_packed_five",
+      "variant": "packed-five",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15999800,
+      "storageBytes": 16551936,
+      "fileBytes": 16551936,
+      "freeBytes": 151552,
+      "indexBytes": 20480
+    },
+    {
+      "name": "none_bit_columns",
+      "variant": "bit-columns",
+      "compressor": "none",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15417800,
+      "storageBytes": 15724544,
+      "fileBytes": 15724544,
+      "freeBytes": 143360,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_objects",
+      "variant": "objects",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 87069100,
+      "storageBytes": 19689472,
+      "fileBytes": 19689472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_tuples",
+      "variant": "tuples",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 52973800,
+      "storageBytes": 18620416,
+      "fileBytes": 18620416,
+      "freeBytes": 172032,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_columns",
+      "variant": "columns",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 53886700,
+      "storageBytes": 31158272,
+      "fileBytes": 31158272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_columns",
+      "variant": "binary-columns",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 34816700,
+      "storageBytes": 15183872,
+      "fileBytes": 15183872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_flat",
+      "variant": "flat",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 60741100,
+      "storageBytes": 32387072,
+      "fileBytes": 32387072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_flat",
+      "variant": "binary-flat",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 47743700,
+      "storageBytes": 17219584,
+      "fileBytes": 17219584,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_packed_eight",
+      "variant": "packed-eight",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 19526900,
+      "storageBytes": 14774272,
+      "fileBytes": 14774272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_packed_five",
+      "variant": "packed-five",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15999800,
+      "storageBytes": 13135872,
+      "fileBytes": 13135872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_columns",
+      "variant": "bit-columns",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15417800,
+      "storageBytes": 12316672,
+      "fileBytes": 12316672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_objects",
+      "variant": "objects",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 87069100,
+      "storageBytes": 11075584,
+      "fileBytes": 11075584,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_tuples",
+      "variant": "tuples",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 52973800,
+      "storageBytes": 10678272,
+      "fileBytes": 10678272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_columns",
+      "variant": "columns",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 53886700,
+      "storageBytes": 14774272,
+      "fileBytes": 14774272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_columns",
+      "variant": "binary-columns",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 34816700,
+      "storageBytes": 10436608,
+      "fileBytes": 10436608,
+      "freeBytes": 589824,
+      "indexBytes": 36864
+    },
+    {
+      "name": "zstd_flat",
+      "variant": "flat",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 60741100,
+      "storageBytes": 18870272,
+      "fileBytes": 18870272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_flat",
+      "variant": "binary-flat",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 47743700,
+      "storageBytes": 10178560,
+      "fileBytes": 10178560,
+      "freeBytes": 90112,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_packed_eight",
+      "variant": "packed-eight",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 19526900,
+      "storageBytes": 9039872,
+      "fileBytes": 9039872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_packed_five",
+      "variant": "packed-five",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15999800,
+      "storageBytes": 9932800,
+      "fileBytes": 9932800,
+      "freeBytes": 86016,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_columns",
+      "variant": "bit-columns",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "logicalBytes": 15417800,
+      "storageBytes": 9437184,
+      "fileBytes": 9437184,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    }
+  ]
+}

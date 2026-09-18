@@ -11,6 +11,9 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 - **Collaboration-ready**: Designed to handle operations from multiple sources.
 - **Persistent (immutable) data structure**: Mutating methods return a new list while sharing memory where possible.
 
+Draft exploration: [four-field runs as objects, tuples, columns and packed bytes](./format_comparison.md).
+That report contains this PR's current examples and Mongo/JS comparison table.
+
 ## Installation
 
 ```bash
@@ -123,6 +126,59 @@ const savedState = list.save();
 // Later, load from saved state
 let newList = IdList.load(savedState);
 ```
+
+For readable JSON persistence with typed numeric arrays in JS:
+
+```ts
+import { ColumnarIdList, IdList } from "articulated";
+
+const savedJSON = list.saveColumnar(); // Dictionary + columns with descriptive keys.
+const snapshot = ColumnarIdList.load(savedJSON); // Owns compact typed numeric arrays.
+const persistedJSON = snapshot.toJSON(); // Store as an ordinary MongoDB subdocument.
+const editable = IdList.loadColumnar(persistedJSON);
+```
+
+Release the parsed JSON after conversion to avoid retaining duplicate numeric
+arrays. The hybrid keeps IDs as strings and needs no binary ID codec.
+
+For MongoDB, keep the same dictionary and store each numeric array as its own
+standard BSON Binary field (subtype 0). There is no combined blob or type metadata:
+
+```ts
+import { ColumnarIdList, IdList } from "articulated";
+import { Binary } from "mongodb";
+
+const saved = list.saveBinary(); // Dictionary + three Uint8Array byte buffers.
+await collection.insertOne({
+  state: {
+    ...saved,
+    bunchIndexes: new Binary(saved.bunchIndexes),
+    startCounters: new Binary(saved.startCounters),
+    signedCounts: new Binary(saved.signedCounts),
+  },
+});
+
+const { state } = await collection.findOne({ _id });
+const input = {
+  ...state,
+  bunchIndexes: state.bunchIndexes.value(),
+  startCounters: state.startCounters.value(),
+  signedCounts: state.signedCounts.value(),
+};
+const snapshot = ColumnarIdList.loadBinary(input); // Compacts into owned typed arrays.
+const editable = IdList.loadBinary(input); // Or rebuild the editing tree.
+```
+
+The stored schema fixes indexes to Uint32 and starts/signed counts to Float64,
+all little-endian. Loading converts those bytes to the narrowest safe typed JS
+arrays and discards the wider temporary arrays. Mongo storage widths do not
+dictate retained JS memory widths. Float64 storage preserves the existing
+safe-integer counter range exactly; negative counts mean deleted. Each ID remains a string in
+`bunchIds`. JSON `save()`/`load()` remain unchanged. This optimizes snapshots, not
+the live editing tree. No MongoDB runtime dependency is added to this library.
+
+See [the worked example and MongoDB mapping](./binary_snapshots.md) and
+[current four-field representation benchmarks](./format_comparison.md).
 
 ## Use Cases
 

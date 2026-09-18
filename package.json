@@ -43,6 +43,7 @@
     "@types/seedrandom": "^3.0.8",
     "@typescript-eslint/eslint-plugin": "^7.7.1",
     "@typescript-eslint/parser": "^7.7.1",
+    "bson": "7.3.2",
     "chai": "^4.3.7",
     "eslint": "^8.57.0",
     "eslint-config-prettier": "^9.1.0",
@@ -73,6 +74,7 @@
     "fix:format": "prettier --write .",
     "docs": "typedoc --options typedoc.json src/index.ts",
     "benchmarks": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc benchmarks/main.ts",
+    "benchmarks:storage": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc benchmarks/format_storage.ts",
     "inspect": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc --inspect benchmarks/main.ts",
     "clean": "rm -rf build docs coverage .nyc_output"
   }

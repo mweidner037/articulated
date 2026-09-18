@@ -4,6 +4,15 @@ import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
 import { SavedIdList } from "./saved_id_list";
+import {
+  BitPackedIdList,
+  SavedBitPackedColumnarIdList,
+} from "./bit_packed_id_list";
+import {
+  ColumnarIdList,
+  SavedColumnarIdList,
+  SavedBinaryColumnarIdList,
+} from "./columnar_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1036,15 +1045,53 @@ export class IdList {
   }
 
   /**
+   * Save the string dictionary and three independent binary numeric arrays.
+   * Currently materializes save(); the live editing tree remains unchanged.
+   */
+  saveBinary(): SavedBinaryColumnarIdList {
+    return ColumnarIdList.fromSaved(this.save()).toBinary();
+  }
+
+  /** Experimental 13/11/12-bit columns. Throws on overflow; tree is unchanged. */
+  saveBitPacked(): SavedBitPackedColumnarIdList {
+    return BitPackedIdList.fromSaved(this.save()).toBinary();
+  }
+
+  /** Load experimental packed columns into the existing, unpacked editing tree. */
+  static loadBitPacked(saved: SavedBitPackedColumnarIdList): IdList {
+    return IdList.loadRuns(BitPackedIdList.loadBinary(saved));
+  }
+
+  /** Save readable dictionary/column JSON, also loadable as a typed JS snapshot. */
+  saveColumnar(): SavedColumnarIdList {
+    return ColumnarIdList.fromSaved(this.save()).toJSON();
+  }
+
+  /** Load columnar JSON into the existing editing tree, one run at a time. */
+  static loadColumnar(saved: SavedColumnarIdList): IdList {
+    return IdList.loadRuns(ColumnarIdList.load(saved));
+  }
+
+  /**
+   * Load a dictionary and three binary columns into the existing editing tree.
+   * No intermediate SavedIdList array is retained.
+   */
+  static loadBinary(saved: SavedBinaryColumnarIdList): IdList {
+    return IdList.loadRuns(ColumnarIdList.loadBinary(saved));
+  }
+
+  /**
    * Loads a saved state returned by {@link save}.
    */
   static load(savedState: SavedIdList) {
+    return IdList.loadRuns(savedState);
+  }
+
+  private static loadRuns(savedState: Iterable<SavedIdList[number]>) {
     // 1. Determine the leaves in list order.
 
     const leaves: LeafNode[] = [];
-    for (let i = 0; i < savedState.length; i++) {
-      const item = savedState[i];
-
+    for (const item of savedState) {
       if (!(Number.isSafeInteger(item.count) && item.count >= 0)) {
         throw new Error(`Invalid count: ${item.count}`);
       }
