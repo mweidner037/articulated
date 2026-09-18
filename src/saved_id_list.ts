@@ -11,3 +11,15 @@ export type SavedIdList = Array<{
   readonly count: number;
   readonly isDeleted: boolean;
 }>;
+
+/**
+ * Experimental alternative to SavedIdList: negative counts denote deleted runs.
+ * Positive counts denote present runs. Zero-length runs are ignored on load.
+ * Use IdList.saveSignedCounts / IdList.loadSignedCounts, not the original loader.
+ * There is no dictionary, binary encoding, or reduced numeric range.
+ */
+export type SavedSignedCountIdList = Array<{
+  readonly bunchId: string;
+  readonly startCounter: number;
+  readonly count: number;
+}>;

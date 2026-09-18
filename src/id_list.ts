@@ -3,7 +3,7 @@ import { ElementId } from "./element_id";
 import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
-import { SavedIdList } from "./saved_id_list";
+import { SavedIdList, SavedSignedCountIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1033,6 +1033,38 @@ export class IdList {
     const acc: SavedIdList = [];
     saveNode(this.root, acc);
     return acc;
+  }
+
+  /**
+   * Experimental object snapshot with negative counts for deleted runs.
+   * Currently materializes save() before conversion; the editing tree is unchanged.
+   */
+  saveSignedCounts(): SavedSignedCountIdList {
+    return this.save().map(({ bunchId, startCounter, count, isDeleted }) => ({
+      bunchId,
+      startCounter,
+      count: isDeleted ? -count : count,
+    }));
+  }
+
+  /**
+   * Loads the signed-count alternative into the existing editing tree.
+   * Converts to ordinary saved runs first; does not change the original loader.
+   */
+  static loadSignedCounts(savedState: SavedSignedCountIdList): IdList {
+    return IdList.load(
+      savedState.map(({ bunchId, startCounter, count }) => {
+        if (!Number.isSafeInteger(count)) {
+          throw new Error(`Invalid signed count: ${count}`);
+        }
+        return {
+          bunchId,
+          startCounter,
+          count: Math.abs(count),
+          isDeleted: count < 0,
+        };
+      })
+    );
   }
 
   /**
