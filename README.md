@@ -4,6 +4,8 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 
 [Demos](https://github.com/mweidner037/articulated-demos)
 
+Draft exploration: [signed-count SavedIdList as objects, tuples, columns and packed bytes](format_comparison.md).
+
 ## Features
 
 - **Stable identifiers**: Elements keep their identity even as their indices change.
