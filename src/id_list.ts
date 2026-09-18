@@ -1038,7 +1038,8 @@ export class IdList {
   /**
    * Loads a saved state returned by {@link save}.
    *
-   * @throws If the saved state contains duplicate ids.
+   * @throws If the saved state is not valid according to the {@link SavedState}
+   * docs (e.g., it contains duplicate ids).
    */
   static load(savedState: SavedIdList) {
     // 1. Determine the leaves in list order.
@@ -1112,9 +1113,7 @@ export class IdList {
     // 3. Check that savedState had no duplicate ids.
 
     if (!list.leafMap.checkAfterLoad(list.root.knownSize)) {
-      throw new Error(
-        "IdList.load called with invalid saved state (duplicate ids)"
-      );
+      throw new Error("Invalid savedState: duplicate ids");
     }
 
     return list;
