@@ -249,7 +249,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
         {
           bunchId: "abc",
-          startCounter: 3,
+          startCounter: 4,
           count: 5,
           isDeleted: false,
         },
@@ -264,7 +264,7 @@ describe("IdList Serialization and Edge Cases", () => {
         },
         {
           bunchId: "abc",
-          startCounter: 3,
+          startCounter: 4,
           count: 5,
           isDeleted: true,
         },
