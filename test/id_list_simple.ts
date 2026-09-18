@@ -388,10 +388,16 @@ export class IdListSimple {
 
   /**
    * Loads a saved state returned by {@link save}, **overwriting** the current list state.
+   *
+   * @throws If the saved state is not valid according to the {@link SavedState}
+   * docs (e.g., it contains duplicate ids).
    */
   load(savedState: SavedIdList): void {
     this.state.splice(0, this.state.length);
     this._length = 0;
+
+    // Set of ids as JSON, for duplicate ids check.
+    const allIdStrs = new Set<string>();
 
     for (const { bunchId, startCounter, count, isDeleted } of savedState) {
       if (!(Number.isSafeInteger(count) && count >= 0)) {
@@ -402,10 +408,17 @@ export class IdListSimple {
       }
 
       for (let i = 0; i < count; i++) {
+        const id: ElementId = { bunchId, counter: startCounter + i };
         this.state.push({
-          id: { bunchId, counter: startCounter + i },
+          id,
           isDeleted,
         });
+
+        const idStr = JSON.stringify(id);
+        if (allIdStrs.has(idStr)) {
+          throw new Error("Invalid savedState: duplicate ids");
+        }
+        allIdStrs.add(idStr);
       }
       if (!isDeleted) this._length += count;
     }
