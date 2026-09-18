@@ -1037,6 +1037,8 @@ export class IdList {
 
   /**
    * Loads a saved state returned by {@link save}.
+   *
+   * @throws If the saved state contains duplicate ids.
    */
   static load(savedState: SavedIdList) {
     // 1. Determine the leaves in list order.
@@ -1105,7 +1107,17 @@ export class IdList {
         ? 1
         : Math.ceil(Math.log(leaves.length) / Math.log(M));
     const root = buildTree(leaves, leafMapMut, parentSeqsMut, 0, depth);
-    return new IdList(root, leafMapMut.value, parentSeqsMut.value);
+    const list = new IdList(root, leafMapMut.value, parentSeqsMut.value);
+
+    // 3. Check that savedState had no duplicate ids.
+
+    if (!list.leafMap.checkAfterLoad(list.root.knownSize)) {
+      throw new Error(
+        "IdList.load called with invalid saved state (duplicate ids)"
+      );
+    }
+
+    return list;
   }
 }
 
