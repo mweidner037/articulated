@@ -24,6 +24,7 @@ import { realTextTraceEdits } from "./internal/util";
 type IdStyle = "shared-prefix" | "uuid" | "nanoid";
 type Mode =
   | "objects"
+  | "signed-count-objects"
   | "tuples"
   | "columns"
   | "typed-columns"
@@ -35,6 +36,7 @@ type Mode =
 const styles: IdStyle[] = ["shared-prefix", "uuid", "nanoid"];
 const modes: Mode[] = [
   "objects",
+  "signed-count-objects",
   "tuples",
   "columns",
   "typed-columns",
@@ -76,6 +78,11 @@ function replay(style: IdStyle): IdList {
 
 function alternatives(saved: SavedIdList) {
   return {
+    signedObjects: saved.map(({ bunchId, startCounter, count, isDeleted }) => ({
+      bunchId,
+      startCounter,
+      count: isDeleted ? -count : count,
+    })),
     tuples: saved.map((x) => [x.bunchId, x.startCounter, x.count, x.isDeleted]),
     columns: ColumnarIdList.fromSaved(saved).toJSON(),
   };
@@ -149,7 +156,8 @@ function memory(style: IdStyle, mode: Mode) {
   // Serialize source fixtures before measuring. No source tree is retained.
   const saved = replay(style).save();
   const objectJson = JSON.stringify(saved);
-  const { tuples, columns } = alternatives(saved);
+  const { signedObjects, tuples, columns } = alternatives(saved);
+  const signedObjectJson = JSON.stringify(signedObjects);
   const tupleJson = JSON.stringify(tuples),
     columnJson = JSON.stringify(columns);
   const binary = ColumnarIdList.fromSaved(saved).toBinary();
@@ -165,6 +173,8 @@ function memory(style: IdStyle, mode: Mode) {
     switch (mode) {
       case "objects":
         return JSON.parse(objectJson) as unknown;
+      case "signed-count-objects":
+        return JSON.parse(signedObjectJson) as unknown;
       case "tuples":
         return JSON.parse(tupleJson) as unknown;
       case "columns":
@@ -213,6 +223,7 @@ function memory(style: IdStyle, mode: Mode) {
   // Keep fixture graphs alive across both measurements, avoiding false savings
   // from GC of setup data. arrayBuffers is added once, not again via external.
   assert.equal(saved.length, tuples.length);
+  assert.equal(saved.length, signedObjects.length);
   assert.equal(columns.bunchIndexes.length, saved.length);
   assert.equal(binary.bunchIndexes.byteLength, saved.length * 4);
   assert.equal(BitPackedIdList.loadBinary(bitPacked).runCount, saved.length);
@@ -270,7 +281,24 @@ if (process.argv[2] === "--memory") {
     }).state as SavedBinaryColumnarIdList;
     assert.deepStrictEqual(ColumnarIdList.loadBinary(decoded).toSaved(), saved);
     assert.deepStrictEqual(IdList.loadBinary(decoded).save(), saved);
-    const { tuples, columns } = alternatives(saved);
+    const { signedObjects, tuples, columns } = alternatives(saved);
+    // Only the count's sign changes; no dictionary or new numeric range limits.
+    for (const decodedSigned of [
+      JSON.parse(JSON.stringify(signedObjects)) as typeof signedObjects,
+      deserialize(serialize({ state: signedObjects }))
+        .state as typeof signedObjects,
+    ]) {
+      const restored = decodedSigned.map(
+        ({ bunchId, startCounter, count }) => ({
+          bunchId,
+          startCounter,
+          count: Math.abs(count),
+          isDeleted: count < 0,
+        })
+      );
+      assert.deepStrictEqual(restored, saved);
+      assert.deepStrictEqual(IdList.load(restored).save(), saved);
+    }
     const { explicitInts, explicitDoubles } = verifyMongoArrays(columns, saved);
     assert.deepStrictEqual(
       ColumnarIdList.load(
@@ -286,6 +314,7 @@ if (process.argv[2] === "--memory") {
     console.log("| Format | BSON bytes |\n|---|---:|");
     for (const [name, value] of [
       ["Objects", saved],
+      ["Objects with signed count (no isDeleted)", signedObjects],
       ["Four-tuples", tuples],
       ["Dictionary + ordinary Mongo arrays (automatic Int32)", columns],
       ["Dictionary + ordinary Mongo arrays (explicit Int32)", explicitInts],
