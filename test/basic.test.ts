@@ -217,7 +217,7 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertBefore(id1, id2))).to.throw();
-      expect(() => (list = list.insertAfter(id1, id2, 0))).to.throw();
+      expect(() => (list = list.insertBefore(id1, id2, 0))).to.throw();
     });
 
     it("should throw when inserting an ID with invalid counter", () => {

@@ -389,7 +389,7 @@ export class IdListSimple {
   /**
    * Loads a saved state returned by {@link save}, **overwriting** the current list state.
    *
-   * @throws If the saved state is not valid according to the {@link SavedState}
+   * @throws If the saved state is not valid according to the {@link SavedIdList}
    * docs (e.g., it contains duplicate ids).
    */
   load(savedState: SavedIdList): void {

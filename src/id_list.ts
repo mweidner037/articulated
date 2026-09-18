@@ -1038,7 +1038,7 @@ export class IdList {
   /**
    * Loads a saved state returned by {@link save}.
    *
-   * @throws If the saved state is not valid according to the {@link SavedState}
+   * @throws If the saved state is not valid according to the {@link SavedIdList}
    * docs (e.g., it contains duplicate ids).
    */
   static load(savedState: SavedIdList) {
