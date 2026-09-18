@@ -214,104 +214,14 @@ Fixed-width bit packing is not always smaller: in the tiny example above the
 numeric payload is 15 bytes, while adaptive typed columns need only 9. The real
 trace has wider values and does benefit.
 
-## Signed-count objects: the independent alternative
+## Current representation comparison
 
-The author's simpler proposal keeps the current run objects and replaces
-`isDeleted` with the sign of `count`:
-
-```js
-// Current
-({ bunchId: "aB3dE5fG", startCounter: 3, count: 2, isDeleted: true });
-// Signed-count alternative
-({ bunchId: "aB3dE5fG", startCounter: 3, count: -2 });
-```
-
-This is explored independently in [draft PR #26](https://github.com/mweidner037/articulated/pull/26), with no columnar dependency.
-[Read its complete implementation and analysis](https://github.com/scottmessinger/articulated/blob/codex/signed-count-snapshots/signed_count_snapshots.md).
-This PR adds it only as a benchmark comparison; it does not add that format's
-save/load API. It reduced Snappy collection disk by **8.3%** and retained JS
-snapshot memory by **12.4%** versus current objects, with no allocated-file
-saving under Zstd on this fixture. Logical BSON fell from 870,682 to 729,598
-bytes, saving exactly 12 bytes per run. It does not reduce live editing-tree memory.
-
-## Measurements
-
-Same 259,778-edit trace: 11,757 runs and 5,382 eight-character IDs. KB is decimal.
-Both Mongo storage and total retained JS memory include all IDs/dictionaries.
-
-| Mongo representation        | Retained JS representation    | Mongo Snappy KB | Mongo Zstd KB | Retained JS KB |
-| --------------------------- | ----------------------------- | --------------: | ------------: | -------------: |
-| Current objects             | Objects                       |           196.8 |         110.9 |          759.0 |
-| **Signed-count objects**    | **Objects without isDeleted** |       **180.4** |     **110.9** |      **664.9** |
-| Four-tuples †               | Ordinary arrays               |           186.2 |         107.6 |        1,041.2 |
-| Columnar / BSON arrays †    | Ordinary arrays               |           268.9 |         147.6 |          332.0 |
-| Columnar / BSON arrays †    | Adaptive typed columns        |           268.9 |         147.6 |          120.8 |
-| Columnar / Binary arrays    | Adaptive typed columns        |           151.8 |          98.6 |          120.8 |
-| Flat triples / BSON array † | Ordinary array                |           277.2 |         172.2 |          331.9 |
-| Flat triples / BSON array † | Typed flat array              |           277.2 |         172.2 |          120.4 |
-| Flat triples / Binary †     | Typed flat array              |           156.2 |          98.5 |          120.4 |
-| Packed eight-byte numbers † | Float64 array + accessor      |           147.6 |          90.3 |          143.9 |
-| Packed five-byte records †  | Bytes + accessor              |           131.2 |          96.3 |          108.6 |
-| Bit-packed columns          | Three byte arrays + accessors |           123.2 |          94.4 |          103.2 |
-
-The flat and per-run packed rows are comparison experiments, not additional
-public implementations in this PR. Bit-packed column JS memory is from the new
-repository implementation; its earlier standalone prototype measured 103.1 KB.
-Other comparison figures come from the earlier experiment or the rerun of the
-repository benchmark, with the same trace and memory method.
-
-Current objects, signed-count objects, Binary columns, and bit-packed columns
-were remeasured together on September 18, 2026 using local MongoDB 8.3.3.
-These fresh rows use the actual version-2 bit-packed implementation.
-Rows marked † retain the earlier Mongo experiment's numbers; they were not
-remeasured for this addition. Small differences from the prior table reflect
-allocation/checkpoint granularity, not a different workload.
-
-The fresh run used 12 collections: four layouts times three compressors
-(none, Snappy, Zstd), 100 documents per collection, each with a distinct ID
-dictionary and the same numeric trace. Every collection was compacted with
-`freeSpaceTargetMB: 1`; all returned `ok: 1, bytesFreed: 0`. After a locked
-flush, collection `storageSize` matched the actual allocated `.wt` files.
-Freshly inserted data had no deletion fragmentation; compaction does not imply
-an absolute minimum file size or change the compressor. Integer document IDs
-are included; indexes, journals, replication and shared overhead are excluded.
-These are not Atlas measurements or production-wide savings estimates.
-The isolated local Mongo server was stopped after measurement.
-
-The comparison JS rerun measured 758,984 bytes for current objects, 664,928
-for signed-count objects, 120,783 for typed columns, and 103,200 for bit-packed
-columns. The independent signed-count PR also measures 664.9 KB and confirms
-the loaded editing tree is unchanged. Node/V8 proxy, not a browser measurement.
-
-Fresh evidence:
-[Mongo raw results](benchmarks/results/signed-counts-mongo.json),
-[cross-proposal JS/BSON rerun](benchmarks/results/cross-proposal-js.md), and
-[standalone signed-count implementation run](benchmarks/results/signed-counts-memory.md).
-The new `benchmarks/mongo-signed-counts.mongosh` reproduces the four-format
-comparison from this branch against an isolated local Mongo server.
-The signed-count PR has its own standalone script and benchmark.
-
-The original implementation run used Node 22.22.2 / V8 12.4.254.21-node.39,
-macOS arm64. The eight-character-ID case measured **154,159 logical BSON bytes**
-and **103,158 retained JS bytes** (50,250 heap + 52,908 numeric buffers; total
-sample range 103,128–103,817). The existing Binary columns measured 120,783 JS
-bytes in the same run. Full trace BSON and editing-tree round trips passed for
-all three ID styles. The repository benchmark reproduces these checks:
-
-```sh
-npm run benchmarks:storage
-```
-
-JS uses Node/V8 as a browser proxy: fresh child process per representation,
-median of five samples holding twenty snapshots after GC, counting
-`heapUsed + arrayBuffers`. Source fixtures are excluded; dictionary arrays are
-owned, but parsed short strings can be shared across copies. This is retained
-memory, not peak allocation or an actual browser heap measurement.
-
-The [raw Mongo and prototype memory measurements](./benchmarks/results/packed-options-experiment.json)
-include all post-compaction file sizes and per-sample JS memory values. The
-[implementation benchmark output](./benchmarks/results/bit-packed-implementation.md)
-records the new version-2 implementation, not the earlier standalone prototype.
+The earlier mixed-format tables have been superseded by
+[the four-field-only comparison](format_comparison.md).
+That report contains examples for objects, tuples, ordinary/typed/Binary columns,
+flat runs and packed encodings, with fresh Mongo and JS measurements.
+This file documents the earlier public bit-packed API; that API uses signed counts
+and is not the separate-deletion-column codec in the current four-field table.
 
 ## Implementation and tests
 

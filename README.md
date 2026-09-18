@@ -11,9 +11,8 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 - **Collaboration-ready**: Designed to handle operations from multiple sources.
 - **Persistent (immutable) data structure**: Mutating methods return a new list while sharing memory where possible.
 
-For the optional fixed-range bit-packed column prototype, see the
-[worked example, Mongo mapping, limits and benchmarks](./bit_packed_snapshots.md).
-Existing snapshot formats and editing APIs remain unchanged.
+Draft exploration: [four-field runs as objects, tuples, columns and packed bytes](./format_comparison.md).
+That report contains this PR's current examples and Mongo/JS comparison table.
 
 ## Installation
 
@@ -179,7 +178,7 @@ safe-integer counter range exactly; negative counts mean deleted. Each ID remain
 the live editing tree. No MongoDB runtime dependency is added to this library.
 
 See [the worked example and MongoDB mapping](./binary_snapshots.md) and
-[reproducible BSON/JS memory benchmarks](./benchmark_storage_results.md).
+[current four-field representation benchmarks](./format_comparison.md).
 
 ## Use Cases
 

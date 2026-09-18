@@ -1,0 +1,133 @@
+// Only use with an isolated localhost benchmark server. See format_comparison.md.
+(async () => {
+  const assert = require("node:assert/strict");
+  const fs = require("node:fs");
+  const path = require("node:path");
+  const root = process.cwd();
+  require(path.join(root, "node_modules/ts-node")).register({
+    project: path.join(root, "tsconfig.dev.json"),
+    transpileOnly: true,
+  });
+  const codec = require(path.join(root, "benchmarks/format_matrix.ts"));
+  const fixtures = require(path.join(root, "benchmarks/format_fixture.ts"));
+  const { family } = require(path.join(root, "benchmarks/format_family.ts"));
+  const admin = db.getSiblingDB("admin");
+  const config = await admin.runCommand({ getCmdLineOpts: 1 });
+  const expectedPath = process.env.ARTICULATED_BENCH_DBPATH;
+  assert(expectedPath && path.isAbsolute(expectedPath));
+  assert.equal(config.parsed.storage.dbPath, expectedPath);
+  assert.equal(config.parsed.net.port, 27184);
+  assert.equal(config.parsed.net.bindIp, "127.0.0.1");
+  const bench = db.getSiblingDB(
+    "articulated_matrix_" + family.replaceAll("-", "_")
+  );
+  const existing = await bench.getCollectionNames();
+  const allowed = ["none", "snappy", "zstd"].flatMap((compressor) =>
+    codec.diskVariants.map(
+      (variant) => compressor + "_" + variant.replaceAll("-", "_")
+    )
+  );
+  assert(
+    existing.every((name) => allowed.includes(name)),
+    "Unexpected existing collections"
+  );
+  const saved = fixtures.fixture();
+  const documents = 100;
+  const entries = [];
+  for (const compressor of ["none", "snappy", "zstd"]) {
+    for (const variant of codec.diskVariants) {
+      const name = compressor + "_" + variant.replaceAll("-", "_");
+      if (!existing.includes(name))
+        await bench.createCollection(name, {
+          storageEngine: {
+            wiredTiger: { configString: "block_compressor=" + compressor },
+          },
+        });
+      const collection = bench.getCollection(name);
+      const already = await collection.countDocuments({});
+      assert(already === 0 || already === documents, "Refuse partial fixture");
+      for (let offset = already; offset < documents; offset += 5) {
+        const docs = [];
+        for (let i = offset; i < offset + 5; i++) {
+          const runs = fixtures.forDocument(saved, i);
+          const encoded = codec.encode(runs, family, variant);
+          assert.equal(
+            JSON.stringify(codec.decode(encoded, family, variant)),
+            JSON.stringify(runs)
+          );
+          docs.push({ _id: i, state: codec.mongo(encoded) });
+        }
+        await collection.insertMany(docs);
+      }
+      assert.equal(await collection.countDocuments({}), documents);
+      for (const i of [0, 99]) {
+        const doc = await collection.findOne({ _id: i });
+        const state = doc.state;
+        if (!Array.isArray(state)) {
+          for (const key of Object.keys(state)) {
+            if (state[key] && state[key]._bsontype === "Binary")
+              state[key] = require("node:buffer").Buffer.from(
+                state[key].value()
+              );
+          }
+        }
+        assert.equal(
+          JSON.stringify(codec.decode(state, family, variant)),
+          JSON.stringify(fixtures.forDocument(saved, i))
+        );
+      }
+      const compact = await bench.runCommand({
+        compact: name,
+        freeSpaceTargetMB: 1,
+      });
+      assert.equal(compact.ok, 1);
+      entries.push({ name, variant, compressor, compact });
+      print("MEASURED " + family + " " + name);
+    }
+  }
+  await admin.runCommand({ fsync: 1, lock: true });
+  try {
+    const rows = [];
+    for (const entry of entries) {
+      const stats = (
+        await bench
+          .getCollection(entry.name)
+          .aggregate([{ $collStats: { storageStats: { scale: 1 } } }])
+          .toArray()
+      )[0].storageStats;
+      assert(
+        stats.wiredTiger.creationString.includes(
+          "block_compressor=" + entry.compressor
+        )
+      );
+      const table = stats.wiredTiger.uri.split(":").pop();
+      assert(/^collection[-a-zA-Z0-9_]+$/.test(table));
+      const fileBytes = fs.statSync(
+        path.join(expectedPath, table + ".wt")
+      ).size;
+      assert.equal(fileBytes, Number(stats.storageSize));
+      rows.push({
+        ...entry,
+        count: Number(stats.count),
+        logicalBytes: Number(stats.size),
+        storageBytes: Number(stats.storageSize),
+        fileBytes,
+        freeBytes: Number(stats.freeStorageSize || 0),
+        indexBytes: Number(stats.totalIndexSize),
+      });
+    }
+    print(
+      "SUMMARY " +
+        JSON.stringify({
+          family,
+          mongoVersion: await bench.version(),
+          documents,
+          runs: saved.length,
+          bunches: new Set(saved.map((r) => r.bunchId)).size,
+          rows,
+        })
+    );
+  } finally {
+    await admin.runCommand({ fsyncUnlock: 1 });
+  }
+})();
