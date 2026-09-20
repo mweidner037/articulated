@@ -1024,7 +1024,7 @@ export class IdList {
   // Save and load
 
   /**
-   * Returns a compact JSON representation of this list's internal state.
+   * Returns a JSON representation of this list's internal state.
    * Load with {@link load}.
    *
    * See {@link SavedIdList} for a description of the save format.
