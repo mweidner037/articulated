@@ -34,7 +34,7 @@ describe("IdList B+Tree Implementation", () => {
         if (node.children.length > 0 && "children" in node.children[0]) {
           // Check all children and get their heights
           const childStats = (node as InnerNodeInner).children.map((child) =>
-            checkNodeProperties(child)
+            checkNodeProperties(child),
           );
 
           // All children should have the same height (balanced tree property)
@@ -42,7 +42,7 @@ describe("IdList B+Tree Implementation", () => {
           const firstHeight = heights[0];
           expect(
             heights.every((h) => h === firstHeight),
-            "Children heights should be equal"
+            "Children heights should be equal",
           ).to.be.true;
 
           // Return this node's height and max children count
@@ -50,7 +50,7 @@ describe("IdList B+Tree Implementation", () => {
             height: 1 + firstHeight,
             maxChildren: Math.max(
               node.children.length,
-              ...childStats.map((s) => s.maxChildren)
+              ...childStats.map((s) => s.maxChildren),
             ),
           };
         } else {
@@ -194,7 +194,7 @@ describe("IdList B+Tree Implementation", () => {
 
         if (i % 2 === 0 && i < 14) {
           expect(list.indexOf(createId("insert", i / 2))).to.equal(
-            i + Math.floor(i / 2) + 1
+            i + Math.floor(i / 2) + 1,
           );
         }
       }
@@ -211,7 +211,7 @@ describe("IdList B+Tree Implementation", () => {
       for (let i = 0; i < 20; i++) {
         list = list.insertAfter(
           i === 0 ? null : createId(`id${i - 1}`, 0),
-          createId(`id${i}`, 0)
+          createId(`id${i}`, 0),
         );
       }
 
@@ -347,7 +347,7 @@ describe("IdList B+Tree Implementation", () => {
         // If this is an inner node with inner children
         if (node instanceof InnerNodeInner && node.children.length > 0) {
           const childStats = node.children.map((child) =>
-            checkNodeProperties(child)
+            checkNodeProperties(child),
           );
 
           // All children should have the same height (balanced tree property)
@@ -356,7 +356,7 @@ describe("IdList B+Tree Implementation", () => {
             const firstHeight = heights[0];
             expect(
               heights.every((h) => h === firstHeight),
-              "Children heights should be equal"
+              "Children heights should be equal",
             ).to.be.true;
           }
 
@@ -365,7 +365,7 @@ describe("IdList B+Tree Implementation", () => {
             height: 1 + (childStats.length > 0 ? childStats[0].height : 0),
             maxChildren: Math.max(
               node.children.length,
-              ...childStats.map((s) => s.maxChildren)
+              ...childStats.map((s) => s.maxChildren),
             ),
           };
         } else {
@@ -454,8 +454,8 @@ describe("IdList B+Tree Implementation", () => {
             ans.push(
               ...expandIds(
                 { bunchId: child.bunchId, counter: child.startCounter },
-                child.count
-              )
+                child.count,
+              ),
             );
           }
         }
@@ -479,7 +479,7 @@ describe("IdList B+Tree Implementation", () => {
       for (const id of list1.knownIds) {
         expect(list2.isKnown(id)).to.equal(
           !toUninsertSet.has(JSON.stringify(id)),
-          JSON.stringify(id)
+          JSON.stringify(id),
         );
       }
 
@@ -660,10 +660,10 @@ describe("IdList B+Tree Implementation", () => {
       // Check some elements at various indices
       expect(list.at(0)).to.deep.equal(createId("bulk", 0));
       expect(list.at(largeCount - 1)).to.deep.equal(
-        createId("bulk", largeCount - 1)
+        createId("bulk", largeCount - 1),
       );
       expect(list.at(largeCount / 2)).to.deep.equal(
-        createId("bulk", largeCount / 2)
+        createId("bulk", largeCount / 2),
       );
 
       // Check that the operation was efficient by examining the save format
@@ -679,7 +679,7 @@ describe("IdList B+Tree Implementation", () => {
       for (let i = 0; i < largeCount; i++) {
         list = list.insertAfter(
           i === 0 ? null : createId("bulk", i - 1),
-          createId("bulk", i)
+          createId("bulk", i),
         );
       }
 
@@ -689,10 +689,10 @@ describe("IdList B+Tree Implementation", () => {
       // Check some elements at various indices
       expect(list.at(0)).to.deep.equal(createId("bulk", 0));
       expect(list.at(largeCount - 1)).to.deep.equal(
-        createId("bulk", largeCount - 1)
+        createId("bulk", largeCount - 1),
       );
       expect(list.at(largeCount / 2)).to.deep.equal(
-        createId("bulk", largeCount / 2)
+        createId("bulk", largeCount / 2),
       );
 
       // Check that the operation was efficient by examining the save format

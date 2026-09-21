@@ -22,7 +22,7 @@ describe("IdList Fuzzer Tests", () => {
   const createSequentialIds = (
     count: number,
     bunchId = "sequential",
-    startCounter = 0
+    startCounter = 0,
   ): ElementId[] => {
     const ids: ElementId[] = [];
     for (let i = 0; i < count; i++) {
@@ -117,7 +117,7 @@ describe("IdList Fuzzer Tests", () => {
                   counter: id.counter + j,
                 };
                 const jIndex = knownIds.findIndex((otherId) =>
-                  equalsId(otherId, jId)
+                  equalsId(otherId, jId),
                 );
                 if (jIndex !== -1) knownIds.splice(jIndex, 1);
               }
@@ -230,7 +230,7 @@ describe("IdList Fuzzer Tests", () => {
                       counter: id.counter + j,
                     };
                     const jIndex = knownIds.findIndex((otherId) =>
-                      equalsId(otherId, jId)
+                      equalsId(otherId, jId),
                     );
                     if (jIndex !== -1) knownIds.splice(jIndex, 1);
                   }
@@ -475,7 +475,7 @@ describe("IdList Fuzzer Tests", () => {
       fuzzer.insertAfter(
         { bunchId: "sequence", counter: 4 },
         { bunchId: "sequence", counter: 10 },
-        5
+        5,
       );
       fuzzer.checkAll();
 
@@ -483,7 +483,7 @@ describe("IdList Fuzzer Tests", () => {
       fuzzer.insertAfter(
         { bunchId: "sequence", counter: 4 },
         { bunchId: "sequence", counter: 5 },
-        2
+        2,
       );
       fuzzer.checkAll();
 
@@ -500,7 +500,7 @@ describe("IdList Fuzzer Tests", () => {
       fuzzer.insertAfter(
         { bunchId: "sequence", counter: 3 },
         { bunchId: "sequence", counter: 20 },
-        3
+        3,
       );
       fuzzer.checkAll();
     });
@@ -688,7 +688,7 @@ describe("IdList Fuzzer Tests", () => {
                     counter: id.counter + j,
                   };
                   const jIndex = ids.findIndex((otherId) =>
-                    equalsId(otherId, jId)
+                    equalsId(otherId, jId),
                   );
                   if (jIndex !== -1) ids.splice(jIndex, 1);
                 }

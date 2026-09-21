@@ -22,7 +22,7 @@ export class RBNode<K, V> {
     /** The left subtree of the node. */
     public left: RBNode<K, V> | null,
     /** The right subtree of the node. */
-    public right: RBNode<K, V> | null
+    public right: RBNode<K, V> | null,
   ) {}
 }
 
@@ -38,7 +38,7 @@ function repaint<K, V>(color: Color, node: RBNode<K, V>): RBNode<K, V> {
 export class RedBlackTree<K, V> {
   constructor(
     readonly compare: (key1: K, key2: K) => number,
-    private readonly root: RBNode<K, V> | null
+    private readonly root: RBNode<K, V> | null,
   ) {}
 
   /**
@@ -90,7 +90,7 @@ export class RedBlackTree<K, V> {
         key,
         value,
         lastN.left,
-        lastN.right
+        lastN.right,
       );
     } else {
       n_stack.push(new RBNode(RED, key, value, null, null));
@@ -106,7 +106,7 @@ export class RedBlackTree<K, V> {
           n.key,
           n.value,
           n_stack[s + 1],
-          n.right
+          n.right,
         );
       } else {
         n_stack[s] = new RBNode(
@@ -114,7 +114,7 @@ export class RedBlackTree<K, V> {
           n.key,
           n.value,
           n.left,
-          n_stack[s + 1]
+          n_stack[s + 1],
         );
       }
     }
@@ -531,7 +531,7 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
 //Visit all nodes in order
 function doVisitFull<K>(
   callbackFn: (key: K) => void,
-  node: RBNode<K, unknown>
+  node: RBNode<K, unknown>,
 ): void {
   if (node.left) {
     doVisitFull(callbackFn, node.left);
@@ -547,7 +547,7 @@ export class RedBlackTreeIterator<K, V> {
   constructor(
     /** The tree associated with the iterator. */
     readonly tree: RedBlackTree<K, V>,
-    private readonly stack: RBNode<K, V>[]
+    private readonly stack: RBNode<K, V>[],
   ) {}
 
   /**
@@ -568,7 +568,7 @@ export class RedBlackTreeIterator<K, V> {
       n.key,
       n.value,
       n.left,
-      n.right
+      n.right,
     );
     let i: number;
     for (i = stack.length - 2; i >= 0; --i) {

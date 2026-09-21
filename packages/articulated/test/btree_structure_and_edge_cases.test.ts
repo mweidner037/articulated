@@ -118,7 +118,7 @@ describe("IdList Internal Structure", () => {
       for (let i = 0; i < 5; i++) {
         list = list.insertAfter(
           createId("bunch", i * 2),
-          createId(`split${i}`, 0)
+          createId(`split${i}`, 0),
         );
       }
 
@@ -212,13 +212,13 @@ describe("IdList Internal Structure", () => {
           // Start a new sequence
           list = list.insertAfter(
             i === 0 ? null : createId(`seq${Math.floor((i - 1) / 10)}`, 9),
-            createId(`seq${Math.floor(i / 10)}`, 0)
+            createId(`seq${Math.floor(i / 10)}`, 0),
           );
         } else {
           // Continue the sequence
           list = list.insertAfter(
             createId(`seq${Math.floor(i / 10)}`, (i % 10) - 1),
-            createId(`seq${Math.floor(i / 10)}`, i % 10)
+            createId(`seq${Math.floor(i / 10)}`, i % 10),
           );
         }
       }

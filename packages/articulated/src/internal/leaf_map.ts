@@ -23,7 +23,7 @@ export class LeafMap {
    */
   getLeaf(
     bunchId: string,
-    counter: number
+    counter: number,
   ): [leaf: LeafNode | undefined, seq: number] {
     const iter = this.tree.le({ bunchId, startCounter: counter } as LeafNode);
     return [iter.key, iter.value ?? -1];

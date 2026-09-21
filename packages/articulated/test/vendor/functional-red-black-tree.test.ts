@@ -54,11 +54,11 @@ function checkTree<K, V>(tree: RedBlackTree<K, V>): void {
     if (node.color === RED) {
       expect(
         !node.left || node.left.color === BLACK,
-        "children of red node must be black"
+        "children of red node must be black",
       ).to.equal(true);
       expect(
         !node.right || node.right.color === BLACK,
-        "children of red node must be black"
+        "children of red node must be black",
       ).to.equal(true);
     } else {
       expect(node.color, "node color must be red or black").to.equal(BLACK);
@@ -66,20 +66,20 @@ function checkTree<K, V>(tree: RedBlackTree<K, V>): void {
     if (node.left) {
       expect(
         tree.compare(node.left.key, node.key) <= 0,
-        "left tree order invariant"
+        "left tree order invariant",
       ).to.equal(true);
     }
     if (node.right) {
       expect(
         tree.compare(node.right.key, node.key) >= 0,
-        "right tree order invariant"
+        "right tree order invariant",
       ).to.equal(true);
     }
     const cl = checkNode(node.left);
     const cr = checkNode(node.right);
     expect(
       cl,
-      "number of black nodes along all paths to root must be constant"
+      "number of black nodes along all paths to root must be constant",
     ).to.equal(cr);
     return cl + node.color;
   }
@@ -185,14 +185,14 @@ describe("functional-red-black-tree (vendored)", () => {
     const originalValues = [42, 10, false, "!!!", {}, null];
 
     let u = RedBlackTree.new<string, unknown>((a, b) =>
-      a < b ? -1 : a > b ? 1 : 0
+      a < b ? -1 : a > b ? 1 : 0,
     );
     for (let i = 0; i < originalKeys.length; ++i) {
       u = u.set(originalKeys[i], originalValues[i]);
     }
 
     const zipped = range(originalKeys.length).map(
-      (i) => [originalKeys[i], originalValues[i]] as [string, unknown]
+      (i) => [originalKeys[i], originalValues[i]] as [string, unknown],
     );
     zipped.sort((a, b) => (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));
 

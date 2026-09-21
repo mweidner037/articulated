@@ -9,13 +9,13 @@ import { RedBlackTree } from "../vendor/functional-red-black-tree";
 export class SeqMap {
   constructor(
     private readonly tree: RedBlackTree<number, number>,
-    private readonly nextSeq: number
+    private readonly nextSeq: number,
   ) {}
 
   static new(): SeqMap {
     return new this(
       RedBlackTree.new((a, b) => a - b),
-      1
+      1,
     );
   }
 

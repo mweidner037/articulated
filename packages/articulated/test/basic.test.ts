@@ -180,16 +180,16 @@ describe("IdList", () => {
       const list = IdList.new().insertAfter(null, startId, 10);
 
       expect(
-        list.insertAfter(null, { bunchId: "def", counter: 1 }, 0)
+        list.insertAfter(null, { bunchId: "def", counter: 1 }, 0),
       ).to.equal(list);
       expect(
-        list.insertAfter(startId, { bunchId: "def", counter: 1 }, 0)
+        list.insertAfter(startId, { bunchId: "def", counter: 1 }, 0),
       ).to.equal(list);
       expect(
-        list.insertBefore(null, { bunchId: "def", counter: 1 }, 0)
+        list.insertBefore(null, { bunchId: "def", counter: 1 }, 0),
       ).to.equal(list);
       expect(
-        list.insertBefore(startId, { bunchId: "def", counter: 1 }, 0)
+        list.insertBefore(startId, { bunchId: "def", counter: 1 }, 0),
       ).to.equal(list);
     });
 
@@ -407,11 +407,11 @@ describe("IdList", () => {
       list = list.insertAfter(null, { bunchId: "abc", counter: 1 });
       list = list.insertAfter(
         { bunchId: "abc", counter: 1 },
-        { bunchId: "def", counter: 1 }
+        { bunchId: "def", counter: 1 },
       );
       list = list.insertAfter(
         { bunchId: "def", counter: 1 },
-        { bunchId: "def", counter: 2 }
+        { bunchId: "def", counter: 2 },
       );
 
       expect(list.length).to.equal(3);
@@ -500,7 +500,7 @@ describe("IdList", () => {
       list = list.insertAfter(
         { bunchId: "test", counter: 9 },
         { bunchId: "test", counter: 100 },
-        10
+        10,
       );
       // Leaf 1: counters 0..9
       // Leaf 2: counters 100..109
@@ -518,7 +518,7 @@ describe("IdList", () => {
       list = list.insertAfter(
         { bunchId: "abc", counter: 5 },
         { bunchId: "def", counter: 0 },
-        10
+        10,
       );
       expect(list.length).to.equal(20);
 
@@ -544,7 +544,7 @@ describe("IdList", () => {
       list = list.insertAfter(
         { bunchId: "abc", counter: 5 },
         { bunchId: "def", counter: 0 },
-        10
+        10,
       );
       expect(list.length).to.equal(20);
 
@@ -672,7 +672,7 @@ describe("IdList", () => {
       list = list.insertAfter(
         { bunchId: "test", counter: 9 },
         { bunchId: "test", counter: 100 },
-        1
+        1,
       );
       // Leaf A: counter 0..9
       // Leaf B: counter 100
@@ -853,10 +853,10 @@ describe("IdList", () => {
       const unknownId: ElementId = { bunchId: "xyz", counter: 99 };
       expect(() => list.cursorIndex(unknownId)).to.throw("id is not known");
       expect(() => list.cursorIndex(unknownId, "left")).to.throw(
-        "id is not known"
+        "id is not known",
       );
       expect(() => list.cursorIndex(unknownId, "right")).to.throw(
-        "id is not known"
+        "id is not known",
       );
 
       // cursorIndex should NOT throw for null (valid cursor)
@@ -964,7 +964,7 @@ describe("IdList", () => {
       // Insert another element
       list = list.insertAfter(
         { bunchId: "abc", counter: 5 },
-        { bunchId: "def", counter: 1 }
+        { bunchId: "def", counter: 1 },
       );
 
       // Save the state

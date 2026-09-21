@@ -32,16 +32,16 @@ describe("ElementIdGenerator", () => {
       const uniqueIds = new Set(ids.map((id) => `${id.bunchId}-${id.counter}`));
       expect(uniqueIds.size).to.equal(
         numIds,
-        "All generated IDs should be unique"
+        "All generated IDs should be unique",
       );
     });
 
     it("should generate unique ElementIds across multiple generators", () => {
       const generator1 = new ElementIdGenerator(
-        () => `gen1-${Date.now()}-${Math.random()}`
+        () => `gen1-${Date.now()}-${Math.random()}`,
       );
       const generator2 = new ElementIdGenerator(
-        () => `gen2-${Date.now()}-${Math.random()}`
+        () => `gen2-${Date.now()}-${Math.random()}`,
       );
 
       const ids1: ElementId[] = [];
@@ -63,11 +63,11 @@ describe("ElementIdGenerator", () => {
       // Combine all IDs and check uniqueness
       const allIds = [...ids1, ...ids2];
       const uniqueIds = new Set(
-        allIds.map((id) => `${id.bunchId}-${id.counter}`)
+        allIds.map((id) => `${id.bunchId}-${id.counter}`),
       );
       expect(uniqueIds.size).to.equal(
         allIds.length,
-        "IDs from different generators should be unique"
+        "IDs from different generators should be unique",
       );
     });
   });
@@ -195,13 +195,13 @@ describe("ElementIdGenerator", () => {
 
     it("should throw error for invalid count values", () => {
       expect(() => generator.generateAfter(null, 0)).to.throw(
-        "Invalid count: 0"
+        "Invalid count: 0",
       );
       expect(() => generator.generateAfter(null, -1)).to.throw(
-        "Invalid count: -1"
+        "Invalid count: -1",
       );
       expect(() => generator.generateAfter(null, 1.5)).to.throw(
-        "Invalid count: 1.5"
+        "Invalid count: 1.5",
       );
     });
 

@@ -15,7 +15,7 @@ export class IdListSimple {
    */
   private constructor(
     private readonly state: ListElement[],
-    private _length: number
+    private _length: number,
   ) {}
 
   /**
@@ -227,7 +227,7 @@ export class IdListSimple {
       (elt) =>
         elt.id.bunchId === id.bunchId &&
         id.counter <= elt.id.counter &&
-        elt.id.counter < id.counter + count
+        elt.id.counter < id.counter + count,
     );
   }
 
@@ -438,7 +438,7 @@ export class KnownIdView {
    */
   constructor(
     readonly list: IdListSimple,
-    private readonly state: ListElement[]
+    private readonly state: ListElement[],
   ) {}
 
   // Mutators are omitted - mutate this.list instead.
@@ -498,7 +498,7 @@ export class KnownIdView {
 function expandElements(
   startId: ElementId,
   isDeleted: boolean,
-  count: number
+  count: number,
 ): ListElement[] {
   if (!(Number.isSafeInteger(count) && count >= 0)) {
     throw new Error(`Invalid count: ${count}`);

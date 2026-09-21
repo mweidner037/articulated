@@ -76,7 +76,7 @@ export class InnerNodeInner {
      * Pass null to skip when you are doing it yourself. Regardless, you need to
      * delete any outdated entries yourself.
      */
-    parentSeqsMut: MutableSeqMap | null
+    parentSeqsMut: MutableSeqMap | null,
   ) {
     let size = 0;
     let knownSize = 0;
@@ -112,7 +112,7 @@ export class InnerNodeLeaf {
      *
      * Pass null to skip when you are doing it yourself.
      */
-    leafMapMut: MutableLeafMap | null
+    leafMapMut: MutableLeafMap | null,
   ) {
     let size = 0;
     let knownSize = 0;
@@ -136,7 +136,7 @@ export type InnerNode = InnerNodeInner | InnerNodeLeaf;
 type Located = [
   { node: LeafNode; indexInParent: number },
   // Index 1 will be an InnerNodeLeaf if it exists.
-  ...{ node: InnerNode; indexInParent: number }[]
+  ...{ node: InnerNode; indexInParent: number }[],
 ];
 
 /**
@@ -195,7 +195,7 @@ export class IdList {
      * Besides parentSeqs, we also use this to lookup leaves by ElementId.
      */
     private readonly leafMap: LeafMap,
-    parentSeqs: SeqMap
+    parentSeqs: SeqMap,
   ) {
     this.parentSeqs = parentSeqs.set(root.seq, 0);
   }
@@ -212,7 +212,7 @@ export class IdList {
     return new this(
       new InnerNodeLeaf(getAndBumpNextSeq(parentSeqsMut), [], leafMapMut),
       leafMapMut.value,
-      parentSeqsMut.value
+      parentSeqsMut.value,
     );
   }
 
@@ -220,7 +220,7 @@ export class IdList {
    * Constructs a list with the given known ids and their isDeleted status, in list order.
    */
   static from(
-    knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>
+    knownIds: Iterable<{ id: ElementId; isDeleted: boolean }>,
   ): IdList {
     // Convert knownIds to a saved state and load that.
     const savedState: SavedIdList = [];
@@ -261,7 +261,7 @@ export class IdList {
     return this.from(
       (function* () {
         for (const id of ids) yield { id, isDeleted: false };
-      })()
+      })(),
     );
   }
 
@@ -307,7 +307,7 @@ export class IdList {
         return new IdList(
           new InnerNodeLeaf(this.root.seq, [leaf], leafMapMut),
           leafMapMut.value,
-          this.parentSeqs
+          this.parentSeqs,
         );
       } else {
         // Insert before the first known id.
@@ -352,7 +352,7 @@ export class IdList {
       newPresent.set(newId.counter, count);
       const [leftPresent, rightPresent] = splitPresent(
         leaf.present,
-        before.counter + 1
+        before.counter + 1,
       );
       return this.replaceLeaf(
         located,
@@ -372,7 +372,7 @@ export class IdList {
           startCounter: before.counter + 1,
           count: leaf.count - (before.counter + 1 - leaf.startCounter),
           present: rightPresent,
-        }
+        },
       );
     }
   }
@@ -409,7 +409,7 @@ export class IdList {
       return this.insertAfter(
         this.root.knownSize === 0 ? null : lastId(this.root),
         newId,
-        count
+        count,
       );
     }
 
@@ -446,7 +446,7 @@ export class IdList {
             count,
             present,
           },
-          leaf
+          leaf,
         );
       }
     } else {
@@ -455,7 +455,7 @@ export class IdList {
       present.set(newId.counter, count);
       const [leftPresent, rightPresent] = splitPresent(
         leaf.present,
-        after.counter
+        after.counter,
       );
       return this.replaceLeaf(
         located,
@@ -475,7 +475,7 @@ export class IdList {
           startCounter: after.counter,
           count: leaf.count - (after.counter - leaf.startCounter),
           present: rightPresent,
-        }
+        },
       );
     }
   }
@@ -691,13 +691,11 @@ export class IdList {
     // Find the leaf containing id, if any.
     const [leaf, parentSeq] = this.leafMap.getLeaf(id.bunchId, id.counter);
     if (leaf === undefined) return null;
-    if (
-      !(
-        leaf.bunchId === id.bunchId &&
-        leaf.startCounter <= id.counter &&
-        id.counter < leaf.startCounter + leaf.count
-      )
-    ) {
+    if (!(
+      leaf.bunchId === id.bunchId &&
+      leaf.startCounter <= id.counter &&
+      id.counter < leaf.startCounter + leaf.count
+    )) {
       return null;
     }
 
@@ -717,7 +715,7 @@ export class IdList {
     for (let i = innerSeqs.length - 2; i >= 0; i--) {
       const children = (curParent as InnerNodeInner).children;
       const childIndex = children.findIndex(
-        (child) => child.seq === innerSeqs[i]
+        (child) => child.seq === innerSeqs[i],
       );
       if (childIndex === -1) throw new Error("Internal error");
       const child = children[childIndex];
@@ -758,7 +756,7 @@ export class IdList {
       leafMapMut,
       parentSeqsMut,
       newLeaves,
-      0
+      0,
     );
     return new IdList(newRoot, leafMapMut.value, parentSeqsMut.value);
   }
@@ -973,7 +971,7 @@ export class IdList {
    */
   cursorIndex(
     cursor: ElementId | null,
-    bind: "left" | "right" = "left"
+    bind: "left" | "right" = "left",
   ): number {
     if (bind === "left") {
       return cursor === null ? 0 : this.indexOf(cursor, "left") + 1;
@@ -1051,9 +1049,9 @@ export class IdList {
       if (!(Number.isSafeInteger(item.count) && item.count >= 0)) {
         throw new Error(`Invalid count: ${item.count}`);
       }
-      if (
-        !(Number.isSafeInteger(item.startCounter) && item.startCounter >= 0)
-      ) {
+      if (!(
+        Number.isSafeInteger(item.startCounter) && item.startCounter >= 0
+      )) {
         throw new Error(`Invalid startCounter: ${item.startCounter}`);
       }
 
@@ -1132,7 +1130,10 @@ export class KnownIdView {
   /**
    * Internal use only. Use {@link IdList.knownIds} instead.
    */
-  constructor(readonly list: IdList, private readonly root: InnerNode) {}
+  constructor(
+    readonly list: IdList,
+    private readonly root: InnerNode,
+  ) {}
 
   // Mutators are omitted - mutate this.list instead.
 
@@ -1293,7 +1294,7 @@ function replaceNode(
   leafMapMut: MutableLeafMap,
   parentSeqsMut: MutableSeqMap,
   newNodes: InnerNode[] | LeafNode[],
-  i: number
+  i: number,
 ): InnerNode {
   const parent =
     i === located.length - 1 ? root : (located[i + 1].node as InnerNode);
@@ -1314,14 +1315,14 @@ function replaceNode(
     ].map((children, j) =>
       i === 0
         ? new InnerNodeLeaf(seqs[j], children as LeafNode[], leafMapMut)
-        : new InnerNodeInner(seqs[j], children as InnerNode[], parentSeqsMut)
+        : new InnerNodeInner(seqs[j], children as InnerNode[], parentSeqsMut),
     );
     if (i === located.length - 1) {
       // newParents replace root. We need a new root to hold them.
       return new InnerNodeInner(
         getAndBumpNextSeq(parentSeqsMut),
         newParents,
-        parentSeqsMut
+        parentSeqsMut,
       );
     } else {
       return replaceNode(
@@ -1330,7 +1331,7 @@ function replaceNode(
         leafMapMut,
         parentSeqsMut,
         newParents,
-        i + 1
+        i + 1,
       );
     }
   } else if (newChildren.length === 0) {
@@ -1352,7 +1353,7 @@ function replaceNode(
       newParent = new InnerNodeLeaf(
         parent.seq,
         newChildren as LeafNode[],
-        null
+        null,
       );
       for (const newNode of newNodes as LeafNode[]) {
         leafMapMut.value = leafMapMut.value.set(newNode, parent.seq);
@@ -1361,13 +1362,13 @@ function replaceNode(
       newParent = new InnerNodeInner(
         parent.seq,
         newChildren as InnerNode[],
-        null
+        null,
       );
       for (const newNode of newNodes as InnerNode[]) {
         if (newNode.seq !== (located[i].node as InnerNode).seq) {
           parentSeqsMut.value = parentSeqsMut.value.set(
             newNode.seq,
-            parent.seq
+            parent.seq,
           );
         }
       }
@@ -1383,7 +1384,7 @@ function replaceNode(
         leafMapMut,
         parentSeqsMut,
         [newParent],
-        i + 1
+        i + 1,
       );
     }
   }
@@ -1394,7 +1395,7 @@ function replaceNode(
  */
 function splitPresent(
   present: SparseIndices,
-  splitCounter: number
+  splitCounter: number,
 ): [leftPresent: SparseIndices, rightPresent: SparseIndices] {
   const leftPresent = SparseIndices.new();
   const rightPresent = SparseIndices.new();
@@ -1410,7 +1411,7 @@ function splitPresent(
 
 function* iterateNode(
   node: InnerNode,
-  includeDeleted: boolean
+  includeDeleted: boolean,
 ): IterableIterator<ElementId> {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
@@ -1432,7 +1433,7 @@ function* iterateNode(
 }
 
 function* iterateNodeWithIsDeleted(
-  node: InnerNode
+  node: InnerNode,
 ): IterableIterator<{ id: ElementId; isDeleted: boolean }> {
   if (node instanceof InnerNodeInner) {
     for (const child of node.children) {
@@ -1553,14 +1554,14 @@ function buildTree(
   leafMapMut: MutableLeafMap,
   parentSeqsMut: MutableSeqMap,
   startIndex: number,
-  depthRemaining: number
+  depthRemaining: number,
 ): InnerNode {
   const parentSeq = getAndBumpNextSeq(parentSeqsMut);
   if (depthRemaining === 1) {
     return new InnerNodeLeaf(
       parentSeq,
       leaves.slice(startIndex, startIndex + M),
-      leafMapMut
+      leafMapMut,
     );
   } else {
     const children: InnerNode[] = [];
@@ -1574,8 +1575,8 @@ function buildTree(
           leafMapMut,
           parentSeqsMut,
           childStartIndex,
-          depthRemaining - 1
-        )
+          depthRemaining - 1,
+        ),
       );
     }
     return new InnerNodeInner(parentSeq, children, parentSeqsMut);

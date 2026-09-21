@@ -656,7 +656,7 @@ describe("IdList Serialization and Edge Cases", () => {
         } else {
           list = list.insertAfter(
             createId(`id${i - 1}`, 0),
-            createId(`id${i}`, 0)
+            createId(`id${i}`, 0),
           );
         }
       }
@@ -672,7 +672,7 @@ describe("IdList Serialization and Edge Cases", () => {
         const insertAfter = `id${lastIndex + 2}`;
         list = list.insertAfter(
           createId(insertAfter, 0),
-          createId(`new${i}`, 0)
+          createId(`new${i}`, 0),
         );
         lastIndex += 3;
       }
@@ -725,7 +725,7 @@ describe("IdList Serialization and Edge Cases", () => {
       list = list.insertAfter(
         createId("bunch", 99),
         createId("bunch", 100),
-        50
+        50,
       );
 
       // Save and check compression

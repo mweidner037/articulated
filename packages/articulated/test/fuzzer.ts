@@ -9,7 +9,10 @@ const DEBUG = false;
  * erroring if the resulting states differ.
  */
 export class Fuzzer {
-  private constructor(public list: IdList, readonly simple: IdListSimple) {}
+  private constructor(
+    public list: IdList,
+    readonly simple: IdListSimple,
+  ) {}
 
   private mutate(makeList: () => IdList, mutateSimple: () => void) {
     let listError: unknown = null;
@@ -64,10 +67,10 @@ export class Fuzzer {
     expect(this.list.knownIds.length).to.equal(this.simple.knownIds.length);
     for (let i = 0; i < this.simple.knownIds.length; i++) {
       expect(this.list.knownIds.at(i)).to.deep.equal(
-        this.simple.knownIds.at(i)
+        this.simple.knownIds.at(i),
       );
       expect(this.list.knownIds.indexOf(this.simple.knownIds.at(i))).to.equal(
-        i
+        i,
       );
     }
     expect([...this.list.knownIds.values()]).to.deep.equal([
@@ -78,7 +81,7 @@ export class Fuzzer {
     for (const id of this.simple.knownIds) allBunchIds.add(id.bunchId);
     for (const bunchId of allBunchIds) {
       expect(this.list.maxCounter(bunchId)).to.equal(
-        this.simple.maxCounter(bunchId)
+        this.simple.maxCounter(bunchId),
       );
     }
 
@@ -105,28 +108,28 @@ export class Fuzzer {
   insertAfter(
     before: ElementId | null,
     newId: ElementId,
-    count?: number
+    count?: number,
   ): void {
     if (DEBUG) {
       console.log("insertAfter", before, newId, count);
     }
     this.mutate(
       () => this.list.insertAfter(before, newId, count),
-      () => this.simple.insertAfter(before, newId, count)
+      () => this.simple.insertAfter(before, newId, count),
     );
   }
 
   insertBefore(
     after: ElementId | null,
     newId: ElementId,
-    count?: number
+    count?: number,
   ): void {
     if (DEBUG) {
       console.log("insertBefore", after, newId, count);
     }
     this.mutate(
       () => this.list.insertBefore(after, newId, count),
-      () => this.simple.insertBefore(after, newId, count)
+      () => this.simple.insertBefore(after, newId, count),
     );
   }
 
@@ -136,7 +139,7 @@ export class Fuzzer {
     }
     this.mutate(
       () => this.list.uninsert(id, count),
-      () => this.simple.uninsert(id, count)
+      () => this.simple.uninsert(id, count),
     );
   }
 
@@ -146,7 +149,7 @@ export class Fuzzer {
     }
     this.mutate(
       () => this.list.delete(id),
-      () => this.simple.delete(id)
+      () => this.simple.delete(id),
     );
   }
 
@@ -156,7 +159,7 @@ export class Fuzzer {
     }
     this.mutate(
       () => this.list.undelete(id),
-      () => this.simple.undelete(id)
+      () => this.simple.undelete(id),
     );
   }
 
@@ -166,7 +169,7 @@ export class Fuzzer {
     }
     this.mutate(
       () => IdList.load(savedState),
-      () => this.simple.load(savedState)
+      () => this.simple.load(savedState),
     );
   }
 }

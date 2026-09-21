@@ -556,7 +556,7 @@ describe("IdList B+Tree Specific Fuzz Tests", () => {
         fuzzer.insertAfter(
           createId("base", baseIndex),
           createId(`interleaved${i}`, 0),
-          (i % 3) + 1 // Insert 1, 2, or 3 elements
+          (i % 3) + 1, // Insert 1, 2, or 3 elements
         );
       }
       fuzzer.checkAll();
