@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "fflate": "^0.8.2",
+    "uuid": "^11.1.0"
+  }
+}

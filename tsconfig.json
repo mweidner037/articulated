@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "rootDir": "src",
+    "rootDir": "packages/articulated/src",
     "outDir": "build/esm",
     "target": "es2021",
     "module": "es2015",
@@ -17,5 +17,5 @@
     "sourceMap": true
     /* Don't turn on importHelpers, so we can avoid tslib dependency. */
   },
-  "include": ["src"]
+  "include": ["packages/articulated/src"]
 }
