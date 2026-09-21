@@ -32,9 +32,5 @@
     "coverage": "pnpm -r run coverage:run",
     "typedoc": "pnpm -r run typedoc:run",
     "clean": "pnpm -r run clean"
-  },
-  "engines": {
-    "node": ">=24",
-    "pnpm": ">=11"
   }
 }
