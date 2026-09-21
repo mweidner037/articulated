@@ -1,7 +1,15 @@
+// Common settings for local development.
+// Extended by tsconfig.json for VSCode & eslint, and in each package to
+// set relative dirs for lint:tsc and tests.
 {
-  "extends": "./tsconfig.commonjs.json",
+  "extends": "./tsconfig.base.json",
   "compilerOptions": {
-    "rootDir": "."
-  },
-  "include": ["src", "test", "benchmarks"]
+    "noEmit": true,
+    // Use paths to shadow inter-package imports that normally resolve via node_modules.
+    // That way, local dev always sees the latest version of the .ts code,
+    // instead of looking at built declarations (unlike `pnpm build`).
+    "paths": {
+      "articulated": ["./packages/articulated/src/index.ts"]
+    }
+  }
 }

@@ -7,3 +7,4 @@ docs
 *.tsbuildinfo
 .nyc_output
 coverage
+todo.md

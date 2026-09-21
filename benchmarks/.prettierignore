@@ -4,3 +4,5 @@
 /coverage/*
 LICENSE
 pnpm-lock.yaml
+real_text_trace_edits.json
+results.md

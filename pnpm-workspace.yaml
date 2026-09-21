@@ -1,0 +1,6 @@
+packages:
+  - benchmarks
+  - demos/*
+  - packages/*
+allowBuilds:
+  esbuild: true

@@ -1,0 +1,11 @@
+// Common settings for all package ESM builds.
+// Extended in each package to set relative dirs.
+{
+  "extends": "../tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": true,
+    "module": "es2022",
+    "moduleResolution": "bundler"
+  }
+}

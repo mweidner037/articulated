@@ -17,6 +17,8 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 npm install --save articulated
 # or
 yarn add articulated
+# or
+pnpm add articulated
 ```
 
 ## Quick Start
@@ -34,7 +36,7 @@ list = list.insertAfter(null, { bunchId: "user1", counter: 0 });
 // Insert another ElementId after the first.
 list = list.insertAfter(
   { bunchId: "user1", counter: 0 },
-  { bunchId: "user1", counter: 1 }
+  { bunchId: "user1", counter: 1 },
 );
 
 // Delete an ElementId (marks as deleted but keeps as known).
@@ -137,9 +139,9 @@ See `SavedIdList` for a description of the format. It compresses well with GZIP,
 
 ## Internals
 
-IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./src/id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
+IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./packages/articulated/src/id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
 
-To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees from [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
+To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees based on [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
 
 Asymptotic runtimes are given in terms of the number of leaves `L` and the maximum "fragmentation" of a leaf `F`, which is the number of times its ElementIds alternate between deleted vs present.
 
@@ -158,6 +160,6 @@ Asymptotic runtimes are given in terms of the number of leaves `L` and the maxim
 - load: `O(S * log(S))`
   - The bottleneck is constructing the bottom-up tree: specifically, the map from each leaf to its parent's sequence number (`leafMap`). That map is itself a sorted tree, hence takes `O(L * log(L))` time to construct, and `L <= S`.
 
-If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
+If you want to get a sense of what IdList is or how to implement your own version, consider reading the source code for [IdListSimple](./packages/articulated/test/id_list_simple.ts), which behaves identically to IdList. It is short (<300 SLOC) and direct, using an array and `Array.splice`. The downside is that IdListSimple does not compress ElementIds and all of its operations take `O(# ids)` time. We use it as a known-good implementation in our fuzz tests.
 
 <!-- TODO: related work: CRDTs, ropes, list-positions, ?? -->
