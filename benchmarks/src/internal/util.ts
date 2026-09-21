@@ -11,7 +11,7 @@ export function realTextTraceEdits(): {
   return JSON.parse(
     fs.readFileSync(path.join(__dirname, "real_text_trace_edits.json"), {
       encoding: "utf8",
-    })
+    }),
   ) as {
     finalText: string;
     edits: Array<[number, number, string | undefined]>;

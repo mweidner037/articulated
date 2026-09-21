@@ -3,5 +3,14 @@
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
     "uuid": "^11.1.0"
+  },
+  "scripts": {
+    "start": "tsx src/main.ts",
+    "lint": "pnpm run \"/^lint:.*/\"",
+    "lint:tsc": "tsc -p tsconfig.dev.json",
+    "lint:eslint": "eslint .",
+    "lint:prettier": "prettier . --check",
+    "format": "prettier . --write",
+    "clean": "rm -rf build docs coverage .nyc_output"
   }
 }

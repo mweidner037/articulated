@@ -1,9 +1,11 @@
 import { SparseIndices } from "sparse-array-rled";
-import { ElementId } from "./element_id";
-import { LeafMap, MutableLeafMap } from "./internal/leaf_map";
+import type { ElementId } from "./element_id";
+import type { MutableLeafMap } from "./internal/leaf_map";
+import { LeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
-import { MutableSeqMap, SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
-import { SavedIdList } from "./saved_id_list";
+import type { MutableSeqMap } from "./internal/seq_map";
+import { SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
+import type { SavedIdList } from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -856,7 +858,7 @@ export class IdList {
 
     let remaining = index;
     let curParent = this.root;
-    // eslint-disable-next-line no-constant-condition
+
     recurse: while (true) {
       if (curParent instanceof InnerNodeInner) {
         for (const child of curParent.children) {
@@ -1153,7 +1155,7 @@ export class KnownIdView {
 
     let remaining = index;
     let curParent = this.root;
-    // eslint-disable-next-line no-constant-condition
+
     recurse: while (true) {
       if (curParent instanceof InnerNodeInner) {
         for (const child of curParent.children) {
