@@ -315,7 +315,6 @@ export class RedBlackTree<K, V> {
    * @param key The key of the item to look up.
    * @returns The value of the first node associated with `key`.
    */
-  // eslint-disable-next-line @typescript-eslint/no-invalid-void-type
   get(key: K): V | void {
     const cmp = this.compare;
     let n = this.root;

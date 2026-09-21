@@ -1,6 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { expect } from "chai";
-import { ElementId, IdList, SavedIdList } from "../src";
-import {
+import type { ElementId, SavedIdList } from "../src";
+import { IdList } from "../src";
+import type {
   InnerNode,
   InnerNodeInner,
   InnerNodeLeaf,

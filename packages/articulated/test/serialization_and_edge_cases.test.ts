@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { expect } from "chai";
-import { ElementId, IdList, SavedIdList } from "../src";
-import { InnerNode, InnerNodeInner, LeafNode, M } from "../src/id_list";
+import type { ElementId, SavedIdList } from "../src";
+import { IdList } from "../src";
+import type { InnerNode, InnerNodeInner, LeafNode } from "../src/id_list";
+import { M } from "../src/id_list";
 
 describe("IdList Serialization and Edge Cases", () => {
   // Helper to create ElementIds

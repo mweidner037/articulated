@@ -1,4 +1,4 @@
-import { ElementId } from "./element_id";
+import type { ElementId } from "./element_id";
 
 /**
  * Utility class for generating unique ElementIds while utilizing our "bunch" optimizations.

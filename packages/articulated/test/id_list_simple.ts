@@ -1,4 +1,5 @@
-import { ElementId, equalsId, expandIds, SavedIdList } from "../src";
+import type { ElementId, SavedIdList } from "../src";
+import { equalsId, expandIds } from "../src";
 
 interface ListElement {
   readonly id: ElementId;

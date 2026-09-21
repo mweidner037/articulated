@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { assert, expect } from "chai";
-import { ElementId, IdList, equalsId, expandIds } from "../src";
+import type { ElementId } from "../src";
+import { IdList, equalsId, expandIds } from "../src";
 
 describe("ElementId utilities", () => {
   describe("equalsId", () => {

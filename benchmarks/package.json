@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@types/node": "^24.0.0",
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
     "uuid": "^11.1.0"

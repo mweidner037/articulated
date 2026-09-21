@@ -1,6 +1,10 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { expect } from "chai";
-import { ElementId, expandIds, IdList } from "../src";
-import { InnerNode, InnerNodeInner, InnerNodeLeaf, M } from "../src/id_list";
+import type { ElementId } from "../src";
+import { expandIds, IdList } from "../src";
+import type { InnerNode } from "../src/id_list";
+import { InnerNodeInner, InnerNodeLeaf, M } from "../src/id_list";
 
 describe("IdList B+Tree Implementation", () => {
   // Helper to create ElementIds

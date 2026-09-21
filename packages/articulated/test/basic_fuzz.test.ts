@@ -1,6 +1,7 @@
 import { AssertionError } from "chai";
 import seedrandom from "seedrandom";
-import { ElementId, equalsId } from "../src";
+import type { ElementId } from "../src";
+import { equalsId } from "../src";
 import { M } from "../src/id_list";
 import { Fuzzer } from "./fuzzer";
 

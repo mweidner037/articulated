@@ -1,5 +1,6 @@
 import { expect } from "chai";
-import { ElementId, ElementIdGenerator } from "../src";
+import type { ElementId } from "../src";
+import { ElementIdGenerator } from "../src";
 
 describe("ElementIdGenerator", () => {
   let generator: ElementIdGenerator;

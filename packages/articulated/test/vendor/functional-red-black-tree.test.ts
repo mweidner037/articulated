@@ -1,8 +1,6 @@
 import { expect } from "chai";
-import {
-  RBNode,
-  RedBlackTree,
-} from "../../src/vendor/functional-red-black-tree";
+import type { RBNode } from "../../src/vendor/functional-red-black-tree";
+import { RedBlackTree } from "../../src/vendor/functional-red-black-tree";
 
 // Tests adapted from the upstream functional-red-black-tree test suite:
 // https://github.com/mikolalysenko/functional-red-black-tree/blob/master/test/test.js

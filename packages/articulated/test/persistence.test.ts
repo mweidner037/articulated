@@ -1,5 +1,8 @@
+/* eslint-disable @typescript-eslint/no-unused-expressions */
+
 import { expect } from "chai";
-import { ElementId, IdList } from "../src";
+import type { ElementId } from "../src";
+import { IdList } from "../src";
 
 describe("IdList Persistence", () => {
   // Helper to create ElementIds
