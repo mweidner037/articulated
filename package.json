@@ -75,5 +75,9 @@
     "benchmarks": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc benchmarks/main.ts",
     "inspect": "TS_NODE_PROJECT='./tsconfig.dev.json' node -r ts-node/register --expose-gc --inspect benchmarks/main.ts",
     "clean": "rm -rf build docs coverage .nyc_output"
+  },
+  "engines": {
+    "node": ">=24",
+    "pnpm": ">=11"
   }
 }

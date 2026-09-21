@@ -17,6 +17,8 @@ A TypeScript library for managing stable element identifiers in mutable lists, i
 npm install --save articulated
 # or
 yarn add articulated
+# or
+pnpm add articulated
 ```
 
 ## Quick Start
@@ -139,7 +141,7 @@ See `SavedIdList` for a description of the format. It compresses well with GZIP,
 
 IdList stores its state as a modified [B+Tree](https://en.wikipedia.org/wiki/B%2B_tree), described at the top of [its source code](./src/id_list.ts). Each leaf in the B+Tree represents multiple ElementIds (sharing a bunchId and sequential counters) in a compressed way; for normal collaborative text editing, expect 10-20 ElementIds per leaf.
 
-To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees from [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
+To speed up searches, we also maintain a "bottom-up" tree that maps from each node to a sequence number identifying its parent. (Using sequence numbers instead of pointers is necessary for persistence.) The map is implemented using persistent balanced trees based on [functional-red-black-tree](https://www.npmjs.com/package/functional-red-black-tree).
 
 Asymptotic runtimes are given in terms of the number of leaves `L` and the maximum "fragmentation" of a leaf `F`, which is the number of times its ElementIds alternate between deleted vs present.
 
