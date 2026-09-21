@@ -29,7 +29,7 @@
     "format": "pnpm -r run format",
     "test": "pnpm -r run test",
     "coverage": "pnpm -r run coverage:run",
-    "docs": "pnpm -r run docs:run",
+    "typedoc": "pnpm -r run typedoc:run",
     "clean": "pnpm -r run clean"
   },
   "engines": {

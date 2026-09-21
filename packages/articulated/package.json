@@ -51,9 +51,9 @@
     "coverage": "pnpm run --sequential \"/^coverage:.*/\"",
     "coverage:run": "nyc pnpm run test",
     "coverage:open": "open coverage/index.html > /dev/null 2>&1 &",
-    "docs": "pnpm run --sequential \"/^docs:.*/\"",
-    "docs:run": "typedoc --options typedoc.json src/index.ts",
-    "docs:open": "open docs/index.html > /dev/null 2>&1 &",
+    "typedoc": "pnpm run --sequential \"/^typedoc:.*/\"",
+    "typedoc:run": "typedoc --options typedoc.json --tsconfig tsconfig.build.esm.json src/index.ts",
+    "typedoc:open": "open docs/index.html > /dev/null 2>&1 &",
     "clean": "rm -rf build docs coverage .nyc_output"
   }
 }
