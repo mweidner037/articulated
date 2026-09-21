@@ -20,6 +20,7 @@
     "typescript-eslint": "^8.65.0"
   },
   "scripts": {
+    "bench": "pnpm --filter benchmarks start",
     "build": "pnpm -r run build",
     "lint": "pnpm -r run lint",
     "lint:tsc": "pnpm -r run lint:tsc",

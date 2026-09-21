@@ -1,4 +1,6 @@
 {
+  "name": "benchmarks",
+  "private": "true",
   "dependencies": {
     "@types/node": "^24.0.0",
     "articulated": "workspace:*",
