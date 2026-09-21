@@ -1,6 +1,6 @@
 {
   "name": "benchmarks",
-  "private": "true",
+  "private": true,
   "dependencies": {
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
