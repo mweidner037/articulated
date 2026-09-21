@@ -3,9 +3,7 @@ import { insertAfterJson } from "./insert_after_json";
 
 void (async function () {
   console.log("# Benchmark Results");
-  console.log(
-    "Output of\n```bash\nnpm run benchmarks -s > benchmark_results.md\n```",
-  );
+  console.log("Output of\n```bash\npnpm start > results.md\n```");
   console.log(
     "Each benchmark applies the [automerge-perf](https://github.com/automerge/automerge-perf) 260k edit text trace and measures various stats, modeled on [crdt-benchmarks](https://github.com/dmonad/crdt-benchmarks/)' B4 experiment.\n",
   );

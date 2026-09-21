@@ -1,8 +1,11 @@
 # Benchmark Results
+
 Output of
+
 ```bash
-npm run benchmarks -s > benchmark_results.md
+pnpm start > results.md
 ```
+
 Each benchmark applies the [automerge-perf](https://github.com/automerge/automerge-perf) 260k edit text trace and measures various stats, modeled on [crdt-benchmarks](https://github.com/dmonad/crdt-benchmarks/)' B4 experiment.
 
 For perspective on the save sizes: the final text (excluding deleted chars) is 104,852 bytes, or 27556 bytes GZIP'd. It is ~15 pages of two-column text (in LaTeX).
