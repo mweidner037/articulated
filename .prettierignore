@@ -3,5 +3,4 @@
 /.nyc_output/*
 /coverage/*
 LICENSE
-real_text_trace_edits.json
-benchmark_results.md
+pnpm-lock.yaml

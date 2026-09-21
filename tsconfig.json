@@ -1,21 +1,6 @@
+// Dev config that includes all files, for VSCode & eslint.
 {
-  "compilerOptions": {
-    "rootDir": "packages/articulated/src",
-    "outDir": "build/esm",
-    "target": "es2021",
-    "module": "es2015",
-    "allowJs": true,
-    /* Needed with module: es2015 or else stuff breaks. */
-    "moduleResolution": "node",
-    /* Enable strict type checking. */
-    "strict": true,
-    /* Enable interop with dependencies using different module systems. */
-    "esModuleInterop": true,
-    /* Emit .d.ts files. */
-    "declaration": true,
-    /* Emit sourcemap files. */
-    "sourceMap": true
-    /* Don't turn on importHelpers, so we can avoid tslib dependency. */
-  },
-  "include": ["packages/articulated/src"]
+  "extends": "./tsconfig.dev.json",
+  "include": ["**/*.ts", "**/*.tsx"],
+  "exclude": ["**/node_modules", "**/build"]
 }

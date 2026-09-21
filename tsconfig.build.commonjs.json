@@ -1,0 +1,11 @@
+// Common settings for all package CommonJS builds.
+// Extended in each package to set relative dirs.
+{
+  "extends": "./tsconfig.base.json",
+  "compilerOptions": {
+    "declaration": true,
+    "sourceMap": true,
+    "module": "node16",
+    "moduleResolution": "node16"
+  }
+}

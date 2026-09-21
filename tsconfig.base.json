@@ -1,0 +1,11 @@
+// Base for all tsconfigs.
+{
+  "compilerOptions": {
+    "target": "es2022",
+    "strict": true,
+    "esModuleInterop": true,
+    "module": "es2022",
+    "moduleResolution": "bundler",
+    "jsx": "react-jsx"
+  }
+}
