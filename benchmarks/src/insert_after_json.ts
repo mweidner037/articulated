@@ -1,6 +1,7 @@
+import type { ElementId, SavedIdList } from "articulated";
+import { ElementIdGenerator, IdList } from "articulated";
 import { assert } from "chai";
 import { v4 as uuidv4 } from "uuid";
-import { ElementId, ElementIdGenerator, IdList, SavedIdList } from "../src";
 import {
   avg,
   getMemUsed,
@@ -23,10 +24,10 @@ type Update =
 export async function insertAfterJson() {
   console.log("\n## Insert-After, JSON Encoding\n");
   console.log(
-    "Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only."
+    "Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only.",
   );
   console.log(
-    "Updates and saved states use JSON encoding, with optional GZIP for saved states.\n"
+    "Updates and saved states use JSON encoding, with optional GZIP for saved states.\n",
   );
 
   // TODO: Deterministic randomness.
@@ -65,12 +66,12 @@ export async function insertAfterJson() {
   console.log(
     "- Sender time (ms):",
     Math.round(
-      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000
-    )
+      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000,
+    ),
   );
   console.log(
     "- Avg update size (bytes):",
-    avg(updates.map((message) => message.length)).toFixed(1)
+    avg(updates.map((message) => message.length)).toFixed(1),
   );
   // TODO
   // assert.strictEqual(sender.toString(), finalText);
@@ -97,12 +98,12 @@ export async function insertAfterJson() {
   console.log(
     "- Receiver time (ms):",
     Math.round(
-      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000
-    )
+      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000,
+    ),
   );
   assert.deepStrictEqual(
     [...receiver.valuesWithIsDeleted()],
-    [...sender.valuesWithIsDeleted()]
+    [...sender.valuesWithIsDeleted()],
   );
   // TODO
   // assert.strictEqual(receiver.toString(), finalText);
@@ -124,12 +125,12 @@ function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
   console.log(
     `- Save time ${gzip ? "GZIP'd " : ""}(ms):`,
     Math.round(
-      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000
-    )
+      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000,
+    ),
   );
   console.log(
     `- Save size ${gzip ? "GZIP'd " : ""}(bytes):`,
-    savedState.length
+    savedState.length,
   );
 
   // Load the saved state.
@@ -143,8 +144,8 @@ function saveLoad(saver: IdList, gzip: boolean): string | Uint8Array {
   console.log(
     `- Load time ${gzip ? "GZIP'd " : ""}(ms):`,
     Math.round(
-      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000
-    )
+      new Number(process.hrtime.bigint() - startTime).valueOf() / 1000000,
+    ),
   );
 
   return savedState;
@@ -168,7 +169,7 @@ async function memory(savedState: string) {
 
   console.log(
     "- Mem used estimate (MB):",
-    ((getMemUsed() - startMem) / 1000000).toFixed(1)
+    ((getMemUsed() - startMem) / 1000000).toFixed(1),
   );
 
   // Keep stuff in scope so we don't accidentally subtract its memory usage.

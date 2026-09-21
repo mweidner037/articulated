@@ -56,6 +56,9 @@ importers:
 
   benchmarks:
     dependencies:
+      articulated:
+        specifier: workspace:*
+        version: link:../packages/articulated
       fflate:
         specifier: ^0.8.2
         version: 0.8.3

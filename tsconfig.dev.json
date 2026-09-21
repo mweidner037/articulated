@@ -9,7 +9,7 @@
     // That way, local dev always sees the latest version of the .ts code,
     // instead of looking at built declarations (unlike `pnpm build`).
     "paths": {
-      "@mangodoc/*": ["./packages/*/src/index.ts"]
+      "articulated": ["./packages/articulated/src/index.ts"]
     }
   }
 }
