@@ -332,6 +332,12 @@ export class RedBlackTree<K, V> {
     }
     return;
   }
+
+  forEach(callbackFn: (key: K) => void): void {
+    if (!this.root) return;
+
+    doVisitFull(callbackFn, this.root);
+  }
 }
 
 //Swaps two nodes
@@ -519,6 +525,20 @@ function fixDoubleBlack<K, V>(stack: RBNode<K, V>[]): void {
         i = i + 2;
       }
     }
+  }
+}
+
+//Visit all nodes in order
+function doVisitFull<K>(
+  callbackFn: (key: K) => void,
+  node: RBNode<K, unknown>
+): void {
+  if (node.left) {
+    doVisitFull(callbackFn, node.left);
+  }
+  callbackFn(node.key);
+  if (node.right) {
+    return doVisitFull(callbackFn, node.right);
   }
 }
 

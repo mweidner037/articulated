@@ -124,6 +124,8 @@ const savedState = list.save();
 let newList = IdList.load(savedState);
 ```
 
+See `SavedIdList` for a description of the format. It compresses well with GZIP, but you may wish to design a custom compression scheme to speed up compression and decompression.
+
 ## Use Cases
 
 - Text editors where characters need stable identities

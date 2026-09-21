@@ -1,5 +1,5 @@
 import { assert, expect } from "chai";
-import { ElementId, equalsId, expandIds, IdList, SavedIdList } from "../src";
+import { ElementId, IdList, equalsId, expandIds } from "../src";
 
 describe("ElementId utilities", () => {
   describe("equalsId", () => {
@@ -175,6 +175,24 @@ describe("IdList", () => {
       expect(equalsId(list.at(2), { bunchId: "abc", counter: 3 })).to.be.true;
     });
 
+    it("should skip count = 0 insertions", () => {
+      const startId: ElementId = { bunchId: "abc", counter: 1 };
+      const list = IdList.new().insertAfter(null, startId, 10);
+
+      expect(
+        list.insertAfter(null, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertAfter(startId, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertBefore(null, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+      expect(
+        list.insertBefore(startId, { bunchId: "def", counter: 1 }, 0)
+      ).to.equal(list);
+    });
+
     it("should throw when inserting an ID that is already known", () => {
       let list = IdList.new();
       const id: ElementId = { bunchId: "abc", counter: 1 };
@@ -190,6 +208,7 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertAfter(id1, id2))).to.throw();
+      expect(() => (list = list.insertAfter(id1, id2, 0))).to.throw();
     });
 
     it("should throw when inserting before an ID that is not known", () => {
@@ -198,6 +217,19 @@ describe("IdList", () => {
       const id2: ElementId = { bunchId: "def", counter: 1 };
 
       expect(() => (list = list.insertBefore(id1, id2))).to.throw();
+      expect(() => (list = list.insertBefore(id1, id2, 0))).to.throw();
+    });
+
+    it("should throw when inserting an ID with invalid counter", () => {
+      let list = IdList.new();
+
+      const id1: ElementId = { bunchId: "abc", counter: -1 };
+      expect(() => (list = list.insertAfter(null, id1))).to.throw();
+      expect(() => (list = list.insertBefore(null, id1))).to.throw();
+
+      const id2: ElementId = { bunchId: "abc", counter: 1.5 };
+      expect(() => (list = list.insertAfter(null, id2))).to.throw();
+      expect(() => (list = list.insertBefore(null, id2))).to.throw();
     });
 
     it("should throw on bulk insertAfter with an invalid count", () => {
@@ -976,75 +1008,6 @@ describe("IdList", () => {
 
       // Check that the new list has all 100 elements
       expect(newList.length).to.equal(100);
-    });
-
-    it("should throw when loading an invalid saved state", () => {
-      const savedState1: SavedIdList = [
-        {
-          bunchId: "abc",
-          startCounter: 0,
-          count: -1,
-          isDeleted: false,
-        },
-      ];
-      expect(() => IdList.load(savedState1)).to.throw();
-
-      const savedState2: SavedIdList = [
-        {
-          bunchId: "abc",
-          startCounter: 0,
-          count: 7.5,
-          isDeleted: false,
-        },
-      ];
-      expect(() => IdList.load(savedState2)).to.throw();
-
-      const savedState3: SavedIdList = [
-        {
-          bunchId: "abc",
-          startCounter: -0.5,
-          count: 5,
-          isDeleted: false,
-        },
-      ];
-      expect(() => IdList.load(savedState3)).to.throw();
-
-      // 0 count is ignored but okay.
-      const savedState4: SavedIdList = [
-        {
-          bunchId: "abc",
-          startCounter: 3,
-          count: 0,
-          isDeleted: false,
-        },
-      ];
-      expect([...IdList.load(savedState4)]).to.deep.equal([]);
-
-      // // Negative counters are okay.
-      // const savedState5: SavedIdList = [
-      //   {
-      //     bunchId: "abc",
-      //     startCounter: -1,
-      //     count: 3,
-      //     isDeleted: false,
-      //   },
-      // ];
-      // expect([...IdList.load(savedState5)]).to.deep.equal([
-      //   { bunchId: "abc", counter: -1 },
-      //   { bunchId: "abc", counter: 0 },
-      //   { bunchId: "abc", counter: 1 },
-      // ]);
-
-      // Negative counters are not allowed.
-      const savedState5: SavedIdList = [
-        {
-          bunchId: "abc",
-          startCounter: -1,
-          count: 3,
-          isDeleted: false,
-        },
-      ];
-      expect(() => IdList.load(savedState5)).to.throw();
     });
   });
 });

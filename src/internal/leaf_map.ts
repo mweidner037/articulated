@@ -1,5 +1,5 @@
-import { RedBlackTree } from "../vendor/functional-red-black-tree";
 import type { LeafNode } from "../id_list";
+import { RedBlackTree } from "../vendor/functional-red-black-tree";
 
 /**
  * A persistent sorted map from each LeafNode to its parent's seq.
@@ -35,6 +35,36 @@ export class LeafMap {
 
   delete(leaf: LeafNode): LeafMap {
     return new LeafMap(this.tree.remove(leaf));
+  }
+
+  /**
+   * Checks for duplicate ids after loading, returning whether the check passes.
+   *
+   * Duplicate ids imply leaves with overlapping id ranges, which lead to either:
+   *
+   * - Neighboring leaves (in our key order) that overlap.
+   * - Or, a leaf that overwrote another, making our known id count too low.
+   */
+  checkAfterLoad(targetIdCount: number): boolean {
+    let hasOverlap = false;
+    let idCount = 0;
+
+    let prevLeaf: LeafNode | null = null;
+    this.tree.forEach((leaf) => {
+      if (prevLeaf) {
+        if (
+          leaf.bunchId === prevLeaf.bunchId &&
+          leaf.startCounter < prevLeaf.startCounter + prevLeaf.count
+        ) {
+          hasOverlap = true;
+        }
+      }
+      idCount += leaf.count;
+
+      prevLeaf = leaf;
+    });
+
+    return !hasOverlap && idCount === targetIdCount;
   }
 }
 
