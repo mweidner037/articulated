@@ -31,7 +31,10 @@ export function proseMirrorEdits(
 
   let pmState = EditorState.create({
     schema: proseMirrorSchema,
-    doc: proseMirrorSchema.topNodeType.create(),
+    doc: proseMirrorSchema.topNodeType.create(
+      null,
+      proseMirrorSchema.nodes["paragraph"].create(),
+    ),
   });
   for (const edit of edits) {
     // Find the ProseMirror position corresponding to edit.index.
@@ -42,7 +45,7 @@ export function proseMirrorEdits(
       if (remaining <= child.content.size) break;
 
       remaining -= child.content.size;
-      extra += 2;
+      extra++;
     }
     const pos = edit.index + extra;
 

@@ -19,7 +19,10 @@ export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit>
   constructor() {
     this.state = EditorState.create({
       schema: proseMirrorSchema,
-      doc: proseMirrorSchema.topNodeType.create(),
+      doc: proseMirrorSchema.topNodeType.create(
+        null,
+        proseMirrorSchema.nodes["paragraph"].create(),
+      ),
     });
   }
 
