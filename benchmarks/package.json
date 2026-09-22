@@ -2,12 +2,19 @@
   "name": "benchmarks",
   "private": true,
   "dependencies": {
+    "@types/seedrandom": "^3.0.8",
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
-    "uuid": "^11.1.0"
+    "maybe-random-string": "^1.0.0",
+    "prosemirror-model": "^1.25.11",
+    "prosemirror-state": "^1.4.4",
+    "prosemirror-transform": "^1.12.1",
+    "rope-sequence": "^1.3.4",
+    "seedrandom": "^3.0.5"
   },
   "scripts": {
     "start": "tsx src/main.ts",
+    "worker": "tsx src/worker.ts",
     "lint": "pnpm run \"/^lint:.*/\"",
     "lint:tsc": "tsc -p tsconfig.dev.json",
     "lint:eslint": "eslint .",
