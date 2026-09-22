@@ -1,5 +1,7 @@
+import { assert } from "chai";
 import RopeSequence from "rope-sequence";
 import type seedrandom from "seedrandom";
+import type { TraceEdit } from "../internal/traces";
 import type { TextAlgorithm } from "../text_algorithm";
 
 /**
@@ -10,22 +12,28 @@ import type { TextAlgorithm } from "../text_algorithm";
  * the text as a sequence of chars. This is less memory-efficient
  * than a dedicated text rope that stores strings in the leaves.
  */
-export class RopeAlgorithm implements TextAlgorithm {
+export class RopeAlgorithm implements TextAlgorithm<TraceEdit> {
   rope = RopeSequence.empty;
 
   constructor(_prng: seedrandom.PRNG) {}
 
-  apply(start: number, deleteCount: number, char?: string): void {
-    const original = this.rope;
-    if (deleteCount === 0) {
-      // Insert
-      this.rope = original
-        .slice(0, start)
-        .append([char!])
-        .append(original.slice(start));
-    } else {
-      // Delete
-      this.rope = original.slice(0, start).append(original.slice(start + 1));
+  readonly isProseMirror = false;
+
+  apply(edit: TraceEdit): void {
+    switch (edit.type) {
+      case "insert": {
+        this.rope = this.rope
+          .slice(0, edit.index)
+          .append([edit.char])
+          .append(this.rope.slice(edit.index));
+        break;
+      }
+      case "delete": {
+        this.rope = this.rope
+          .slice(0, edit.index)
+          .append(this.rope.slice(edit.index + 1));
+        break;
+      }
     }
   }
 
@@ -43,5 +51,9 @@ export class RopeAlgorithm implements TextAlgorithm {
 
   load(savedState: string): void {
     this.rope = RopeSequence.from([...savedState]);
+  }
+
+  check(finalText: string): void {
+    assert.strictEqual(this.save(), finalText);
   }
 }

@@ -4,10 +4,10 @@ import type { TraceEdit } from "../internal/traces";
 import type { TextAlgorithm } from "../text_algorithm";
 
 /**
- * A simple array of characters, edited with Array.splice.
+ * A simple string, edited with slice and string concatenation.
  */
-export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit> {
-  chars: string[] = [];
+export class StringAlgorithm implements TextAlgorithm<TraceEdit> {
+  text = "";
 
   constructor(_prng: seedrandom.PRNG) {}
 
@@ -16,31 +16,33 @@ export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit> {
   apply(edit: TraceEdit): void {
     switch (edit.type) {
       case "insert": {
-        this.chars.splice(edit.index, 0, edit.char);
+        this.text =
+          this.text.slice(0, edit.index) +
+          edit.char +
+          this.text.slice(edit.index);
         break;
       }
       case "delete": {
-        this.chars.splice(edit.index, 1);
+        this.text =
+          this.text.slice(0, edit.index) + this.text.slice(edit.index + 1);
         break;
       }
     }
   }
 
   iterate(): void {
-    for (const char of this.chars) {
-      void char;
-    }
+    void this.text;
   }
 
   save(): string {
-    return this.chars.join("");
+    return this.text;
   }
 
   load(savedState: string): void {
-    this.chars = [...savedState];
+    this.text = savedState;
   }
 
   check(finalText: string) {
-    assert.strictEqual(this.save(), finalText);
+    assert.strictEqual(this.text, finalText);
   }
 }

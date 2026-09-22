@@ -48,29 +48,34 @@ export function proseMirrorEdits(
     const pos = edit.index + extra;
 
     const tr = pmState.tr;
-    if (edit.type === "insert") {
-      if (edit.char === "\n") {
-        // Paragraph break.
-        pmEdits.push({ type: "split", pos });
-        tr.split(pos);
-      } else {
-        // Normal character.
-        pmEdits.push({ type: "insert", pos, char: edit.char });
-        tr.insertText(edit.char, pos);
+    switch (edit.type) {
+      case "insert": {
+        if (edit.char === "\n") {
+          // Paragraph break.
+          pmEdits.push({ type: "split", pos });
+          tr.split(pos);
+        } else {
+          // Normal character.
+          pmEdits.push({ type: "insert", pos, char: edit.char });
+          tr.insertText(edit.char, pos);
+        }
+        break;
       }
-    } else {
-      // Delete
-      const $pos = pmState.doc.resolve(pos);
-      if ($pos.parentOffset === $pos.parent.content.size) {
-        // Pointing at the position after the last char,
-        // corresponding to a new line in the original trace =>
-        // a paragraph break in ProseMirror.
-        pmEdits.push({ type: "join", pos: pos + 1 });
-        tr.join(pos + 1);
-      } else {
-        // Normal character.
-        pmEdits.push({ type: "delete", pos });
-        tr.delete(pos, pos + 1);
+      case "delete": {
+        // Delete
+        const $pos = pmState.doc.resolve(pos);
+        if ($pos.parentOffset === $pos.parent.content.size) {
+          // Pointing at the position after the last char,
+          // corresponding to a new line in the original trace =>
+          // a paragraph break in ProseMirror.
+          pmEdits.push({ type: "join", pos: pos + 1 });
+          tr.join(pos + 1);
+        } else {
+          // Normal character.
+          pmEdits.push({ type: "delete", pos });
+          tr.delete(pos, pos + 1);
+        }
+        break;
       }
     }
 

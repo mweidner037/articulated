@@ -1,12 +1,14 @@
 import { ElementIdGenerator } from "articulated";
+import { assert } from "chai";
 import { maybeRandomString } from "maybe-random-string";
 import type seedrandom from "seedrandom";
 import { IdListSimple } from "../../../packages/articulated/test/id_list_simple";
+import type { TraceEdit } from "../internal/traces";
 import type { TextAlgorithm } from "../text_algorithm";
 
 const CLIENT_ID_LENGTH = 10;
 
-export class IdListSimpleAlgorithm implements TextAlgorithm {
+export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit> {
   readonly idGen: ElementIdGenerator;
   list: IdListSimple = IdListSimple.new();
 
@@ -17,14 +19,19 @@ export class IdListSimpleAlgorithm implements TextAlgorithm {
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 
-  apply(start: number, deleteCount: number, _char?: string): void {
-    if (deleteCount === 0) {
-      // Insert
-      const beforeId = start === 0 ? null : this.list.at(start - 1);
-      this.list.insertAfter(beforeId, this.idGen.generateAfter(beforeId));
-    } else {
-      // Delete
-      this.list.delete(this.list.at(start));
+  readonly isProseMirror = false;
+
+  apply(edit: TraceEdit): void {
+    switch (edit.type) {
+      case "insert": {
+        const beforeId = edit.index === 0 ? null : this.list.at(edit.index - 1);
+        this.list.insertAfter(beforeId, this.idGen.generateAfter(beforeId));
+        break;
+      }
+      case "delete": {
+        this.list.delete(this.list.at(edit.index));
+        break;
+      }
     }
   }
 
@@ -40,5 +47,10 @@ export class IdListSimpleAlgorithm implements TextAlgorithm {
 
   load(savedState: string): void {
     this.list.load(JSON.parse(savedState));
+  }
+
+  check(finalText: string): void {
+    // We don't store chars; check length only.
+    assert.strictEqual(this.list.length, finalText.length);
   }
 }
