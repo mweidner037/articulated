@@ -8,6 +8,15 @@ import type { TextAlgorithm } from "../text_algorithm";
 
 const CLIENT_ID_LENGTH = 10;
 
+/**
+ * An IdListSimple, our simple implementation of IdList as an array of ElementIds,
+ * with ids only (no chars).
+ *
+ * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
+ * chars long (60 bit of entropy) and seqNum is base-36 encoded.
+ *
+ * Saved states are the SavedIdList as a JSON string.
+ */
 export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit> {
   readonly idGen: ElementIdGenerator;
   list: IdListSimple = IdListSimple.new();

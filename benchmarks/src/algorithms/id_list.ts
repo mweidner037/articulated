@@ -14,8 +14,8 @@ abstract class IdListAlgorithm implements TextAlgorithm<TraceEdit> {
 
   constructor(prng: seedrandom.PRNG) {
     const clientId = maybeRandomString({ prng, length: CLIENT_ID_LENGTH });
-    let counter = 0;
-    const newBunchId = () => `${clientId}:${(counter++).toString(36)}`;
+    let seqNum = 0;
+    const newBunchId = () => `${clientId}:${(seqNum++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 
@@ -54,6 +54,14 @@ abstract class IdListAlgorithm implements TextAlgorithm<TraceEdit> {
   }
 }
 
+/**
+ * An IdList with ids only (no chars).
+ *
+ * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
+ * chars long (60 bit of entropy) and seqNum is base-36 encoded.
+ *
+ * Saved states are the SavedIdList as a JSON string.
+ */
 export class IdListJsonAlgorithm extends IdListAlgorithm {
   save(): string {
     return JSON.stringify(this.list.save());
@@ -64,6 +72,14 @@ export class IdListJsonAlgorithm extends IdListAlgorithm {
   }
 }
 
+/**
+ * An IdList with ids only (no chars).
+ *
+ * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
+ * chars long (60 bit of entropy) and seqNum is base-36 encoded.
+ *
+ * Saved states are the SavedIdList as a JSON string, **GZIP'd**.
+ */
 export class IdListGzipAlgorithm extends IdListAlgorithm {
   save(): Uint8Array {
     return gzipString(JSON.stringify(this.list.save()));

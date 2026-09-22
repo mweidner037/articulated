@@ -18,10 +18,9 @@ export const proseMirrorSchema = new Schema({
 });
 
 /**
- * Convert TraceEdits into edits that work with ProseMirror.
+ * Convert TraceEdits into edits that work with ProseMirrorAlgorithm.
  *
- * - Treat line breaks as paragraph boundaries. Otherwise, we'd have
- * one big text node, which is not realistic and an unfair comparison.
+ * - Treat line breaks as paragraph boundaries.
  * - Convert indexes to positions, accounting for paragraph start/end positions.
  */
 export function proseMirrorEdits(
