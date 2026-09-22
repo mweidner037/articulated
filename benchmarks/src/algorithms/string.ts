@@ -6,11 +6,11 @@ import type { TextAlgorithm } from "./base";
  * A simple string, edited with slice and string concatenation.
  */
 export class StringAlgorithm implements TextAlgorithm<TraceEdit> {
+  static readonly isProseMirror = false;
+
   text = "";
 
   constructor() {}
-
-  readonly isProseMirror = false;
 
   apply(edit: TraceEdit): void {
     switch (edit.type) {

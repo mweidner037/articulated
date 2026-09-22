@@ -1,5 +1,5 @@
 import { allAlgorithms } from "./algorithms";
-import { loadTraces } from "./internal/traces";
+import { loadTraces, realTextTrace } from "./internal/traces";
 import { allMeasurements } from "./measurements";
 
 (async function () {
@@ -12,6 +12,13 @@ import { allMeasurements } from "./measurements";
   if (!measurement) failWithUsage("Unknown measurement: " + args[0]);
   const algorithm = allAlgorithms[args[1]];
   if (!algorithm) failWithUsage("Unknown algorithm: " + args[1]);
+
+  const trace = realTextTrace;
+  const edits = algorithm.isProseMirror
+    ? realTextTrace.proseMirrorEdits
+    : realTextTrace.edits;
+
+  await measurement(algorithm, edits, trace.finalText);
 })();
 
 function failWithUsage(message: string): never {

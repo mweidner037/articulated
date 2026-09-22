@@ -12,6 +12,8 @@ import type { TextAlgorithm } from "./base";
  * and an unfair performance comparison.
  */
 export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit> {
+  static readonly isProseMirror = false;
+
   state: EditorState;
 
   constructor() {
@@ -20,8 +22,6 @@ export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit>
       doc: proseMirrorSchema.topNodeType.create(),
     });
   }
-
-  readonly isProseMirror = true;
 
   apply(edit: TraceProseMirrorEdit): void {
     const tr = this.state.tr;

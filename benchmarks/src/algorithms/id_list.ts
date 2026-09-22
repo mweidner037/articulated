@@ -9,6 +9,8 @@ import type { TextAlgorithm } from "./base";
 const CLIENT_ID_LENGTH = 10;
 
 abstract class IdListAlgorithm implements TextAlgorithm<TraceEdit> {
+  static readonly isProseMirror = false;
+
   readonly idGen: ElementIdGenerator;
   list: IdList = IdList.new();
 
@@ -21,8 +23,6 @@ abstract class IdListAlgorithm implements TextAlgorithm<TraceEdit> {
     const newBunchId = () => `${clientId}:${(seqNum++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
-
-  readonly isProseMirror = false;
 
   apply(edit: TraceEdit): void {
     switch (edit.type) {

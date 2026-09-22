@@ -1,8 +1,6 @@
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/traces";
 
 export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
-  readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
-
   /**
    * Applies the given edit.
    */
@@ -27,4 +25,6 @@ export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
 
 export type TextAlgorithmConstructor<
   E extends TraceEdit | TraceProseMirrorEdit,
-> = new () => TextAlgorithm<E>;
+> = (new () => TextAlgorithm<E>) & {
+  readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
+};

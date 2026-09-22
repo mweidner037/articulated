@@ -12,11 +12,11 @@ import type { TextAlgorithm } from "./base";
  * than a dedicated text rope that stores strings in the leaves.
  */
 export class RopeAlgorithm implements TextAlgorithm<TraceEdit> {
+  static readonly isProseMirror = false;
+
   rope = RopeSequence.empty;
 
   constructor() {}
-
-  readonly isProseMirror = false;
 
   apply(edit: TraceEdit): void {
     switch (edit.type) {

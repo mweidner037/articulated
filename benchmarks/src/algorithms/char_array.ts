@@ -6,11 +6,11 @@ import type { TextAlgorithm } from "./base";
  * A simple array of characters, edited with Array.splice.
  */
 export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit> {
+  static readonly isProseMirror = false;
+
   chars: string[] = [];
 
   constructor() {}
-
-  readonly isProseMirror = false;
 
   apply(edit: TraceEdit): void {
     switch (edit.type) {

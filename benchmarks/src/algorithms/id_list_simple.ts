@@ -18,6 +18,8 @@ const CLIENT_ID_LENGTH = 10;
  * Saved states are the SavedIdList as a JSON string.
  */
 export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit> {
+  static readonly isProseMirror = false;
+
   readonly idGen: ElementIdGenerator;
   list: IdListSimple = IdListSimple.new();
 
@@ -30,8 +32,6 @@ export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit> {
     const newBunchId = () => `${clientId}:${(counter++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
-
-  readonly isProseMirror = false;
 
   apply(edit: TraceEdit): void {
     switch (edit.type) {
