@@ -1,10 +1,10 @@
 import { ElementIdGenerator } from "articulated";
 import { assert } from "chai";
 import { maybeRandomString } from "maybe-random-string";
-import type seedrandom from "seedrandom";
+import seedrandom from "seedrandom";
 import { IdListSimple } from "../../../packages/articulated/test/id_list_simple";
 import type { TraceEdit } from "../internal/traces";
-import type { TextAlgorithm } from "../text_algorithm";
+import type { TextAlgorithm } from "./base";
 
 const CLIENT_ID_LENGTH = 10;
 
@@ -21,8 +21,11 @@ export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit> {
   readonly idGen: ElementIdGenerator;
   list: IdListSimple = IdListSimple.new();
 
-  constructor(prng: seedrandom.PRNG) {
-    const clientId = maybeRandomString({ prng, length: CLIENT_ID_LENGTH });
+  constructor() {
+    const clientId = maybeRandomString({
+      prng: seedrandom("42"),
+      length: CLIENT_ID_LENGTH,
+    });
     let counter = 0;
     const newBunchId = () => `${clientId}:${(counter++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);

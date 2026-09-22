@@ -1,7 +1,6 @@
 import { assert } from "chai";
-import type seedrandom from "seedrandom";
 import type { TraceEdit } from "../internal/traces";
-import type { TextAlgorithm } from "../text_algorithm";
+import type { TextAlgorithm } from "./base";
 
 /**
  * A simple array of characters, edited with Array.splice.
@@ -9,7 +8,7 @@ import type { TextAlgorithm } from "../text_algorithm";
 export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit> {
   chars: string[] = [];
 
-  constructor(_prng: seedrandom.PRNG) {}
+  constructor() {}
 
   readonly isProseMirror = false;
 

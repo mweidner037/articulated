@@ -1,8 +1,7 @@
 import { assert } from "chai";
 import RopeSequence from "rope-sequence";
-import type seedrandom from "seedrandom";
 import type { TraceEdit } from "../internal/traces";
-import type { TextAlgorithm } from "../text_algorithm";
+import type { TextAlgorithm } from "./base";
 
 /**
  * A loosely-balanced rope implementation by Marijn Haverbeke,
@@ -15,7 +14,7 @@ import type { TextAlgorithm } from "../text_algorithm";
 export class RopeAlgorithm implements TextAlgorithm<TraceEdit> {
   rope = RopeSequence.empty;
 
-  constructor(_prng: seedrandom.PRNG) {}
+  constructor() {}
 
   readonly isProseMirror = false;
 

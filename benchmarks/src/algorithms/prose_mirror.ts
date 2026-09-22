@@ -1,9 +1,8 @@
 import { assert } from "chai";
 import { EditorState } from "prosemirror-state";
-import type seedrandom from "seedrandom";
 import { proseMirrorSchema } from "../internal/prose_mirror";
 import type { TraceProseMirrorEdit } from "../internal/traces";
-import type { TextAlgorithm } from "../text_algorithm";
+import type { TextAlgorithm } from "./base";
 
 /**
  * A ProseMirror EditorState, with schema `"paragraph+"`.
@@ -15,7 +14,7 @@ import type { TextAlgorithm } from "../text_algorithm";
 export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit> {
   state: EditorState;
 
-  constructor(_prng: seedrandom.PRNG) {
+  constructor() {
     this.state = EditorState.create({
       schema: proseMirrorSchema,
       doc: proseMirrorSchema.topNodeType.create(),

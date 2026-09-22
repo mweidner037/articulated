@@ -1,5 +1,4 @@
-import type seedrandom from "seedrandom";
-import type { TraceEdit, TraceProseMirrorEdit } from "./internal/traces";
+import type { TraceEdit, TraceProseMirrorEdit } from "../internal/traces";
 
 export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
   readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
@@ -26,6 +25,6 @@ export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
   check(finalText: string): void;
 }
 
-export type TextAlgorithmConstructor = new (
-  prng: seedrandom.PRNG,
-) => TextAlgorithm<TraceEdit | TraceProseMirrorEdit>;
+export type TextAlgorithmConstructor<
+  E extends TraceEdit | TraceProseMirrorEdit,
+> = new () => TextAlgorithm<E>;
