@@ -2,9 +2,11 @@
   "name": "benchmarks",
   "private": true,
   "dependencies": {
+    "@types/seedrandom": "^3.0.8",
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
-    "uuid": "^11.1.0"
+    "maybe-random-string": "^1.0.0",
+    "seedrandom": "^3.0.5"
   },
   "scripts": {
     "start": "tsx src/main.ts",

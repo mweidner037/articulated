@@ -59,15 +59,21 @@ importers:
 
   benchmarks:
     dependencies:
+      '@types/seedrandom':
+        specifier: ^3.0.8
+        version: 3.0.8
       articulated:
         specifier: workspace:*
         version: link:../packages/articulated
       fflate:
         specifier: ^0.8.2
         version: 0.8.3
-      uuid:
-        specifier: ^11.1.0
-        version: 11.1.1
+      maybe-random-string:
+        specifier: ^1.0.0
+        version: 1.0.0
+      seedrandom:
+        specifier: ^3.0.5
+        version: 3.0.5
 
   packages/articulated:
     dependencies:
@@ -1054,6 +1060,9 @@ packages:
     resolution: {integrity: sha512-sHHjZ5fJKlgrG4qns2YwVcdNep35h5fERrfkD2YNsb9UFk0UIHarbiTaHKVMlPuWAoiilyK8Fv/jAm11slsY7Q==}
     hasBin: true
 
+  maybe-random-string@1.0.0:
+    resolution: {integrity: sha512-uw0W5Qo7PJYjSNQCh304yhd6lhKcsPVBCOuSInd20PLX29mRJNtOSA6BpqjFFBE6cZpS1+gZmhsEn03SYlzxqA==}
+
   mdurl@2.1.0:
     resolution: {integrity: sha512-1+HBaOx0zi/dQWht8rNv9MYf9qqpqL/kxI0hXImU6Y547zM6Sni8BQibt7ifgMcYtQg41ao3Ivd6cnSM86inpg==}
 
@@ -1362,10 +1371,6 @@ packages:
 
   uri-js@4.4.1:
     resolution: {integrity: sha512-7rKUyy33Q1yc98pQ1DAmLtwX109F7TIfWlW1Ydo8Wl1ii1SeHieeh0HHfPeL2fMXK6z0s8ecKs9frCuLJvndBg==}
-
-  uuid@11.1.1:
-    resolution: {integrity: sha512-vIYxrBCC/N/K+Js3qSN88go7kIfNPssr/hHCesKCQNAjmgvYS2oqr69kIufEG+O4+PfezOH4EbIeHCfFov8ZgQ==}
-    hasBin: true
 
   which-module@2.0.1:
     resolution: {integrity: sha512-iBdZ57RDvnOR9AGBhML2vFZf7h8vmBjhoaZqODJBFWHVtKkDmKuHai3cx5PgVMrX5YDNp27AofYbAwctSS+vhQ==}
@@ -2397,6 +2402,8 @@ snapshots:
       punycode.js: 2.3.1
       uc.micro: 2.1.0
 
+  maybe-random-string@1.0.0: {}
+
   mdurl@2.1.0: {}
 
   minimatch@10.2.6:
@@ -2717,8 +2724,6 @@ snapshots:
   uri-js@4.4.1:
     dependencies:
       punycode: 2.3.1
-
-  uuid@11.1.1: {}
 
   which-module@2.0.1: {}
 
