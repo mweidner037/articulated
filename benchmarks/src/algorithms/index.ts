@@ -1,7 +1,7 @@
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import type { TextAlgorithmConstructor } from "./base";
 import { CharArrayAlgorithm } from "./char_array";
-import { IdListGzipAlgorithm, IdListJsonAlgorithm } from "./id_list";
+import { IdListAlgorithm } from "./id_list";
 import { IdListSimpleAlgorithm } from "./id_list_simple";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
@@ -13,8 +13,7 @@ export const allAlgorithms: Record<
 > = {
   charArray: CharArrayAlgorithm,
   idListSimple: IdListSimpleAlgorithm,
-  idListJson: IdListJsonAlgorithm,
-  idListGzip: IdListGzipAlgorithm,
+  idList: IdListAlgorithm,
   proseMirror: ProseMirrorAlgorithm,
   rope: RopeAlgorithm,
   string: StringAlgorithm,
