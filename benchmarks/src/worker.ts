@@ -5,6 +5,14 @@ import type { TextTrace } from "./internal/trace";
 import { loadTrace } from "./internal/trace";
 import { allMeasurements } from "./measurements";
 
+const WARMUP_TRIALS = 5;
+/**
+ * main.ts runs a new worker (including warmup) for each measured trial,
+ * so we only do one measured trial.
+ * This lets main.ts randomize algorithm order at the trial level.
+ */
+const MEASURED_TRIALS = 1;
+
 (async function () {
   // Process args
 
@@ -48,8 +56,14 @@ import { allMeasurements } from "./measurements";
   // Run benchmark
 
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
-  const data = await measurement(algorithm, edits, trace.finalText);
-  console.log(data);
+  for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
+    if (trial < WARMUP_TRIALS) console.log("Warmup ", trial + 1);
+    const data = await measurement(algorithm, edits, trace.finalText);
+    if (trial >= WARMUP_TRIALS) {
+      // Measured trial.
+      console.log(data);
+    }
+  }
 })();
 
 function failWithUsage(message: string): never {
