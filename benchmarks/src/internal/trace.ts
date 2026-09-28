@@ -2,6 +2,7 @@ import fs from "fs";
 import path from "path";
 
 export interface TextTrace {
+  description?: string;
   finalText: string;
   edits: TraceEdit[];
   proseMirrorEdits: TraceProseMirrorEdit[];

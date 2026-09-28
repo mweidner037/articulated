@@ -11,7 +11,7 @@ export default defineConfig([
     "**/*.js",
     "**/*.cjs",
     "**/*.mjs",
-    "**/real_text_trace_edits.json",
+    "benchmarks/src/traces/*",
   ]),
   {
     extends: [

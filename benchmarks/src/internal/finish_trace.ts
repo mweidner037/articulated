@@ -23,8 +23,7 @@ import { loadTrace } from "./trace";
   // Compute proseMirrorEdits and write back
 
   const finished: TextTrace = {
-    finalText: trace.finalText,
-    edits: trace.edits,
+    ...trace,
     proseMirrorEdits: proseMirrorEdits(trace.edits, trace.finalText),
   };
   const tracePath = path.join(__dirname, "../traces", traceName + ".json");
