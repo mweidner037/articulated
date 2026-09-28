@@ -26,13 +26,16 @@ export type TraceProseMirrorEdit =
   | { type: "join"; pos: number };
 
 /**
- * Loads the text trace from src/traces/${fileStem}.json.
+ * Loads the text trace from src/traces/${traceName}.json.
  *
- * @throws If the file is not found, can't be read, not JSON, or not shaped like a TextTrace.
+ * @throws If the file is not found, unreadable, not JSON, or not shaped like a TextTrace.
  */
-export async function loadTrace(fileStem: string): Promise<TextTrace> {
+export async function loadTrace(
+  traceName: string,
+  requirePM = true,
+): Promise<TextTrace> {
   const loaded = JSON.parse(
-    fs.readFileSync(path.join(__dirname, "../traces", fileStem + ".json"), {
+    fs.readFileSync(path.join(__dirname, "../traces", traceName + ".json"), {
       encoding: "utf8",
     }),
   ) as TextTrace;
@@ -41,10 +44,14 @@ export async function loadTrace(fileStem: string): Promise<TextTrace> {
   if (!(
     typeof loaded === "object" &&
     typeof loaded.finalText === "string" &&
-    Array.isArray(loaded.edits) &&
-    Array.isArray(loaded.proseMirrorEdits)
+    Array.isArray(loaded.edits)
   )) {
     throw new Error("Not a TextTrace");
+  }
+  if (requirePM && !Array.isArray(loaded.proseMirrorEdits)) {
+    throw new Error(
+      `Missing proseMirrorEdits; run \`pnpm finish-trace ${traceName}\``,
+    );
   }
 
   return loaded;

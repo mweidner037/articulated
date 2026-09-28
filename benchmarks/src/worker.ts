@@ -7,7 +7,7 @@ import { allMeasurements } from "./measurements";
   // Process args
 
   const args = process.argv.slice(2);
-  if (args.length !== 2) failWithUsage("Wrong number of arguments");
+  if (args.length !== 3) failWithUsage("Wrong number of arguments");
 
   const measurement = allMeasurements[args[0]];
   if (!measurement) failWithUsage("Unknown measurement: " + args[0]);

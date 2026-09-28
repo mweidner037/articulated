@@ -15,6 +15,7 @@
   "scripts": {
     "start": "tsx src/main.ts",
     "worker": "tsx src/worker.ts",
+    "finish-trace": "tsx src/internal/finish_trace.ts",
     "lint": "pnpm run \"/^lint:.*/\"",
     "lint:tsc": "tsc -p tsconfig.dev.json",
     "lint:eslint": "eslint .",
