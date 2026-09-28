@@ -48,7 +48,8 @@ import { allMeasurements } from "./measurements";
   // Run benchmark
 
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
-  await measurement(algorithm, edits, trace.finalText);
+  const data = await measurement(algorithm, edits, trace.finalText);
+  console.log(data);
 })();
 
 function failWithUsage(message: string): never {

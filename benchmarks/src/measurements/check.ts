@@ -26,4 +26,7 @@ export const measureCheck: Measurement = async <
   alg2.load(savedState);
   alg2.iterate();
   alg2.check(finalText);
+
+  // No data points - we're just checking.
+  return {};
 };
