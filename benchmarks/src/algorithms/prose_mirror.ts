@@ -1,6 +1,9 @@
 import { assert } from "chai";
 import { EditorState } from "prosemirror-state";
-import { proseMirrorSchema } from "../internal/prose_mirror";
+import {
+  newProseMirrorState,
+  proseMirrorSchema,
+} from "../internal/prose_mirror";
 import type { TraceProseMirrorEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
@@ -12,18 +15,12 @@ import type { TextAlgorithm } from "./base";
  * and an unfair performance comparison.
  */
 export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit> {
-  static readonly isProseMirror = false;
+  static readonly isProseMirror = true;
 
   state: EditorState;
 
   constructor() {
-    this.state = EditorState.create({
-      schema: proseMirrorSchema,
-      doc: proseMirrorSchema.topNodeType.create(
-        null,
-        proseMirrorSchema.nodes["paragraph"].create(),
-      ),
-    });
+    this.state = newProseMirrorState();
   }
 
   apply(edit: TraceProseMirrorEdit): void {

@@ -17,6 +17,16 @@ export const proseMirrorSchema = new Schema({
   },
 });
 
+export function newProseMirrorState(): EditorState {
+  return EditorState.create({
+    schema: proseMirrorSchema,
+    doc: proseMirrorSchema.topNodeType.create(
+      null,
+      proseMirrorSchema.nodes["paragraph"].create(),
+    ),
+  });
+}
+
 /**
  * Convert TraceEdits into edits that work with ProseMirrorAlgorithm.
  *
@@ -29,13 +39,7 @@ export function proseMirrorEdits(
 ): TraceProseMirrorEdit[] {
   const pmEdits: TraceProseMirrorEdit[] = [];
 
-  let pmState = EditorState.create({
-    schema: proseMirrorSchema,
-    doc: proseMirrorSchema.topNodeType.create(
-      null,
-      proseMirrorSchema.nodes["paragraph"].create(),
-    ),
-  });
+  let pmState = newProseMirrorState();
   for (const edit of edits) {
     // Find the ProseMirror position corresponding to edit.index.
     // Each paragraph after the first is preceded by a "\n" in the trace
