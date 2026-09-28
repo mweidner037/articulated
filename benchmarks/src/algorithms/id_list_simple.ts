@@ -3,7 +3,7 @@ import { assert } from "chai";
 import { maybeRandomString } from "maybe-random-string";
 import seedrandom from "seedrandom";
 import { IdListSimple } from "../../../packages/articulated/test/id_list_simple";
-import type { TraceEdit } from "../internal/traces";
+import type { TraceEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
 const CLIENT_ID_LENGTH = 10;

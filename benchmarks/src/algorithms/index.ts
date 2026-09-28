@@ -1,4 +1,4 @@
-import type { TraceEdit, TraceProseMirrorEdit } from "../internal/traces";
+import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import type { TextAlgorithmConstructor } from "./base";
 import { CharArrayAlgorithm } from "./char_array";
 import { IdListGzipAlgorithm, IdListJsonAlgorithm } from "./id_list";

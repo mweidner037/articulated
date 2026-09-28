@@ -1,5 +1,5 @@
 import type { TextAlgorithmConstructor } from "../algorithms/base";
-import type { TraceEdit, TraceProseMirrorEdit } from "../internal/traces";
+import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import type { Measurement } from "./base";
 
 /**

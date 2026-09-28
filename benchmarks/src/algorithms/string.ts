@@ -1,5 +1,5 @@
 import { assert } from "chai";
-import type { TraceEdit } from "../internal/traces";
+import type { TraceEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
 /**

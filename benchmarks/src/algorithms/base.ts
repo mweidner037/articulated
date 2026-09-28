@@ -1,4 +1,4 @@
-import type { TraceEdit, TraceProseMirrorEdit } from "../internal/traces";
+import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 
 export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
   /**

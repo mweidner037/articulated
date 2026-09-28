@@ -2,7 +2,7 @@ import { ElementIdGenerator, IdList } from "articulated";
 import { assert } from "chai";
 import { maybeRandomString } from "maybe-random-string";
 import seedrandom from "seedrandom";
-import type { TraceEdit } from "../internal/traces";
+import type { TraceEdit } from "../internal/trace";
 import { gunzipString, gzipString } from "../internal/util";
 import type { TextAlgorithm } from "./base";
 

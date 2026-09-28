@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { Schema } from "prosemirror-model";
 import { EditorState } from "prosemirror-state";
-import type { TraceEdit, TraceProseMirrorEdit } from "./traces";
+import type { TraceEdit, TraceProseMirrorEdit } from "./trace";
 
 export const proseMirrorSchema = new Schema({
   nodes: {

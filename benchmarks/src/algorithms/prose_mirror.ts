@@ -1,7 +1,7 @@
 import { assert } from "chai";
 import { EditorState } from "prosemirror-state";
 import { proseMirrorSchema } from "../internal/prose_mirror";
-import type { TraceProseMirrorEdit } from "../internal/traces";
+import type { TraceProseMirrorEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
 /**
