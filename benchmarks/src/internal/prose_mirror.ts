@@ -38,13 +38,16 @@ export function proseMirrorEdits(
   });
   for (const edit of edits) {
     // Find the ProseMirror position corresponding to edit.index.
+    // Each paragraph after the first is preceded by a "\n" in the trace
+    // (1 index) but a close+open token pair in ProseMirror (2 positions).
     const doc = pmState.doc;
     let remaining = edit.index;
     let extra = 1;
     for (const child of doc.children) {
       if (remaining <= child.content.size) break;
 
-      remaining -= child.content.size;
+      // Skip the paragraph's content plus its trailing "\n".
+      remaining -= child.content.size + 1;
       extra++;
     }
     const pos = edit.index + extra;
