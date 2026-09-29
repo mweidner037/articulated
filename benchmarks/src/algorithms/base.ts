@@ -19,6 +19,11 @@ export interface TextAlgorithm<
 
   save(): S;
 
+  /**
+   * Loads the given savedState into our state.
+   *
+   * Must only be called when this TextAlgorithm instance is new (no prior edits).
+   */
   load(savedState: S): void;
 
   /**

@@ -9,6 +9,7 @@ import { IdListSimpleAlgorithm } from "./id_list_simple";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
 import { StringAlgorithm } from "./string";
+import { YjsTextAlgorithm } from "./yjs_text";
 
 export const allAlgorithms: Record<
   string,
@@ -23,4 +24,5 @@ export const allAlgorithms: Record<
   proseMirror: ProseMirrorAlgorithm,
   rope: RopeAlgorithm,
   string: StringAlgorithm,
+  yjsText: YjsTextAlgorithm,
 } satisfies Record<string, AnyTextAlgorithmConstructor>;
