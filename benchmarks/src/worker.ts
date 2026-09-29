@@ -56,9 +56,10 @@ const MEASURED_TRIALS = 1;
   // Run benchmark
 
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
+  await measurement.setup?.();
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
     if (trial < WARMUP_TRIALS) console.log("Warmup ", trial + 1);
-    const data = await measurement(algorithm, edits, trace.finalText);
+    const data = await measurement.runTrial(algorithm, edits, trace.finalText);
     if (trial >= WARMUP_TRIALS) {
       // Measured trial.
       console.log(data);
