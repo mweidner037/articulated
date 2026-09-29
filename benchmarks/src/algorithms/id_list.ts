@@ -15,8 +15,9 @@ const CLIENT_ID_LENGTH = 10;
  *
  * Saved states are the SavedIdList as a JSON string.
  */
-export class IdListAlgorithm implements TextAlgorithm<TraceEdit> {
+export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
   static readonly isProseMirror = false;
+  static readonly isSavedStateString = true;
 
   readonly idGen: ElementIdGenerator;
   list: IdList = IdList.new();

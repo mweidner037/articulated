@@ -8,11 +8,10 @@ import type { Measurement } from "./base";
  * Measures save time & size (raw string/Uint8Array).
  */
 export const measureSaveGzip: Measurement = {
-  async runTrial<E extends TraceEdit | TraceProseMirrorEdit>(
-    Alg: TextAlgorithmConstructor<E>,
-    edits: E[],
-    _finalText: string,
-  ) {
+  async runTrial<
+    E extends TraceEdit | TraceProseMirrorEdit,
+    S extends Uint8Array | string,
+  >(Alg: TextAlgorithmConstructor<E, S>, edits: E[], _finalText: string) {
     const alg = new Alg();
     for (const edit of edits) {
       alg.apply(edit);

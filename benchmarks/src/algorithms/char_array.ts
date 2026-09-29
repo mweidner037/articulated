@@ -5,8 +5,9 @@ import type { TextAlgorithm } from "./base";
 /**
  * A simple array of characters, edited with Array.splice.
  */
-export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit> {
+export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit, string> {
   static readonly isProseMirror = false;
+  static readonly isSavedStateString = true;
 
   chars: string[] = [];
 

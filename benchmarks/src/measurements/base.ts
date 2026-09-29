@@ -11,8 +11,11 @@ export interface Measurement {
    * @returns Individual data points, keyed by name. Each name should include its
    * units in parentheses.
    */
-  runTrial<E extends TraceEdit | TraceProseMirrorEdit>(
-    Alg: TextAlgorithmConstructor<E>,
+  runTrial<
+    E extends TraceEdit | TraceProseMirrorEdit,
+    S extends Uint8Array | string,
+  >(
+    Alg: TextAlgorithmConstructor<E, S>,
     edits: E[],
     finalText: string,
   ): Promise<Record<string, unknown>>;

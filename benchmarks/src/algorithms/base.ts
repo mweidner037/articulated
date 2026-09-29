@@ -1,6 +1,9 @@
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 
-export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
+export interface TextAlgorithm<
+  E extends TraceEdit | TraceProseMirrorEdit,
+  S extends Uint8Array | string,
+> {
   /**
    * Applies the given edit.
    */
@@ -13,9 +16,9 @@ export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
    */
   iterate(): void;
 
-  save(): string | Uint8Array;
+  save(): S;
 
-  load(savedState: string | Uint8Array): void;
+  load(savedState: S): void;
 
   /**
    * Asserts that the internal state matches the given text (if applicable).
@@ -25,6 +28,20 @@ export interface TextAlgorithm<E extends TraceEdit | TraceProseMirrorEdit> {
 
 export type TextAlgorithmConstructor<
   E extends TraceEdit | TraceProseMirrorEdit,
-> = (new () => TextAlgorithm<E>) & {
+  S extends Uint8Array | string,
+> = (new () => TextAlgorithm<E, S>) & {
   readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
+  readonly isSavedStateString: S extends string ? true : false;
 };
+
+/**
+ * Union of all valid TextAlgorithmConstructor instantiations.
+ *
+ * Unlike TextAlgorithmConstructor<TraceEdit | TraceProseMirrorEdit, Uint8Array | string>,
+ * this enforces that each constructor's static booleans match its generic types.
+ */
+export type AnyTextAlgorithmConstructor =
+  | TextAlgorithmConstructor<TraceEdit, string>
+  | TextAlgorithmConstructor<TraceEdit, Uint8Array>
+  | TextAlgorithmConstructor<TraceProseMirrorEdit, string>
+  | TextAlgorithmConstructor<TraceProseMirrorEdit, Uint8Array>;

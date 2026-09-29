@@ -11,8 +11,9 @@ import type { TextAlgorithm } from "./base";
  * the text as a sequence of chars. This is less memory-efficient
  * than a dedicated text rope that stores strings in the leaves.
  */
-export class RopeAlgorithm implements TextAlgorithm<TraceEdit> {
+export class RopeAlgorithm implements TextAlgorithm<TraceEdit, string> {
   static readonly isProseMirror = false;
+  static readonly isSavedStateString = true;
 
   rope = RopeSequence.empty;
 

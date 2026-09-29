@@ -14,8 +14,12 @@ import type { TextAlgorithm } from "./base";
  * Otherwise, we'd have one big text node, which is not realistic
  * and an unfair performance comparison.
  */
-export class ProseMirrorAlgorithm implements TextAlgorithm<TraceProseMirrorEdit> {
+export class ProseMirrorAlgorithm implements TextAlgorithm<
+  TraceProseMirrorEdit,
+  string
+> {
   static readonly isProseMirror = true;
+  static readonly isSavedStateString = true;
 
   state: EditorState;
 

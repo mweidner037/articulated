@@ -1,5 +1,8 @@
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
-import type { TextAlgorithmConstructor } from "./base";
+import type {
+  AnyTextAlgorithmConstructor,
+  TextAlgorithmConstructor,
+} from "./base";
 import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
 import { IdListSimpleAlgorithm } from "./id_list_simple";
@@ -9,7 +12,10 @@ import { StringAlgorithm } from "./string";
 
 export const allAlgorithms: Record<
   string,
-  TextAlgorithmConstructor<TraceEdit | TraceProseMirrorEdit>
+  TextAlgorithmConstructor<
+    TraceEdit | TraceProseMirrorEdit,
+    Uint8Array | string
+  >
 > = {
   charArray: CharArrayAlgorithm,
   idListSimple: IdListSimpleAlgorithm,
@@ -17,4 +23,4 @@ export const allAlgorithms: Record<
   proseMirror: ProseMirrorAlgorithm,
   rope: RopeAlgorithm,
   string: StringAlgorithm,
-};
+} satisfies Record<string, AnyTextAlgorithmConstructor>;

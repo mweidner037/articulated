@@ -7,11 +7,10 @@ import type { Measurement } from "./base";
  * Measures time per operation.
  */
 export const measureOpTimes: Measurement = {
-  async runTrial<E extends TraceEdit | TraceProseMirrorEdit>(
-    Alg: TextAlgorithmConstructor<E>,
-    edits: E[],
-    finalText: string,
-  ) {
+  async runTrial<
+    E extends TraceEdit | TraceProseMirrorEdit,
+    S extends Uint8Array | string,
+  >(Alg: TextAlgorithmConstructor<E, S>, edits: E[], finalText: string) {
     /** Individual operation times in ns. */
     const opTimes = new Array(edits.length).fill(0);
 

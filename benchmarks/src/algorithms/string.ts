@@ -5,8 +5,9 @@ import type { TextAlgorithm } from "./base";
 /**
  * A simple string, edited with slice and string concatenation.
  */
-export class StringAlgorithm implements TextAlgorithm<TraceEdit> {
+export class StringAlgorithm implements TextAlgorithm<TraceEdit, string> {
   static readonly isProseMirror = false;
+  static readonly isSavedStateString = true;
 
   text = "";
 
