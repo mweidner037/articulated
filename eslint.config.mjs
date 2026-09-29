@@ -13,6 +13,7 @@ export default defineConfig([
     "**/*.mjs",
     "benchmarks/src/traces/*",
     "**/tmp/",
+    "benchmarks/results/",
   ]),
   {
     extends: [

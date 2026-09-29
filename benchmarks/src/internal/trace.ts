@@ -1,5 +1,5 @@
-import fs from "fs";
-import path from "path";
+import { default as fs } from "fs";
+import { default as path } from "path";
 
 export interface TextTrace {
   description?: string;
@@ -56,4 +56,11 @@ export async function loadTrace(
   }
 
   return loaded;
+}
+
+export function allTraceNames(): string[] {
+  return fs
+    .readdirSync(path.join(__dirname, "..", "traces"))
+    .filter((file) => file.endsWith(".json"))
+    .map((file) => file.slice(0, -5));
 }

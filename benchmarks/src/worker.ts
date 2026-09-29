@@ -1,9 +1,8 @@
-import fs from "fs";
-import path from "path";
 import seedrandom from "seedrandom";
 import { allAlgorithms } from "./algorithms";
+import { appendResultRows } from "./internal/results";
 import type { TextTrace } from "./internal/trace";
-import { loadTrace } from "./internal/trace";
+import { allTraceNames, loadTrace } from "./internal/trace";
 import { allMeasurements } from "./measurements";
 
 const WARMUP_TRIALS = 5;
@@ -28,11 +27,7 @@ const MEASURED_TRIALS = 1;
 
     let optionsStr = "";
     try {
-      const traceNames = fs
-        .readdirSync(path.join(__dirname, "traces"))
-        .filter((file) => file.endsWith(".json"))
-        .map((file) => file.slice(0, -5));
-      optionsStr = `\nOptions: ${traceNames.join(", ")}`;
+      optionsStr = `\nOptions: ${allTraceNames().join(", ")}`;
     } catch (_err) {
       // Don't error again.
     }
@@ -75,7 +70,19 @@ const MEASURED_TRIALS = 1;
       trace.finalText,
       isMeasured,
     );
-    if (isMeasured) console.log(data);
+    if (isMeasured) {
+      console.log(data);
+      appendResultRows(
+        Object.entries(data).map(([datum, value]) => [
+          args[0],
+          String(refreshInterval),
+          args[2],
+          args[3],
+          datum,
+          String(value),
+        ]),
+      );
+    }
   }
 })();
 
