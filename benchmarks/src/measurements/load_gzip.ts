@@ -14,8 +14,13 @@ let gzipped: Uint8Array | null = null;
  * its compile caches etc. from the load call.
  */
 export const measureLoadGzip: Measurement = {
-  async setup(traceName, algorithmName) {
-    gzipped = await createSavedStateInProcess(traceName, algorithmName, "gzip");
+  async setup(traceName, algorithmName, refreshInterval) {
+    gzipped = await createSavedStateInProcess(
+      traceName,
+      algorithmName,
+      refreshInterval,
+      "gzip",
+    );
   },
 
   async runTrial<
@@ -24,6 +29,7 @@ export const measureLoadGzip: Measurement = {
   >(
     Alg: TextAlgorithmConstructor<E, S>,
     prng: seedrandom.PRNG,
+    _refreshInterval: number,
     _edits: E[],
     finalText: string,
   ) {

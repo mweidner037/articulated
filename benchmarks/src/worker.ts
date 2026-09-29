@@ -18,7 +18,7 @@ const MEASURED_TRIALS = 1;
   // Process args
 
   const args = process.argv.slice(2);
-  if (args.length !== 3) failWithUsage("Wrong number of arguments");
+  if (args.length !== 4) failWithUsage("Wrong number of arguments");
 
   let trace: TextTrace;
   try {
@@ -42,22 +42,26 @@ const MEASURED_TRIALS = 1;
     );
   }
 
-  const measurement = allMeasurements[args[1]];
+  const refreshInterval = Number(args[1]);
+  if (!Number.isInteger(refreshInterval) || refreshInterval < 0)
+    failWithUsage(`Invalid refreshInterval: ${args[1]}`);
+
+  const measurement = allMeasurements[args[2]];
   if (!measurement)
     failWithUsage(
-      `Unknown measurement: ${args[1]}\nOptions: ${Object.keys(allMeasurements).join(", ")}`,
+      `Unknown measurement: ${args[2]}\nOptions: ${Object.keys(allMeasurements).join(", ")}`,
     );
 
-  const algorithm = allAlgorithms[args[2]];
+  const algorithm = allAlgorithms[args[3]];
   if (!algorithm)
     failWithUsage(
-      `Unknown algorithm: ${args[2]}\nOptions: ${Object.keys(allAlgorithms).join(", ")}`,
+      `Unknown algorithm: ${args[3]}\nOptions: ${Object.keys(allAlgorithms).join(", ")}`,
     );
 
   // Run benchmark
 
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
-  await measurement.setup?.(args[0], args[2]);
+  await measurement.setup?.(args[0], args[3], refreshInterval);
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
     if (trial < WARMUP_TRIALS) console.log("Warmup ", trial + 1);
     // Fresh PRNG with the same seed each trial, so all trials are identical.
@@ -65,6 +69,7 @@ const MEASURED_TRIALS = 1;
     const data = await measurement.runTrial(
       algorithm,
       prng,
+      refreshInterval,
       edits,
       trace.finalText,
     );
@@ -77,6 +82,8 @@ const MEASURED_TRIALS = 1;
 
 function failWithUsage(message: string): never {
   console.error(message);
-  console.error("\nUsage: pnpm worker <trace> <measurement> <algorithm>");
+  console.error(
+    "\nUsage: pnpm worker <trace> <refreshInterval> <measurement> <algorithm>",
+  );
   process.exit(1);
 }

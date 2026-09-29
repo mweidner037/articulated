@@ -14,20 +14,26 @@ export const measureOpTimes: Measurement = {
   >(
     Alg: TextAlgorithmConstructor<E, S>,
     prng: seedrandom.PRNG,
+    refreshInterval: number,
     edits: E[],
     finalText: string,
   ) {
     /** Individual operation times in ns. */
     const opTimes = new Array(edits.length).fill(0);
 
-    const alg = new Alg(prng);
+    let alg = new Alg(prng);
     for (let i = 0; i < edits.length; i++) {
+      if (i !== 0 && refreshInterval !== 0 && i % refreshInterval === 0) {
+        const savedState = alg.save();
+        alg = new Alg(prng);
+        alg.load(savedState);
+      }
+
       const edit = edits[i];
 
       const startTime = process.hrtime.bigint();
       alg.apply(edit);
       const endTime = process.hrtime.bigint();
-
       opTimes[i] = new Number(endTime - startTime).valueOf();
     }
 

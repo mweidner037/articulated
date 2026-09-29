@@ -14,10 +14,11 @@ let savedState: Uint8Array | string | null = null;
  * its compile caches etc. from the load call.
  */
 export const measureLoad: Measurement = {
-  async setup(traceName, algorithmName) {
+  async setup(traceName, algorithmName, refreshInterval) {
     const bytes = await createSavedStateInProcess(
       traceName,
       algorithmName,
+      refreshInterval,
       "plain",
     );
     savedState = allAlgorithms[algorithmName].isSavedStateString
@@ -31,6 +32,7 @@ export const measureLoad: Measurement = {
   >(
     Alg: TextAlgorithmConstructor<E, S>,
     prng: seedrandom.PRNG,
+    _refreshInterval: number,
     _edits: E[],
     finalText: string,
   ) {

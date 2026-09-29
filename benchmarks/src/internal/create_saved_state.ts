@@ -2,25 +2,24 @@ import { gzipSync } from "fflate";
 import seedrandom from "seedrandom";
 import { allAlgorithms } from "../algorithms";
 import { loadTrace } from "./trace";
-import { gzipString } from "./util";
+import { applyEdits, gzipString } from "./util";
 
 /**
  * Used by the load measurements to generate saved states in a separate process.
  *
- * Usage: tsx src/internal/create_saved_state.ts <trace> <algorithm> <plain|gzip>
+ * Usage: tsx src/internal/create_saved_state.ts <trace> <algorithm> <refreshInterval> <plain|gzip>
  * The saved state (GZIP'd if requested) is written to stdout.
  */
 (async function () {
-  const [traceName, algorithmName, format] = process.argv.slice(2);
+  const [traceName, algorithmName, refreshIntervalStr, format] =
+    process.argv.slice(2);
+  const refreshInterval = Number(refreshIntervalStr);
 
   const trace = await loadTrace(traceName);
   const Alg = allAlgorithms[algorithmName];
   const edits = Alg.isProseMirror ? trace.proseMirrorEdits : trace.edits;
 
-  const alg = new Alg(seedrandom("42"));
-  for (const edit of edits) {
-    alg.apply(edit);
-  }
+  const alg = applyEdits(Alg, seedrandom("42"), refreshInterval, edits);
   const savedState = alg.save();
 
   if (format === "gzip") {
