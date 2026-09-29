@@ -45,4 +45,6 @@ export class StringAlgorithm implements TextAlgorithm<TraceEdit, string> {
   check(finalText: string) {
     assert.strictEqual(this.text, finalText);
   }
+
+  free(): void {}
 }

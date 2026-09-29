@@ -73,4 +73,6 @@ export class ProseMirrorAlgorithm implements TextAlgorithm<
       .join("\n");
     assert.strictEqual(pmText, finalText);
   }
+
+  free(): void {}
 }

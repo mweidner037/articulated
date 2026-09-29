@@ -3,6 +3,7 @@ import { allAlgorithms } from "./algorithms";
 import { appendResultRows } from "./internal/results";
 import type { TextTrace } from "./internal/trace";
 import { allTraceNames, loadTrace } from "./internal/trace";
+import { sleep } from "./internal/util";
 import { allMeasurements } from "./measurements";
 
 const WARMUP_TRIALS = 5;
@@ -58,6 +59,9 @@ const MEASURED_TRIALS = 1;
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
   await measurement.setup?.(args[0], args[3], refreshInterval);
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
+    // Pause to allow background work to finish (e.g. GC).
+    await sleep(100);
+
     const isMeasured = trial >= WARMUP_TRIALS;
     if (!isMeasured) console.log("Warmup ", trial + 1);
     // Fresh PRNG with the same seed each trial, so all trials are identical.

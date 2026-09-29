@@ -30,6 +30,8 @@ export const measureSaveGzip: Measurement = {
     const endTime = process.hrtime.bigint();
     const time = new Number(endTime - startTime).valueOf();
 
+    alg.free();
+
     return {
       "Save time GZIP (μs)": time / 1_000,
       "Save size GZIP (kB)": gzipped.length / 1_000,

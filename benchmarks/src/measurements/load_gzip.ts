@@ -44,6 +44,7 @@ export const measureLoadGzip: Measurement = {
     const time = new Number(endTime - startTime).valueOf();
 
     alg.check(finalText);
+    alg.free();
 
     return {
       "Load time GZIP (μs)": time / 1_000,

@@ -30,6 +30,11 @@ export interface TextAlgorithm<
    * Asserts that the internal state matches the given text (if applicable).
    */
   check(finalText: string): void;
+
+  /**
+   * Frees any resources that are not garbage collected (e.g., WASM memory).
+   */
+  free(): void;
 }
 
 export type TextAlgorithmConstructor<

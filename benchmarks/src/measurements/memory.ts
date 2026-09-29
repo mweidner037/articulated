@@ -33,7 +33,9 @@ export const measureMemory: Measurement = {
     const retainedSize = measureRetainedSize();
 
     // Also keeps holder alive until after the snapshot.
-    (holder.value as InstanceType<typeof Alg>).check(finalText);
+    const alg = holder.value as InstanceType<typeof Alg>;
+    alg.check(finalText);
+    alg.free();
 
     return {
       "Memory (kB)": retainedSize / 1_000,

@@ -25,6 +25,7 @@ export const measureOpTimes: Measurement = {
     for (let i = 0; i < edits.length; i++) {
       if (i !== 0 && refreshInterval !== 0 && i % refreshInterval === 0) {
         const savedState = alg.save();
+        alg.free();
         alg = new Alg(prng);
         alg.load(savedState);
       }
@@ -38,6 +39,7 @@ export const measureOpTimes: Measurement = {
     }
 
     alg.check(finalText);
+    alg.free();
 
     const [p25, p50, p75, p90, p95, p99, p100] = percentiles(
       opTimes,

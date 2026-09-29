@@ -46,10 +46,15 @@ export class AutomergeAlgorithm implements TextAlgorithm<
   }
 
   load(savedState: Uint8Array): void {
+    Automerge.free(this.doc);
     this.doc = Automerge.load(savedState);
   }
 
   check(finalText: string) {
     assert.strictEqual(this.doc["text"], finalText);
+  }
+
+  free(): void {
+    Automerge.free(this.doc);
   }
 }

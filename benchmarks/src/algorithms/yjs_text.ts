@@ -47,4 +47,6 @@ export class YjsTextAlgorithm implements TextAlgorithm<TraceEdit, Uint8Array> {
   check(finalText: string) {
     assert.strictEqual(this.ytext.toString(), finalText);
   }
+
+  free(): void {}
 }

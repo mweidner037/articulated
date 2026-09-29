@@ -67,4 +67,6 @@ export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
     // We don't store chars; check length only.
     assert.strictEqual(this.list.length, finalText.length);
   }
+
+  free(): void {}
 }

@@ -43,4 +43,6 @@ export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit, string> {
   check(finalText: string) {
     assert.strictEqual(this.save(), finalText);
   }
+
+  free(): void {}
 }

@@ -25,6 +25,8 @@ export const measureSave: Measurement = {
     const endTime = process.hrtime.bigint();
     const time = new Number(endTime - startTime).valueOf();
 
+    alg.free();
+
     return {
       "Save time (μs)": time / 1_000,
       "Save size (kB)": savedState.length / 1_000,

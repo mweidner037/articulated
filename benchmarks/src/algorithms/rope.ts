@@ -56,4 +56,6 @@ export class RopeAlgorithm implements TextAlgorithm<TraceEdit, string> {
   check(finalText: string): void {
     assert.strictEqual(this.save(), finalText);
   }
+
+  free(): void {}
 }
