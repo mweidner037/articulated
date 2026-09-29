@@ -1,4 +1,7 @@
+import { execFile } from "child_process";
 import { gunzipSync, gzipSync } from "fflate";
+import path from "path";
+import { promisify } from "util";
 
 export function getMemUsed() {
   if (global.gc) {
@@ -40,4 +43,31 @@ export function gzipString(str: string): Uint8Array {
 
 export function gunzipString(data: Uint8Array): string {
   return new TextDecoder().decode(gunzipSync(data));
+}
+
+/**
+ * Generates the saved state for the given trace & algorithm in a separate process.
+ *
+ * @returns The saved state's raw bytes (UTF-8 encoded if it is a string),
+ * GZIP'd if format is "gzip".
+ */
+export async function createSavedStateInProcess(
+  traceName: string,
+  algorithmName: string,
+  format: "plain" | "gzip",
+): Promise<Uint8Array> {
+  const { stdout } = await promisify(execFile)(
+    process.execPath,
+    [
+      "--import",
+      "tsx",
+      path.join(__dirname, "create_saved_state.ts"),
+      traceName,
+      algorithmName,
+      format,
+    ],
+    { encoding: "buffer", maxBuffer: 1024 * 1024 * 1024 },
+  );
+  // Copy into a plain Uint8Array (not a Buffer).
+  return new Uint8Array(stdout);
 }

@@ -5,7 +5,7 @@ export interface Measurement {
   /**
    * One-time setup for all trials (within a single worker). Optional.
    */
-  setup?: () => Promise<void>;
+  setup?: (traceName: string, algorithmName: string) => Promise<void>;
 
   /**
    * @returns Individual data points, keyed by name. Each name should include its
