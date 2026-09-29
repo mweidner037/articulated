@@ -12,6 +12,7 @@ export default defineConfig([
     "**/*.cjs",
     "**/*.mjs",
     "benchmarks/src/traces/*",
+    "**/tmp/",
   ]),
   {
     extends: [

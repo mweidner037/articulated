@@ -63,7 +63,8 @@ const MEASURED_TRIALS = 1;
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
   await measurement.setup?.(args[0], args[3], refreshInterval);
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
-    if (trial < WARMUP_TRIALS) console.log("Warmup ", trial + 1);
+    const isMeasured = trial >= WARMUP_TRIALS;
+    if (!isMeasured) console.log("Warmup ", trial + 1);
     // Fresh PRNG with the same seed each trial, so all trials are identical.
     const prng = seedrandom("42");
     const data = await measurement.runTrial(
@@ -72,11 +73,9 @@ const MEASURED_TRIALS = 1;
       refreshInterval,
       edits,
       trace.finalText,
+      isMeasured,
     );
-    if (trial >= WARMUP_TRIALS) {
-      // Measured trial.
-      console.log(data);
-    }
+    if (isMeasured) console.log(data);
   }
 })();
 
