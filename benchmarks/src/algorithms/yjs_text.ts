@@ -4,7 +4,7 @@ import type { TraceEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
 /**
- * The Yjs library's `Y.Text` rich-text CRDT.
+ * The Yjs CRDT library's `Y.Text` rich-text type.
  */
 export class YjsTextAlgorithm implements TextAlgorithm<TraceEdit, Uint8Array> {
   static readonly isProseMirror = false;

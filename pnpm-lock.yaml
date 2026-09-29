@@ -59,6 +59,9 @@ importers:
 
   benchmarks:
     dependencies:
+      '@automerge/automerge':
+        specifier: ^3.5.0
+        version: 3.5.0
       '@types/seedrandom':
         specifier: ^3.0.8
         version: 3.0.8
@@ -104,6 +107,9 @@ importers:
         version: 3.0.5
 
 packages:
+
+  '@automerge/automerge@3.5.0':
+    resolution: {integrity: sha512-ejbqJWfXWM2QbTcUK/5ugYiQiyOP7LYVAp/RuSvthCc07oek0FClMxEuouuhjrLjVPDSI34RP1ftGc45PF7WRA==}
 
   '@babel/code-frame@7.29.7':
     resolution: {integrity: sha512-Aup7aUOfpbAUg2ROOJN6Iw5f9DMBlzu0mIkm/malLQFN/YQgO48wCj0Kxa3sEHJvPVFg7siR+qRInwXd2qhQKw==}
@@ -1487,6 +1493,8 @@ packages:
     engines: {node: '>=10'}
 
 snapshots:
+
+  '@automerge/automerge@3.5.0': {}
 
   '@babel/code-frame@7.29.7':
     dependencies:

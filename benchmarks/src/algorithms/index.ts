@@ -1,4 +1,5 @@
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
+import { AutomergeAlgorithm } from "./automerge";
 import type {
   AnyTextAlgorithmConstructor,
   TextAlgorithmConstructor,
@@ -18,6 +19,7 @@ export const allAlgorithms: Record<
     Uint8Array | string
   >
 > = {
+  automerge: AutomergeAlgorithm,
   charArray: CharArrayAlgorithm,
   idListSimple: IdListSimpleAlgorithm,
   idList: IdListAlgorithm,
