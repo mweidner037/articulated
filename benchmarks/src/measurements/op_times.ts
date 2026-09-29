@@ -1,3 +1,4 @@
+import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { mean, percentiles } from "../internal/util";
@@ -10,11 +11,16 @@ export const measureOpTimes: Measurement = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,
-  >(Alg: TextAlgorithmConstructor<E, S>, edits: E[], finalText: string) {
+  >(
+    Alg: TextAlgorithmConstructor<E, S>,
+    prng: seedrandom.PRNG,
+    edits: E[],
+    finalText: string,
+  ) {
     /** Individual operation times in ns. */
     const opTimes = new Array(edits.length).fill(0);
 
-    const alg = new Alg();
+    const alg = new Alg(prng);
     for (let i = 0; i < edits.length; i++) {
       const edit = edits[i];
 

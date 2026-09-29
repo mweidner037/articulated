@@ -1,3 +1,4 @@
+import type seedrandom from "seedrandom";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 
 export interface TextAlgorithm<
@@ -29,7 +30,7 @@ export interface TextAlgorithm<
 export type TextAlgorithmConstructor<
   E extends TraceEdit | TraceProseMirrorEdit,
   S extends Uint8Array | string,
-> = (new () => TextAlgorithm<E, S>) & {
+> = (new (prng: seedrandom.PRNG) => TextAlgorithm<E, S>) & {
   readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
   readonly isSavedStateString: S extends string ? true : false;
 };

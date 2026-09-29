@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import seedrandom from "seedrandom";
 import { allAlgorithms } from "./algorithms";
 import type { TextTrace } from "./internal/trace";
 import { loadTrace } from "./internal/trace";
@@ -59,7 +60,14 @@ const MEASURED_TRIALS = 1;
   await measurement.setup?.(args[0], args[2]);
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
     if (trial < WARMUP_TRIALS) console.log("Warmup ", trial + 1);
-    const data = await measurement.runTrial(algorithm, edits, trace.finalText);
+    // Fresh PRNG with the same seed each trial, so all trials are identical.
+    const prng = seedrandom("42");
+    const data = await measurement.runTrial(
+      algorithm,
+      prng,
+      edits,
+      trace.finalText,
+    );
     if (trial >= WARMUP_TRIALS) {
       // Measured trial.
       console.log(data);

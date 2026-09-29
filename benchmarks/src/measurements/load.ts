@@ -1,3 +1,4 @@
+import type seedrandom from "seedrandom";
 import { allAlgorithms } from "../algorithms";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
@@ -27,8 +28,13 @@ export const measureLoad: Measurement = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,
-  >(Alg: TextAlgorithmConstructor<E, S>, _edits: E[], finalText: string) {
-    const alg = new Alg();
+  >(
+    Alg: TextAlgorithmConstructor<E, S>,
+    prng: seedrandom.PRNG,
+    _edits: E[],
+    finalText: string,
+  ) {
+    const alg = new Alg(prng);
 
     const startTime = process.hrtime.bigint();
     alg.load(savedState as S);

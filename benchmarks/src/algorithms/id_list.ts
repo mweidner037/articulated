@@ -1,7 +1,7 @@
 import { ElementIdGenerator, IdList } from "articulated";
 import { assert } from "chai";
 import { maybeRandomString } from "maybe-random-string";
-import seedrandom from "seedrandom";
+import type seedrandom from "seedrandom";
 import type { TraceEdit } from "../internal/trace";
 import type { TextAlgorithm } from "./base";
 
@@ -22,9 +22,9 @@ export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
   readonly idGen: ElementIdGenerator;
   list: IdList = IdList.new();
 
-  constructor() {
+  constructor(prng: seedrandom.PRNG) {
     const clientId = maybeRandomString({
-      prng: seedrandom("42"),
+      prng,
       length: CLIENT_ID_LENGTH,
     });
     let seqNum = 0;

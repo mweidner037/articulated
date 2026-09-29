@@ -1,4 +1,5 @@
 import { gzipSync } from "fflate";
+import seedrandom from "seedrandom";
 import { allAlgorithms } from "../algorithms";
 import { loadTrace } from "./trace";
 import { gzipString } from "./util";
@@ -16,7 +17,7 @@ import { gzipString } from "./util";
   const Alg = allAlgorithms[algorithmName];
   const edits = Alg.isProseMirror ? trace.proseMirrorEdits : trace.edits;
 
-  const alg = new Alg();
+  const alg = new Alg(seedrandom("42"));
   for (const edit of edits) {
     alg.apply(edit);
   }

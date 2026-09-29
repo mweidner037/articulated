@@ -1,4 +1,5 @@
 import { gzipSync } from "fflate";
+import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { gzipString } from "../internal/util";
@@ -11,8 +12,13 @@ export const measureSaveGzip: Measurement = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,
-  >(Alg: TextAlgorithmConstructor<E, S>, edits: E[], _finalText: string) {
-    const alg = new Alg();
+  >(
+    Alg: TextAlgorithmConstructor<E, S>,
+    prng: seedrandom.PRNG,
+    edits: E[],
+    _finalText: string,
+  ) {
+    const alg = new Alg(prng);
     for (const edit of edits) {
       alg.apply(edit);
     }

@@ -1,4 +1,5 @@
 import { gunzipSync } from "fflate";
+import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { createSavedStateInProcess, gunzipString } from "../internal/util";
@@ -20,8 +21,13 @@ export const measureLoadGzip: Measurement = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,
-  >(Alg: TextAlgorithmConstructor<E, S>, _edits: E[], finalText: string) {
-    const alg = new Alg();
+  >(
+    Alg: TextAlgorithmConstructor<E, S>,
+    prng: seedrandom.PRNG,
+    _edits: E[],
+    finalText: string,
+  ) {
+    const alg = new Alg(prng);
 
     const startTime = process.hrtime.bigint();
     const savedState = (
