@@ -116,7 +116,7 @@ const MAX_ATTEMPTS = 3;
 })();
 
 /**
- * Parses a "|"-separated list of options, or "ALL" for allOptions.
+ * Parses a ","-separated list of options, or "ALL" for allOptions.
  */
 function parseOptions(
   arg: string,
@@ -125,7 +125,7 @@ function parseOptions(
   isValid = (option: string) => allOptions.includes(option),
 ): string[] {
   if (arg === "ALL") return allOptions;
-  const options = arg.split("|");
+  const options = arg.split(",");
   for (const option of options) {
     if (!isValid(option))
       failWithUsage(
@@ -158,7 +158,7 @@ function runWorker(workerArgs: string[]): Promise<number | null> {
 function failWithUsage(message: string): never {
   console.error(message);
   console.error(
-    '\nUsage: pnpm start <numTrials> <traces> <refreshIntervals> <measurements> <algorithms>\nEach of the last 4 args is a "|"-separated list of options, or "ALL".',
+    '\nUsage: pnpm start <numTrials> <traces> <refreshIntervals> <measurements> <algorithms>\nEach of the last 4 args is a ","-separated list of options, or "ALL".',
   );
   process.exit(1);
 }
