@@ -60,6 +60,7 @@ export function applyEdits<
   for (let i = 0; i < edits.length; i++) {
     if (i !== 0 && refreshInterval !== 0 && i % refreshInterval === 0) {
       const savedState = alg.save();
+      alg.free();
       alg = new Alg(prng);
       alg.load(savedState);
     }

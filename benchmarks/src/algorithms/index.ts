@@ -6,7 +6,6 @@ import type {
 } from "./base";
 import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
-import { IdListSimpleAlgorithm } from "./id_list_simple";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
 import { StringAlgorithm } from "./string";
@@ -23,7 +22,8 @@ export const allAlgorithms: Record<
   charArray: CharArrayAlgorithm,
   rope: RopeAlgorithm,
   proseMirror: ProseMirrorAlgorithm,
-  idListSimple: IdListSimpleAlgorithm,
+  // Skipping this as it is too slow to apply all ops.
+  // idListSimple: IdListSimpleAlgorithm,
   idList: IdListAlgorithm,
   automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,
