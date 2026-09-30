@@ -55,6 +55,7 @@ function retainedSizeInSnapshot(snapshot: HeapSnapshot): number {
   const { nodes, edges, strings } = snapshot;
 
   const nodeFieldCount = meta.node_fields.length;
+  const nodeIdOffset = meta.node_fields.indexOf("id");
   const nodeTypeOffset = meta.node_fields.indexOf("type");
   const nodeNameOffset = meta.node_fields.indexOf("name");
   const nodeSelfSizeOffset = meta.node_fields.indexOf("self_size");
@@ -63,8 +64,10 @@ function retainedSizeInSnapshot(snapshot: HeapSnapshot): number {
 
   const edgeFieldCount = meta.edge_fields.length;
   const edgeTypeOffset = meta.edge_fields.indexOf("type");
+  const edgeNameOffset = meta.edge_fields.indexOf("name_or_index");
   const edgeToNodeOffset = meta.edge_fields.indexOf("to_node");
   const weakEdgeType = meta.edge_types[0].indexOf("weak");
+  const internalEdgeType = meta.edge_types[0].indexOf("internal");
 
   const nodeCount = nodes.length / nodeFieldCount;
 
@@ -92,6 +95,33 @@ function retainedSizeInSnapshot(snapshot: HeapSnapshot): number {
   if (holder === -1) throw new Error("BenchmarkMemoryHolder not found");
 
   /**
+   * V8 represents each WeakMap entry as two strong internal edges to the
+   * value, one from the key and one from the WeakMap's backing table, named
+   * "<n> / part of key (... @keyId) -> value (... @valueId) pair in WeakMap (table @tableId)".
+   *
+   * We skip the table's edge so that the value is only reachable via its key,
+   * matching WeakMap semantics. Otherwise, a module-level WeakMap cache whose
+   * values reference their keys (e.g., prosemirror-model's resolveCache)
+   * makes the keys appear reachable from the root.
+   *
+   * Maps edge name string index -> table node id, or -1 if not a WeakMap edge.
+   */
+  const weakMapTableIds = new Map<number, number>();
+  function isWeakMapTableEdge(from: number, edgeIndex: number): boolean {
+    if (edges[edgeIndex + edgeTypeOffset] !== internalEdgeType) return false;
+    const nameIndex = edges[edgeIndex + edgeNameOffset];
+    let tableId = weakMapTableIds.get(nameIndex);
+    if (tableId === undefined) {
+      const match = / pair in WeakMap \(table @(\d+)\)$/.exec(
+        strings[nameIndex],
+      );
+      tableId = match === null ? -1 : Number(match[1]);
+      weakMapTableIds.set(nameIndex, tableId);
+    }
+    return tableId === nodes[from * nodeFieldCount + nodeIdOffset];
+  }
+
+  /**
    * BFS over strong edges from start, skipping nodes already marked in
    * visited (which it mutates).
    */
@@ -105,6 +135,7 @@ function retainedSizeInSnapshot(snapshot: HeapSnapshot): number {
       for (let e = firstEdge[node]; e < firstEdge[node + 1]; e++) {
         const edgeIndex = e * edgeFieldCount;
         if (edges[edgeIndex + edgeTypeOffset] === weakEdgeType) continue;
+        if (isWeakMapTableEdge(node, edgeIndex)) continue;
         const to = edges[edgeIndex + edgeToNodeOffset] / nodeFieldCount;
         if (visited[to] === 0) {
           visited[to] = 1;
