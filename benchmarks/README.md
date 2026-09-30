@@ -13,6 +13,8 @@ Traces:
 
 1. kleppmannReal: A real-world editing trace by Martin Kleppmann, from https://github.com/automerge/automerge-perf. It consists of 182,315 insertions and 77,463 deletions, for a final document size of 104,852 characters - the LaTeX source of [a 17 page paper](https://arxiv.org/abs/1608.03960).
 
+Results are in [results.md](./results.md). They were generated on an M4 MacBook Pro with 48 GB of RAM, running pnpm 11.7.0 and node 24.16.0.
+
 ## Commands
 
 Run an individual benchmark, printing its data to stdout and appending it to `results/data.csv`:
