@@ -8,6 +8,7 @@ import type { TextAlgorithm } from "./base";
 export class CharArrayAlgorithm implements TextAlgorithm<TraceEdit, string> {
   static readonly isProseMirror = false;
   static readonly isSavedStateString = true;
+  static readonly isWasm = false;
 
   chars: string[] = [];
 

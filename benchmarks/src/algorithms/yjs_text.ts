@@ -9,6 +9,7 @@ import type { TextAlgorithm } from "./base";
 export class YjsTextAlgorithm implements TextAlgorithm<TraceEdit, Uint8Array> {
   static readonly isProseMirror = false;
   static readonly isSavedStateString = false;
+  static readonly isWasm = false;
 
   readonly ydoc: Y.Doc;
   readonly ytext: Y.Text;

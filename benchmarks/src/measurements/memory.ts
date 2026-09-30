@@ -27,6 +27,11 @@ export const measureMemory: Measurement = {
     finalText: string,
     isMeasured: boolean,
   ) {
+    if (Alg.isWasm) {
+      // Our heap snapshot technique doesn't measure WASM memory usage.
+      return {};
+    }
+
     const holder = new BenchmarkMemoryHolder(
       buildAlgInstance(Alg, prng, refreshInterval, edits),
     );

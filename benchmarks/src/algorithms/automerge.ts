@@ -6,7 +6,7 @@ import type { TextAlgorithm } from "./base";
 /**
  * The Automerge CRDT library's string type.
  *
- * Note: Automerge is a WASM library, so our memory benchmark does not measure it accurately.
+ * Note: Automerge is a WASM library, so we skip its memory benchmark.
  */
 export class AutomergeAlgorithm implements TextAlgorithm<
   TraceEdit,
@@ -14,6 +14,7 @@ export class AutomergeAlgorithm implements TextAlgorithm<
 > {
   static readonly isProseMirror = false;
   static readonly isSavedStateString = false;
+  static readonly isWasm = true;
 
   // The doc needs to be a JSON object. Put the text string at key "text".
   doc: { text: string };

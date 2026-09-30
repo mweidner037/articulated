@@ -43,6 +43,7 @@ export type TextAlgorithmConstructor<
 > = (new (prng: seedrandom.PRNG) => TextAlgorithm<E, S>) & {
   readonly isProseMirror: E extends TraceProseMirrorEdit ? true : false;
   readonly isSavedStateString: S extends string ? true : false;
+  readonly isWasm: boolean;
 };
 
 /**

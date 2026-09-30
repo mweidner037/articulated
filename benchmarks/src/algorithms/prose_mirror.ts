@@ -20,6 +20,7 @@ export class ProseMirrorAlgorithm implements TextAlgorithm<
 > {
   static readonly isProseMirror = true;
   static readonly isSavedStateString = true;
+  static readonly isWasm = false;
 
   state: EditorState;
 
