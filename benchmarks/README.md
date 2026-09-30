@@ -5,7 +5,7 @@ Benchmarks of IdList and other text-editor data structures on local text-editing
 The goal is to evaluate the cost of per-character IDs stored in an IdList, both in absolute terms (is the cost reasonable for modern hardware?) and relative to:
 
 - Traditional text-editor data structures - IdList adds to their cost.
-- Existing optimized Conflict-free Replicated Data Types (CRDTs) - these show what's possible when storing the text, per-character IDs, and additional collaborative metadata.
+- Existing optimized Conflict-free Replicated Data Types (CRDTs) - these show what's currently possible when storing the text, per-character IDs, and additional collaborative metadata.
 
 The benchmarks simulate local editing, replaying a trace of single-character insertions and deletions against each data structure. They measure the time per operation, memory usage for the final state, and cost of saving and loading the final state.
 
@@ -41,7 +41,7 @@ pnpm results
 
 ## Adding a trace
 
-Create your trace as a JSON file in `src/traces/`. It must match the `TextTrace` TypeScript type, except that you don't need to add the `proseMirrorEdits` field yourself - instead, generate that by running
+Create the trace as a JSON file in `src/traces/`. It must match the `TextTrace` TypeScript type, except that you don't need the `proseMirrorEdits` field - instead, generate that by running
 
 ```
 pnpm finish-trace <traceName>
