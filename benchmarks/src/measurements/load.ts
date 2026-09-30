@@ -47,7 +47,7 @@ export const measureLoad: Measurement = {
     alg.free();
 
     return {
-      "Load time (μs)": time / 1_000,
+      "Load time (ms)": time / 1_000_000,
     };
   },
 };

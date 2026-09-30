@@ -16,11 +16,11 @@ const COLUMNS = [
   "P90 (μs)",
   "P100 (μs)",
   "Memory (kB)",
-  "Save time (μs)",
-  "Load time (μs)",
+  "Save time (ms)",
+  "Load time (ms)",
   "Save size (kB)",
-  "Save time GZIP (μs)",
-  "Load time GZIP (μs)",
+  "Save time GZIP (ms)",
+  "Load time GZIP (ms)",
   "Save size GZIP (kB)",
 ];
 

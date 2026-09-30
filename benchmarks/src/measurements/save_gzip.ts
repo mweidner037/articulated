@@ -33,7 +33,7 @@ export const measureSaveGzip: Measurement = {
     alg.free();
 
     return {
-      "Save time GZIP (μs)": time / 1_000,
+      "Save time GZIP (ms)": time / 1_000_000,
       "Save size GZIP (kB)": gzipped.length / 1_000,
     };
   },

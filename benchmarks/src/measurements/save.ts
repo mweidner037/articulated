@@ -28,7 +28,7 @@ export const measureSave: Measurement = {
     alg.free();
 
     return {
-      "Save time (μs)": time / 1_000,
+      "Save time (ms)": time / 1_000_000,
       "Save size (kB)": savedState.length / 1_000,
     };
   },
