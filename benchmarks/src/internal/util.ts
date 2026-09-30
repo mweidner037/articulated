@@ -46,6 +46,10 @@ export function gunzipString(data: Uint8Array): string {
  *
  * If refreshInterval is nonzero, the alg is "refreshed" (saved and loaded
  * into a new instance) every refreshInterval edits.
+ *
+ * @param refreshAtEnd Set to true to get back a refreshed (just-loaded) alg.
+ * This is recommended for measuring the typical performance of a document with a long history,
+ * independent of the fragmentation that results from applying that whole history at once.
  */
 export function applyEdits<
   E extends TraceEdit | TraceProseMirrorEdit,
@@ -55,17 +59,24 @@ export function applyEdits<
   prng: seedrandom.PRNG,
   refreshInterval: number,
   edits: E[],
+  refreshAtEnd = false,
 ): TextAlgorithm<E, S> {
   let alg = new Alg(prng);
+  const refresh = () => {
+    const savedState = alg.save();
+    alg.free();
+    alg = new Alg(prng);
+    alg.load(savedState);
+  };
+
   for (let i = 0; i < edits.length; i++) {
     if (i !== 0 && refreshInterval !== 0 && i % refreshInterval === 0) {
-      const savedState = alg.save();
-      alg.free();
-      alg = new Alg(prng);
-      alg.load(savedState);
+      refresh();
     }
     alg.apply(edits[i]);
   }
+
+  if (refreshAtEnd) refresh();
   return alg;
 }
 

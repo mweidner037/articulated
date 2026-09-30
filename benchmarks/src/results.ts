@@ -15,6 +15,7 @@ const COLUMNS = [
   "P50 (μs)",
   "P90 (μs)",
   "P100 (μs)",
+  "Iteration time (μs)",
   "Memory (kB)",
   "Save time (ms)",
   "Load time (ms)",

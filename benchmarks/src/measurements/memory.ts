@@ -1,8 +1,5 @@
 import type seedrandom from "seedrandom";
-import type {
-  TextAlgorithm,
-  TextAlgorithmConstructor,
-} from "../algorithms/base";
+import type { TextAlgorithmConstructor } from "../algorithms/base";
 import {
   BenchmarkMemoryHolder,
   measureRetainedSize,
@@ -33,7 +30,7 @@ export const measureMemory: Measurement = {
     }
 
     const holder = new BenchmarkMemoryHolder(
-      buildAlgInstance(Alg, prng, refreshInterval, edits),
+      applyEdits(Alg, prng, refreshInterval, edits, true),
     );
 
     // Skip the (slow) snapshot during warmup trials.
@@ -50,22 +47,3 @@ export const measureMemory: Measurement = {
     };
   },
 };
-
-function buildAlgInstance<
-  E extends TraceEdit | TraceProseMirrorEdit,
-  S extends Uint8Array | string,
->(
-  Alg: TextAlgorithmConstructor<E, S>,
-  prng: seedrandom.PRNG,
-  refreshInterval: number,
-  edits: E[],
-): TextAlgorithm<E, S> {
-  const alg = applyEdits(Alg, prng, refreshInterval, edits);
-
-  // Refresh the alg instance at the end.
-  // That way, we are measuring the typical memory usage of a document with a long history,
-  // independent of the fragmentation that results from applying that whole history at once.
-  const refreshedAlg = new Alg(prng);
-  refreshedAlg.load(alg.save());
-  return refreshedAlg;
-}
