@@ -60,10 +60,27 @@ const COLUMNS = [
     values.push(Number(value));
   }
 
+  let minTrials = Infinity;
+  let maxTrials = 0;
+  for (const byRefresh of data.values()) {
+    for (const byAlgorithm of byRefresh.values()) {
+      for (const byDatum of byAlgorithm.values()) {
+        for (const values of byDatum.values()) {
+          minTrials = Math.min(minTrials, values.length);
+          maxTrials = Math.max(maxTrials, values.length);
+        }
+      }
+    }
+  }
+  const trials =
+    minTrials === maxTrials
+      ? `${maxTrials} trial${maxTrials === 1 ? "" : "s"}`
+      : `${minTrials} - ${maxTrials} trials`;
+
   const lines: string[] = [
     "# Benchmark results",
     "",
-    "Each cell is the mean ± sample standard deviation across trials.",
+    `Each cell is the mean ± sample standard deviation across ${trials}.`,
   ];
   for (const trace of [...data.keys()].sort()) {
     lines.push("", `## Trace: ${trace}`);
