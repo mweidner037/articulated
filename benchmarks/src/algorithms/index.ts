@@ -19,12 +19,12 @@ export const allAlgorithms: Record<
     Uint8Array | string
   >
 > = {
-  automerge: AutomergeAlgorithm,
+  string: StringAlgorithm,
   charArray: CharArrayAlgorithm,
+  rope: RopeAlgorithm,
+  proseMirror: ProseMirrorAlgorithm,
   idListSimple: IdListSimpleAlgorithm,
   idList: IdListAlgorithm,
-  proseMirror: ProseMirrorAlgorithm,
-  rope: RopeAlgorithm,
-  string: StringAlgorithm,
+  automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,
 } satisfies Record<string, AnyTextAlgorithmConstructor>;
