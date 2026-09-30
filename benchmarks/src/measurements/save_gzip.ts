@@ -2,7 +2,7 @@ import { gzipSync } from "fflate";
 import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
-import { applyEdits, gzipString } from "../internal/util";
+import { applyEdits, gzipString, sleep } from "../internal/util";
 import type { Measurement } from "./base";
 
 /**
@@ -20,6 +20,8 @@ export const measureSaveGzip: Measurement = {
     _finalText: string,
   ) {
     const alg = applyEdits(Alg, prng, refreshInterval, edits);
+    // Pause to allow background work to finish (e.g. GC).
+    await sleep(100);
 
     const startTime = process.hrtime.bigint();
     const savedState = alg.save();

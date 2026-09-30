@@ -14,7 +14,6 @@ import { sleep } from "./internal/util";
 import { allMeasurements } from "./measurements";
 
 const ALL_REFRESH_INTERVALS = ["0", "1000"];
-const SLEEP_MS = 1000;
 const MAX_ATTEMPTS = 3;
 
 (async function () {
@@ -96,7 +95,7 @@ const MAX_ATTEMPTS = 3;
         `\n[${i + 1}/${runs.length}] ${runs[i].join(" ")}` +
           (attempt === 0 ? "" : ` (retry ${attempt}/${MAX_ATTEMPTS - 1})`),
       );
-      await sleep(SLEEP_MS);
+      await sleep(1000);
 
       const exitCode = await runWorker(runs[i]);
       if (exitCode === 0) break;

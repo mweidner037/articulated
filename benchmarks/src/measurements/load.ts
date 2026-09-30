@@ -2,7 +2,7 @@ import type seedrandom from "seedrandom";
 import { allAlgorithms } from "../algorithms";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
-import { createSavedStateInProcess } from "../internal/util";
+import { createSavedStateInProcess, sleep } from "../internal/util";
 import type { Measurement } from "./base";
 
 let savedState: Uint8Array | string | null = null;
@@ -37,6 +37,8 @@ export const measureLoad: Measurement = {
     finalText: string,
   ) {
     const alg = new Alg(prng);
+    // Pause to allow background work to finish (e.g. GC).
+    await sleep(100);
 
     const startTime = process.hrtime.bigint();
     alg.load(savedState as S);

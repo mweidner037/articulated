@@ -2,7 +2,11 @@ import { gunzipSync } from "fflate";
 import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
-import { createSavedStateInProcess, gunzipString } from "../internal/util";
+import {
+  createSavedStateInProcess,
+  gunzipString,
+  sleep,
+} from "../internal/util";
 import type { Measurement } from "./base";
 
 let gzipped: Uint8Array | null = null;
@@ -34,6 +38,8 @@ export const measureLoadGzip: Measurement = {
     finalText: string,
   ) {
     const alg = new Alg(prng);
+    // Pause to allow background work to finish (e.g. GC).
+    await sleep(100);
 
     const startTime = process.hrtime.bigint();
     const savedState = (

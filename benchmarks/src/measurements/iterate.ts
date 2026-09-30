@@ -1,7 +1,7 @@
 import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
-import { applyEdits } from "../internal/util";
+import { applyEdits, sleep } from "../internal/util";
 import type { Measurement } from "./base";
 
 /**
@@ -19,6 +19,8 @@ export const measureIterate: Measurement = {
     finalText: string,
   ) {
     const alg = applyEdits(Alg, prng, refreshInterval, edits, true);
+    // Pause to allow background work to finish (e.g. GC).
+    await sleep(100);
 
     const startTime = process.hrtime.bigint();
     alg.iterate();
