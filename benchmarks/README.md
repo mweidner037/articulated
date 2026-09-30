@@ -1,6 +1,6 @@
 # Benchmarks
 
-Benchmarks of IdList and other text-editor data structures on local text-editing traces.
+Benchmarks of articulated's IdList and other text-editor data structures on local text-editing traces.
 
 The goal is to evaluate the cost of per-character IDs stored in an IdList, both in absolute terms (is the cost reasonable for modern hardware?) and relative to:
 
@@ -23,7 +23,7 @@ Run an individual benchmark, printing its data to stdout and appending it to `re
 pnpm worker <trace> <refreshInterval> <measurement> <algorithm>
 ```
 
-Run multiple benchmarks (each in a separate worker process), erasing any matching rows in `results/data.csv` and then appending new ones:
+Run multiple benchmarks (each in a separate worker process), first erasing any matching rows in `results/data.csv` and then appending new ones as the benchmarks run:
 
 ```bash
 pnpm start <numTrials> <traces> <refreshIntervals> <measurements> <algorithms>

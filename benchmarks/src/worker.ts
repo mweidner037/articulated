@@ -39,20 +39,23 @@ const MEASURED_TRIALS = 1;
   }
 
   const refreshInterval = Number(args[1]);
-  if (!Number.isInteger(refreshInterval) || refreshInterval < 0)
+  if (!Number.isInteger(refreshInterval) || refreshInterval < 0) {
     failWithUsage(`Invalid refreshInterval: ${args[1]}`);
+  }
 
   const measurement = allMeasurements[args[2]];
-  if (!measurement)
+  if (!measurement) {
     failWithUsage(
       `Unknown measurement: ${args[2]}\nOptions: ${Object.keys(allMeasurements).join(", ")}`,
     );
+  }
 
   const algorithm = allAlgorithms[args[3]];
-  if (!algorithm)
+  if (!algorithm) {
     failWithUsage(
       `Unknown algorithm: ${args[3]}\nOptions: ${Object.keys(allAlgorithms).join(", ")}`,
     );
+  }
 
   // Run benchmark
 

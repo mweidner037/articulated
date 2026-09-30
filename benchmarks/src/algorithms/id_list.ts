@@ -29,7 +29,7 @@ export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
       length: CLIENT_ID_LENGTH,
     });
     let seqNum = 0;
-    const newBunchId = () => `${clientId}:${(seqNum++).toString(36)}`;
+    const newBunchId = () => `${clientId}_${(seqNum++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 

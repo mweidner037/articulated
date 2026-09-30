@@ -31,7 +31,7 @@ export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit, string> {
       length: CLIENT_ID_LENGTH,
     });
     let counter = 0;
-    const newBunchId = () => `${clientId}:${(counter++).toString(36)}`;
+    const newBunchId = () => `${clientId}_${(counter++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 
