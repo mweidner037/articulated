@@ -1,45 +1,35 @@
-# Benchmark Results
+# Benchmark results
 
-Output of
+Each cell is the 95% confidence interval from 10 trials.
 
-```bash
-pnpm start > results.md
-```
+## Trace: kleppmannReal
 
-Each benchmark applies the [automerge-perf](https://github.com/automerge/automerge-perf) 260k edit text trace and measures various stats, modeled on [crdt-benchmarks](https://github.com/dmonad/crdt-benchmarks/)' B4 experiment.
+Editing trace by Martin Kleppmann.
 
-For perspective on the save sizes: the final text (excluding deleted chars) is 104,852 bytes, or 27556 bytes GZIP'd. It is ~15 pages of two-column text (in LaTeX).
+Source: https://github.com/automerge/automerge-perf/blob/master/edit-by-index/editing-trace.js.
 
-Note: This is not a fair comparison to list/text CRDTs. The executions benchmarked here do not accommodate concurrency and would need to be used in conjunction with a server reconciliation strategy, which adds its own overhead. Also, we do not send or store the actual text, only the corresponding ElementIds.
+Info: https://github.com/automerge/automerge-perf.
 
-## Insert-After, JSON Encoding
+### No refreshes
 
-Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only.
-Updates and saved states use JSON encoding, with optional GZIP for saved states.
+| Algorithm | Mean (μs) | P50 (μs) | P90 (μs) | P100 (μs) | Iteration time (μs) | Memory (kB) | Save time (ms) | Load time (ms) | Save size (kB) | Save time GZIP (ms) | Load time GZIP (ms) | Save size GZIP (kB) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| string | 1.57 ± 0.02 | 1.60 ± 0.02 | 2.20 ± 0.03 | 374 ± 47 | 1.43 ± 0.28 | 105 ± 0 | 0.00273 ± 0.00073 | 0.00750 ± 0.00066 | 105 ± 0 | 2.81 ± 0.09 | 2.52 ± 0.52 | 28.3 ± 0.0 |
+| charArray | 3.45 ± 0.02 | 1.85 ± 0.01 | 8.84 ± 0.05 | 129 ± 8 | 768 ± 99 | 839 ± 0 | 1.57 ± 0.04 | 1.89 ± 0.36 | 105 ± 0 | 4.39 ± 0.09 | 3.85 ± 0.81 | 28.3 ± 0.0 |
+| rope | 0.216 ± 0.001 | 0.167 ± 0.000 | 0.333 ± 0.000 | 735 ± 70 | 79.1 ± 9.7 | 839 ± 0 | 3.41 ± 0.10 | 1.75 ± 0.42 | 105 ± 0 | 6.72 ± 0.20 | 3.54 ± 0.81 | 28.3 ± 0.0 |
+| proseMirror | 10.2 ± 0.1 | 8.26 ± 0.06 | 16.5 ± 0.1 | 16311 ± 451 | 42.1 ± 2.6 | 354 ± 7 | 1.42 ± 0.10 | 3.21 ± 0.57 | 166 ± 0 | 9.63 ± 1.05 | 5.36 ± 0.47 | 30.6 ± 0.0 |
+| idList | 1.71 ± 0.01 | 1.62 ± 0.01 | 1.98 ± 0.03 | 481 ± 50 | 17723 ± 356 | 2528 ± 0 | 3.26 ± 0.12 | 14.2 ± 1.1 | 871 ± 0 | 19.9 ± 1.4 | 17.7 ± 1.8 | 65.3 ± 0.0 |
+| automerge | 27.8 ± 0.1 | 27.4 ± 0.1 | 32.0 ± 0.2 | 4189 ± 68 | 3.08 ± 0.91 |  | 17.2 ± 0.1 | 348 ± 1 | 129 ± 0 | 19.7 ± 0.1 | 346 ± 3 | 129 ± 0 |
+| yjsText | 11.3 ± 0.1 | 11.8 ± 0.2 | 13.7 ± 0.1 | 650 ± 57 | 560 ± 67 | 2977 ± 1 | 5.02 ± 0.11 | 26.2 ± 2.7 | 309 ± 5 | 14.9 ± 0.2 | 28.6 ± 1.3 | 107 ± 0 |
 
-- Sender time (ms): 1403
-- Avg update size (bytes): 147.3
-- Receiver time (ms): 1606
-- Save time (ms): 7
-- Save size (bytes): 1177551
-- Load time (ms): 16
-- Save time GZIP'd (ms): 44
-- Save size GZIP'd (bytes): 65884
-- Load time GZIP'd (ms): 27
-- Mem used estimate (MB): 2.7
+### Refresh every 1000 ops
 
-## Insert-After, Custom Encoding
-
-Send insertAfter and delete operations over a reliable link (e.g. WebSocket) - ElementId only.
-Updates use a custom string encoding; saved states use JSON with optional GZIP.
-
-- Sender time (ms): 1212
-- Avg update size (bytes): 45.6
-- Receiver time (ms): 2578
-- Save time (ms): 7
-- Save size (bytes): 1177551
-- Load time (ms): 17
-- Save time GZIP'd (ms): 41
-- Save size GZIP'd (bytes): 65897
-- Load time GZIP'd (ms): 36
-- Mem used estimate (MB): 2.7
+| Algorithm | Mean (μs) | P50 (μs) | P90 (μs) | P100 (μs) | Iteration time (μs) | Memory (kB) | Save time (ms) | Load time (ms) | Save size (kB) | Save time GZIP (ms) | Load time GZIP (ms) | Save size GZIP (kB) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| string | 1.59 ± 0.01 | 1.59 ± 0.01 | 2.20 ± 0.02 | 422 ± 82 | 3.09 ± 0.63 | 105 ± 0 | 0.00267 ± 0.00087 | 0.00878 ± 0.00487 | 105 ± 0 | 2.82 ± 0.06 | 2.83 ± 0.16 | 28.3 ± 0.0 |
+| charArray | 3.52 ± 0.02 | 1.83 ± 0.02 | 8.85 ± 0.04 | 1964 ± 398 | 687 ± 25 | 839 ± 0 | 1.58 ± 0.05 | 2.10 ± 0.12 | 105 ± 0 | 4.32 ± 0.05 | 3.94 ± 0.53 | 28.3 ± 0.0 |
+| rope | 4.62 ± 0.12 | 0.162 ± 0.009 | 1.87 ± 0.04 | 3125 ± 471 | 490 ± 24 | 839 ± 0 | 2.32 ± 0.07 | 1.86 ± 0.37 | 105 ± 0 | 8.70 ± 0.13 | 4.16 ± 0.39 | 28.3 ± 0.0 |
+| proseMirror | 6.04 ± 0.03 | 3.22 ± 0.02 | 11.5 ± 0.1 | 16510 ± 1407 | 37.9 ± 3.4 | 382 ± 7 | 0.429 ± 0.076 | 3.20 ± 0.57 | 166 ± 0 | 8.66 ± 0.79 | 4.94 ± 1.14 | 30.6 ± 0.0 |
+| idList | 1.45 ± 0.01 | 1.34 ± 0.01 | 1.58 ± 0.00 | 543 ± 24 | 16953 ± 933 | 2613 ± 2 | 2.35 ± 0.24 | 15.9 ± 0.8 | 876 ± 0 | 21.7 ± 1.2 | 19.0 ± 0.7 | 71.9 ± 0.0 |
+| automerge | 32.2 ± 0.3 | 30.3 ± 0.3 | 35.5 ± 0.3 | 4105 ± 34 | 2.27 ± 0.56 |  | 17.4 ± 0.1 | 441 ± 6 | 156 ± 0 | 23.4 ± 0.3 | 443 ± 6 | 156 ± 0 |
+| yjsText | 10.8 ± 0.1 | 10.1 ± 0.1 | 17.7 ± 0.1 | 700 ± 20 | 563 ± 25 | 3043 ± 0 | 4.77 ± 0.08 | 29.9 ± 1.2 | 289 ± 0 | 12.7 ± 0.9 | 31.6 ± 1.0 | 117 ± 0 |

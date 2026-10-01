@@ -11,7 +11,9 @@ export default defineConfig([
     "**/*.js",
     "**/*.cjs",
     "**/*.mjs",
-    "**/real_text_trace_edits.json",
+    "benchmarks/src/traces/*",
+    "**/tmp/",
+    "benchmarks/results/",
   ]),
   {
     extends: [
@@ -42,6 +44,11 @@ export default defineConfig([
         {
           args: "all",
           argsIgnorePattern: "^_",
+          caughtErrors: "all",
+          caughtErrorsIgnorePattern: "^_",
+          destructuredArrayIgnorePattern: "^_",
+          varsIgnorePattern: "^_",
+          ignoreRestSiblings: true,
         },
       ],
     },

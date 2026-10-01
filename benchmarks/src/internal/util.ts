@@ -1,34 +1,15 @@
+import { execFile } from "child_process";
 import { gunzipSync, gzipSync } from "fflate";
-import fs from "fs";
 import path from "path";
+import type seedrandom from "seedrandom";
+import { promisify } from "util";
+import type {
+  TextAlgorithm,
+  TextAlgorithmConstructor,
+} from "../algorithms/base";
+import type { TraceEdit, TraceProseMirrorEdit } from "./trace";
 
-export function realTextTraceEdits(): {
-  finalText: string;
-  edits: Array<[number, number, string | undefined]>;
-} {
-  // A JSON import would be nicer, but it blows up the heap usage for some reason,
-  // making heap snapshots slow.
-  return JSON.parse(
-    fs.readFileSync(path.join(__dirname, "real_text_trace_edits.json"), {
-      encoding: "utf8",
-    }),
-  ) as {
-    finalText: string;
-    edits: Array<[number, number, string | undefined]>;
-  };
-}
-
-export function getMemUsed() {
-  if (global.gc) {
-    // Experimentally, calling gc() twice makes memory msmts more reliable -
-    // otherwise may get negative diffs (last trial getting GC'd in the middle?).
-    global.gc();
-    global.gc();
-  }
-  return process.memoryUsage().heapUsed;
-}
-
-export function avg(values: number[]): number {
+export function mean(values: number[]): number {
   if (values.length === 0) return 0;
   return values.reduce((a, b) => a + b, 0) / values.length;
 }
@@ -58,4 +39,72 @@ export function gzipString(str: string): Uint8Array {
 
 export function gunzipString(data: Uint8Array): string {
   return new TextDecoder().decode(gunzipSync(data));
+}
+
+/**
+ * Applies all edits to a new Alg instance and returns it.
+ *
+ * If refreshInterval is nonzero, the alg is "refreshed" (saved and loaded
+ * into a new instance) every refreshInterval edits.
+ *
+ * @param refreshAtEnd Set to true to get back a refreshed (just-loaded) alg.
+ * This is recommended for measuring the typical performance of a document with a long history,
+ * independent of the fragmentation that results from applying that whole history at once.
+ */
+export function applyEdits<
+  E extends TraceEdit | TraceProseMirrorEdit,
+  S extends Uint8Array | string,
+>(
+  Alg: TextAlgorithmConstructor<E, S>,
+  prng: seedrandom.PRNG,
+  refreshInterval: number,
+  edits: E[],
+  refreshAtEnd = false,
+): TextAlgorithm<E, S> {
+  let alg = new Alg(prng);
+  const refresh = () => {
+    const savedState = alg.save();
+    alg.free();
+    alg = new Alg(prng);
+    alg.load(savedState);
+  };
+
+  for (let i = 0; i < edits.length; i++) {
+    if (i !== 0 && refreshInterval !== 0 && i % refreshInterval === 0) {
+      refresh();
+    }
+    alg.apply(edits[i]);
+  }
+
+  if (refreshAtEnd) refresh();
+  return alg;
+}
+
+/**
+ * Generates the saved state for the given trace & algorithm in a separate process.
+ *
+ * @returns The saved state's raw bytes (UTF-8 encoded if it is a string),
+ * GZIP'd if format is "gzip".
+ */
+export async function createSavedStateInProcess(
+  traceName: string,
+  algorithmName: string,
+  refreshInterval: number,
+  format: "plain" | "gzip",
+): Promise<Uint8Array> {
+  const { stdout } = await promisify(execFile)(
+    process.execPath,
+    [
+      "--import",
+      "tsx",
+      path.join(__dirname, "create_saved_state.ts"),
+      traceName,
+      algorithmName,
+      String(refreshInterval),
+      format,
+    ],
+    { encoding: "buffer", maxBuffer: 1024 * 1024 * 1024 },
+  );
+  // Copy into a plain Uint8Array (not a Buffer).
+  return new Uint8Array(stdout);
 }
