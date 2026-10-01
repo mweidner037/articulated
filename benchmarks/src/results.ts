@@ -1,3 +1,4 @@
+import tQuantile from "@stdlib/stats-base-dists-t-quantile";
 import fs from "fs";
 import path from "path";
 import { allAlgorithms } from "./algorithms";
@@ -80,7 +81,7 @@ const COLUMNS = [
   const lines: string[] = [
     "# Benchmark results",
     "",
-    `Each cell is the mean ± sample standard deviation across ${trials}.`,
+    `Each cell is the 95% confidence interval from ${trials}.`,
   ];
   for (const trace of [...data.keys()].sort()) {
     lines.push("", `## Trace: ${trace}`);
@@ -155,8 +156,11 @@ function tableRow(cells: string[]): string {
 }
 
 /**
- * Formats values as "mean ± sample std dev", using 3 significant figures
- * for the mean.
+ * Formats values as "mean ± half-width of 95% confidence interval for the mean",
+ * using 3 significant figures for the mean.
+ *
+ * The confidence interval uses Student's t distribution in the usual way for
+ * normally distributed samples.
  */
 function formatCell(values: number[] | undefined): string {
   if (values === undefined || values.length === 0) return "";
@@ -168,5 +172,7 @@ function formatCell(values: number[] | undefined): string {
 
   const variance =
     values.reduce((a, b) => a + (b - mean) ** 2, 0) / (values.length - 1);
-  return `${mean.toFixed(decimals)} ± ${Math.sqrt(variance).toFixed(decimals)}`;
+  const halfWidth =
+    tQuantile(0.975, values.length - 1) * Math.sqrt(variance / values.length);
+  return `${mean.toFixed(decimals)} ± ${halfWidth.toFixed(decimals)}`;
 }

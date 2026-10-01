@@ -3,6 +3,7 @@
   "private": true,
   "dependencies": {
     "@automerge/automerge": "^3.5.0",
+    "@stdlib/stats-base-dists-t-quantile": "^0.2.3",
     "@types/seedrandom": "^3.0.8",
     "articulated": "workspace:*",
     "fflate": "^0.8.2",
