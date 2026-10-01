@@ -2,7 +2,7 @@ import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 
-export interface Measurement {
+export interface Experiment {
   /**
    * One-time setup for all trials (within a single worker). Optional.
    */

@@ -3,7 +3,7 @@ import { allAlgorithms } from "../algorithms";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { createSavedStateInProcess, sleep } from "../internal/util";
-import type { Measurement } from "./base";
+import type { Experiment } from "./base";
 
 let savedState: Uint8Array | string | null = null;
 
@@ -13,7 +13,7 @@ let savedState: Uint8Array | string | null = null;
  * The saved state is generated once in a separate process, to isolate
  * its compile caches etc. from the load call.
  */
-export const measureLoad: Measurement = {
+export const loadExperiment: Experiment = {
   async setup(traceName, algorithmName, refreshInterval) {
     const bytes = await createSavedStateInProcess(
       traceName,

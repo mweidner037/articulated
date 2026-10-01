@@ -2,12 +2,12 @@ import type seedrandom from "seedrandom";
 import type { TextAlgorithmConstructor } from "../algorithms/base";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { mean, percentiles } from "../internal/util";
-import type { Measurement } from "./base";
+import type { Experiment } from "./base";
 
 /**
  * Measures time per operation.
  */
-export const measureOpTimes: Measurement = {
+export const opTimesExperiment: Experiment = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,

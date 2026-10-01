@@ -6,9 +6,9 @@ export const RESULTS_FILE = path.join(__dirname, "../../results/data.csv");
 export const CSV_COLUMNS = [
   "Trace",
   "Refresh Interval",
-  "Measurement",
+  "Experiment",
   "Algorithm",
-  "Datum",
+  "Measurement",
   "Value",
 ] as const;
 

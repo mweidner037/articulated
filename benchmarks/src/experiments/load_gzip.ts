@@ -7,7 +7,7 @@ import {
   gunzipString,
   sleep,
 } from "../internal/util";
-import type { Measurement } from "./base";
+import type { Experiment } from "./base";
 
 let gzipped: Uint8Array | null = null;
 
@@ -17,7 +17,7 @@ let gzipped: Uint8Array | null = null;
  * The saved state is generated once in a separate process, to isolate
  * its compile caches etc. from the load call.
  */
-export const measureLoadGzip: Measurement = {
+export const loadGzipExperiment: Experiment = {
   async setup(traceName, algorithmName, refreshInterval) {
     gzipped = await createSavedStateInProcess(
       traceName,

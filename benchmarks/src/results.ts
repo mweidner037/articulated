@@ -8,8 +8,8 @@ import { loadTrace } from "./internal/trace";
 const OUTPUT_FILE = path.join(__dirname, "../results.md");
 
 /**
- * Table columns (after "Algorithm"), named by Datum.
- * Each Datum belongs to a unique Measurement, so we don't need to further distinguish them.
+ * Table columns (after "Algorithm"), named by Measurement.
+ * Each Measurement belongs to a unique Experiment, so we don't need to further distinguish them.
  */
 const COLUMNS = [
   "Mean (μs)",
@@ -39,12 +39,19 @@ const COLUMNS = [
     process.exit(1);
   }
 
-  // trace -> refreshInterval -> algorithm -> datum -> values (one per trial)
+  // trace -> refreshInterval -> algorithm -> measurement -> values (one per trial)
   const data = new Map<
     string,
     Map<number, Map<string, Map<string, number[]>>>
   >();
-  for (const [trace, refreshInterval, , algorithm, datum, value] of rows) {
+  for (const [
+    trace,
+    refreshInterval,
+    ,
+    algorithm,
+    measurement,
+    value,
+  ] of rows) {
     const values = getOrCreate(
       getOrCreate(
         getOrCreate(
@@ -55,7 +62,7 @@ const COLUMNS = [
         algorithm,
         () => new Map(),
       ),
-      datum,
+      measurement,
       () => [],
     );
     values.push(Number(value));
@@ -65,8 +72,8 @@ const COLUMNS = [
   let maxTrials = 0;
   for (const byRefresh of data.values()) {
     for (const byAlgorithm of byRefresh.values()) {
-      for (const byDatum of byAlgorithm.values()) {
-        for (const values of byDatum.values()) {
+      for (const byMeasurement of byAlgorithm.values()) {
+        for (const values of byMeasurement.values()) {
           minTrials = Math.min(minTrials, values.length);
           maxTrials = Math.max(maxTrials, values.length);
         }
@@ -102,11 +109,13 @@ const COLUMNS = [
 
       const byAlgorithm = byRefresh.get(refreshInterval)!;
       for (const algorithm of sortAlgorithms([...byAlgorithm.keys()])) {
-        const byDatum = byAlgorithm.get(algorithm)!;
+        const byMeasurement = byAlgorithm.get(algorithm)!;
         lines.push(
           tableRow([
             algorithm,
-            ...COLUMNS.map((datum) => formatCell(byDatum.get(datum))),
+            ...COLUMNS.map((measurement) =>
+              formatCell(byMeasurement.get(measurement)),
+            ),
           ]),
         );
       }

@@ -5,7 +5,7 @@ import { loadTrace } from "./trace";
 import { applyEdits, gzipString } from "./util";
 
 /**
- * Used by the load measurements to generate saved states in a separate process.
+ * Used by the load experiments to generate saved states in a separate process.
  *
  * Usage: tsx src/internal/create_saved_state.ts <trace> <algorithm> <refreshInterval> <plain|gzip>
  * The saved state (GZIP'd if requested) is written to stdout.

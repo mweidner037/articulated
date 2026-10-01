@@ -3,6 +3,7 @@ import fs from "fs";
 import path from "path";
 import seedrandom from "seedrandom";
 import { allAlgorithms } from "./algorithms";
+import { allExperiments } from "./experiments";
 import {
   ensureResultsFile,
   formatCsvRow,
@@ -11,7 +12,6 @@ import {
 } from "./internal/results";
 import { allTraceNames } from "./internal/trace";
 import { sleep } from "./internal/util";
-import { allMeasurements } from "./measurements";
 
 const ALL_REFRESH_INTERVALS = ["0", "1000"];
 const MAX_ATTEMPTS = 3;
@@ -37,10 +37,10 @@ const MAX_ATTEMPTS = 3;
       return Number.isInteger(refreshInterval) && refreshInterval >= 0;
     },
   ).map((option) => String(Number(option)));
-  const measurements = parseOptions(
+  const experiments = parseOptions(
     args[3],
-    "measurement",
-    Object.keys(allMeasurements),
+    "experiment",
+    Object.keys(allExperiments),
   );
   const algorithms = parseOptions(
     args[4],
@@ -55,11 +55,11 @@ const MAX_ATTEMPTS = 3;
       fs.readFileSync(RESULTS_FILE, { encoding: "utf8" }),
     );
     const keptRows = rows.filter(
-      ([trace, refreshInterval, measurement, algorithm]) =>
+      ([trace, refreshInterval, experiment, algorithm]) =>
         !(
           traces.includes(trace) &&
           refreshIntervals.includes(refreshInterval) &&
-          measurements.includes(measurement) &&
+          experiment.includes(experiment) &&
           algorithms.includes(algorithm)
         ),
     );
@@ -78,9 +78,9 @@ const MAX_ATTEMPTS = 3;
   for (let trial = 0; trial < numTrials; trial++) {
     for (const trace of traces) {
       for (const refreshInterval of refreshIntervals) {
-        for (const measurement of measurements) {
+        for (const experiment of experiments) {
           for (const algorithm of algorithms) {
-            runs.push([trace, refreshInterval, measurement, algorithm]);
+            runs.push([trace, refreshInterval, experiment, algorithm]);
           }
         }
       }
@@ -157,7 +157,7 @@ function runWorker(workerArgs: string[]): Promise<number | null> {
 function failWithUsage(message: string): never {
   console.error(message);
   console.error(
-    '\nUsage: pnpm start <numTrials> <traces> <refreshIntervals> <measurements> <algorithms>\nEach of the last 4 args is a ","-separated list of options, or "ALL".',
+    '\nUsage: pnpm start <numTrials> <traces> <refreshIntervals> <experiments> <algorithms>\nEach of the last 4 args is a ","-separated list of options, or "ALL".',
   );
   process.exit(1);
 }

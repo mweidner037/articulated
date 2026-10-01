@@ -20,13 +20,13 @@ Results are in [results.md](./results.md). They were generated on an M4 MacBook 
 Run an individual benchmark, printing its data to stdout and appending it to `results/data.csv`:
 
 ```bash
-pnpm worker <trace> <refreshInterval> <measurement> <algorithm>
+pnpm worker <trace> <refreshInterval> <experiment> <algorithm>
 ```
 
 Run multiple benchmarks (each in a separate worker process), first erasing any matching rows in `results/data.csv` and then appending new ones as the benchmarks run:
 
 ```bash
-pnpm start <numTrials> <traces> <refreshIntervals> <measurements> <algorithms>
+pnpm start <numTrials> <traces> <refreshIntervals> <experiments> <algorithms>
 ```
 
 Run all benchmarks with 10 trials each:

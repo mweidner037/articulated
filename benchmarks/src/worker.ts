@@ -1,10 +1,10 @@
 import seedrandom from "seedrandom";
 import { allAlgorithms } from "./algorithms";
+import { allExperiments } from "./experiments";
 import { appendResultRows } from "./internal/results";
 import type { TextTrace } from "./internal/trace";
 import { allTraceNames, loadTrace } from "./internal/trace";
 import { sleep } from "./internal/util";
-import { allMeasurements } from "./measurements";
 
 const WARMUP_TRIALS = 5;
 /**
@@ -43,10 +43,10 @@ const MEASURED_TRIALS = 1;
     failWithUsage(`Invalid refreshInterval: ${args[1]}`);
   }
 
-  const measurement = allMeasurements[args[2]];
-  if (!measurement) {
+  const experiment = allExperiments[args[2]];
+  if (!experiment) {
     failWithUsage(
-      `Unknown measurement: ${args[2]}\nOptions: ${Object.keys(allMeasurements).join(", ")}`,
+      `Unknown experiment: ${args[2]}\nOptions: ${Object.keys(allExperiments).join(", ")}`,
     );
   }
 
@@ -60,7 +60,7 @@ const MEASURED_TRIALS = 1;
   // Run benchmark
 
   const edits = algorithm.isProseMirror ? trace.proseMirrorEdits : trace.edits;
-  await measurement.setup?.(args[0], args[3], refreshInterval);
+  await experiment.setup?.(args[0], args[3], refreshInterval);
   for (let trial = 0; trial < WARMUP_TRIALS + MEASURED_TRIALS; trial++) {
     // Pause to allow background work to finish (e.g. GC).
     await sleep(100);
@@ -69,7 +69,7 @@ const MEASURED_TRIALS = 1;
     if (!isMeasured) console.log("Warmup ", trial + 1);
     // Fresh PRNG with the same seed each trial, so all trials are identical.
     const prng = seedrandom("42");
-    const data = await measurement.runTrial(
+    const data = await experiment.runTrial(
       algorithm,
       prng,
       refreshInterval,
@@ -80,12 +80,12 @@ const MEASURED_TRIALS = 1;
     if (isMeasured) {
       console.log(data);
       appendResultRows(
-        Object.entries(data).map(([datum, value]) => [
+        Object.entries(data).map(([measurement, value]) => [
           args[0],
           String(refreshInterval),
           args[2],
           args[3],
-          datum,
+          measurement,
           String(value),
         ]),
       );
@@ -96,7 +96,7 @@ const MEASURED_TRIALS = 1;
 function failWithUsage(message: string): never {
   console.error(message);
   console.error(
-    "\nUsage: pnpm worker <trace> <refreshInterval> <measurement> <algorithm>",
+    "\nUsage: pnpm worker <trace> <refreshInterval> <experiment> <algorithm>",
   );
   process.exit(1);
 }

@@ -6,13 +6,13 @@ import {
 } from "../internal/heap_snapshot";
 import type { TraceEdit, TraceProseMirrorEdit } from "../internal/trace";
 import { applyEdits } from "../internal/util";
-import type { Measurement } from "./base";
+import type { Experiment } from "./base";
 
 /**
  * Measures the memory retained by the alg after applying all edits,
  * using a V8 heap snapshot.
  */
-export const measureMemory: Measurement = {
+export const memoryExperiment: Experiment = {
   async runTrial<
     E extends TraceEdit | TraceProseMirrorEdit,
     S extends Uint8Array | string,
