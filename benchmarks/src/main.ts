@@ -59,7 +59,7 @@ const MAX_ATTEMPTS = 3;
         !(
           traces.includes(trace) &&
           refreshIntervals.includes(refreshInterval) &&
-          experiment.includes(experiment) &&
+          experiments.includes(experiment) &&
           algorithms.includes(algorithm)
         ),
     );
