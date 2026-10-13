@@ -15,6 +15,7 @@ const COLUMNS = [
   "Mean (μs)",
   "P50 (μs)",
   "P90 (μs)",
+  "P99 (μs)",
   "P100 (μs)",
   "Iteration time (μs)",
   "Memory (kB)",
@@ -122,6 +123,16 @@ const COLUMNS = [
     }
   }
 
+  lines.push("", "# LaTeX Tables", "", 'For "Refresh every 1000 ops" data.');
+  for (const trace of [...data.keys()].sort()) {
+    const byAlgorithm = data.get(trace)!.get(1000);
+    if (byAlgorithm === undefined) continue;
+    lines.push("", `## Trace: ${trace}`);
+    for (const table of latexTables(byAlgorithm)) {
+      lines.push("", "```latex", table, "```");
+    }
+  }
+
   fs.writeFileSync(OUTPUT_FILE, lines.join("\n") + "\n");
   console.log(`Wrote ${OUTPUT_FILE}`);
 })();
@@ -165,6 +176,127 @@ function tableRow(cells: string[]): string {
 }
 
 /**
+ * Returns the LaTeX tables' source, filled in with data from byAlgorithm
+ * (algorithm -> measurement -> values).
+ */
+function latexTables(
+  byAlgorithm: Map<string, Map<string, number[]>>,
+): string[] {
+  const cell = (algorithm: string, measurement: string) => {
+    const ci = confidenceInterval(byAlgorithm.get(algorithm)?.get(measurement));
+    if (ci === undefined) return "";
+    const { mean, halfWidth, decimals } = ci;
+    return halfWidth === undefined
+      ? `$${mean.toFixed(decimals)}$`
+      : `$${mean.toFixed(decimals)} \\pm ${halfWidth.toFixed(decimals)}$`;
+  };
+  const throughput = (algorithm: string) => {
+    const ci = confidenceInterval(byAlgorithm.get(algorithm)?.get("Mean (μs)"));
+    if (ci === undefined) return "";
+    const { mean, halfWidth = 0 } = ci;
+    // Op times are in μs, so 1e6 / time is in ops/sec.
+    const low = formatThroughput(1e6 / (mean + halfWidth));
+    const high =
+      mean - halfWidth > 0
+        ? formatThroughput(1e6 / (mean - halfWidth))
+        : "\\infty";
+    return halfWidth === 0 ? `$${low}$` : `$[${low}, ${high}]$`;
+  };
+  const row = (prefix: string, cells: string[]) =>
+    `    ${prefix} & ${cells.join(" & ")} \\\\`;
+  const traditional =
+    "\\multirow{2}{*}{\\shortstack[l]{Traditional text-editor \\\\ data structure}}";
+
+  const memory = (algorithm: string) => [cell(algorithm, "Memory (kB)")];
+  const storage = (algorithm: string, gzip: boolean) => {
+    const suffix = gzip ? " GZIP" : "";
+    return [
+      cell(algorithm, `Save size${suffix} (kB)`),
+      cell(algorithm, `Save time${suffix} (ms)`),
+      cell(algorithm, `Load time${suffix} (ms)`),
+    ];
+  };
+  const opTimes = (algorithm: string) => [
+    throughput(algorithm),
+    cell(algorithm, "P90 (μs)"),
+    cell(algorithm, "P99 (μs)"),
+    cell(algorithm, "P100 (μs)"),
+  ];
+
+  return [
+    [
+      "\\begin{table}",
+      "  \\caption{Memory Usage for the Final Document State}",
+      "  \\label{tab:memory}",
+      "  \\begin{tabular}{llc}",
+      "    \\toprule",
+      "    Category & Implementation & Memory Usage (kB) \\\\",
+      "    \\midrule",
+      row(`${traditional} & String`, memory("string")),
+      row("& Array of Characters", memory("charArray")),
+      row("& Rope", memory("rope")),
+      row("& ProseMirror", memory("proseMirror")),
+      row("List of IDs & Articulated", memory("idList")),
+      row("CRDT & Yjs", memory("yjsText")),
+      "  \\bottomrule",
+      "\\end{tabular}",
+      "\\end{table}",
+    ],
+    [
+      "\\begin{table}",
+      "  \\caption{Storage Metrics for the Final Document State}",
+      "  \\label{tab:storage}",
+      "  \\begin{tabular}{llccc}",
+      "    \\toprule",
+      "    Category & Implementation & Saved State Size (kB) & Save Time (ms) & Load Time (ms) \\\\",
+      "    \\midrule",
+      row("Actual Text & String", storage("string", false)),
+      row("& String w/ GZIP", storage("string", true)),
+      row("List of IDs & Articulated", storage("idList", false)),
+      row("& Articulated w/ GZIP", storage("idList", true)),
+      row("CRDT & Automerge", storage("automerge", false)),
+      row("& Yjs", storage("yjsText", false)),
+      "  \\bottomrule",
+      "\\end{tabular}",
+      "\\end{table}",
+    ],
+    [
+      "\\begin{table}",
+      "  \\caption{Throughput and Distribution of Operation Times}",
+      "  \\label{tab:op_times}",
+      "  \\begin{tabular}{llcccc}",
+      "    \\toprule",
+      "    Category & Implementation & \\shortstack{Throughput \\\\(ops/sec)} & P90 ($\\mu$s) & P99 ($\\mu$s) & Max ($\\mu$s) \\\\",
+      "    \\midrule",
+      row(`${traditional} & String`, opTimes("string")),
+      row("& Array of Characters", opTimes("charArray")),
+      row("& Rope", opTimes("rope")),
+      row("& ProseMirror", opTimes("proseMirror")),
+      row("List of IDs & Articulated", opTimes("idList")),
+      row("CRDT & Automerge", opTimes("automerge")),
+      row("& Yjs", opTimes("yjsText")),
+      "  \\bottomrule",
+      "\\end{tabular}",
+      "\\end{table}",
+    ],
+  ].map((tableLines) => tableLines.join("\n"));
+}
+
+/**
+ * Formats a throughput (ops/sec) to 3 significant figures, with a k or M suffix.
+ */
+function formatThroughput(value: number): string {
+  const [scaled, suffix] =
+    value >= 1e6
+      ? [value / 1e6, "M"]
+      : value >= 1e3
+        ? [value / 1e3, "k"]
+        : [value, ""];
+  const decimals = Math.max(0, 2 - Math.floor(Math.log10(scaled)));
+  return `${scaled.toFixed(decimals)}${suffix}`;
+}
+
+/**
  * Formats values as "mean ± half-width of 95% confidence interval for the mean",
  * using 3 significant figures for the mean.
  *
@@ -172,16 +304,34 @@ function tableRow(cells: string[]): string {
  * normally distributed samples.
  */
 function formatCell(values: number[] | undefined): string {
-  if (values === undefined || values.length === 0) return "";
+  const ci = confidenceInterval(values);
+  if (ci === undefined) return "";
+  const { mean, halfWidth, decimals } = ci;
+  return halfWidth === undefined
+    ? mean.toFixed(decimals)
+    : `${mean.toFixed(decimals)} ± ${halfWidth.toFixed(decimals)}`;
+}
+
+/**
+ * Returns the mean, the half-width of the 95% confidence interval for the mean
+ * (undefined if there is only one value), and the number of decimals that
+ * gives the mean 3 significant figures.
+ */
+function confidenceInterval(
+  values: number[] | undefined,
+):
+  | { mean: number; halfWidth: number | undefined; decimals: number }
+  | undefined {
+  if (values === undefined || values.length === 0) return undefined;
 
   const mean = values.reduce((a, b) => a + b, 0) / values.length;
   const decimals =
     mean === 0 ? 0 : Math.max(0, 2 - Math.floor(Math.log10(Math.abs(mean))));
-  if (values.length === 1) return mean.toFixed(decimals);
+  if (values.length === 1) return { mean, halfWidth: undefined, decimals };
 
   const variance =
     values.reduce((a, b) => a + (b - mean) ** 2, 0) / (values.length - 1);
   const halfWidth =
     tQuantile(0.975, values.length - 1) * Math.sqrt(variance / values.length);
-  return `${mean.toFixed(decimals)} ± ${halfWidth.toFixed(decimals)}`;
+  return { mean, halfWidth, decimals };
 }
