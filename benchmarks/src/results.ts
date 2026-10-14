@@ -187,8 +187,8 @@ function latexTables(
     if (ci === undefined) return "";
     const { mean, halfWidth, decimals } = ci;
     return halfWidth === undefined
-      ? `$${mean.toFixed(decimals)}$`
-      : `$${mean.toFixed(decimals)} \\pm ${halfWidth.toFixed(decimals)}$`;
+      ? `$\\num{${mean.toFixed(decimals)}}$`
+      : `$\\num{${mean.toFixed(decimals)}} \\pm ${halfWidth.toFixed(decimals)}$`;
   };
   const throughput = (algorithm: string) => {
     const ci = confidenceInterval(byAlgorithm.get(algorithm)?.get("Mean (μs)"));
@@ -204,9 +204,6 @@ function latexTables(
   };
   const row = (prefix: string, cells: string[]) =>
     `    ${prefix} & ${cells.join(" & ")} \\\\`;
-  const traditional =
-    "\\multirow{2}{*}{\\shortstack[l]{Traditional text-editor \\\\ data structure}}";
-
   const memory = (algorithm: string) => [cell(algorithm, "Memory (kB)")];
   const storage = (algorithm: string, gzip: boolean) => {
     const suffix = gzip ? " GZIP" : "";
@@ -232,8 +229,11 @@ function latexTables(
       "    \\toprule",
       "    Category & Implementation & Memory Usage (kB) \\\\",
       "    \\midrule",
-      row(`${traditional} & String`, memory("string")),
-      row("& Array of Characters", memory("charArray")),
+      row(
+        "\\multirow{2}{*}{\\shortstack[l]{Traditional text-editor \\\\ data structure}} & String",
+        memory("string"),
+      ),
+      row("& Character Array", memory("charArray")),
       row("& Rope", memory("rope")),
       row("& ProseMirror", memory("proseMirror")),
       row("List of IDs & Articulated", memory("idList")),
@@ -250,7 +250,8 @@ function latexTables(
       "    \\toprule",
       "    Category & Implementation & Saved State Size (kB) & Save Time (ms) & Load Time (ms) \\\\",
       "    \\midrule",
-      row("Actual Text & String", storage("string", false)),
+      // String save and load times are not relevant.
+      row("Actual Text & String", storage("string", false).slice(0, 1)),
       row("& String w/ GZIP", storage("string", true)),
       row("List of IDs & Articulated", storage("idList", false)),
       row("& Articulated w/ GZIP", storage("idList", true)),
@@ -268,8 +269,11 @@ function latexTables(
       "    \\toprule",
       "    Category & Implementation & \\shortstack{Throughput \\\\(ops/sec)} & P90 ($\\mu$s) & P99 ($\\mu$s) & Max ($\\mu$s) \\\\",
       "    \\midrule",
-      row(`${traditional} & String`, opTimes("string")),
-      row("& Array of Characters", opTimes("charArray")),
+      row(
+        "\\multirow{3}{*}{\\shortstack[l]{Traditional text-\\\\ editor data \\\\ structure}} & String",
+        opTimes("string"),
+      ),
+      row("& Character Array", opTimes("charArray")),
       row("& Rope", opTimes("rope")),
       row("& ProseMirror", opTimes("proseMirror")),
       row("List of IDs & Articulated", opTimes("idList")),
@@ -283,7 +287,8 @@ function latexTables(
 }
 
 /**
- * Formats a throughput (ops/sec) to 3 significant figures, with a k or M suffix.
+ * Formats a throughput (ops/sec) to 3 significant figures, with a k or M suffix,
+ * in LaTeX.
  */
 function formatThroughput(value: number): string {
   const [scaled, suffix] =
@@ -293,7 +298,7 @@ function formatThroughput(value: number): string {
         ? [value / 1e3, "k"]
         : [value, ""];
   const decimals = Math.max(0, 2 - Math.floor(Math.log10(scaled)));
-  return `${scaled.toFixed(decimals)}${suffix}`;
+  return `\\num{${scaled.toFixed(decimals)}}${suffix}`;
 }
 
 /**

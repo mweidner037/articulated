@@ -48,12 +48,12 @@ For "Refresh every 1000 ops" data.
     \toprule
     Category & Implementation & Memory Usage (kB) \\
     \midrule
-    \multirow{2}{*}{\shortstack[l]{Traditional text-editor \\ data structure}} & String & $105 \pm 0$ \\
-    & Array of Characters & $839 \pm 0$ \\
-    & Rope & $839 \pm 0$ \\
-    & ProseMirror & $382 \pm 7$ \\
-    List of IDs & Articulated & $2613 \pm 2$ \\
-    CRDT & Yjs & $3043 \pm 0$ \\
+    \multirow{2}{*}{\shortstack[l]{Traditional text-editor \\ data structure}} & String & $\num{105} \pm 0$ \\
+    & Character Array & $\num{839} \pm 0$ \\
+    & Rope & $\num{839} \pm 0$ \\
+    & ProseMirror & $\num{382} \pm 7$ \\
+    List of IDs & Articulated & $\num{2613} \pm 2$ \\
+    CRDT & Yjs & $\num{3043} \pm 0$ \\
   \bottomrule
 \end{tabular}
 \end{table}
@@ -67,12 +67,12 @@ For "Refresh every 1000 ops" data.
     \toprule
     Category & Implementation & Saved State Size (kB) & Save Time (ms) & Load Time (ms) \\
     \midrule
-    Actual Text & String & $105 \pm 0$ & $0.00267 \pm 0.00087$ & $0.00878 \pm 0.00487$ \\
-    & String w/ GZIP & $28.3 \pm 0.0$ & $2.82 \pm 0.06$ & $2.83 \pm 0.16$ \\
-    List of IDs & Articulated & $876 \pm 0$ & $2.35 \pm 0.24$ & $15.9 \pm 0.8$ \\
-    & Articulated w/ GZIP & $71.9 \pm 0.0$ & $21.7 \pm 1.2$ & $19.0 \pm 0.7$ \\
-    CRDT & Automerge & $156 \pm 0$ & $17.4 \pm 0.1$ & $441 \pm 6$ \\
-    & Yjs & $289 \pm 0$ & $4.77 \pm 0.08$ & $29.9 \pm 1.2$ \\
+    Actual Text & String & $\num{105} \pm 0$ \\
+    & String w/ GZIP & $\num{28.3} \pm 0.0$ & $\num{2.82} \pm 0.06$ & $\num{2.83} \pm 0.16$ \\
+    List of IDs & Articulated & $\num{876} \pm 0$ & $\num{2.35} \pm 0.24$ & $\num{15.9} \pm 0.8$ \\
+    & Articulated w/ GZIP & $\num{71.9} \pm 0.0$ & $\num{21.7} \pm 1.2$ & $\num{19.0} \pm 0.7$ \\
+    CRDT & Automerge & $\num{156} \pm 0$ & $\num{17.4} \pm 0.1$ & $\num{441} \pm 6$ \\
+    & Yjs & $\num{289} \pm 0$ & $\num{4.77} \pm 0.08$ & $\num{29.9} \pm 1.2$ \\
   \bottomrule
 \end{tabular}
 \end{table}
@@ -86,13 +86,13 @@ For "Refresh every 1000 ops" data.
     \toprule
     Category & Implementation & \shortstack{Throughput \\(ops/sec)} & P90 ($\mu$s) & P99 ($\mu$s) & Max ($\mu$s) \\
     \midrule
-    \multirow{2}{*}{\shortstack[l]{Traditional text-editor \\ data structure}} & String & $[629k, 633k]$ & $2.20 \pm 0.02$ & $2.54 \pm 0.01$ & $422 \pm 82$ \\
-    & Array of Characters & $[282k, 285k]$ & $8.85 \pm 0.04$ & $10.9 \pm 0.1$ & $1964 \pm 398$ \\
-    & Rope & $[211k, 222k]$ & $1.87 \pm 0.04$ & $51.4 \pm 1.5$ & $3125 \pm 471$ \\
-    & ProseMirror & $[165k, 166k]$ & $11.5 \pm 0.1$ & $16.8 \pm 0.1$ & $16510 \pm 1407$ \\
-    List of IDs & Articulated & $[683k, 693k]$ & $1.58 \pm 0.00$ & $3.84 \pm 0.04$ & $543 \pm 24$ \\
-    CRDT & Automerge & $[30.8k, 31.4k]$ & $35.5 \pm 0.3$ & $41.4 \pm 0.4$ & $4105 \pm 34$ \\
-    & Yjs & $[91.8k, 93.4k]$ & $17.7 \pm 0.1$ & $29.0 \pm 0.5$ & $700 \pm 20$ \\
+    \multirow{3}{*}{\shortstack[l]{Traditional text-\\ editor data \\ structure}} & String & $[\num{629}k, \num{633}k]$ & $\num{2.20} \pm 0.02$ & $\num{2.54} \pm 0.01$ & $\num{422} \pm 82$ \\
+    & Character Array & $[\num{282}k, \num{285}k]$ & $\num{8.85} \pm 0.04$ & $\num{10.9} \pm 0.1$ & $\num{1964} \pm 398$ \\
+    & Rope & $[\num{211}k, \num{222}k]$ & $\num{1.87} \pm 0.04$ & $\num{51.4} \pm 1.5$ & $\num{3125} \pm 471$ \\
+    & ProseMirror & $[\num{165}k, \num{166}k]$ & $\num{11.5} \pm 0.1$ & $\num{16.8} \pm 0.1$ & $\num{16510} \pm 1407$ \\
+    List of IDs & Articulated & $[\num{683}k, \num{693}k]$ & $\num{1.58} \pm 0.00$ & $\num{3.84} \pm 0.04$ & $\num{543} \pm 24$ \\
+    CRDT & Automerge & $[\num{30.8}k, \num{31.4}k]$ & $\num{35.5} \pm 0.3$ & $\num{41.4} \pm 0.4$ & $\num{4105} \pm 34$ \\
+    & Yjs & $[\num{91.8}k, \num{93.4}k]$ & $\num{17.7} \pm 0.1$ & $\num{29.0} \pm 0.5$ & $\num{700} \pm 20$ \\
   \bottomrule
 \end{tabular}
 \end{table}
