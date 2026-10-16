@@ -8,11 +8,11 @@ import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
 import {
   IdListBunchIndexAlgorithm,
+  IdListBunchIndexProtoAlgorithm,
   IdListSignedAlgorithm,
   IdListSplitAlgorithm,
   IdListSplitClientIndexAlgorithm,
   IdListSplitClientIndexProtoAlgorithm,
-  IdListSplitProtoAlgorithm,
   IdListSplitSignedAlgorithm,
   IdListSplitTransposedAlgorithm,
   IdListTransposedAlgorithm,
@@ -44,7 +44,7 @@ export const allAlgorithms: Record<
   idListSplitSigned: IdListSplitSignedAlgorithm,
   idListSplitTransposed: IdListSplitTransposedAlgorithm,
   idListSplitClientIndex: IdListSplitClientIndexAlgorithm,
-  idListSplitProto: IdListSplitProtoAlgorithm,
+  idListBunchIndexProto: IdListBunchIndexProtoAlgorithm,
   idListSplitClientIndexProto: IdListSplitClientIndexProtoAlgorithm,
   automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,

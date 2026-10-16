@@ -1,8 +1,8 @@
 import type { SavedIdList } from "articulated";
 import { IdList } from "articulated";
 import {
+  BunchIndexSavedIdListMessage,
   ClientIndexSavedIdListMessage,
-  SplitSavedIdListMessage,
 } from "../generated/id_list_saved_state";
 import { IdListAlgorithm, IdListAlgorithmBase } from "./id_list";
 
@@ -134,52 +134,61 @@ type BunchIndexSavedState = {
   counts: number[];
 };
 
+function toBunchIndex(saved: SavedIdList): BunchIndexSavedState {
+  const bunchIndexMap = new Map<string, number>();
+  const out: BunchIndexSavedState = {
+    bunchIds: [],
+    bunchIndices: new Array(saved.length),
+    startCounters: new Array(saved.length),
+    counts: new Array(saved.length),
+  };
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    let bunchIndex = bunchIndexMap.get(item.bunchId);
+    if (bunchIndex === undefined) {
+      bunchIndex = out.bunchIds.length;
+      out.bunchIds.push(item.bunchId);
+      bunchIndexMap.set(item.bunchId, bunchIndex);
+    }
+    out.bunchIndices[i] = bunchIndex;
+    out.startCounters[i] = item.startCounter;
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromBunchIndex({
+  bunchIds,
+  bunchIndices,
+  startCounters,
+  counts,
+}: BunchIndexSavedState): SavedIdList {
+  const saved: SavedIdList = new Array(bunchIndices.length);
+  for (let i = 0; i < bunchIndices.length; i++) {
+    saved[i] = unsignedItem(
+      bunchIds[bunchIndices[i]],
+      startCounters[i],
+      counts[i],
+    );
+  }
+  return saved;
+}
+
 /**
  * Format 3: Format 2, with distinct bunchIds extracted into a single array
  * and referenced by index.
  */
 export class IdListBunchIndexAlgorithm extends IdListAlgorithm {
   save(): string {
-    const saved = this.list.save();
-    const bunchIndexMap = new Map<string, number>();
-    const out: BunchIndexSavedState = {
-      bunchIds: [],
-      bunchIndices: new Array(saved.length),
-      startCounters: new Array(saved.length),
-      counts: new Array(saved.length),
-    };
-    for (let i = 0; i < saved.length; i++) {
-      const item = saved[i];
-      let bunchIndex = bunchIndexMap.get(item.bunchId);
-      if (bunchIndex === undefined) {
-        bunchIndex = out.bunchIds.length;
-        out.bunchIds.push(item.bunchId);
-        bunchIndexMap.set(item.bunchId, bunchIndex);
-      }
-      out.bunchIndices[i] = bunchIndex;
-      out.startCounters[i] = item.startCounter;
-      out.counts[i] = signedCount(item);
-    }
-    return JSON.stringify(out);
+    return JSON.stringify(toBunchIndex(this.list.save()));
   }
 
   load(savedState: string): void {
-    const { bunchIds, bunchIndices, startCounters, counts } = JSON.parse(
-      savedState,
-    ) as BunchIndexSavedState;
-    const saved: SavedIdList = new Array(bunchIndices.length);
-    for (let i = 0; i < bunchIndices.length; i++) {
-      saved[i] = unsignedItem(
-        bunchIds[bunchIndices[i]],
-        startCounters[i],
-        counts[i],
-      );
-    }
-    this.list = IdList.load(saved);
+    this.list = IdList.load(fromBunchIndex(JSON.parse(savedState)));
   }
 }
 
-// --- Formats 4-9: Split bunchIds into clientId and seqNum. ---
+// --- Formats 4-7 & 9: Split bunchIds into clientId and seqNum. ---
 
 type SplitSavedState = Array<{
   clientId: string;
@@ -389,20 +398,21 @@ export class IdListSplitClientIndexAlgorithm extends IdListAlgorithm {
 }
 
 /**
- * Format 8: Format 4, binary-encoded with protobuf.
+ * Format 8: Format 3, binary-encoded with protobuf (packed int arrays).
  */
-export class IdListSplitProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+export class IdListBunchIndexProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
   static readonly isSavedStateString = false;
 
   save(): Uint8Array {
-    return SplitSavedIdListMessage.encode({
-      entries: toSplit(this.list.save()),
-    }).finish();
+    return BunchIndexSavedIdListMessage.encode(
+      toBunchIndex(this.list.save()),
+    ).finish();
   }
 
   load(savedState: Uint8Array): void {
-    const { entries } = SplitSavedIdListMessage.decode(savedState);
-    this.list = IdList.load(fromSplit(entries as SplitSavedState));
+    this.list = IdList.load(
+      fromBunchIndex(BunchIndexSavedIdListMessage.decode(savedState)),
+    );
   }
 }
 

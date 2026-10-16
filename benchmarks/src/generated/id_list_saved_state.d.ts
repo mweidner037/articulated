@@ -3,157 +3,86 @@
 import * as $protobuf from "protobufjs";
 
 /**
- * Properties of a SplitSavedIdListMessage.
- * @deprecated Use SplitSavedIdListMessage.$Properties instead.
+ * Properties of a BunchIndexSavedIdListMessage.
+ * @deprecated Use BunchIndexSavedIdListMessage.$Properties instead.
  */
-export interface ISplitSavedIdListMessage extends SplitSavedIdListMessage.$Properties {
+export interface IBunchIndexSavedIdListMessage extends BunchIndexSavedIdListMessage.$Properties {
 }
 
-/** Represents a SplitSavedIdListMessage. */
-export class SplitSavedIdListMessage {
+/** Represents a BunchIndexSavedIdListMessage. */
+export class BunchIndexSavedIdListMessage {
 
     /**
-     * Constructs a new SplitSavedIdListMessage.
+     * Constructs a new BunchIndexSavedIdListMessage.
      * @param [properties] Properties to set
      */
-    constructor(properties?: SplitSavedIdListMessage.$Properties);
+    constructor(properties?: BunchIndexSavedIdListMessage.$Properties);
 
     /** Unknown fields preserved while decoding when enabled */
     $unknowns?: Uint8Array[];
 
-    /** SplitSavedIdListMessage entries. */
-    entries: SplitSavedIdListEntry.$Properties[];
+    /** BunchIndexSavedIdListMessage bunchIds. */
+    bunchIds: string[];
+
+    /** BunchIndexSavedIdListMessage bunchIndices. */
+    bunchIndices: number[];
+
+    /** BunchIndexSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** BunchIndexSavedIdListMessage counts. */
+    counts: number[];
 
     /**
-     * Creates a new SplitSavedIdListMessage instance using the specified properties.
+     * Creates a new BunchIndexSavedIdListMessage instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns SplitSavedIdListMessage instance
+     * @returns BunchIndexSavedIdListMessage instance
      */
-    static create(properties: SplitSavedIdListMessage.$Shape): SplitSavedIdListMessage & SplitSavedIdListMessage.$Shape;
-    static create(properties?: SplitSavedIdListMessage.$Properties): SplitSavedIdListMessage;
+    static create(properties: BunchIndexSavedIdListMessage.$Shape): BunchIndexSavedIdListMessage & BunchIndexSavedIdListMessage.$Shape;
+    static create(properties?: BunchIndexSavedIdListMessage.$Properties): BunchIndexSavedIdListMessage;
 
     /**
-     * Encodes the specified SplitSavedIdListMessage message. Does not implicitly {@link SplitSavedIdListMessage.verify|verify} messages.
-     * @param message SplitSavedIdListMessage message or plain object to encode
+     * Encodes the specified BunchIndexSavedIdListMessage message. Does not implicitly {@link BunchIndexSavedIdListMessage.verify|verify} messages.
+     * @param message BunchIndexSavedIdListMessage message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    static encode(message: SplitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+    static encode(message: BunchIndexSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a SplitSavedIdListMessage message from the specified reader or buffer.
+     * Decodes a BunchIndexSavedIdListMessage message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns {SplitSavedIdListMessage & SplitSavedIdListMessage.$Shape} SplitSavedIdListMessage
+     * @returns {BunchIndexSavedIdListMessage & BunchIndexSavedIdListMessage.$Shape} BunchIndexSavedIdListMessage
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitSavedIdListMessage & SplitSavedIdListMessage.$Shape;
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): BunchIndexSavedIdListMessage & BunchIndexSavedIdListMessage.$Shape;
 }
 
-export namespace SplitSavedIdListMessage {
+export namespace BunchIndexSavedIdListMessage {
 
-    /** Properties of a SplitSavedIdListMessage. */
+    /** Properties of a BunchIndexSavedIdListMessage. */
     interface $Properties {
 
-        /** SplitSavedIdListMessage entries */
-        entries?: (SplitSavedIdListEntry.$Properties[]|null);
+        /** BunchIndexSavedIdListMessage bunchIds */
+        bunchIds?: (string[]|null);
+
+        /** BunchIndexSavedIdListMessage bunchIndices */
+        bunchIndices?: (number[]|null);
+
+        /** BunchIndexSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** BunchIndexSavedIdListMessage counts */
+        counts?: (number[]|null);
 
         /** Unknown fields preserved while decoding when enabled */
         $unknowns?: Uint8Array[];
     }
 
-    /** Shape of a SplitSavedIdListMessage. */
-    type $Shape = SplitSavedIdListMessage.$Properties;
-}
-
-/**
- * Properties of a SplitSavedIdListEntry.
- * @deprecated Use SplitSavedIdListEntry.$Properties instead.
- */
-export interface ISplitSavedIdListEntry extends SplitSavedIdListEntry.$Properties {
-}
-
-/** Represents a SplitSavedIdListEntry. */
-export class SplitSavedIdListEntry {
-
-    /**
-     * Constructs a new SplitSavedIdListEntry.
-     * @param [properties] Properties to set
-     */
-    constructor(properties?: SplitSavedIdListEntry.$Properties);
-
-    /** Unknown fields preserved while decoding when enabled */
-    $unknowns?: Uint8Array[];
-
-    /** SplitSavedIdListEntry clientId. */
-    clientId: string;
-
-    /** SplitSavedIdListEntry seqNum. */
-    seqNum: number;
-
-    /** SplitSavedIdListEntry startCounter. */
-    startCounter: number;
-
-    /** SplitSavedIdListEntry count. */
-    count: number;
-
-    /** SplitSavedIdListEntry isDeleted. */
-    isDeleted: boolean;
-
-    /**
-     * Creates a new SplitSavedIdListEntry instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns SplitSavedIdListEntry instance
-     */
-    static create(properties: SplitSavedIdListEntry.$Shape): SplitSavedIdListEntry & SplitSavedIdListEntry.$Shape;
-    static create(properties?: SplitSavedIdListEntry.$Properties): SplitSavedIdListEntry;
-
-    /**
-     * Encodes the specified SplitSavedIdListEntry message. Does not implicitly {@link SplitSavedIdListEntry.verify|verify} messages.
-     * @param message SplitSavedIdListEntry message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    static encode(message: SplitSavedIdListEntry.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
-     * Decodes a SplitSavedIdListEntry message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns {SplitSavedIdListEntry & SplitSavedIdListEntry.$Shape} SplitSavedIdListEntry
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitSavedIdListEntry & SplitSavedIdListEntry.$Shape;
-}
-
-export namespace SplitSavedIdListEntry {
-
-    /** Properties of a SplitSavedIdListEntry. */
-    interface $Properties {
-
-        /** SplitSavedIdListEntry clientId */
-        clientId?: (string|null);
-
-        /** SplitSavedIdListEntry seqNum */
-        seqNum?: (number|null);
-
-        /** SplitSavedIdListEntry startCounter */
-        startCounter?: (number|null);
-
-        /** SplitSavedIdListEntry count */
-        count?: (number|null);
-
-        /** SplitSavedIdListEntry isDeleted */
-        isDeleted?: (boolean|null);
-
-        /** Unknown fields preserved while decoding when enabled */
-        $unknowns?: Uint8Array[];
-    }
-
-    /** Shape of a SplitSavedIdListEntry. */
-    type $Shape = SplitSavedIdListEntry.$Properties;
+    /** Shape of a BunchIndexSavedIdListMessage. */
+    type $Shape = BunchIndexSavedIdListMessage.$Properties;
 }
 
 /**
