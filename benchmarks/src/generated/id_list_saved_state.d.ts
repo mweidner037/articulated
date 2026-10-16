@@ -175,357 +175,185 @@ export namespace ClientIndexSavedIdListMessage {
 }
 
 /**
- * Properties of a GroupedSavedIdListMessage.
- * @deprecated Use GroupedSavedIdListMessage.$Properties instead.
+ * Properties of a BunchIndexOmitSavedIdListMessage.
+ * @deprecated Use BunchIndexOmitSavedIdListMessage.$Properties instead.
  */
-export interface IGroupedSavedIdListMessage extends GroupedSavedIdListMessage.$Properties {
+export interface IBunchIndexOmitSavedIdListMessage extends BunchIndexOmitSavedIdListMessage.$Properties {
 }
 
-/** Represents a GroupedSavedIdListMessage. */
-export class GroupedSavedIdListMessage {
+/** Represents a BunchIndexOmitSavedIdListMessage. */
+export class BunchIndexOmitSavedIdListMessage {
 
     /**
-     * Constructs a new GroupedSavedIdListMessage.
+     * Constructs a new BunchIndexOmitSavedIdListMessage.
      * @param [properties] Properties to set
      */
-    constructor(properties?: GroupedSavedIdListMessage.$Properties);
+    constructor(properties?: BunchIndexOmitSavedIdListMessage.$Properties);
 
     /** Unknown fields preserved while decoding when enabled */
     $unknowns?: Uint8Array[];
 
-    /** GroupedSavedIdListMessage bunchIds. */
+    /** BunchIndexOmitSavedIdListMessage bunchIds. */
     bunchIds: string[];
 
-    /** GroupedSavedIdListMessage groupSizes. */
-    groupSizes: number[];
-
-    /** GroupedSavedIdListMessage startCounters. */
-    startCounters: number[];
-
-    /** GroupedSavedIdListMessage counts. */
-    counts: number[];
-
-    /**
-     * Creates a new GroupedSavedIdListMessage instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns GroupedSavedIdListMessage instance
-     */
-    static create(properties: GroupedSavedIdListMessage.$Shape): GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape;
-    static create(properties?: GroupedSavedIdListMessage.$Properties): GroupedSavedIdListMessage;
-
-    /**
-     * Encodes the specified GroupedSavedIdListMessage message. Does not implicitly {@link GroupedSavedIdListMessage.verify|verify} messages.
-     * @param message GroupedSavedIdListMessage message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    static encode(message: GroupedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
-     * Decodes a GroupedSavedIdListMessage message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns {GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape} GroupedSavedIdListMessage
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape;
-}
-
-export namespace GroupedSavedIdListMessage {
-
-    /** Properties of a GroupedSavedIdListMessage. */
-    interface $Properties {
-
-        /** GroupedSavedIdListMessage bunchIds */
-        bunchIds?: (string[]|null);
-
-        /** GroupedSavedIdListMessage groupSizes */
-        groupSizes?: (number[]|null);
-
-        /** GroupedSavedIdListMessage startCounters */
-        startCounters?: (number[]|null);
-
-        /** GroupedSavedIdListMessage counts */
-        counts?: (number[]|null);
-
-        /** Unknown fields preserved while decoding when enabled */
-        $unknowns?: Uint8Array[];
-    }
-
-    /** Shape of a GroupedSavedIdListMessage. */
-    type $Shape = GroupedSavedIdListMessage.$Properties;
-}
-
-/**
- * Properties of a SplitGroupedSavedIdListMessage.
- * @deprecated Use SplitGroupedSavedIdListMessage.$Properties instead.
- */
-export interface ISplitGroupedSavedIdListMessage extends SplitGroupedSavedIdListMessage.$Properties {
-}
-
-/** Represents a SplitGroupedSavedIdListMessage. */
-export class SplitGroupedSavedIdListMessage {
-
-    /**
-     * Constructs a new SplitGroupedSavedIdListMessage.
-     * @param [properties] Properties to set
-     */
-    constructor(properties?: SplitGroupedSavedIdListMessage.$Properties);
-
-    /** Unknown fields preserved while decoding when enabled */
-    $unknowns?: Uint8Array[];
-
-    /** SplitGroupedSavedIdListMessage clientIds. */
-    clientIds: string[];
-
-    /** SplitGroupedSavedIdListMessage seqNums. */
-    seqNums: number[];
-
-    /** SplitGroupedSavedIdListMessage groupSizes. */
-    groupSizes: number[];
-
-    /** SplitGroupedSavedIdListMessage startCounters. */
-    startCounters: number[];
-
-    /** SplitGroupedSavedIdListMessage counts. */
-    counts: number[];
-
-    /**
-     * Creates a new SplitGroupedSavedIdListMessage instance using the specified properties.
-     * @param [properties] Properties to set
-     * @returns SplitGroupedSavedIdListMessage instance
-     */
-    static create(properties: SplitGroupedSavedIdListMessage.$Shape): SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape;
-    static create(properties?: SplitGroupedSavedIdListMessage.$Properties): SplitGroupedSavedIdListMessage;
-
-    /**
-     * Encodes the specified SplitGroupedSavedIdListMessage message. Does not implicitly {@link SplitGroupedSavedIdListMessage.verify|verify} messages.
-     * @param message SplitGroupedSavedIdListMessage message or plain object to encode
-     * @param [writer] Writer to encode to
-     * @returns Writer
-     */
-    static encode(message: SplitGroupedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
-
-    /**
-     * Decodes a SplitGroupedSavedIdListMessage message from the specified reader or buffer.
-     * @param reader Reader or buffer to decode from
-     * @param [length] Message length if known beforehand
-     * @returns {SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape} SplitGroupedSavedIdListMessage
-     * @throws {Error} If the payload is not a reader or valid buffer
-     * @throws {$protobuf.util.ProtocolError} If required fields are missing
-     */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape;
-}
-
-export namespace SplitGroupedSavedIdListMessage {
-
-    /** Properties of a SplitGroupedSavedIdListMessage. */
-    interface $Properties {
-
-        /** SplitGroupedSavedIdListMessage clientIds */
-        clientIds?: (string[]|null);
-
-        /** SplitGroupedSavedIdListMessage seqNums */
-        seqNums?: (number[]|null);
-
-        /** SplitGroupedSavedIdListMessage groupSizes */
-        groupSizes?: (number[]|null);
-
-        /** SplitGroupedSavedIdListMessage startCounters */
-        startCounters?: (number[]|null);
-
-        /** SplitGroupedSavedIdListMessage counts */
-        counts?: (number[]|null);
-
-        /** Unknown fields preserved while decoding when enabled */
-        $unknowns?: Uint8Array[];
-    }
-
-    /** Shape of a SplitGroupedSavedIdListMessage. */
-    type $Shape = SplitGroupedSavedIdListMessage.$Properties;
-}
-
-/**
- * Properties of a BunchIndexOmitStartSavedIdListMessage.
- * @deprecated Use BunchIndexOmitStartSavedIdListMessage.$Properties instead.
- */
-export interface IBunchIndexOmitStartSavedIdListMessage extends BunchIndexOmitStartSavedIdListMessage.$Properties {
-}
-
-/** Represents a BunchIndexOmitStartSavedIdListMessage. */
-export class BunchIndexOmitStartSavedIdListMessage {
-
-    /**
-     * Constructs a new BunchIndexOmitStartSavedIdListMessage.
-     * @param [properties] Properties to set
-     */
-    constructor(properties?: BunchIndexOmitStartSavedIdListMessage.$Properties);
-
-    /** Unknown fields preserved while decoding when enabled */
-    $unknowns?: Uint8Array[];
-
-    /** BunchIndexOmitStartSavedIdListMessage bunchIds. */
-    bunchIds: string[];
-
-    /** BunchIndexOmitStartSavedIdListMessage bunchIndices. */
+    /** BunchIndexOmitSavedIdListMessage bunchIndices. */
     bunchIndices: number[];
 
-    /** BunchIndexOmitStartSavedIdListMessage startCounterIndexes. */
+    /** BunchIndexOmitSavedIdListMessage startCounterIndexes. */
     startCounterIndexes: number[];
 
-    /** BunchIndexOmitStartSavedIdListMessage startCounters. */
+    /** BunchIndexOmitSavedIdListMessage startCounters. */
     startCounters: number[];
 
-    /** BunchIndexOmitStartSavedIdListMessage counts. */
+    /** BunchIndexOmitSavedIdListMessage counts. */
     counts: number[];
 
     /**
-     * Creates a new BunchIndexOmitStartSavedIdListMessage instance using the specified properties.
+     * Creates a new BunchIndexOmitSavedIdListMessage instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns BunchIndexOmitStartSavedIdListMessage instance
+     * @returns BunchIndexOmitSavedIdListMessage instance
      */
-    static create(properties: BunchIndexOmitStartSavedIdListMessage.$Shape): BunchIndexOmitStartSavedIdListMessage & BunchIndexOmitStartSavedIdListMessage.$Shape;
-    static create(properties?: BunchIndexOmitStartSavedIdListMessage.$Properties): BunchIndexOmitStartSavedIdListMessage;
+    static create(properties: BunchIndexOmitSavedIdListMessage.$Shape): BunchIndexOmitSavedIdListMessage & BunchIndexOmitSavedIdListMessage.$Shape;
+    static create(properties?: BunchIndexOmitSavedIdListMessage.$Properties): BunchIndexOmitSavedIdListMessage;
 
     /**
-     * Encodes the specified BunchIndexOmitStartSavedIdListMessage message. Does not implicitly {@link BunchIndexOmitStartSavedIdListMessage.verify|verify} messages.
-     * @param message BunchIndexOmitStartSavedIdListMessage message or plain object to encode
+     * Encodes the specified BunchIndexOmitSavedIdListMessage message. Does not implicitly {@link BunchIndexOmitSavedIdListMessage.verify|verify} messages.
+     * @param message BunchIndexOmitSavedIdListMessage message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    static encode(message: BunchIndexOmitStartSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+    static encode(message: BunchIndexOmitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a BunchIndexOmitStartSavedIdListMessage message from the specified reader or buffer.
+     * Decodes a BunchIndexOmitSavedIdListMessage message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns {BunchIndexOmitStartSavedIdListMessage & BunchIndexOmitStartSavedIdListMessage.$Shape} BunchIndexOmitStartSavedIdListMessage
+     * @returns {BunchIndexOmitSavedIdListMessage & BunchIndexOmitSavedIdListMessage.$Shape} BunchIndexOmitSavedIdListMessage
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): BunchIndexOmitStartSavedIdListMessage & BunchIndexOmitStartSavedIdListMessage.$Shape;
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): BunchIndexOmitSavedIdListMessage & BunchIndexOmitSavedIdListMessage.$Shape;
 }
 
-export namespace BunchIndexOmitStartSavedIdListMessage {
+export namespace BunchIndexOmitSavedIdListMessage {
 
-    /** Properties of a BunchIndexOmitStartSavedIdListMessage. */
+    /** Properties of a BunchIndexOmitSavedIdListMessage. */
     interface $Properties {
 
-        /** BunchIndexOmitStartSavedIdListMessage bunchIds */
+        /** BunchIndexOmitSavedIdListMessage bunchIds */
         bunchIds?: (string[]|null);
 
-        /** BunchIndexOmitStartSavedIdListMessage bunchIndices */
+        /** BunchIndexOmitSavedIdListMessage bunchIndices */
         bunchIndices?: (number[]|null);
 
-        /** BunchIndexOmitStartSavedIdListMessage startCounterIndexes */
+        /** BunchIndexOmitSavedIdListMessage startCounterIndexes */
         startCounterIndexes?: (number[]|null);
 
-        /** BunchIndexOmitStartSavedIdListMessage startCounters */
+        /** BunchIndexOmitSavedIdListMessage startCounters */
         startCounters?: (number[]|null);
 
-        /** BunchIndexOmitStartSavedIdListMessage counts */
+        /** BunchIndexOmitSavedIdListMessage counts */
         counts?: (number[]|null);
 
         /** Unknown fields preserved while decoding when enabled */
         $unknowns?: Uint8Array[];
     }
 
-    /** Shape of a BunchIndexOmitStartSavedIdListMessage. */
-    type $Shape = BunchIndexOmitStartSavedIdListMessage.$Properties;
+    /** Shape of a BunchIndexOmitSavedIdListMessage. */
+    type $Shape = BunchIndexOmitSavedIdListMessage.$Properties;
 }
 
 /**
- * Properties of a ClientIndexOmitStartSavedIdListMessage.
- * @deprecated Use ClientIndexOmitStartSavedIdListMessage.$Properties instead.
+ * Properties of a ClientIndexOmitSavedIdListMessage.
+ * @deprecated Use ClientIndexOmitSavedIdListMessage.$Properties instead.
  */
-export interface IClientIndexOmitStartSavedIdListMessage extends ClientIndexOmitStartSavedIdListMessage.$Properties {
+export interface IClientIndexOmitSavedIdListMessage extends ClientIndexOmitSavedIdListMessage.$Properties {
 }
 
-/** Represents a ClientIndexOmitStartSavedIdListMessage. */
-export class ClientIndexOmitStartSavedIdListMessage {
+/** Represents a ClientIndexOmitSavedIdListMessage. */
+export class ClientIndexOmitSavedIdListMessage {
 
     /**
-     * Constructs a new ClientIndexOmitStartSavedIdListMessage.
+     * Constructs a new ClientIndexOmitSavedIdListMessage.
      * @param [properties] Properties to set
      */
-    constructor(properties?: ClientIndexOmitStartSavedIdListMessage.$Properties);
+    constructor(properties?: ClientIndexOmitSavedIdListMessage.$Properties);
 
     /** Unknown fields preserved while decoding when enabled */
     $unknowns?: Uint8Array[];
 
-    /** ClientIndexOmitStartSavedIdListMessage clientIds. */
+    /** ClientIndexOmitSavedIdListMessage clientIds. */
     clientIds: string[];
 
-    /** ClientIndexOmitStartSavedIdListMessage clientIndices. */
+    /** ClientIndexOmitSavedIdListMessage clientIndices. */
     clientIndices: number[];
 
-    /** ClientIndexOmitStartSavedIdListMessage seqNums. */
+    /** ClientIndexOmitSavedIdListMessage seqNums. */
     seqNums: number[];
 
-    /** ClientIndexOmitStartSavedIdListMessage startCounterIndexes. */
+    /** ClientIndexOmitSavedIdListMessage startCounterIndexes. */
     startCounterIndexes: number[];
 
-    /** ClientIndexOmitStartSavedIdListMessage startCounters. */
+    /** ClientIndexOmitSavedIdListMessage startCounters. */
     startCounters: number[];
 
-    /** ClientIndexOmitStartSavedIdListMessage counts. */
+    /** ClientIndexOmitSavedIdListMessage counts. */
     counts: number[];
 
     /**
-     * Creates a new ClientIndexOmitStartSavedIdListMessage instance using the specified properties.
+     * Creates a new ClientIndexOmitSavedIdListMessage instance using the specified properties.
      * @param [properties] Properties to set
-     * @returns ClientIndexOmitStartSavedIdListMessage instance
+     * @returns ClientIndexOmitSavedIdListMessage instance
      */
-    static create(properties: ClientIndexOmitStartSavedIdListMessage.$Shape): ClientIndexOmitStartSavedIdListMessage & ClientIndexOmitStartSavedIdListMessage.$Shape;
-    static create(properties?: ClientIndexOmitStartSavedIdListMessage.$Properties): ClientIndexOmitStartSavedIdListMessage;
+    static create(properties: ClientIndexOmitSavedIdListMessage.$Shape): ClientIndexOmitSavedIdListMessage & ClientIndexOmitSavedIdListMessage.$Shape;
+    static create(properties?: ClientIndexOmitSavedIdListMessage.$Properties): ClientIndexOmitSavedIdListMessage;
 
     /**
-     * Encodes the specified ClientIndexOmitStartSavedIdListMessage message. Does not implicitly {@link ClientIndexOmitStartSavedIdListMessage.verify|verify} messages.
-     * @param message ClientIndexOmitStartSavedIdListMessage message or plain object to encode
+     * Encodes the specified ClientIndexOmitSavedIdListMessage message. Does not implicitly {@link ClientIndexOmitSavedIdListMessage.verify|verify} messages.
+     * @param message ClientIndexOmitSavedIdListMessage message or plain object to encode
      * @param [writer] Writer to encode to
      * @returns Writer
      */
-    static encode(message: ClientIndexOmitStartSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+    static encode(message: ClientIndexOmitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
 
     /**
-     * Decodes a ClientIndexOmitStartSavedIdListMessage message from the specified reader or buffer.
+     * Decodes a ClientIndexOmitSavedIdListMessage message from the specified reader or buffer.
      * @param reader Reader or buffer to decode from
      * @param [length] Message length if known beforehand
-     * @returns {ClientIndexOmitStartSavedIdListMessage & ClientIndexOmitStartSavedIdListMessage.$Shape} ClientIndexOmitStartSavedIdListMessage
+     * @returns {ClientIndexOmitSavedIdListMessage & ClientIndexOmitSavedIdListMessage.$Shape} ClientIndexOmitSavedIdListMessage
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ClientIndexOmitStartSavedIdListMessage & ClientIndexOmitStartSavedIdListMessage.$Shape;
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ClientIndexOmitSavedIdListMessage & ClientIndexOmitSavedIdListMessage.$Shape;
 }
 
-export namespace ClientIndexOmitStartSavedIdListMessage {
+export namespace ClientIndexOmitSavedIdListMessage {
 
-    /** Properties of a ClientIndexOmitStartSavedIdListMessage. */
+    /** Properties of a ClientIndexOmitSavedIdListMessage. */
     interface $Properties {
 
-        /** ClientIndexOmitStartSavedIdListMessage clientIds */
+        /** ClientIndexOmitSavedIdListMessage clientIds */
         clientIds?: (string[]|null);
 
-        /** ClientIndexOmitStartSavedIdListMessage clientIndices */
+        /** ClientIndexOmitSavedIdListMessage clientIndices */
         clientIndices?: (number[]|null);
 
-        /** ClientIndexOmitStartSavedIdListMessage seqNums */
+        /** ClientIndexOmitSavedIdListMessage seqNums */
         seqNums?: (number[]|null);
 
-        /** ClientIndexOmitStartSavedIdListMessage startCounterIndexes */
+        /** ClientIndexOmitSavedIdListMessage startCounterIndexes */
         startCounterIndexes?: (number[]|null);
 
-        /** ClientIndexOmitStartSavedIdListMessage startCounters */
+        /** ClientIndexOmitSavedIdListMessage startCounters */
         startCounters?: (number[]|null);
 
-        /** ClientIndexOmitStartSavedIdListMessage counts */
+        /** ClientIndexOmitSavedIdListMessage counts */
         counts?: (number[]|null);
 
         /** Unknown fields preserved while decoding when enabled */
         $unknowns?: Uint8Array[];
     }
 
-    /** Shape of a ClientIndexOmitStartSavedIdListMessage. */
-    type $Shape = ClientIndexOmitStartSavedIdListMessage.$Properties;
+    /** Shape of a ClientIndexOmitSavedIdListMessage. */
+    type $Shape = ClientIndexOmitSavedIdListMessage.$Properties;
 }

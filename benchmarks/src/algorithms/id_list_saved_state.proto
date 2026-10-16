@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-// Format 8: Transposed, with signed counts and bunchIds extracted into a single array.
+// BunchIndex: Transposed, with signed counts and bunchIds extracted into a single array.
 // (Repeated scalars are packed by default in proto3.)
 message BunchIndexSavedIdListMessage {
   repeated string bunchIds = 1;
@@ -10,7 +10,7 @@ message BunchIndexSavedIdListMessage {
   repeated sint32 counts = 4;
 }
 
-// Format 9: Transposed, with signed counts and clientIds extracted into a single array.
+// ClientIndex: Transposed, with signed counts and clientIds extracted into a single array.
 // (Repeated scalars are packed by default in proto3.)
 message ClientIndexSavedIdListMessage {
   repeated string clientIds = 1;
@@ -21,31 +21,9 @@ message ClientIndexSavedIdListMessage {
   repeated sint32 counts = 5;
 }
 
-// Grouped: Transposed, with signed counts, and sequential entries with the same bunchId
-// grouped together. Group i has bunchIds[i] and the next groupSizes[i] entries
-// of startCounters & counts.
-message GroupedSavedIdListMessage {
-  repeated string bunchIds = 1;
-  repeated uint32 groupSizes = 2;
-  repeated uint32 startCounters = 3;
-  // Negative count means deleted.
-  repeated sint32 counts = 4;
-}
-
-// Split grouped: Same as GroupedSavedIdListMessage, but with each group's bunchId
-// split into clientId and seqNum.
-message SplitGroupedSavedIdListMessage {
-  repeated string clientIds = 1;
-  repeated uint32 seqNums = 2;
-  repeated uint32 groupSizes = 3;
-  repeated uint32 startCounters = 4;
-  // Negative count means deleted.
-  repeated sint32 counts = 5;
-}
-
-// BunchIndexOmitStart: BunchIndexSavedIdListMessage, but only including non-obvious
+// BunchIndexOmit: BunchIndexSavedIdListMessage, but only including non-obvious
 // startCounters. startCounterIndexes is delta-encoded.
-message BunchIndexOmitStartSavedIdListMessage {
+message BunchIndexOmitSavedIdListMessage {
   repeated string bunchIds = 1;
   repeated uint32 bunchIndices = 2;
   repeated uint32 startCounterIndexes = 3;
@@ -54,9 +32,9 @@ message BunchIndexOmitStartSavedIdListMessage {
   repeated sint32 counts = 5;
 }
 
-// ClientIndexOmitStart: ClientIndexSavedIdListMessage, but only including non-obvious
+// ClientIndexOmit: ClientIndexSavedIdListMessage, but only including non-obvious
 // startCounters. startCounterIndexes is delta-encoded.
-message ClientIndexOmitStartSavedIdListMessage {
+message ClientIndexOmitSavedIdListMessage {
   repeated string clientIds = 1;
   repeated uint32 clientIndices = 2;
   repeated uint32 seqNums = 3;
