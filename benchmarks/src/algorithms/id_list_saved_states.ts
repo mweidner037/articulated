@@ -1,7 +1,9 @@
 import type { SavedIdList } from "articulated";
 import { IdList } from "articulated";
 import {
+  BunchIndexOmitStartSavedIdListMessage,
   BunchIndexSavedIdListMessage,
+  ClientIndexOmitStartSavedIdListMessage,
   ClientIndexSavedIdListMessage,
   GroupedSavedIdListMessage,
   SplitGroupedSavedIdListMessage,
@@ -725,6 +727,243 @@ export class IdListSplitGroupedProtoAlgorithm extends IdListAlgorithmBase<Uint8A
     }
     this.list = IdList.load(
       fromGroupedTransposed({ bunchIds, groupSizes, startCounters, counts }),
+    );
+  }
+}
+
+// --- OmitStart formats: Index formats, omitting obvious startCounters. ---
+
+/*
+ * Like idListBunchIndex / idListSplitClientIndex, but startCounters only includes
+ * "non-obvious" values: those not equal to startCounter + |count| for the previous
+ * entry with the same bunchId (or 0 if none exists).
+ *
+ * startCounterIndexes gives the indexes (in the original SavedIdList) of the
+ * included startCounters, delta-encoded: each entry is the difference from the
+ * previous included index, with the first entry relative to 0.
+ */
+
+type BunchIndexOmitStartSavedState = {
+  /** Distinct bunchIds. */
+  bunchIds: string[];
+  /** Indices into bunchIds. */
+  bunchIndices: number[];
+  /** Delta-encoded indexes of non-obvious startCounters. */
+  startCounterIndexes: number[];
+  /** Non-obvious startCounters only. */
+  startCounters: number[];
+  counts: number[];
+};
+
+function toBunchIndexOmitStart(
+  saved: SavedIdList,
+): BunchIndexOmitStartSavedState {
+  const bunchIndexMap = new Map<string, number>();
+  // Indexed by bunchIndex.
+  const nextCounters: number[] = [];
+  const out: BunchIndexOmitStartSavedState = {
+    bunchIds: [],
+    bunchIndices: new Array(saved.length),
+    startCounterIndexes: [],
+    startCounters: [],
+    counts: new Array(saved.length),
+  };
+  let lastIncluded = 0;
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    let bunchIndex = bunchIndexMap.get(item.bunchId);
+    if (bunchIndex === undefined) {
+      bunchIndex = out.bunchIds.length;
+      out.bunchIds.push(item.bunchId);
+      bunchIndexMap.set(item.bunchId, bunchIndex);
+      nextCounters.push(0);
+    }
+    out.bunchIndices[i] = bunchIndex;
+    if (item.startCounter !== nextCounters[bunchIndex]) {
+      out.startCounterIndexes.push(i - lastIncluded);
+      out.startCounters.push(item.startCounter);
+      lastIncluded = i;
+    }
+    nextCounters[bunchIndex] = item.startCounter + item.count;
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromBunchIndexOmitStart({
+  bunchIds,
+  bunchIndices,
+  startCounterIndexes,
+  startCounters,
+  counts,
+}: BunchIndexOmitStartSavedState): SavedIdList {
+  const nextCounters: number[] = new Array(bunchIds.length).fill(0);
+  const saved: SavedIdList = new Array(bunchIndices.length);
+  // Index of the next included startCounter, or -1 if none.
+  let k = 0;
+  let nextIncluded =
+    startCounterIndexes.length === 0 ? -1 : startCounterIndexes[0];
+  for (let i = 0; i < bunchIndices.length; i++) {
+    const bunchIndex = bunchIndices[i];
+    let startCounter: number;
+    if (i === nextIncluded) {
+      startCounter = startCounters[k++];
+      nextIncluded =
+        k === startCounterIndexes.length
+          ? -1
+          : nextIncluded + startCounterIndexes[k];
+    } else startCounter = nextCounters[bunchIndex];
+    const item = unsignedItem(bunchIds[bunchIndex], startCounter, counts[i]);
+    saved[i] = item;
+    nextCounters[bunchIndex] = startCounter + item.count;
+  }
+  return saved;
+}
+
+/**
+ * idListBunchIndex, omitting obvious startCounters.
+ */
+export class IdListBunchIndexOmitStartAlgorithm extends IdListAlgorithm {
+  save(): string {
+    return JSON.stringify(toBunchIndexOmitStart(this.list.save()));
+  }
+
+  load(savedState: string): void {
+    this.list = IdList.load(fromBunchIndexOmitStart(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListBunchIndexOmitStart, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListBunchIndexOmitStartProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return BunchIndexOmitStartSavedIdListMessage.encode(
+      toBunchIndexOmitStart(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromBunchIndexOmitStart(
+        BunchIndexOmitStartSavedIdListMessage.decode(savedState),
+      ),
+    );
+  }
+}
+
+type ClientIndexOmitStartSavedState = {
+  /** Distinct clientIds. */
+  clientIds: string[];
+  /** Indices into clientIds. */
+  clientIndices: number[];
+  seqNums: number[];
+  /** Delta-encoded indexes of non-obvious startCounters. */
+  startCounterIndexes: number[];
+  /** Non-obvious startCounters only. */
+  startCounters: number[];
+  counts: number[];
+};
+
+function toClientIndexOmitStart(
+  saved: SavedIdList,
+): ClientIndexOmitStartSavedState {
+  const clientIndexMap = new Map<string, number>();
+  const nextCounters = new Map<string, number>();
+  const out: ClientIndexOmitStartSavedState = {
+    clientIds: [],
+    clientIndices: new Array(saved.length),
+    seqNums: new Array(saved.length),
+    startCounterIndexes: [],
+    startCounters: [],
+    counts: new Array(saved.length),
+  };
+  let lastIncluded = 0;
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    const [clientId, seqNum] = splitBunchId(item.bunchId);
+    let clientIndex = clientIndexMap.get(clientId);
+    if (clientIndex === undefined) {
+      clientIndex = out.clientIds.length;
+      out.clientIds.push(clientId);
+      clientIndexMap.set(clientId, clientIndex);
+    }
+    out.clientIndices[i] = clientIndex;
+    out.seqNums[i] = seqNum;
+    if (item.startCounter !== (nextCounters.get(item.bunchId) ?? 0)) {
+      out.startCounterIndexes.push(i - lastIncluded);
+      out.startCounters.push(item.startCounter);
+      lastIncluded = i;
+    }
+    nextCounters.set(item.bunchId, item.startCounter + item.count);
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromClientIndexOmitStart({
+  clientIds,
+  clientIndices,
+  seqNums,
+  startCounterIndexes,
+  startCounters,
+  counts,
+}: ClientIndexOmitStartSavedState): SavedIdList {
+  const nextCounters = new Map<string, number>();
+  const saved: SavedIdList = new Array(clientIndices.length);
+  // Index of the next included startCounter, or -1 if none.
+  let k = 0;
+  let nextIncluded =
+    startCounterIndexes.length === 0 ? -1 : startCounterIndexes[0];
+  for (let i = 0; i < clientIndices.length; i++) {
+    const bunchId = joinBunchId(clientIds[clientIndices[i]], seqNums[i]);
+    let startCounter: number;
+    if (i === nextIncluded) {
+      startCounter = startCounters[k++];
+      nextIncluded =
+        k === startCounterIndexes.length
+          ? -1
+          : nextIncluded + startCounterIndexes[k];
+    } else startCounter = nextCounters.get(bunchId) ?? 0;
+    const item = unsignedItem(bunchId, startCounter, counts[i]);
+    saved[i] = item;
+    nextCounters.set(bunchId, startCounter + item.count);
+  }
+  return saved;
+}
+
+/**
+ * idListSplitClientIndex, omitting obvious startCounters.
+ */
+export class IdListSplitClientIndexOmitStartAlgorithm extends IdListAlgorithm {
+  save(): string {
+    return JSON.stringify(toClientIndexOmitStart(this.list.save()));
+  }
+
+  load(savedState: string): void {
+    this.list = IdList.load(fromClientIndexOmitStart(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListSplitClientIndexOmitStart, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListSplitClientIndexOmitStartProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return ClientIndexOmitStartSavedIdListMessage.encode(
+      toClientIndexOmitStart(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromClientIndexOmitStart(
+        ClientIndexOmitStartSavedIdListMessage.decode(savedState),
+      ),
     );
   }
 }

@@ -984,6 +984,546 @@ export const SplitGroupedSavedIdListMessage = $root.SplitGroupedSavedIdListMessa
     return SplitGroupedSavedIdListMessage;
 })();
 
+export const BunchIndexOmitStartSavedIdListMessage = $root.BunchIndexOmitStartSavedIdListMessage = (() => {
+
+    /**
+     * Properties of a BunchIndexOmitStartSavedIdListMessage.
+     * @typedef {Object} BunchIndexOmitStartSavedIdListMessage.$Properties
+     * @property {Array.<string>|null} [bunchIds] BunchIndexOmitStartSavedIdListMessage bunchIds
+     * @property {Array.<number>|null} [bunchIndices] BunchIndexOmitStartSavedIdListMessage bunchIndices
+     * @property {Array.<number>|null} [startCounterIndexes] BunchIndexOmitStartSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] BunchIndexOmitStartSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] BunchIndexOmitStartSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+
+    /**
+     * Properties of a BunchIndexOmitStartSavedIdListMessage.
+     * @exports IBunchIndexOmitStartSavedIdListMessage
+     * @interface IBunchIndexOmitStartSavedIdListMessage
+     * @augments BunchIndexOmitStartSavedIdListMessage.$Properties
+     * @deprecated Use BunchIndexOmitStartSavedIdListMessage.$Properties instead.
+     */
+
+    /**
+     * Shape of a BunchIndexOmitStartSavedIdListMessage.
+     * @typedef {BunchIndexOmitStartSavedIdListMessage.$Properties} BunchIndexOmitStartSavedIdListMessage.$Shape
+     */
+
+    /**
+     * Constructs a new BunchIndexOmitStartSavedIdListMessage.
+     * @exports BunchIndexOmitStartSavedIdListMessage
+     * @classdesc Represents a BunchIndexOmitStartSavedIdListMessage.
+     * @constructor
+     * @param {BunchIndexOmitStartSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const BunchIndexOmitStartSavedIdListMessage = function (properties) {
+        this.bunchIds = [];
+        this.bunchIndices = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
+
+    /**
+     * BunchIndexOmitStartSavedIdListMessage bunchIds.
+     * @member {Array.<string>} bunchIds
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    BunchIndexOmitStartSavedIdListMessage.prototype.bunchIds = $util.emptyArray;
+
+    /**
+     * BunchIndexOmitStartSavedIdListMessage bunchIndices.
+     * @member {Array.<number>} bunchIndices
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    BunchIndexOmitStartSavedIdListMessage.prototype.bunchIndices = $util.emptyArray;
+
+    /**
+     * BunchIndexOmitStartSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    BunchIndexOmitStartSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+
+    /**
+     * BunchIndexOmitStartSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    BunchIndexOmitStartSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+
+    /**
+     * BunchIndexOmitStartSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    BunchIndexOmitStartSavedIdListMessage.prototype.counts = $util.emptyArray;
+
+    /**
+     * Creates a new BunchIndexOmitStartSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {BunchIndexOmitStartSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {BunchIndexOmitStartSavedIdListMessage} BunchIndexOmitStartSavedIdListMessage instance
+     * @type {{
+     *   (properties: BunchIndexOmitStartSavedIdListMessage.$Shape): BunchIndexOmitStartSavedIdListMessage & BunchIndexOmitStartSavedIdListMessage.$Shape;
+     *   (properties?: BunchIndexOmitStartSavedIdListMessage.$Properties): BunchIndexOmitStartSavedIdListMessage;
+     * }}
+     */
+    BunchIndexOmitStartSavedIdListMessage.create = function(properties) {
+        return new BunchIndexOmitStartSavedIdListMessage(properties);
+    };
+
+    /**
+     * Encodes the specified BunchIndexOmitStartSavedIdListMessage message. Does not implicitly {@link BunchIndexOmitStartSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {BunchIndexOmitStartSavedIdListMessage.$Properties} message BunchIndexOmitStartSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    BunchIndexOmitStartSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.bunchIndices != null && message.bunchIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.bunchIndices);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a BunchIndexOmitStartSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof BunchIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {BunchIndexOmitStartSavedIdListMessage & BunchIndexOmitStartSavedIdListMessage.$Shape} BunchIndexOmitStartSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    BunchIndexOmitStartSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
+        }
+        message = _target || new $root.BunchIndexOmitStartSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.bunchIndices && message.bunchIndices.length))
+                            message.bunchIndices = [];
+                        reader.uint32s(message.bunchIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.bunchIndices && message.bunchIndices.length))
+                        message.bunchIndices = [];
+                    message.bunchIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
+        }
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
+        }
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
+
+    return BunchIndexOmitStartSavedIdListMessage;
+})();
+
+export const ClientIndexOmitStartSavedIdListMessage = $root.ClientIndexOmitStartSavedIdListMessage = (() => {
+
+    /**
+     * Properties of a ClientIndexOmitStartSavedIdListMessage.
+     * @typedef {Object} ClientIndexOmitStartSavedIdListMessage.$Properties
+     * @property {Array.<string>|null} [clientIds] ClientIndexOmitStartSavedIdListMessage clientIds
+     * @property {Array.<number>|null} [clientIndices] ClientIndexOmitStartSavedIdListMessage clientIndices
+     * @property {Array.<number>|null} [seqNums] ClientIndexOmitStartSavedIdListMessage seqNums
+     * @property {Array.<number>|null} [startCounterIndexes] ClientIndexOmitStartSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] ClientIndexOmitStartSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] ClientIndexOmitStartSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+
+    /**
+     * Properties of a ClientIndexOmitStartSavedIdListMessage.
+     * @exports IClientIndexOmitStartSavedIdListMessage
+     * @interface IClientIndexOmitStartSavedIdListMessage
+     * @augments ClientIndexOmitStartSavedIdListMessage.$Properties
+     * @deprecated Use ClientIndexOmitStartSavedIdListMessage.$Properties instead.
+     */
+
+    /**
+     * Shape of a ClientIndexOmitStartSavedIdListMessage.
+     * @typedef {ClientIndexOmitStartSavedIdListMessage.$Properties} ClientIndexOmitStartSavedIdListMessage.$Shape
+     */
+
+    /**
+     * Constructs a new ClientIndexOmitStartSavedIdListMessage.
+     * @exports ClientIndexOmitStartSavedIdListMessage
+     * @classdesc Represents a ClientIndexOmitStartSavedIdListMessage.
+     * @constructor
+     * @param {ClientIndexOmitStartSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const ClientIndexOmitStartSavedIdListMessage = function (properties) {
+        this.clientIds = [];
+        this.clientIndices = [];
+        this.seqNums = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage clientIds.
+     * @member {Array.<string>} clientIds
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.clientIds = $util.emptyArray;
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage clientIndices.
+     * @member {Array.<number>} clientIndices
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.clientIndices = $util.emptyArray;
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage seqNums.
+     * @member {Array.<number>} seqNums
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.seqNums = $util.emptyArray;
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+
+    /**
+     * ClientIndexOmitStartSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @instance
+     */
+    ClientIndexOmitStartSavedIdListMessage.prototype.counts = $util.emptyArray;
+
+    /**
+     * Creates a new ClientIndexOmitStartSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {ClientIndexOmitStartSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {ClientIndexOmitStartSavedIdListMessage} ClientIndexOmitStartSavedIdListMessage instance
+     * @type {{
+     *   (properties: ClientIndexOmitStartSavedIdListMessage.$Shape): ClientIndexOmitStartSavedIdListMessage & ClientIndexOmitStartSavedIdListMessage.$Shape;
+     *   (properties?: ClientIndexOmitStartSavedIdListMessage.$Properties): ClientIndexOmitStartSavedIdListMessage;
+     * }}
+     */
+    ClientIndexOmitStartSavedIdListMessage.create = function(properties) {
+        return new ClientIndexOmitStartSavedIdListMessage(properties);
+    };
+
+    /**
+     * Encodes the specified ClientIndexOmitStartSavedIdListMessage message. Does not implicitly {@link ClientIndexOmitStartSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {ClientIndexOmitStartSavedIdListMessage.$Properties} message ClientIndexOmitStartSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ClientIndexOmitStartSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.clientIndices != null && message.clientIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.clientIndices);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.seqNums);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 6, wireType 2 =*/50).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a ClientIndexOmitStartSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof ClientIndexOmitStartSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ClientIndexOmitStartSavedIdListMessage & ClientIndexOmitStartSavedIdListMessage.$Shape} ClientIndexOmitStartSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ClientIndexOmitStartSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
+        }
+        message = _target || new $root.ClientIndexOmitStartSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.clientIndices && message.clientIndices.length))
+                            message.clientIndices = [];
+                        reader.uint32s(message.clientIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.clientIndices && message.clientIndices.length))
+                        message.clientIndices = [];
+                    message.clientIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 6: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
+        }
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
+        }
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
+
+    return ClientIndexOmitStartSavedIdListMessage;
+})();
+
 export {
   $root as default
 };

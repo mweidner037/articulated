@@ -8,6 +8,8 @@ import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
 import {
   IdListBunchIndexAlgorithm,
+  IdListBunchIndexOmitStartAlgorithm,
+  IdListBunchIndexOmitStartProtoAlgorithm,
   IdListBunchIndexProtoAlgorithm,
   IdListGroupedAlgorithm,
   IdListGroupedProtoAlgorithm,
@@ -15,6 +17,8 @@ import {
   IdListSignedAlgorithm,
   IdListSplitAlgorithm,
   IdListSplitClientIndexAlgorithm,
+  IdListSplitClientIndexOmitStartAlgorithm,
+  IdListSplitClientIndexOmitStartProtoAlgorithm,
   IdListSplitClientIndexProtoAlgorithm,
   IdListSplitGroupedAlgorithm,
   IdListSplitGroupedProtoAlgorithm,
@@ -58,6 +62,11 @@ export const allAlgorithms: Record<
   idListSplitGrouped: IdListSplitGroupedAlgorithm,
   idListGroupedProto: IdListGroupedProtoAlgorithm,
   idListSplitGroupedProto: IdListSplitGroupedProtoAlgorithm,
+  idListBunchIndexOmitStart: IdListBunchIndexOmitStartAlgorithm,
+  idListSplitClientIndexOmitStart: IdListSplitClientIndexOmitStartAlgorithm,
+  idListBunchIndexOmitStartProto: IdListBunchIndexOmitStartProtoAlgorithm,
+  idListSplitClientIndexOmitStartProto:
+    IdListSplitClientIndexOmitStartProtoAlgorithm,
   automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,
 } satisfies Record<string, AnyTextAlgorithmConstructor>;

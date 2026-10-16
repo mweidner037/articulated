@@ -42,3 +42,26 @@ message SplitGroupedSavedIdListMessage {
   // Negative count means deleted.
   repeated sint32 counts = 5;
 }
+
+// BunchIndexOmitStart: BunchIndexSavedIdListMessage, but only including non-obvious
+// startCounters. startCounterIndexes is delta-encoded.
+message BunchIndexOmitStartSavedIdListMessage {
+  repeated string bunchIds = 1;
+  repeated uint32 bunchIndices = 2;
+  repeated uint32 startCounterIndexes = 3;
+  repeated uint32 startCounters = 4;
+  // Negative count means deleted.
+  repeated sint32 counts = 5;
+}
+
+// ClientIndexOmitStart: ClientIndexSavedIdListMessage, but only including non-obvious
+// startCounters. startCounterIndexes is delta-encoded.
+message ClientIndexOmitStartSavedIdListMessage {
+  repeated string clientIds = 1;
+  repeated uint32 clientIndices = 2;
+  repeated uint32 seqNums = 3;
+  repeated uint32 startCounterIndexes = 4;
+  repeated uint32 startCounters = 5;
+  // Negative count means deleted.
+  repeated sint32 counts = 6;
+}
