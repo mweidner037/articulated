@@ -45,7 +45,7 @@ Info: https://github.com/automerge/automerge-perf.
 | idListSplitTransposedProto |  |  |  |  |  |  |  | 1.96 ± 0.04 | 27.0 ± 3.9 | 183 ± 0 |  |  |  |
 | idListSplitTransposedOmitProto |  |  |  |  |  |  |  | 2.64 ± 0.06 | 27.7 ± 5.3 | 170 ± 0 |  |  |  |
 | idListSplitClientIndexProto |  |  |  |  |  |  |  | 2.10 ± 0.05 | 21.2 ± 4.3 | 57.4 ± 0.0 |  |  |  |
-| idListSplitClientIndexOmitProto |  |  |  |  |  |  |  | 2.68 ± 0.04 | 17.1 ± 1.1 | 44.5 ± 0.0 |  |  |  |
+| idListSplitClientIndexOmitProto |  |  |  |  |  |  |  | 2.68 ± 0.04 | 17.1 ± 1.1 | 44.5 ± 0.0 | 4.16 ± 0.09 | 27.9 ± 3.4 | 25.8 ± 0.0 |
 | automerge | 32.2 ± 0.3 | 30.3 ± 0.3 | 35.5 ± 0.3 | 41.4 ± 0.4 | 4105 ± 34 | 2.27 ± 0.56 |  | 17.4 ± 0.1 | 441 ± 6 | 156 ± 0 | 23.4 ± 0.3 | 443 ± 6 | 156 ± 0 |
 | yjsText | 10.8 ± 0.1 | 10.1 ± 0.1 | 17.7 ± 0.1 | 29.0 ± 0.5 | 700 ± 20 | 563 ± 25 | 3043 ± 0 | 4.77 ± 0.08 | 29.9 ± 1.2 | 289 ± 0 | 12.7 ± 0.9 | 31.6 ± 1.0 | 117 ± 0 |
 
