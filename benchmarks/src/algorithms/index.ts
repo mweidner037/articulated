@@ -6,6 +6,28 @@ import type {
 } from "./base";
 import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
+import {
+  IdListBunchIndexAlgorithm,
+  IdListBunchIndexOmitAlgorithm,
+  IdListBunchIndexOmitProtoAlgorithm,
+  IdListBunchIndexProtoAlgorithm,
+  IdListOmitAlgorithm,
+  IdListSignedAlgorithm,
+  IdListSplitClientIndexAlgorithm,
+  IdListSplitClientIndexOmitAlgorithm,
+  IdListSplitClientIndexOmitProtoAlgorithm,
+  IdListSplitClientIndexProtoAlgorithm,
+  IdListSplitOmitAlgorithm,
+  IdListSplitSignedAlgorithm,
+  IdListSplitTransposedAlgorithm,
+  IdListSplitTransposedOmitAlgorithm,
+  IdListSplitTransposedOmitProtoAlgorithm,
+  IdListSplitTransposedProtoAlgorithm,
+  IdListTransposedAlgorithm,
+  IdListTransposedOmitAlgorithm,
+  IdListTransposedOmitProtoAlgorithm,
+  IdListTransposedProtoAlgorithm,
+} from "./id_list_saved_states";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
 import { StringAlgorithm } from "./string";
@@ -25,6 +47,29 @@ export const allAlgorithms: Record<
   // Skipping this as it is too slow to apply all ops.
   // idListSimple: IdListSimpleAlgorithm,
   idList: IdListAlgorithm,
+  // Alternative saved state formats for IdList.
+  // Non-split bunchIds:
+  idListSigned: IdListSignedAlgorithm,
+  idListOmit: IdListOmitAlgorithm,
+  idListTransposed: IdListTransposedAlgorithm,
+  idListTransposedOmit: IdListTransposedOmitAlgorithm,
+  idListBunchIndex: IdListBunchIndexAlgorithm,
+  idListBunchIndexOmit: IdListBunchIndexOmitAlgorithm,
+  idListTransposedProto: IdListTransposedProtoAlgorithm,
+  idListTransposedOmitProto: IdListTransposedOmitProtoAlgorithm,
+  idListBunchIndexProto: IdListBunchIndexProtoAlgorithm,
+  idListBunchIndexOmitProto: IdListBunchIndexOmitProtoAlgorithm,
+  // Split bunchIds:
+  idListSplitSigned: IdListSplitSignedAlgorithm,
+  idListSplitOmit: IdListSplitOmitAlgorithm,
+  idListSplitTransposed: IdListSplitTransposedAlgorithm,
+  idListSplitTransposedOmit: IdListSplitTransposedOmitAlgorithm,
+  idListSplitClientIndex: IdListSplitClientIndexAlgorithm,
+  idListSplitClientIndexOmit: IdListSplitClientIndexOmitAlgorithm,
+  idListSplitTransposedProto: IdListSplitTransposedProtoAlgorithm,
+  idListSplitTransposedOmitProto: IdListSplitTransposedOmitProtoAlgorithm,
+  idListSplitClientIndexProto: IdListSplitClientIndexProtoAlgorithm,
+  idListSplitClientIndexOmitProto: IdListSplitClientIndexOmitProtoAlgorithm,
   automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,
 } satisfies Record<string, AnyTextAlgorithmConstructor>;

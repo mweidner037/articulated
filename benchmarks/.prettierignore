@@ -6,3 +6,4 @@ LICENSE
 pnpm-lock.yaml
 src/traces/*
 results.md
+src/generated/*

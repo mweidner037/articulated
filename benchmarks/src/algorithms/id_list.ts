@@ -13,11 +13,12 @@ const CLIENT_ID_LENGTH = 10;
  * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
  * chars long (60 bit of entropy) and seqNum is base-36 encoded.
  *
- * Saved states are the SavedIdList as a JSON string.
+ * Subclasses choose the saved state format.
  */
-export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
+export abstract class IdListAlgorithmBase<
+  S extends Uint8Array | string,
+> implements TextAlgorithm<TraceEdit, S> {
   static readonly isProseMirror = false;
-  static readonly isSavedStateString = true;
   static readonly isWasm = false;
 
   readonly idGen: ElementIdGenerator;
@@ -56,13 +57,9 @@ export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
     }
   }
 
-  save(): string {
-    return JSON.stringify(this.list.save());
-  }
+  abstract save(): S;
 
-  load(savedState: string): void {
-    this.list = IdList.load(JSON.parse(savedState));
-  }
+  abstract load(savedState: S): void;
 
   check(finalText: string): void {
     // We don't store chars; check length only.
@@ -70,4 +67,21 @@ export class IdListAlgorithm implements TextAlgorithm<TraceEdit, string> {
   }
 
   free(): void {}
+}
+
+/**
+ * An IdList with ids only (no chars).
+ *
+ * Saved states are the SavedIdList as a JSON string.
+ */
+export class IdListAlgorithm extends IdListAlgorithmBase<string> {
+  static readonly isSavedStateString = true;
+
+  save(): string {
+    return JSON.stringify(this.list.save());
+  }
+
+  load(savedState: string): void {
+    this.list = IdList.load(JSON.parse(savedState));
+  }
 }
