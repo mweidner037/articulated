@@ -22,9 +22,11 @@ import {
   IdListSplitTransposedAlgorithm,
   IdListSplitTransposedOmitAlgorithm,
   IdListSplitTransposedOmitProtoAlgorithm,
+  IdListSplitTransposedProtoAlgorithm,
   IdListTransposedAlgorithm,
   IdListTransposedOmitAlgorithm,
   IdListTransposedOmitProtoAlgorithm,
+  IdListTransposedProtoAlgorithm,
 } from "./id_list_saved_states";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
@@ -53,6 +55,7 @@ export const allAlgorithms: Record<
   idListTransposedOmit: IdListTransposedOmitAlgorithm,
   idListBunchIndex: IdListBunchIndexAlgorithm,
   idListBunchIndexOmit: IdListBunchIndexOmitAlgorithm,
+  idListTransposedProto: IdListTransposedProtoAlgorithm,
   idListTransposedOmitProto: IdListTransposedOmitProtoAlgorithm,
   idListBunchIndexProto: IdListBunchIndexProtoAlgorithm,
   idListBunchIndexOmitProto: IdListBunchIndexOmitProtoAlgorithm,
@@ -63,6 +66,7 @@ export const allAlgorithms: Record<
   idListSplitTransposedOmit: IdListSplitTransposedOmitAlgorithm,
   idListSplitClientIndex: IdListSplitClientIndexAlgorithm,
   idListSplitClientIndexOmit: IdListSplitClientIndexOmitAlgorithm,
+  idListSplitTransposedProto: IdListSplitTransposedProtoAlgorithm,
   idListSplitTransposedOmitProto: IdListSplitTransposedOmitProtoAlgorithm,
   idListSplitClientIndexProto: IdListSplitClientIndexProtoAlgorithm,
   idListSplitClientIndexOmitProto: IdListSplitClientIndexOmitProtoAlgorithm,

@@ -1,5 +1,24 @@
 syntax = "proto3";
 
+// Transposed: SavedIdList transposed, with signed counts.
+// (Repeated scalars are packed by default in proto3.)
+message TransposedSavedIdListMessage {
+  repeated string bunchIds = 1;
+  repeated uint32 startCounters = 2;
+  // Negative count means deleted.
+  repeated sint32 counts = 3;
+}
+
+// SplitTransposed: TransposedSavedIdListMessage, but with bunchIds split into
+// clientId and seqNum.
+message SplitTransposedSavedIdListMessage {
+  repeated string clientIds = 1;
+  repeated uint32 seqNums = 2;
+  repeated uint32 startCounters = 3;
+  // Negative count means deleted.
+  repeated sint32 counts = 4;
+}
+
 // BunchIndex: Transposed, with signed counts and bunchIds extracted into a single array.
 // (Repeated scalars are packed by default in proto3.)
 message BunchIndexSavedIdListMessage {

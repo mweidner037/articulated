@@ -6,7 +6,9 @@ import {
   ClientIndexOmitSavedIdListMessage,
   ClientIndexSavedIdListMessage,
   SplitTransposedOmitSavedIdListMessage,
+  SplitTransposedSavedIdListMessage,
   TransposedOmitSavedIdListMessage,
+  TransposedSavedIdListMessage,
 } from "../generated/id_list_saved_state";
 import { IdListAlgorithm, IdListAlgorithmBase } from "./id_list";
 
@@ -97,35 +99,62 @@ type TransposedSavedState = {
   counts: number[];
 };
 
+function toTransposed(saved: SavedIdList): TransposedSavedState {
+  const out: TransposedSavedState = {
+    bunchIds: new Array(saved.length),
+    startCounters: new Array(saved.length),
+    counts: new Array(saved.length),
+  };
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    out.bunchIds[i] = item.bunchId;
+    out.startCounters[i] = item.startCounter;
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromTransposed({
+  bunchIds,
+  startCounters,
+  counts,
+}: TransposedSavedState): SavedIdList {
+  const saved: SavedIdList = new Array(bunchIds.length);
+  for (let i = 0; i < bunchIds.length; i++) {
+    saved[i] = unsignedItem(bunchIds[i], startCounters[i], counts[i]);
+  }
+  return saved;
+}
+
 /**
  * idListSigned, transposed (object of arrays).
  */
 export class IdListTransposedAlgorithm extends IdListAlgorithm {
   save(): string {
-    const saved = this.list.save();
-    const out: TransposedSavedState = {
-      bunchIds: new Array(saved.length),
-      startCounters: new Array(saved.length),
-      counts: new Array(saved.length),
-    };
-    for (let i = 0; i < saved.length; i++) {
-      const item = saved[i];
-      out.bunchIds[i] = item.bunchId;
-      out.startCounters[i] = item.startCounter;
-      out.counts[i] = signedCount(item);
-    }
-    return JSON.stringify(out);
+    return JSON.stringify(toTransposed(this.list.save()));
   }
 
   load(savedState: string): void {
-    const { bunchIds, startCounters, counts } = JSON.parse(
-      savedState,
-    ) as TransposedSavedState;
-    const saved: SavedIdList = new Array(bunchIds.length);
-    for (let i = 0; i < bunchIds.length; i++) {
-      saved[i] = unsignedItem(bunchIds[i], startCounters[i], counts[i]);
-    }
-    this.list = IdList.load(saved);
+    this.list = IdList.load(fromTransposed(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListTransposed, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListTransposedProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return TransposedSavedIdListMessage.encode(
+      toTransposed(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromTransposed(TransposedSavedIdListMessage.decode(savedState)),
+    );
   }
 }
 
@@ -243,42 +272,70 @@ type SplitTransposedSavedState = {
   counts: number[];
 };
 
+function toSplitTransposed(saved: SavedIdList): SplitTransposedSavedState {
+  const out: SplitTransposedSavedState = {
+    clientIds: new Array(saved.length),
+    seqNums: new Array(saved.length),
+    startCounters: new Array(saved.length),
+    counts: new Array(saved.length),
+  };
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    const [clientId, seqNum] = splitBunchId(item.bunchId);
+    out.clientIds[i] = clientId;
+    out.seqNums[i] = seqNum;
+    out.startCounters[i] = item.startCounter;
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromSplitTransposed({
+  clientIds,
+  seqNums,
+  startCounters,
+  counts,
+}: SplitTransposedSavedState): SavedIdList {
+  const saved: SavedIdList = new Array(clientIds.length);
+  for (let i = 0; i < clientIds.length; i++) {
+    saved[i] = unsignedItem(
+      joinBunchId(clientIds[i], seqNums[i]),
+      startCounters[i],
+      counts[i],
+    );
+  }
+  return saved;
+}
+
 /**
  * idListSplitSigned, transposed (object of arrays).
  */
 export class IdListSplitTransposedAlgorithm extends IdListAlgorithm {
   save(): string {
-    const saved = this.list.save();
-    const out: SplitTransposedSavedState = {
-      clientIds: new Array(saved.length),
-      seqNums: new Array(saved.length),
-      startCounters: new Array(saved.length),
-      counts: new Array(saved.length),
-    };
-    for (let i = 0; i < saved.length; i++) {
-      const item = saved[i];
-      const [clientId, seqNum] = splitBunchId(item.bunchId);
-      out.clientIds[i] = clientId;
-      out.seqNums[i] = seqNum;
-      out.startCounters[i] = item.startCounter;
-      out.counts[i] = signedCount(item);
-    }
-    return JSON.stringify(out);
+    return JSON.stringify(toSplitTransposed(this.list.save()));
   }
 
   load(savedState: string): void {
-    const { clientIds, seqNums, startCounters, counts } = JSON.parse(
-      savedState,
-    ) as SplitTransposedSavedState;
-    const saved: SavedIdList = new Array(clientIds.length);
-    for (let i = 0; i < clientIds.length; i++) {
-      saved[i] = unsignedItem(
-        joinBunchId(clientIds[i], seqNums[i]),
-        startCounters[i],
-        counts[i],
-      );
-    }
-    this.list = IdList.load(saved);
+    this.list = IdList.load(fromSplitTransposed(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListSplitTransposed, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListSplitTransposedProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return SplitTransposedSavedIdListMessage.encode(
+      toSplitTransposed(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromSplitTransposed(SplitTransposedSavedIdListMessage.decode(savedState)),
+    );
   }
 }
 

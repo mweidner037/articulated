@@ -3,6 +3,166 @@
 import * as $protobuf from "protobufjs";
 
 /**
+ * Properties of a TransposedSavedIdListMessage.
+ * @deprecated Use TransposedSavedIdListMessage.$Properties instead.
+ */
+export interface ITransposedSavedIdListMessage extends TransposedSavedIdListMessage.$Properties {
+}
+
+/** Represents a TransposedSavedIdListMessage. */
+export class TransposedSavedIdListMessage {
+
+    /**
+     * Constructs a new TransposedSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: TransposedSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** TransposedSavedIdListMessage bunchIds. */
+    bunchIds: string[];
+
+    /** TransposedSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** TransposedSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new TransposedSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns TransposedSavedIdListMessage instance
+     */
+    static create(properties: TransposedSavedIdListMessage.$Shape): TransposedSavedIdListMessage & TransposedSavedIdListMessage.$Shape;
+    static create(properties?: TransposedSavedIdListMessage.$Properties): TransposedSavedIdListMessage;
+
+    /**
+     * Encodes the specified TransposedSavedIdListMessage message. Does not implicitly {@link TransposedSavedIdListMessage.verify|verify} messages.
+     * @param message TransposedSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: TransposedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a TransposedSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {TransposedSavedIdListMessage & TransposedSavedIdListMessage.$Shape} TransposedSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): TransposedSavedIdListMessage & TransposedSavedIdListMessage.$Shape;
+}
+
+export namespace TransposedSavedIdListMessage {
+
+    /** Properties of a TransposedSavedIdListMessage. */
+    interface $Properties {
+
+        /** TransposedSavedIdListMessage bunchIds */
+        bunchIds?: (string[]|null);
+
+        /** TransposedSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** TransposedSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a TransposedSavedIdListMessage. */
+    type $Shape = TransposedSavedIdListMessage.$Properties;
+}
+
+/**
+ * Properties of a SplitTransposedSavedIdListMessage.
+ * @deprecated Use SplitTransposedSavedIdListMessage.$Properties instead.
+ */
+export interface ISplitTransposedSavedIdListMessage extends SplitTransposedSavedIdListMessage.$Properties {
+}
+
+/** Represents a SplitTransposedSavedIdListMessage. */
+export class SplitTransposedSavedIdListMessage {
+
+    /**
+     * Constructs a new SplitTransposedSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: SplitTransposedSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** SplitTransposedSavedIdListMessage clientIds. */
+    clientIds: string[];
+
+    /** SplitTransposedSavedIdListMessage seqNums. */
+    seqNums: number[];
+
+    /** SplitTransposedSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** SplitTransposedSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new SplitTransposedSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns SplitTransposedSavedIdListMessage instance
+     */
+    static create(properties: SplitTransposedSavedIdListMessage.$Shape): SplitTransposedSavedIdListMessage & SplitTransposedSavedIdListMessage.$Shape;
+    static create(properties?: SplitTransposedSavedIdListMessage.$Properties): SplitTransposedSavedIdListMessage;
+
+    /**
+     * Encodes the specified SplitTransposedSavedIdListMessage message. Does not implicitly {@link SplitTransposedSavedIdListMessage.verify|verify} messages.
+     * @param message SplitTransposedSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: SplitTransposedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a SplitTransposedSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {SplitTransposedSavedIdListMessage & SplitTransposedSavedIdListMessage.$Shape} SplitTransposedSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitTransposedSavedIdListMessage & SplitTransposedSavedIdListMessage.$Shape;
+}
+
+export namespace SplitTransposedSavedIdListMessage {
+
+    /** Properties of a SplitTransposedSavedIdListMessage. */
+    interface $Properties {
+
+        /** SplitTransposedSavedIdListMessage clientIds */
+        clientIds?: (string[]|null);
+
+        /** SplitTransposedSavedIdListMessage seqNums */
+        seqNums?: (number[]|null);
+
+        /** SplitTransposedSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** SplitTransposedSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a SplitTransposedSavedIdListMessage. */
+    type $Shape = SplitTransposedSavedIdListMessage.$Properties;
+}
+
+/**
  * Properties of a BunchIndexSavedIdListMessage.
  * @deprecated Use BunchIndexSavedIdListMessage.$Properties instead.
  */
