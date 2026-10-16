@@ -173,3 +173,175 @@ export namespace ClientIndexSavedIdListMessage {
     /** Shape of a ClientIndexSavedIdListMessage. */
     type $Shape = ClientIndexSavedIdListMessage.$Properties;
 }
+
+/**
+ * Properties of a GroupedSavedIdListMessage.
+ * @deprecated Use GroupedSavedIdListMessage.$Properties instead.
+ */
+export interface IGroupedSavedIdListMessage extends GroupedSavedIdListMessage.$Properties {
+}
+
+/** Represents a GroupedSavedIdListMessage. */
+export class GroupedSavedIdListMessage {
+
+    /**
+     * Constructs a new GroupedSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: GroupedSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** GroupedSavedIdListMessage bunchIds. */
+    bunchIds: string[];
+
+    /** GroupedSavedIdListMessage groupSizes. */
+    groupSizes: number[];
+
+    /** GroupedSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** GroupedSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new GroupedSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns GroupedSavedIdListMessage instance
+     */
+    static create(properties: GroupedSavedIdListMessage.$Shape): GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape;
+    static create(properties?: GroupedSavedIdListMessage.$Properties): GroupedSavedIdListMessage;
+
+    /**
+     * Encodes the specified GroupedSavedIdListMessage message. Does not implicitly {@link GroupedSavedIdListMessage.verify|verify} messages.
+     * @param message GroupedSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: GroupedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a GroupedSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape} GroupedSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): GroupedSavedIdListMessage & GroupedSavedIdListMessage.$Shape;
+}
+
+export namespace GroupedSavedIdListMessage {
+
+    /** Properties of a GroupedSavedIdListMessage. */
+    interface $Properties {
+
+        /** GroupedSavedIdListMessage bunchIds */
+        bunchIds?: (string[]|null);
+
+        /** GroupedSavedIdListMessage groupSizes */
+        groupSizes?: (number[]|null);
+
+        /** GroupedSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** GroupedSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a GroupedSavedIdListMessage. */
+    type $Shape = GroupedSavedIdListMessage.$Properties;
+}
+
+/**
+ * Properties of a SplitGroupedSavedIdListMessage.
+ * @deprecated Use SplitGroupedSavedIdListMessage.$Properties instead.
+ */
+export interface ISplitGroupedSavedIdListMessage extends SplitGroupedSavedIdListMessage.$Properties {
+}
+
+/** Represents a SplitGroupedSavedIdListMessage. */
+export class SplitGroupedSavedIdListMessage {
+
+    /**
+     * Constructs a new SplitGroupedSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: SplitGroupedSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** SplitGroupedSavedIdListMessage clientIds. */
+    clientIds: string[];
+
+    /** SplitGroupedSavedIdListMessage seqNums. */
+    seqNums: number[];
+
+    /** SplitGroupedSavedIdListMessage groupSizes. */
+    groupSizes: number[];
+
+    /** SplitGroupedSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** SplitGroupedSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new SplitGroupedSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns SplitGroupedSavedIdListMessage instance
+     */
+    static create(properties: SplitGroupedSavedIdListMessage.$Shape): SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape;
+    static create(properties?: SplitGroupedSavedIdListMessage.$Properties): SplitGroupedSavedIdListMessage;
+
+    /**
+     * Encodes the specified SplitGroupedSavedIdListMessage message. Does not implicitly {@link SplitGroupedSavedIdListMessage.verify|verify} messages.
+     * @param message SplitGroupedSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: SplitGroupedSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a SplitGroupedSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape} SplitGroupedSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitGroupedSavedIdListMessage & SplitGroupedSavedIdListMessage.$Shape;
+}
+
+export namespace SplitGroupedSavedIdListMessage {
+
+    /** Properties of a SplitGroupedSavedIdListMessage. */
+    interface $Properties {
+
+        /** SplitGroupedSavedIdListMessage clientIds */
+        clientIds?: (string[]|null);
+
+        /** SplitGroupedSavedIdListMessage seqNums */
+        seqNums?: (number[]|null);
+
+        /** SplitGroupedSavedIdListMessage groupSizes */
+        groupSizes?: (number[]|null);
+
+        /** SplitGroupedSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** SplitGroupedSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a SplitGroupedSavedIdListMessage. */
+    type $Shape = SplitGroupedSavedIdListMessage.$Properties;
+}

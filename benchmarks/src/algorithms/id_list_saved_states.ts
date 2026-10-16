@@ -3,6 +3,8 @@ import { IdList } from "articulated";
 import {
   BunchIndexSavedIdListMessage,
   ClientIndexSavedIdListMessage,
+  GroupedSavedIdListMessage,
+  SplitGroupedSavedIdListMessage,
 } from "../generated/id_list_saved_state";
 import { IdListAlgorithm, IdListAlgorithmBase } from "./id_list";
 
@@ -431,6 +433,298 @@ export class IdListSplitClientIndexProtoAlgorithm extends IdListAlgorithmBase<Ui
   load(savedState: Uint8Array): void {
     this.list = IdList.load(
       fromClientIndex(ClientIndexSavedIdListMessage.decode(savedState)),
+    );
+  }
+}
+
+// --- Omit formats: Signed, omitting default count & startCounter. ---
+
+/*
+ * A count of -1 (one deleted id) is omitted.
+ * A startCounter is omitted if it equals the "next" counter for its bunchId:
+ * startCounter + |count| for the previous object with the same bunchId,
+ * or 0 if none exists.
+ */
+
+type OmitSavedState = Array<{
+  bunchId: string;
+  startCounter?: number;
+  count?: number;
+}>;
+
+/**
+ * idListSigned, omitting default count & startCounter.
+ */
+export class IdListOmitAlgorithm extends IdListAlgorithm {
+  save(): string {
+    const saved = this.list.save();
+    const nextCounters = new Map<string, number>();
+    const out: OmitSavedState = new Array(saved.length);
+    for (let i = 0; i < saved.length; i++) {
+      const item = saved[i];
+      const obj: OmitSavedState[number] = { bunchId: item.bunchId };
+      if (item.startCounter !== (nextCounters.get(item.bunchId) ?? 0)) {
+        obj.startCounter = item.startCounter;
+      }
+      const count = signedCount(item);
+      if (count !== -1) obj.count = count;
+      out[i] = obj;
+      nextCounters.set(item.bunchId, item.startCounter + item.count);
+    }
+    return JSON.stringify(out);
+  }
+
+  load(savedState: string): void {
+    const parsed = JSON.parse(savedState) as OmitSavedState;
+    const nextCounters = new Map<string, number>();
+    const saved: SavedIdList = new Array(parsed.length);
+    for (let i = 0; i < parsed.length; i++) {
+      const obj = parsed[i];
+      const item = unsignedItem(
+        obj.bunchId,
+        obj.startCounter ?? nextCounters.get(obj.bunchId) ?? 0,
+        obj.count ?? -1,
+      );
+      saved[i] = item;
+      nextCounters.set(item.bunchId, item.startCounter + item.count);
+    }
+    this.list = IdList.load(saved);
+  }
+}
+
+type SplitOmitSavedState = Array<{
+  clientId: string;
+  seqNum: number;
+  startCounter?: number;
+  count?: number;
+}>;
+
+/**
+ * idListSplitSigned, omitting default count & startCounter.
+ */
+export class IdListSplitOmitAlgorithm extends IdListAlgorithm {
+  save(): string {
+    const saved = this.list.save();
+    const nextCounters = new Map<string, number>();
+    const out: SplitOmitSavedState = new Array(saved.length);
+    for (let i = 0; i < saved.length; i++) {
+      const item = saved[i];
+      const [clientId, seqNum] = splitBunchId(item.bunchId);
+      const obj: SplitOmitSavedState[number] = { clientId, seqNum };
+      if (item.startCounter !== (nextCounters.get(item.bunchId) ?? 0)) {
+        obj.startCounter = item.startCounter;
+      }
+      const count = signedCount(item);
+      if (count !== -1) obj.count = count;
+      out[i] = obj;
+      nextCounters.set(item.bunchId, item.startCounter + item.count);
+    }
+    return JSON.stringify(out);
+  }
+
+  load(savedState: string): void {
+    const parsed = JSON.parse(savedState) as SplitOmitSavedState;
+    const nextCounters = new Map<string, number>();
+    const saved: SavedIdList = new Array(parsed.length);
+    for (let i = 0; i < parsed.length; i++) {
+      const obj = parsed[i];
+      const bunchId = joinBunchId(obj.clientId, obj.seqNum);
+      const item = unsignedItem(
+        bunchId,
+        obj.startCounter ?? nextCounters.get(bunchId) ?? 0,
+        obj.count ?? -1,
+      );
+      saved[i] = item;
+      nextCounters.set(bunchId, item.startCounter + item.count);
+    }
+    this.list = IdList.load(saved);
+  }
+}
+
+// --- Grouped formats: Signed, with sequential objects grouped by bunchId. ---
+
+type Sub = { count: number; startCounter: number };
+
+type GroupedSavedState = Array<{ bunchId: string; subs: Sub[] }>;
+
+/**
+ * idListSigned, with sequential objects that have the same bunchId grouped
+ * into a single object.
+ */
+export class IdListGroupedAlgorithm extends IdListAlgorithm {
+  save(): string {
+    const saved = this.list.save();
+    const out: GroupedSavedState = [];
+    let lastGroup: GroupedSavedState[number] | null = null;
+    for (let i = 0; i < saved.length; i++) {
+      const item = saved[i];
+      const sub = { count: signedCount(item), startCounter: item.startCounter };
+      if (lastGroup !== null && lastGroup.bunchId === item.bunchId) {
+        lastGroup.subs.push(sub);
+      } else {
+        lastGroup = { bunchId: item.bunchId, subs: [sub] };
+        out.push(lastGroup);
+      }
+    }
+    return JSON.stringify(out);
+  }
+
+  load(savedState: string): void {
+    const parsed = JSON.parse(savedState) as GroupedSavedState;
+    const saved: SavedIdList = [];
+    for (let i = 0; i < parsed.length; i++) {
+      const { bunchId, subs } = parsed[i];
+      for (let j = 0; j < subs.length; j++) {
+        saved.push(unsignedItem(bunchId, subs[j].startCounter, subs[j].count));
+      }
+    }
+    this.list = IdList.load(saved);
+  }
+}
+
+type SplitGroupedSavedState = Array<{
+  clientId: string;
+  seqNum: number;
+  subs: Sub[];
+}>;
+
+/**
+ * idListSplitSigned, with sequential objects that have the same bunchId
+ * (not just clientId) grouped into a single object.
+ */
+export class IdListSplitGroupedAlgorithm extends IdListAlgorithm {
+  save(): string {
+    const saved = this.list.save();
+    const out: SplitGroupedSavedState = [];
+    let lastBunchId: string | null = null;
+    for (let i = 0; i < saved.length; i++) {
+      const item = saved[i];
+      const sub = { count: signedCount(item), startCounter: item.startCounter };
+      if (item.bunchId === lastBunchId) {
+        out[out.length - 1].subs.push(sub);
+      } else {
+        const [clientId, seqNum] = splitBunchId(item.bunchId);
+        out.push({ clientId, seqNum, subs: [sub] });
+        lastBunchId = item.bunchId;
+      }
+    }
+    return JSON.stringify(out);
+  }
+
+  load(savedState: string): void {
+    const parsed = JSON.parse(savedState) as SplitGroupedSavedState;
+    const saved: SavedIdList = [];
+    for (let i = 0; i < parsed.length; i++) {
+      const { clientId, seqNum, subs } = parsed[i];
+      const bunchId = joinBunchId(clientId, seqNum);
+      for (let j = 0; j < subs.length; j++) {
+        saved.push(unsignedItem(bunchId, subs[j].startCounter, subs[j].count));
+      }
+    }
+    this.list = IdList.load(saved);
+  }
+}
+
+type GroupedTransposedSavedState = {
+  /** One per group. */
+  bunchIds: string[];
+  /** One per group: the number of entries in startCounters & counts. */
+  groupSizes: number[];
+  startCounters: number[];
+  counts: number[];
+};
+
+function toGroupedTransposed(saved: SavedIdList): GroupedTransposedSavedState {
+  const out: GroupedTransposedSavedState = {
+    bunchIds: [],
+    groupSizes: [],
+    startCounters: new Array(saved.length),
+    counts: new Array(saved.length),
+  };
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    if (i !== 0 && item.bunchId === saved[i - 1].bunchId) {
+      out.groupSizes[out.groupSizes.length - 1]++;
+    } else {
+      out.bunchIds.push(item.bunchId);
+      out.groupSizes.push(1);
+    }
+    out.startCounters[i] = item.startCounter;
+    out.counts[i] = signedCount(item);
+  }
+  return out;
+}
+
+function fromGroupedTransposed({
+  bunchIds,
+  groupSizes,
+  startCounters,
+  counts,
+}: GroupedTransposedSavedState): SavedIdList {
+  const saved: SavedIdList = new Array(counts.length);
+  let j = 0;
+  for (let i = 0; i < bunchIds.length; i++) {
+    const bunchId = bunchIds[i];
+    const end = j + groupSizes[i];
+    for (; j < end; j++) {
+      saved[j] = unsignedItem(bunchId, startCounters[j], counts[j]);
+    }
+  }
+  return saved;
+}
+
+/**
+ * idListGrouped, transposed and binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListGroupedProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return GroupedSavedIdListMessage.encode(
+      toGroupedTransposed(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromGroupedTransposed(GroupedSavedIdListMessage.decode(savedState)),
+    );
+  }
+}
+
+/**
+ * idListSplitGrouped, transposed and binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListSplitGroupedProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    const { bunchIds, groupSizes, startCounters, counts } = toGroupedTransposed(
+      this.list.save(),
+    );
+    const clientIds: string[] = new Array(bunchIds.length);
+    const seqNums: number[] = new Array(bunchIds.length);
+    for (let i = 0; i < bunchIds.length; i++) {
+      [clientIds[i], seqNums[i]] = splitBunchId(bunchIds[i]);
+    }
+    return SplitGroupedSavedIdListMessage.encode({
+      clientIds,
+      seqNums,
+      groupSizes,
+      startCounters,
+      counts,
+    }).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    const { clientIds, seqNums, groupSizes, startCounters, counts } =
+      SplitGroupedSavedIdListMessage.decode(savedState);
+    const bunchIds: string[] = new Array(clientIds.length);
+    for (let i = 0; i < clientIds.length; i++) {
+      bunchIds[i] = joinBunchId(clientIds[i], seqNums[i]);
+    }
+    this.list = IdList.load(
+      fromGroupedTransposed({ bunchIds, groupSizes, startCounters, counts }),
     );
   }
 }
