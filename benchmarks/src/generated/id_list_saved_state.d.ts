@@ -357,3 +357,175 @@ export namespace ClientIndexOmitSavedIdListMessage {
     /** Shape of a ClientIndexOmitSavedIdListMessage. */
     type $Shape = ClientIndexOmitSavedIdListMessage.$Properties;
 }
+
+/**
+ * Properties of a TransposedOmitSavedIdListMessage.
+ * @deprecated Use TransposedOmitSavedIdListMessage.$Properties instead.
+ */
+export interface ITransposedOmitSavedIdListMessage extends TransposedOmitSavedIdListMessage.$Properties {
+}
+
+/** Represents a TransposedOmitSavedIdListMessage. */
+export class TransposedOmitSavedIdListMessage {
+
+    /**
+     * Constructs a new TransposedOmitSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: TransposedOmitSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** TransposedOmitSavedIdListMessage bunchIds. */
+    bunchIds: string[];
+
+    /** TransposedOmitSavedIdListMessage startCounterIndexes. */
+    startCounterIndexes: number[];
+
+    /** TransposedOmitSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** TransposedOmitSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new TransposedOmitSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns TransposedOmitSavedIdListMessage instance
+     */
+    static create(properties: TransposedOmitSavedIdListMessage.$Shape): TransposedOmitSavedIdListMessage & TransposedOmitSavedIdListMessage.$Shape;
+    static create(properties?: TransposedOmitSavedIdListMessage.$Properties): TransposedOmitSavedIdListMessage;
+
+    /**
+     * Encodes the specified TransposedOmitSavedIdListMessage message. Does not implicitly {@link TransposedOmitSavedIdListMessage.verify|verify} messages.
+     * @param message TransposedOmitSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: TransposedOmitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a TransposedOmitSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {TransposedOmitSavedIdListMessage & TransposedOmitSavedIdListMessage.$Shape} TransposedOmitSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): TransposedOmitSavedIdListMessage & TransposedOmitSavedIdListMessage.$Shape;
+}
+
+export namespace TransposedOmitSavedIdListMessage {
+
+    /** Properties of a TransposedOmitSavedIdListMessage. */
+    interface $Properties {
+
+        /** TransposedOmitSavedIdListMessage bunchIds */
+        bunchIds?: (string[]|null);
+
+        /** TransposedOmitSavedIdListMessage startCounterIndexes */
+        startCounterIndexes?: (number[]|null);
+
+        /** TransposedOmitSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** TransposedOmitSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a TransposedOmitSavedIdListMessage. */
+    type $Shape = TransposedOmitSavedIdListMessage.$Properties;
+}
+
+/**
+ * Properties of a SplitTransposedOmitSavedIdListMessage.
+ * @deprecated Use SplitTransposedOmitSavedIdListMessage.$Properties instead.
+ */
+export interface ISplitTransposedOmitSavedIdListMessage extends SplitTransposedOmitSavedIdListMessage.$Properties {
+}
+
+/** Represents a SplitTransposedOmitSavedIdListMessage. */
+export class SplitTransposedOmitSavedIdListMessage {
+
+    /**
+     * Constructs a new SplitTransposedOmitSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: SplitTransposedOmitSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** SplitTransposedOmitSavedIdListMessage clientIds. */
+    clientIds: string[];
+
+    /** SplitTransposedOmitSavedIdListMessage seqNums. */
+    seqNums: number[];
+
+    /** SplitTransposedOmitSavedIdListMessage startCounterIndexes. */
+    startCounterIndexes: number[];
+
+    /** SplitTransposedOmitSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** SplitTransposedOmitSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new SplitTransposedOmitSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns SplitTransposedOmitSavedIdListMessage instance
+     */
+    static create(properties: SplitTransposedOmitSavedIdListMessage.$Shape): SplitTransposedOmitSavedIdListMessage & SplitTransposedOmitSavedIdListMessage.$Shape;
+    static create(properties?: SplitTransposedOmitSavedIdListMessage.$Properties): SplitTransposedOmitSavedIdListMessage;
+
+    /**
+     * Encodes the specified SplitTransposedOmitSavedIdListMessage message. Does not implicitly {@link SplitTransposedOmitSavedIdListMessage.verify|verify} messages.
+     * @param message SplitTransposedOmitSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: SplitTransposedOmitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a SplitTransposedOmitSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {SplitTransposedOmitSavedIdListMessage & SplitTransposedOmitSavedIdListMessage.$Shape} SplitTransposedOmitSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): SplitTransposedOmitSavedIdListMessage & SplitTransposedOmitSavedIdListMessage.$Shape;
+}
+
+export namespace SplitTransposedOmitSavedIdListMessage {
+
+    /** Properties of a SplitTransposedOmitSavedIdListMessage. */
+    interface $Properties {
+
+        /** SplitTransposedOmitSavedIdListMessage clientIds */
+        clientIds?: (string[]|null);
+
+        /** SplitTransposedOmitSavedIdListMessage seqNums */
+        seqNums?: (number[]|null);
+
+        /** SplitTransposedOmitSavedIdListMessage startCounterIndexes */
+        startCounterIndexes?: (number[]|null);
+
+        /** SplitTransposedOmitSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** SplitTransposedOmitSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a SplitTransposedOmitSavedIdListMessage. */
+    type $Shape = SplitTransposedOmitSavedIdListMessage.$Properties;
+}

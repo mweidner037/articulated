@@ -5,6 +5,8 @@ import {
   BunchIndexSavedIdListMessage,
   ClientIndexOmitSavedIdListMessage,
   ClientIndexSavedIdListMessage,
+  SplitTransposedOmitSavedIdListMessage,
+  TransposedOmitSavedIdListMessage,
 } from "../generated/id_list_saved_state";
 import { IdListAlgorithm, IdListAlgorithmBase } from "./id_list";
 
@@ -715,6 +717,185 @@ export class IdListSplitClientIndexOmitProtoAlgorithm extends IdListAlgorithmBas
   load(savedState: Uint8Array): void {
     this.list = IdList.load(
       fromClientIndexOmit(ClientIndexOmitSavedIdListMessage.decode(savedState)),
+    );
+  }
+}
+
+// --- Transposed omit formats: Transposed formats, omitting obvious startCounters. ---
+
+/*
+ * Like idListTransposed / idListSplitTransposed, but omitting obvious startCounters
+ * as in the index omit formats.
+ */
+
+type SparseStartCounters = {
+  /** Delta-encoded indexes of non-obvious startCounters. */
+  startCounterIndexes: number[];
+  /** Non-obvious startCounters only. */
+  startCounters: number[];
+};
+
+function toSparseStartCounters(saved: SavedIdList): SparseStartCounters {
+  const nextCounters = new Map<string, number>();
+  const out: SparseStartCounters = {
+    startCounterIndexes: [],
+    startCounters: [],
+  };
+  let lastIncluded = 0;
+  for (let i = 0; i < saved.length; i++) {
+    const item = saved[i];
+    if (item.startCounter !== (nextCounters.get(item.bunchId) ?? 0)) {
+      out.startCounterIndexes.push(i - lastIncluded);
+      out.startCounters.push(item.startCounter);
+      lastIncluded = i;
+    }
+    nextCounters.set(item.bunchId, item.startCounter + item.count);
+  }
+  return out;
+}
+
+/**
+ * Reconstructs a SavedIdList from per-entry bunchIds & signed counts, plus sparse startCounters.
+ */
+function fromSparseStartCounters(
+  bunchIds: string[],
+  counts: number[],
+  { startCounterIndexes, startCounters }: SparseStartCounters,
+): SavedIdList {
+  const nextCounters = new Map<string, number>();
+  const saved: SavedIdList = new Array(bunchIds.length);
+  // Index of the next included startCounter, or -1 if none.
+  let k = 0;
+  let nextIncluded =
+    startCounterIndexes.length === 0 ? -1 : startCounterIndexes[0];
+  for (let i = 0; i < bunchIds.length; i++) {
+    const bunchId = bunchIds[i];
+    let startCounter: number;
+    if (i === nextIncluded) {
+      startCounter = startCounters[k++];
+      nextIncluded =
+        k === startCounterIndexes.length
+          ? -1
+          : nextIncluded + startCounterIndexes[k];
+    } else startCounter = nextCounters.get(bunchId) ?? 0;
+    const item = unsignedItem(bunchId, startCounter, counts[i]);
+    saved[i] = item;
+    nextCounters.set(bunchId, startCounter + item.count);
+  }
+  return saved;
+}
+
+type TransposedOmitSavedState = SparseStartCounters & {
+  bunchIds: string[];
+  counts: number[];
+};
+
+function toTransposedOmit(saved: SavedIdList): TransposedOmitSavedState {
+  const bunchIds: string[] = new Array(saved.length);
+  const counts: number[] = new Array(saved.length);
+  for (let i = 0; i < saved.length; i++) {
+    bunchIds[i] = saved[i].bunchId;
+    counts[i] = signedCount(saved[i]);
+  }
+  return { bunchIds, ...toSparseStartCounters(saved), counts };
+}
+
+function fromTransposedOmit(state: TransposedOmitSavedState): SavedIdList {
+  return fromSparseStartCounters(state.bunchIds, state.counts, state);
+}
+
+/**
+ * idListTransposed, omitting obvious startCounters.
+ */
+export class IdListTransposedOmitAlgorithm extends IdListAlgorithm {
+  save(): string {
+    return JSON.stringify(toTransposedOmit(this.list.save()));
+  }
+
+  load(savedState: string): void {
+    this.list = IdList.load(fromTransposedOmit(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListTransposedOmit, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListTransposedOmitProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return TransposedOmitSavedIdListMessage.encode(
+      toTransposedOmit(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromTransposedOmit(TransposedOmitSavedIdListMessage.decode(savedState)),
+    );
+  }
+}
+
+type SplitTransposedOmitSavedState = SparseStartCounters & {
+  clientIds: string[];
+  seqNums: number[];
+  counts: number[];
+};
+
+function toSplitTransposedOmit(
+  saved: SavedIdList,
+): SplitTransposedOmitSavedState {
+  const clientIds: string[] = new Array(saved.length);
+  const seqNums: number[] = new Array(saved.length);
+  const counts: number[] = new Array(saved.length);
+  for (let i = 0; i < saved.length; i++) {
+    [clientIds[i], seqNums[i]] = splitBunchId(saved[i].bunchId);
+    counts[i] = signedCount(saved[i]);
+  }
+  return { clientIds, seqNums, ...toSparseStartCounters(saved), counts };
+}
+
+function fromSplitTransposedOmit(
+  state: SplitTransposedOmitSavedState,
+): SavedIdList {
+  const { clientIds, seqNums } = state;
+  const bunchIds: string[] = new Array(clientIds.length);
+  for (let i = 0; i < clientIds.length; i++) {
+    bunchIds[i] = joinBunchId(clientIds[i], seqNums[i]);
+  }
+  return fromSparseStartCounters(bunchIds, state.counts, state);
+}
+
+/**
+ * idListSplitTransposed, omitting obvious startCounters.
+ */
+export class IdListSplitTransposedOmitAlgorithm extends IdListAlgorithm {
+  save(): string {
+    return JSON.stringify(toSplitTransposedOmit(this.list.save()));
+  }
+
+  load(savedState: string): void {
+    this.list = IdList.load(fromSplitTransposedOmit(JSON.parse(savedState)));
+  }
+}
+
+/**
+ * idListSplitTransposedOmit, binary-encoded with protobuf (packed int arrays).
+ */
+export class IdListSplitTransposedOmitProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    return SplitTransposedOmitSavedIdListMessage.encode(
+      toSplitTransposedOmit(this.list.save()),
+    ).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    this.list = IdList.load(
+      fromSplitTransposedOmit(
+        SplitTransposedOmitSavedIdListMessage.decode(savedState),
+      ),
     );
   }
 }

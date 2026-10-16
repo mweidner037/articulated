@@ -43,3 +43,24 @@ message ClientIndexOmitSavedIdListMessage {
   // Negative count means deleted.
   repeated sint32 counts = 6;
 }
+
+// TransposedOmit: Transposed, with signed counts, but only including non-obvious
+// startCounters. startCounterIndexes is delta-encoded.
+message TransposedOmitSavedIdListMessage {
+  repeated string bunchIds = 1;
+  repeated uint32 startCounterIndexes = 2;
+  repeated uint32 startCounters = 3;
+  // Negative count means deleted.
+  repeated sint32 counts = 4;
+}
+
+// SplitTransposedOmit: TransposedOmitSavedIdListMessage, but with bunchIds
+// split into clientId and seqNum.
+message SplitTransposedOmitSavedIdListMessage {
+  repeated string clientIds = 1;
+  repeated uint32 seqNums = 2;
+  repeated uint32 startCounterIndexes = 3;
+  repeated uint32 startCounters = 4;
+  // Negative count means deleted.
+  repeated sint32 counts = 5;
+}

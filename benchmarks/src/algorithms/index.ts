@@ -20,7 +20,11 @@ import {
   IdListSplitOmitAlgorithm,
   IdListSplitSignedAlgorithm,
   IdListSplitTransposedAlgorithm,
+  IdListSplitTransposedOmitAlgorithm,
+  IdListSplitTransposedOmitProtoAlgorithm,
   IdListTransposedAlgorithm,
+  IdListTransposedOmitAlgorithm,
+  IdListTransposedOmitProtoAlgorithm,
 } from "./id_list_saved_states";
 import { ProseMirrorAlgorithm } from "./prose_mirror";
 import { RopeAlgorithm } from "./rope";
@@ -46,16 +50,20 @@ export const allAlgorithms: Record<
   idListSigned: IdListSignedAlgorithm,
   idListOmit: IdListOmitAlgorithm,
   idListTransposed: IdListTransposedAlgorithm,
+  idListTransposedOmit: IdListTransposedOmitAlgorithm,
   idListBunchIndex: IdListBunchIndexAlgorithm,
   idListBunchIndexOmit: IdListBunchIndexOmitAlgorithm,
+  idListTransposedOmitProto: IdListTransposedOmitProtoAlgorithm,
   idListBunchIndexProto: IdListBunchIndexProtoAlgorithm,
   idListBunchIndexOmitProto: IdListBunchIndexOmitProtoAlgorithm,
   // Split bunchIds:
   idListSplitSigned: IdListSplitSignedAlgorithm,
   idListSplitOmit: IdListSplitOmitAlgorithm,
   idListSplitTransposed: IdListSplitTransposedAlgorithm,
+  idListSplitTransposedOmit: IdListSplitTransposedOmitAlgorithm,
   idListSplitClientIndex: IdListSplitClientIndexAlgorithm,
   idListSplitClientIndexOmit: IdListSplitClientIndexOmitAlgorithm,
+  idListSplitTransposedOmitProto: IdListSplitTransposedOmitProtoAlgorithm,
   idListSplitClientIndexProto: IdListSplitClientIndexProtoAlgorithm,
   idListSplitClientIndexOmitProto: IdListSplitClientIndexOmitProtoAlgorithm,
   automerge: AutomergeAlgorithm,
