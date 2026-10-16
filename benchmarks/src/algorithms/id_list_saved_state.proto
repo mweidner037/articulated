@@ -83,3 +83,16 @@ message SplitTransposedOmitSavedIdListMessage {
   // Negative count means deleted.
   repeated sint32 counts = 5;
 }
+
+// ClientDeltaOmit: ClientIndexOmitSavedIdListMessage, but with clientIndices
+// delta-encoded (each entry is the difference from the previous clientIndex,
+// with the first entry relative to 0).
+message ClientDeltaOmitSavedIdListMessage {
+  repeated string clientIds = 1;
+  repeated sint32 clientIndexDeltas = 2;
+  repeated uint32 seqNums = 3;
+  repeated uint32 startCounterIndexes = 4;
+  repeated uint32 startCounters = 5;
+  // Negative count means deleted.
+  repeated sint32 counts = 6;
+}

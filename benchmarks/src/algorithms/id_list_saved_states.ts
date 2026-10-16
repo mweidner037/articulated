@@ -3,6 +3,7 @@ import { IdList } from "articulated";
 import {
   BunchIndexOmitSavedIdListMessage,
   BunchIndexSavedIdListMessage,
+  ClientDeltaOmitSavedIdListMessage,
   ClientIndexOmitSavedIdListMessage,
   ClientIndexSavedIdListMessage,
   SplitTransposedOmitSavedIdListMessage,
@@ -649,6 +650,68 @@ export class IdListBunchIndexOmitAlgorithm extends IdListAlgorithm {
   }
 }
 
+type BunchDeltaOmitSavedState = Omit<
+  BunchIndexOmitSavedState,
+  "bunchIndices"
+> & {
+  /**
+   * bunchIndices, delta-encoded: each entry is the difference from the
+   * previous bunchIndex, with the first entry relative to 0.
+   */
+  bunchIndexDeltas: number[];
+};
+
+/**
+ * idListBunchIndexOmit, with bunchIndices delta-encoded
+ * (e.g., 6,6,8,3 becomes 6,0,2,-5).
+ */
+export class IdListBunchDeltaOmitAlgorithm extends IdListAlgorithm {
+  save(): string {
+    const {
+      bunchIds,
+      bunchIndices,
+      startCounterIndexes,
+      startCounters,
+      counts,
+    } = toBunchIndexOmit(this.list.save());
+    // Delta-encode in place, back to front.
+    for (let i = bunchIndices.length - 1; i > 0; i--) {
+      bunchIndices[i] -= bunchIndices[i - 1];
+    }
+    const out: BunchDeltaOmitSavedState = {
+      bunchIds,
+      bunchIndexDeltas: bunchIndices,
+      startCounterIndexes,
+      startCounters,
+      counts,
+    };
+    return JSON.stringify(out);
+  }
+
+  load(savedState: string): void {
+    const {
+      bunchIds,
+      bunchIndexDeltas,
+      startCounterIndexes,
+      startCounters,
+      counts,
+    } = JSON.parse(savedState) as BunchDeltaOmitSavedState;
+    // Delta-decode in place, front to back.
+    for (let i = 1; i < bunchIndexDeltas.length; i++) {
+      bunchIndexDeltas[i] += bunchIndexDeltas[i - 1];
+    }
+    this.list = IdList.load(
+      fromBunchIndexOmit({
+        bunchIds,
+        bunchIndices: bunchIndexDeltas,
+        startCounterIndexes,
+        startCounters,
+        counts,
+      }),
+    );
+  }
+}
+
 /**
  * idListBunchIndexOmit, binary-encoded with protobuf (packed int arrays).
  */
@@ -774,6 +837,51 @@ export class IdListSplitClientIndexOmitProtoAlgorithm extends IdListAlgorithmBas
   load(savedState: Uint8Array): void {
     this.list = IdList.load(
       fromClientIndexOmit(ClientIndexOmitSavedIdListMessage.decode(savedState)),
+    );
+  }
+}
+
+/**
+ * idListSplitClientIndexOmitProto, with clientIndices delta-encoded
+ * (e.g., 6,6,8,3 becomes 6,0,2,-5).
+ */
+export class IdListSplitClientDeltaOmitProtoAlgorithm extends IdListAlgorithmBase<Uint8Array> {
+  static readonly isSavedStateString = false;
+
+  save(): Uint8Array {
+    const { clientIndices, ...rest } = toClientIndexOmit(this.list.save());
+    // Delta-encode in place, back to front.
+    for (let i = clientIndices.length - 1; i > 0; i--) {
+      clientIndices[i] -= clientIndices[i - 1];
+    }
+    return ClientDeltaOmitSavedIdListMessage.encode({
+      ...rest,
+      clientIndexDeltas: clientIndices,
+    }).finish();
+  }
+
+  load(savedState: Uint8Array): void {
+    const {
+      clientIds,
+      clientIndexDeltas,
+      seqNums,
+      startCounterIndexes,
+      startCounters,
+      counts,
+    } = ClientDeltaOmitSavedIdListMessage.decode(savedState);
+    // Delta-decode in place, front to back.
+    for (let i = 1; i < clientIndexDeltas.length; i++) {
+      clientIndexDeltas[i] += clientIndexDeltas[i - 1];
+    }
+    this.list = IdList.load(
+      fromClientIndexOmit({
+        clientIds,
+        clientIndices: clientIndexDeltas,
+        seqNums,
+        startCounterIndexes,
+        startCounters,
+        counts,
+      }),
     );
   }
 }

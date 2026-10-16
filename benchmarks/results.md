@@ -34,6 +34,7 @@ Info: https://github.com/automerge/automerge-perf.
 | idListTransposedOmit |  |  |  |  |  |  |  | 2.17 ± 0.08 | 25.1 ± 1.3 | 218 ± 0 | 9.92 ± 0.18 | 28.6 ± 1.3 | 40.2 ± 0.0 |
 | idListBunchIndex |  |  |  |  |  |  |  | 2.33 ± 0.07 | 24.3 ± 1.5 | 211 ± 0 | 13.2 ± 0.3 | 27.5 ± 2.0 | 59.4 ± 0.0 |
 | idListBunchIndexOmit |  |  |  |  |  |  |  | 2.26 ± 0.08 | 24.9 ± 2.1 | 181 ± 0 | 11.0 ± 0.3 | 28.7 ± 1.9 | 49.6 ± 0.0 |
+| idListBunchDeltaOmit |  |  |  |  |  |  |  | 2.07 ± 0.06 | 13.1 ± 1.0 | 154 ± 0 | 9.56 ± 0.28 | 16.2 ± 1.4 | 38.8 ± 0.0 |
 | idListTransposedProto |  |  |  |  |  |  |  | 1.27 ± 0.04 | 31.0 ± 6.9 | 196 ± 0 |  |  |  |
 | idListTransposedOmitProto |  |  |  |  |  |  |  | 2.00 ± 0.06 | 27.9 ± 6.6 | 183 ± 0 |  |  |  |
 | idListBunchIndexProto |  |  |  |  |  |  |  | 1.96 ± 0.07 | 15.3 ± 1.3 | 132 ± 0 |  |  |  |
@@ -46,6 +47,7 @@ Info: https://github.com/automerge/automerge-perf.
 | idListSplitTransposedOmitProto |  |  |  |  |  |  |  | 2.64 ± 0.06 | 27.7 ± 5.3 | 170 ± 0 |  |  |  |
 | idListSplitClientIndexProto |  |  |  |  |  |  |  | 2.10 ± 0.05 | 21.2 ± 4.3 | 57.4 ± 0.0 |  |  |  |
 | idListSplitClientIndexOmitProto |  |  |  |  |  |  |  | 2.68 ± 0.04 | 17.1 ± 1.1 | 44.5 ± 0.0 | 4.16 ± 0.09 | 27.9 ± 3.4 | 25.8 ± 0.0 |
+| idListSplitClientDeltaOmitProto |  |  |  |  |  |  |  | 2.62 ± 0.14 | 15.9 ± 2.1 | 40.7 ± 0.0 | 4.14 ± 0.33 | 18.3 ± 0.7 | 25.7 ± 0.0 |
 | automerge | 32.2 ± 0.3 | 30.3 ± 0.3 | 35.5 ± 0.3 | 41.4 ± 0.4 | 4105 ± 34 | 2.27 ± 0.56 |  | 17.4 ± 0.1 | 441 ± 6 | 156 ± 0 | 23.4 ± 0.3 | 443 ± 6 | 156 ± 0 |
 | yjsText | 10.8 ± 0.1 | 10.1 ± 0.1 | 17.7 ± 0.1 | 29.0 ± 0.5 | 700 ± 20 | 563 ± 25 | 3043 ± 0 | 4.77 ± 0.08 | 29.9 ± 1.2 | 289 ± 0 | 12.7 ± 0.9 | 31.6 ± 1.0 | 117 ± 0 |
 

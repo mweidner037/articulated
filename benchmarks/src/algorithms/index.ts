@@ -7,12 +7,14 @@ import type {
 import { CharArrayAlgorithm } from "./char_array";
 import { IdListAlgorithm } from "./id_list";
 import {
+  IdListBunchDeltaOmitAlgorithm,
   IdListBunchIndexAlgorithm,
   IdListBunchIndexOmitAlgorithm,
   IdListBunchIndexOmitProtoAlgorithm,
   IdListBunchIndexProtoAlgorithm,
   IdListOmitAlgorithm,
   IdListSignedAlgorithm,
+  IdListSplitClientDeltaOmitProtoAlgorithm,
   IdListSplitClientIndexAlgorithm,
   IdListSplitClientIndexOmitAlgorithm,
   IdListSplitClientIndexOmitProtoAlgorithm,
@@ -55,6 +57,7 @@ export const allAlgorithms: Record<
   idListTransposedOmit: IdListTransposedOmitAlgorithm,
   idListBunchIndex: IdListBunchIndexAlgorithm,
   idListBunchIndexOmit: IdListBunchIndexOmitAlgorithm,
+  idListBunchDeltaOmit: IdListBunchDeltaOmitAlgorithm,
   idListTransposedProto: IdListTransposedProtoAlgorithm,
   idListTransposedOmitProto: IdListTransposedOmitProtoAlgorithm,
   idListBunchIndexProto: IdListBunchIndexProtoAlgorithm,
@@ -70,6 +73,7 @@ export const allAlgorithms: Record<
   idListSplitTransposedOmitProto: IdListSplitTransposedOmitProtoAlgorithm,
   idListSplitClientIndexProto: IdListSplitClientIndexProtoAlgorithm,
   idListSplitClientIndexOmitProto: IdListSplitClientIndexOmitProtoAlgorithm,
+  idListSplitClientDeltaOmitProto: IdListSplitClientDeltaOmitProtoAlgorithm,
   automerge: AutomergeAlgorithm,
   yjsText: YjsTextAlgorithm,
 } satisfies Record<string, AnyTextAlgorithmConstructor>;

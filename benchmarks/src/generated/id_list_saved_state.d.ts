@@ -689,3 +689,98 @@ export namespace SplitTransposedOmitSavedIdListMessage {
     /** Shape of a SplitTransposedOmitSavedIdListMessage. */
     type $Shape = SplitTransposedOmitSavedIdListMessage.$Properties;
 }
+
+/**
+ * Properties of a ClientDeltaOmitSavedIdListMessage.
+ * @deprecated Use ClientDeltaOmitSavedIdListMessage.$Properties instead.
+ */
+export interface IClientDeltaOmitSavedIdListMessage extends ClientDeltaOmitSavedIdListMessage.$Properties {
+}
+
+/** Represents a ClientDeltaOmitSavedIdListMessage. */
+export class ClientDeltaOmitSavedIdListMessage {
+
+    /**
+     * Constructs a new ClientDeltaOmitSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: ClientDeltaOmitSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** ClientDeltaOmitSavedIdListMessage clientIds. */
+    clientIds: string[];
+
+    /** ClientDeltaOmitSavedIdListMessage clientIndexDeltas. */
+    clientIndexDeltas: number[];
+
+    /** ClientDeltaOmitSavedIdListMessage seqNums. */
+    seqNums: number[];
+
+    /** ClientDeltaOmitSavedIdListMessage startCounterIndexes. */
+    startCounterIndexes: number[];
+
+    /** ClientDeltaOmitSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** ClientDeltaOmitSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new ClientDeltaOmitSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns ClientDeltaOmitSavedIdListMessage instance
+     */
+    static create(properties: ClientDeltaOmitSavedIdListMessage.$Shape): ClientDeltaOmitSavedIdListMessage & ClientDeltaOmitSavedIdListMessage.$Shape;
+    static create(properties?: ClientDeltaOmitSavedIdListMessage.$Properties): ClientDeltaOmitSavedIdListMessage;
+
+    /**
+     * Encodes the specified ClientDeltaOmitSavedIdListMessage message. Does not implicitly {@link ClientDeltaOmitSavedIdListMessage.verify|verify} messages.
+     * @param message ClientDeltaOmitSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: ClientDeltaOmitSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a ClientDeltaOmitSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {ClientDeltaOmitSavedIdListMessage & ClientDeltaOmitSavedIdListMessage.$Shape} ClientDeltaOmitSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): ClientDeltaOmitSavedIdListMessage & ClientDeltaOmitSavedIdListMessage.$Shape;
+}
+
+export namespace ClientDeltaOmitSavedIdListMessage {
+
+    /** Properties of a ClientDeltaOmitSavedIdListMessage. */
+    interface $Properties {
+
+        /** ClientDeltaOmitSavedIdListMessage clientIds */
+        clientIds?: (string[]|null);
+
+        /** ClientDeltaOmitSavedIdListMessage clientIndexDeltas */
+        clientIndexDeltas?: (number[]|null);
+
+        /** ClientDeltaOmitSavedIdListMessage seqNums */
+        seqNums?: (number[]|null);
+
+        /** ClientDeltaOmitSavedIdListMessage startCounterIndexes */
+        startCounterIndexes?: (number[]|null);
+
+        /** ClientDeltaOmitSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** ClientDeltaOmitSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a ClientDeltaOmitSavedIdListMessage. */
+    type $Shape = ClientDeltaOmitSavedIdListMessage.$Properties;
+}

@@ -1960,6 +1960,289 @@ export const SplitTransposedOmitSavedIdListMessage = $root.SplitTransposedOmitSa
     return SplitTransposedOmitSavedIdListMessage;
 })();
 
+export const ClientDeltaOmitSavedIdListMessage = $root.ClientDeltaOmitSavedIdListMessage = (() => {
+
+    /**
+     * Properties of a ClientDeltaOmitSavedIdListMessage.
+     * @typedef {Object} ClientDeltaOmitSavedIdListMessage.$Properties
+     * @property {Array.<string>|null} [clientIds] ClientDeltaOmitSavedIdListMessage clientIds
+     * @property {Array.<number>|null} [clientIndexDeltas] ClientDeltaOmitSavedIdListMessage clientIndexDeltas
+     * @property {Array.<number>|null} [seqNums] ClientDeltaOmitSavedIdListMessage seqNums
+     * @property {Array.<number>|null} [startCounterIndexes] ClientDeltaOmitSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] ClientDeltaOmitSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] ClientDeltaOmitSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+
+    /**
+     * Properties of a ClientDeltaOmitSavedIdListMessage.
+     * @exports IClientDeltaOmitSavedIdListMessage
+     * @interface IClientDeltaOmitSavedIdListMessage
+     * @augments ClientDeltaOmitSavedIdListMessage.$Properties
+     * @deprecated Use ClientDeltaOmitSavedIdListMessage.$Properties instead.
+     */
+
+    /**
+     * Shape of a ClientDeltaOmitSavedIdListMessage.
+     * @typedef {ClientDeltaOmitSavedIdListMessage.$Properties} ClientDeltaOmitSavedIdListMessage.$Shape
+     */
+
+    /**
+     * Constructs a new ClientDeltaOmitSavedIdListMessage.
+     * @exports ClientDeltaOmitSavedIdListMessage
+     * @classdesc Represents a ClientDeltaOmitSavedIdListMessage.
+     * @constructor
+     * @param {ClientDeltaOmitSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const ClientDeltaOmitSavedIdListMessage = function (properties) {
+        this.clientIds = [];
+        this.clientIndexDeltas = [];
+        this.seqNums = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage clientIds.
+     * @member {Array.<string>} clientIds
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.clientIds = $util.emptyArray;
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage clientIndexDeltas.
+     * @member {Array.<number>} clientIndexDeltas
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.clientIndexDeltas = $util.emptyArray;
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage seqNums.
+     * @member {Array.<number>} seqNums
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.seqNums = $util.emptyArray;
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+
+    /**
+     * ClientDeltaOmitSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @instance
+     */
+    ClientDeltaOmitSavedIdListMessage.prototype.counts = $util.emptyArray;
+
+    /**
+     * Creates a new ClientDeltaOmitSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @static
+     * @param {ClientDeltaOmitSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {ClientDeltaOmitSavedIdListMessage} ClientDeltaOmitSavedIdListMessage instance
+     * @type {{
+     *   (properties: ClientDeltaOmitSavedIdListMessage.$Shape): ClientDeltaOmitSavedIdListMessage & ClientDeltaOmitSavedIdListMessage.$Shape;
+     *   (properties?: ClientDeltaOmitSavedIdListMessage.$Properties): ClientDeltaOmitSavedIdListMessage;
+     * }}
+     */
+    ClientDeltaOmitSavedIdListMessage.create = function(properties) {
+        return new ClientDeltaOmitSavedIdListMessage(properties);
+    };
+
+    /**
+     * Encodes the specified ClientDeltaOmitSavedIdListMessage message. Does not implicitly {@link ClientDeltaOmitSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @static
+     * @param {ClientDeltaOmitSavedIdListMessage.$Properties} message ClientDeltaOmitSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    ClientDeltaOmitSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.clientIndexDeltas != null && message.clientIndexDeltas.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).sint32s(message.clientIndexDeltas);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.seqNums);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 6, wireType 2 =*/50).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a ClientDeltaOmitSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof ClientDeltaOmitSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {ClientDeltaOmitSavedIdListMessage & ClientDeltaOmitSavedIdListMessage.$Shape} ClientDeltaOmitSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    ClientDeltaOmitSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
+        }
+        message = _target || new $root.ClientDeltaOmitSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.clientIndexDeltas && message.clientIndexDeltas.length))
+                            message.clientIndexDeltas = [];
+                        reader.sint32s(message.clientIndexDeltas);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.clientIndexDeltas && message.clientIndexDeltas.length))
+                        message.clientIndexDeltas = [];
+                    message.clientIndexDeltas.push(reader.sint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 6: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
+        }
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
+        }
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
+
+    return ClientDeltaOmitSavedIdListMessage;
+})();
+
 export {
   $root as default
 };
