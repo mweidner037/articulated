@@ -3,6 +3,7 @@ import { EJSON } from "bson";
 import assert from "node:assert/strict";
 import fs from "node:fs";
 import path from "node:path";
+import { writeCharts } from "./charts";
 import { codecs } from "./codecs";
 import { example } from "./fixture";
 
@@ -75,6 +76,7 @@ function disk(name: string, compressor: string, gzip: boolean) {
   assert(row);
   return row.storageBytes / mongo.documents / 1000;
 }
+writeCharts(js.rows, disk);
 const number = (n: number) => n.toFixed(1);
 const ms = (s: Measurement) =>
   `${s.mean.toFixed(2)}${s.ci95 === null ? "" : ` ± ${s.ci95.toFixed(2)}`}`;
@@ -105,6 +107,24 @@ const lines = [
   "Draft experiment on top of [Matthew’s PR #30](https://github.com/mweidner037/articulated/pull/30). Not a production format or API proposal.",
   "",
   "The question is not only ‘how small is the output?’ It is also ‘what must be allocated and computed to get from that output to an editable IdList—and back?’",
+  "",
+  "## Start here: the visual comparison",
+  "",
+  "These first two charts select the original objects, ordinary columns, Matthew’s split/omitted-counter protobuf, and our two direct binary-column paths. Every format appears in the full charts below. Lower is better. This is one structured-ID editing trace, not a production corpus or an opaque-ID benchmark.",
+  "",
+  "![Selected formats: measured Snappy Mongo storage and time from BSON to editable IdList](results/full-picture/charts/overview.svg)",
+  "",
+  "**Storage and load speed favor different choices.** Matthew’s split protobuf is much smaller in Mongo. Direct binary columns load faster here. Ordinary columns reduce snapshot memory but actually occupy more Snappy Mongo storage than the original objects. The time panel includes BSON deserialization and building the usable editing tree; it excludes database/network I/O.",
+  "",
+  "![Snapshot versus editable IdList memory on the same scale](results/full-picture/charts/memory-overview.svg)",
+  "",
+  "**Your native-format concern is real: all these paths still build the existing editing tree.** Compact snapshots reduce retained snapshot memory, but the loaded editable IdList remains roughly 2.45–2.64 MB. The panels are alternative retained states, not two amounts to add together. These are Node/V8 measurements, not browser measurements.",
+  "",
+  "![Identical-byte adapter versus direct paths: save and load timings](results/full-picture/charts/translation.svg)",
+  "",
+  "**Direct conversion is not automatically cheaper in both directions.** Removing the intermediate SavedIdList objects speeds up binary/bit-packed loads here, but their two-pass direct writers save more slowly. The split-protobuf direct path still needs decoding and ID/counter reconstruction; it does not show a clear load benefit. Whiskers show within-process 95% intervals, not uncertainty across machines or workloads.",
+  "",
+  "Jump to [actual Mongo examples](#first-what-is-actually-stored), [charts of every option](#every-option-visually), [the complete numeric table](#one-table-storage-retained-memory-working-memory-and-time), or [measurement definitions](#definitions-and-method). The existing full table retains gzip/output-size and sampled working-memory metrics; no wire-size estimate is used to stand in for Mongo storage.",
   "",
   "## First: what is actually stored?",
   "",
@@ -153,6 +173,16 @@ lines.push(
   "Binary-direct, bit-direct, and split-proto-direct have **exactly the same saved bytes** as their adapter counterparts. Only the traversal/conversion path changes. Unit tests verify byte equality, and direct-path tests fail if they invoke the object-based save/load adapters.",
   "",
   "For the gzip storage choice, the whole serialized value is gzipped (mtime: 0 for reproducibility) and stored as one BSON Binary. This is a separate physical Mongo layout, not an assumption about WiredTiger compression.",
+  "",
+  "## Every option, visually",
+  "",
+  "The same row order and labels are used throughout. ‘Split / protobuf’ means Matthew’s split + omit format. ‘Dictionary / protobuf’ also includes omit. Direct and adapter variants share one storage row because their saved bytes are identical; both appear in memory and time charts. These native-layout charts do not include application-level gzip; its separately measured Mongo storage and CPU costs remain in the full table.",
+  "",
+  "![All persisted formats: actual Mongo Snappy and Zstd storage](results/full-picture/charts/all-storage.svg)",
+  "",
+  "![All formats and paths: retained snapshot and editable IdList memory](results/full-picture/charts/all-memory.svg)",
+  "",
+  "![All formats and paths: save and BSON-to-editor timings](results/full-picture/charts/all-time.svg)",
   "",
   "## One table: storage, retained memory, working memory, and time",
   "",

@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="712" viewBox="0 0 1100 712" role="img" aria-labelledby="title desc">
+<title id="title">Mongo storage: every distinct persisted format</title>
+<desc id="desc">Native BSON layouts after compact + checkpoint · direct and adapter paths have identical bytes Lower is better. Snappy: Original objects:  180.5 KB / document; Signed objects:  169.7 KB / document; Signed tuples:  160.0 KB / document; Ordinary columns:  221.5 KB / document; Columns + omit:  155.9 KB / document; Split + omit / JSON:  196.9 KB / document; Dictionary + omit / JSON:  176.4 KB / document; Dictionary / protobuf:  70.4 KB / document; Split / protobuf:  35.4 KB / document; Binary columns · adapter:  123.2 KB / document; Bit-packed · adapter:  98.6 KB / document. Zstd: Original objects:  86.3 KB / document; Signed objects:  91.3 KB / document; Signed tuples:  86.3 KB / document; Ordinary columns:  115.0 KB / document; Columns + omit:  82.2 KB / document; Split + omit / JSON:  95.2 KB / document; Dictionary + omit / JSON:  94.5 KB / document; Dictionary / protobuf:  49.7 KB / document; Split / protobuf:  14.6 KB / document; Binary columns · adapter:  69.9 KB / document; Bit-packed · adapter:  69.9 KB / document</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;font-size:17px;fill:#243248} .secondary{fill:#526175} .title{font-size:24px;font-weight:500} .panel{font-weight:500} .tick{font-size:16px}</style>
+<rect width="1100" height="712" fill="#ffffff"/>
+<text x="24" y="34" class="title">Mongo storage: every distinct persisted format</text>
+<text x="24" y="64" class="secondary">Native BSON layouts after compact + checkpoint · direct and adapter paths have identical bytes</text>
+<text x="24" y="97" class="panel">Format / path</text>
+<text x="24" y="144.5">Original objects</text>
+<text x="24" y="191.5">Signed objects</text>
+<text x="24" y="238.5">Signed tuples</text>
+<text x="24" y="285.5">Ordinary columns</text>
+<text x="24" y="332.5">Columns + omit</text>
+<text x="24" y="379.5">Split + omit / JSON</text>
+<text x="24" y="426.5">Dictionary + omit / JSON</text>
+<text x="24" y="473.5">Dictionary / protobuf</text>
+<text x="24" y="520.5">Split / protobuf</text>
+<text x="24" y="567.5">Binary columns · adapter</text>
+<text x="24" y="614.5">Bit-packed · adapter</text>
+<text x="310" y="97" class="panel">Snappy</text>
+<line x1="310" x2="310" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="310" y="658" text-anchor="middle" class="tick secondary">0.0</text>
+<line x1="400" x2="400" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="400" y="658" text-anchor="middle" class="tick secondary">82.7</text>
+<line x1="490" x2="490" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="490" y="658" text-anchor="middle" class="tick secondary">165.4</text>
+<line x1="580" x2="580" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="580" y="658" text-anchor="middle" class="tick secondary">248.0</text>
+<text x="445" y="689" text-anchor="middle">KB / document · lower is better</text>
+<rect x="310" y="128.5" width="196.4863668789136" height="20" fill="#3266a6"/>
+<text x="594" y="144.5">180.5</text>
+<rect x="310" y="175.5" width="184.6713255303971" height="20" fill="#3266a6"/>
+<text x="594" y="191.5">169.7</text>
+<rect x="310" y="222.5" width="174.19383603265607" height="20" fill="#3266a6"/>
+<text x="594" y="238.5">160.0</text>
+<rect x="310" y="269.5" width="241.07142857142856" height="20" fill="#3266a6"/>
+<text x="594" y="285.5">221.5</text>
+<rect x="310" y="316.5" width="169.73532986340456" height="20" fill="#3266a6"/>
+<text x="594" y="332.5">155.9</text>
+<rect x="310" y="363.5" width="214.3203915559195" height="20" fill="#3266a6"/>
+<text x="594" y="379.5">196.9</text>
+<rect x="310" y="410.5" width="192.02786070966204" height="20" fill="#3266a6"/>
+<text x="594" y="426.5">176.4</text>
+<rect x="310" y="457.5" width="76.59713598774078" height="20" fill="#3266a6"/>
+<text x="594" y="473.5">70.4</text>
+<rect x="310" y="504.5" width="38.566078364025486" height="20" fill="#3266a6"/>
+<text x="594" y="520.5">35.4</text>
+<rect x="310" y="551.5" width="134.06728050939262" height="20" fill="#3266a6"/>
+<text x="594" y="567.5">123.2</text>
+<rect x="310" y="598.5" width="107.31624349388358" height="20" fill="#3266a6"/>
+<text x="594" y="614.5">98.6</text>
+<text x="675" y="97" class="panel">Zstd</text>
+<line x1="675" x2="675" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="675" y="658" text-anchor="middle" class="tick secondary">0.0</text>
+<line x1="765" x2="765" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="765" y="658" text-anchor="middle" class="tick secondary">82.7</text>
+<line x1="855" x2="855" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="855" y="658" text-anchor="middle" class="tick secondary">165.4</text>
+<line x1="945" x2="945" y1="115" y2="632" stroke="#e2e6eb"/>
+<text x="945" y="658" text-anchor="middle" class="tick secondary">248.0</text>
+<text x="810" y="689" text-anchor="middle">KB / document · lower is better</text>
+<rect x="675" y="128.5" width="93.94072498612911" height="20" fill="#3266a6"/>
+<text x="959" y="144.5">86.3</text>
+<rect x="675" y="175.5" width="99.42468757430845" height="20" fill="#3266a6"/>
+<text x="959" y="191.5">91.3</text>
+<rect x="675" y="222.5" width="93.94072498612911" height="20" fill="#3266a6"/>
+<text x="959" y="238.5">86.3</text>
+<rect x="675" y="269.5" width="125.1502681708896" height="20" fill="#3266a6"/>
+<text x="959" y="285.5">115.0</text>
+<rect x="675" y="316.5" width="89.48221881687755" height="20" fill="#3266a6"/>
+<text x="959" y="332.5">82.2</text>
+<rect x="675" y="363.5" width="103.61568337340486" height="20" fill="#3266a6"/>
+<text x="959" y="379.5">95.2</text>
+<rect x="675" y="410.5" width="102.85773732463213" height="20" fill="#3266a6"/>
+<text x="959" y="426.5">94.5</text>
+<rect x="675" y="457.5" width="54.081679833020644" height="20" fill="#3266a6"/>
+<text x="959" y="473.5">49.7</text>
+<rect x="675" y="504.5" width="15.916867024227827" height="20" fill="#3266a6"/>
+<text x="959" y="520.5">14.6</text>
+<rect x="675" y="551.5" width="76.10670030912308" height="20" fill="#3266a6"/>
+<text x="959" y="567.5">69.9</text>
+<rect x="675" y="598.5" width="76.10670030912308" height="20" fill="#3266a6"/>
+<text x="959" y="614.5">69.9</text>
+</svg>
