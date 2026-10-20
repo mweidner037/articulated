@@ -104,6 +104,8 @@ const headers = [
 const lines = [
   "# Full picture: saved-state format AND translation cost",
   "",
+  "**Archived Node-only experiment.** For browser conclusions, use [the paired-format browser benchmark](browser.md), which measures real Chromium rendering, GC, and memory together, with Mongo storage evaluated separately. The Node microbenchmarks below are not end-to-end browser measurements.",
+  "",
   "Draft experiment on top of [Matthew’s PR #30](https://github.com/mweidner037/articulated/pull/30). Not a production format or API proposal.",
   "",
   "The question is not only ‘how small is the output?’ It is also ‘what must be allocated and computed to get from that output to an editable IdList—and back?’",

@@ -1,0 +1,583 @@
+{
+  "generatedAt": "2026-10-20T22:35:41.030Z",
+  "version": "8.3.3",
+  "documents": 100,
+  "rows": [
+    {
+      "name": "snappy_objects",
+      "id": "objects",
+      "shape": "Original objects",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 18051072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_signed",
+      "id": "signed",
+      "shape": "Signed objects",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 16822272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_tuples",
+      "id": "tuples",
+      "shape": "Signed tuples",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 16003072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_columns",
+      "id": "columns",
+      "shape": "Ordinary columns",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 22343680,
+      "freeBytes": 208896,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_columns_proto",
+      "id": "columns-proto",
+      "shape": "Ordinary columns",
+      "encoding": "protobuf",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 7389184,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_omit",
+      "id": "omit",
+      "shape": "Columns + omit",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 15581184,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_omit_proto",
+      "id": "omit-proto",
+      "shape": "Columns + omit",
+      "encoding": "protobuf",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 6172672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split",
+      "id": "split",
+      "shape": "Split + omit",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 19689472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_proto",
+      "id": "split-proto",
+      "shape": "Split + omit",
+      "encoding": "protobuf",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 4534272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary",
+      "id": "dictionary",
+      "shape": "Dictionary + omit",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 17641472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary_proto",
+      "id": "dictionary-proto",
+      "shape": "Dictionary + omit",
+      "encoding": "protobuf",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_client",
+      "id": "client",
+      "shape": "Client dictionary + omit",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 18870272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_client_proto",
+      "id": "client-proto",
+      "shape": "Client dictionary + omit",
+      "encoding": "protobuf",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 3543040,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_full",
+      "id": "full",
+      "shape": "Dictionary columns",
+      "encoding": "JSON",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 24592384,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_adapter",
+      "id": "binary-adapter",
+      "shape": "Dictionary columns",
+      "encoding": "uint32/int32",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 12316672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_adapter",
+      "id": "bit-adapter",
+      "shape": "Dictionary columns",
+      "encoding": "bit-packed",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 9859072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_objects",
+      "id": "objects",
+      "shape": "Original objects",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8617984,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_signed",
+      "id": "signed",
+      "shape": "Signed objects",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8617984,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_tuples",
+      "id": "tuples",
+      "shape": "Signed tuples",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8630272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_columns",
+      "id": "columns",
+      "shape": "Ordinary columns",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11497472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_columns_proto",
+      "id": "columns-proto",
+      "shape": "Ordinary columns",
+      "encoding": "protobuf",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 4112384,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_omit",
+      "id": "omit",
+      "shape": "Columns + omit",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8220672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_omit_proto",
+      "id": "omit-proto",
+      "shape": "Columns + omit",
+      "encoding": "protobuf",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 3293184,
+      "freeBytes": 0,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split",
+      "id": "split",
+      "shape": "Split + omit",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 9519104,
+      "freeBytes": 81920,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_proto",
+      "id": "split-proto",
+      "shape": "Split + omit",
+      "encoding": "protobuf",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 2895872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary",
+      "id": "dictionary",
+      "shape": "Dictionary + omit",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 9449472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary_proto",
+      "id": "dictionary-proto",
+      "shape": "Dictionary + omit",
+      "encoding": "protobuf",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 4943872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_client",
+      "id": "client",
+      "shape": "Client dictionary + omit",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 7401472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_client_proto",
+      "id": "client-proto",
+      "shape": "Client dictionary + omit",
+      "encoding": "protobuf",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 1462272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_full",
+      "id": "full",
+      "shape": "Dictionary columns",
+      "encoding": "JSON",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 12726272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_adapter",
+      "id": "binary-adapter",
+      "shape": "Dictionary columns",
+      "encoding": "uint32/int32",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_adapter",
+      "id": "bit-adapter",
+      "shape": "Dictionary columns",
+      "encoding": "bit-packed",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    }
+  ]
+}

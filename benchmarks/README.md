@@ -1,5 +1,7 @@
 # Benchmarks
 
+Start with [the paired-format Mongo and real-browser benchmark](browser.md): one integrated browser chart per workload, plus a separate Mongo storage comparison. JSON and binary encodings are paired by logical structure; browser totals include decoding, ID hydration, editor creation, layout and a rendering opportunity, with GC and memory diagnostics alongside them.
+
 Benchmarks of articulated's IdList and other text-editor data structures on local text-editing traces.
 
 The goal is to evaluate the cost of per-character IDs stored in an IdList, both in absolute terms (is the cost reasonable for modern hardware?) and relative to:

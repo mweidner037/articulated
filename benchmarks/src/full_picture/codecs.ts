@@ -246,7 +246,7 @@ function openColumns(state: BinaryState, packed: boolean) {
         counts: alignedView(state.counts, true),
       };
 }
-function readColumns(
+export function readColumns(
   state: BinaryState,
   packed: boolean,
   emit: Emit,
@@ -337,7 +337,7 @@ function columnCodec(packed: boolean, direct: boolean): Codec {
     },
   };
 }
-function columnsFromMongo(value: unknown): BinaryState {
+export function columnsFromMongo(value: unknown): BinaryState {
   const state = value as Record<string, unknown>;
   return {
     bunchIds: state.bunchIds as string[],
@@ -384,7 +384,7 @@ function directSplit(list: IdList, probe?: Probe): Split {
   });
   return state;
 }
-function readSplit(state: Split, emit: Emit, probe?: Probe): void {
+export function readSplit(state: Split, emit: Emit, probe?: Probe): void {
   const next = new Map<string, number>();
   let k = 0,
     exception = state.startCounterIndexes.length
