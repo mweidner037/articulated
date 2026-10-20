@@ -15,6 +15,12 @@ Traces:
 
 Results are in [results.md](./results.md). They were generated on an M4 MacBook Pro with 48 GB of RAM, running pnpm 11.7.0 and node 24.16.0.
 
+For the separate saved-state and translation-layer experiment, see
+[Full picture: Mongo storage, JS memory, and save/load costs](./full_picture.md).
+It includes concrete Mongo examples, one complete comparison table, direct-versus-adapter
+controls, raw results, and reproduction commands. This is a draft exploration,
+not a proposed production format.
+
 ## Commands
 
 Run an individual benchmark, printing its data to stdout and appending it to `results/data.csv`:
