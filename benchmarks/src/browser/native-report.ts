@@ -41,12 +41,17 @@ const data = JSON.parse(
   rows: Row[];
 };
 assert(data.complete, "Refuse to publish incomplete measurements");
-assert.equal(data.rows.length, 6);
+assert([4, 6].includes(data.rows.length));
+const measuredCandidates =
+  data.rows.length === 6
+    ? nativeCandidates
+    : nativeCandidates.filter((c) => c.path !== "direct");
+const comparedRows = data.rows.filter((r) => r.id !== "f08-tree-direct");
 for (const docs of [1, 4]) {
   const rows = data.rows.filter((r) => r.documents === docs);
   assert.deepEqual(
     rows.map((r) => r.id),
-    nativeCandidates.map((c) => c.id),
+    measuredCandidates.map((c) => c.id),
   );
   for (const r of rows) {
     assert.equal(r.samples.length, data.rounds * data.trials);
@@ -70,13 +75,11 @@ for (const docs of [1, 4]) {
   }
 }
 const labels: Record<string, string> = {
-  "f08-tree": "I1 — Current IdList tree",
-  "f08-tree-direct": "I1 — Current IdList tree",
+  "f08-tree": "I1 — F08 → IdList.load()",
   "f08-native": "I2 — Native F08 columns",
 };
 const loaders: Record<string, string> = {
-  "f08-tree": "Via IdList.load()",
-  "f08-tree-direct": "Direct tree construction",
+  "f08-tree": "Convert to SavedIdList; use IdList",
   "f08-native": "Adopt decoded arrays; validate",
 };
 const q = (ns: number[], p = 0.5) =>
@@ -92,14 +95,27 @@ const mem = (r: Row, key: keyof Row["memory"][number]) =>
 const edit = (r: Row, key: keyof EditSample) =>
   q(r.editSamples.map((s) => s[key]));
 const f = (n: number) => n.toFixed(1);
+const audit = JSON.parse(
+  fs.readFileSync(path.join(dir, "edit-audit.json"), "utf8"),
+) as {
+  results: { kind: string; cold: number; samples: number[] }[];
+  work: { runs: number; tuples: number; maps: number; scans: number };
+};
+assert.equal(audit.results.length, 6);
+assert.equal(audit.work.scans, 200);
+const auditRows = ["f08-tree", "f08-native"].map((id) => {
+  const rows = audit.results.filter((r) => r.kind === id);
+  assert.equal(rows.length, 3);
+  assert(rows.every((r) => r.samples.length === 10));
+  return `| ${labels[id]} | ${f(Math.min(...rows.map((r) => r.cold)))}–${f(Math.max(...rows.map((r) => r.cold)))} | ${f(q(rows.flatMap((r) => r.samples)))} |`;
+});
 const sorted = (docs: number) =>
-  data.rows
+  comparedRows
     .filter((r) => r.documents === docs)
     .sort((a, b) => ms(a, "total") - ms(b, "total"));
 const row = (id: string, docs = 4) =>
   data.rows.find((r) => r.id === id && r.documents === docs)!;
 const tree = row("f08-tree"),
-  direct = row("f08-tree-direct"),
   native = row("f08-native");
 const caption = (r: Row) => `${labels[r.id]} — ${loaders[r.id]}`;
 for (const docs of [1, 4]) {
@@ -199,21 +215,23 @@ const summary = [
   ),
 ];
 const lines = [
-  "# Same F08 JSON: current IdList tree versus native columns",
+  "# Same F08 JSON: IdList.load() versus native F08 columns",
   "",
   "Draft experiment, not a production migration. **Yes: avoiding the translation/tree build saved meaningful time and memory in the four-document test. But the literal, unindexed wire layout was much slower for lookups and edits.** One document reached the rendering threshold at essentially the same time with either design, despite faster native loading.",
   "",
-  "This is a matched comparison of **two internal formats**, with a third loading path as a control. Every row receives byte-identical **F08 — Columnar store: deduplicate clients + reconstruct counters**, encoded as ordinary JSON. Binary and network transfer are excluded. I1/I2 identify internal designs; F08 identifies the unchanged interchange format.",
+  "This compares exactly **two paths: F08 → SavedIdList → IdList.load(), versus native F08 columns**. Every row receives byte-identical **F08 — Columnar store: deduplicate clients + reconstruct counters**, encoded as ordinary JSON. Binary and network transfer are excluded. I1/I2 identify internal designs; F08 identifies the unchanged interchange format.",
+  "",
+  "The old label ‘current tree’ meant Matthew’s existing IdList implementation. ‘Direct construction’ was an additional experimental loader that skipped temporary SavedIdList objects while building the same internals. It is not one of the two requested choices, so it has been removed from this report’s charts and tables. Its historical samples remain untouched in the raw file; future native runs select only the two requested paths.",
   "",
   "## Four-document result",
   "",
   ...summary,
   "",
-  `Compared with the normal tree loader, native columns reduced ready p95 by **${f(ms(tree, "total") - ms(native, "total"))} ms (${f((1 - ms(native, "total") / ms(tree, "total")) * 100)}%)** and retained JS by **${f(mem(tree, "retainedDelta") - mem(native, "retainedDelta"))} MB (${f((1 - mem(native, "retainedDelta") / mem(tree, "retainedDelta")) * 100)}%)**. The conversion/validation interval fell from ${f(ms(tree, "hydrate"))} to ${f(ms(native, "hydrate"))} ms. Compared with direct tree construction, the ready-p95 difference was ${f(ms(direct, "total") - ms(native, "total"))} ms. These are differences between empirical percentiles, not a decomposition of a single load.`,
+  `Compared with the normal tree loader, native columns reduced ready p95 by **${f(ms(tree, "total") - ms(native, "total"))} ms (${f((1 - ms(native, "total") / ms(tree, "total")) * 100)}%)** and retained JS by **${f(mem(tree, "retainedDelta") - mem(native, "retainedDelta"))} MB (${f((1 - mem(native, "retainedDelta") / mem(tree, "retainedDelta")) * 100)}%)**. The conversion/validation interval fell from ${f(ms(tree, "hydrate"))} to ${f(ms(native, "hydrate"))} ms. These are differences between empirical percentiles, not a decomposition of a single load.`,
   "",
   "## What I recommend",
   "",
-  `1. **Editing performance first:** keep I1, the existing tree. The native prototype's edit batch took ${f(edit(native, "editMs") / edit(tree, "editMs"))}× as long; the lookup batch took ${f(edit(native, "lookupMs") / edit(tree, "lookupMs"))}× as long. The direct-tree loader is a smaller optimization to investigate without changing the editing data structure.`,
+  `1. **Editing performance first:** keep I1, F08 → SavedIdList → IdList.load(). The native prototype's edit batch took ${f(edit(native, "editMs") / edit(tree, "editMs"))}× as long; the lookup batch took ${f(edit(native, "lookupMs") / edit(tree, "lookupMs"))}× as long. This describes the tested implementation, not an inherent cost of storing columns.`,
   "",
   "2. **Opening many documents / retained memory first:** native columns are worth further work. This experiment demonstrates an actual benefit from not building the tree, not merely a smaller serialized payload. A read-mostly document could retain columns and build a tree only when editing starts, but that hybrid has not been implemented or measured here.",
   "",
@@ -221,7 +239,7 @@ const lines = [
   "",
   "## Exactly what is stored and loaded",
   "",
-  "All three paths store the same Mongo fields and parse the same JSON. Example: three live IDs from alice_0, one from bob_0, two from alice_1, then two deleted IDs from alice_0:",
+  "Both paths store the same Mongo fields and parse the same JSON. Example: three live IDs from alice_0, one from bob_0, two from alice_1, then two deleted IDs from alice_0:",
   "",
   "```json",
   JSON.stringify(toClientIndexOmit(example), null, 2),
@@ -233,8 +251,7 @@ const lines = [
   "",
   "| Case | What happens after JSON.parse | What the library uses for lookup/editing |",
   "| --- | --- | --- |",
-  "| I1 / Via IdList.load() | Reconstruct IDs/counters into SavedIdList run objects, then build the tree | Existing IdList tree |",
-  "| I1 / Direct tree construction | Stream reconstructed fields directly into the tree builder, skipping the intermediate run-object array | The same existing tree |",
+  "| I1 / F08 → IdList.load() | Reconstruct IDs/counters into SavedIdList run objects, then build the tree | Matthew’s existing IdList implementation |",
   "| I2 / Native F08 columns | Validate the columns and cache visible length; retain those exact arrays | F08 columns, with counters reconstructed during scans |",
   "",
   "The actual native implementation is [NativeF08](src/browser/native.ts), not another adapter that eventually invokes IdList.load:",
@@ -261,7 +278,7 @@ const lines = [
   "",
   "Complete-ready covers decoding → internal list → ProseMirror creation → layout → a rendering opportunity. Conversion is timed directly around the loader and is already part of total. Common editor/layout work is not presented as a separate competitive metric. GC is measured in separate traced runs; do not add that bar to the timed total.",
   "",
-  `For **one document**, ready p95 was ${f(ms(row("f08-tree", 1), "total"))} ms with the normal tree loader, ${f(ms(row("f08-tree-direct", 1), "total"))} ms with direct tree construction and ${f(ms(row("f08-native", 1), "total"))} ms with native columns. Native conversion still fell from ${f(ms(row("f08-tree", 1), "hydrate"))} to ${f(ms(row("f08-native", 1), "hydrate"))} ms, but the rendering-opportunity threshold masked that gain in this workload. Do not promise a visible single-document speedup from these results.`,
+  `For **one document**, ready p95 was ${f(ms(row("f08-tree", 1), "total"))} ms with F08 → IdList.load() and ${f(ms(row("f08-native", 1), "total"))} ms with native columns. Native conversion still fell from ${f(ms(row("f08-tree", 1), "hydrate"))} to ${f(ms(row("f08-native", 1), "hydrate"))} ms, but the rendering-opportunity threshold masked that gain in this workload. Do not promise a visible single-document speedup from these results.`,
   "",
   "## JS memory",
   "",
@@ -277,16 +294,27 @@ const lines = [
   "",
   "This is **not** 200 simulated keystrokes or 200 incremental ProseMirror renders. Operation timing isolates library work; batch + render adds one final document replacement/layout/rendering opportunity. Ten trials support medians and ranges, not a robust p95 editing claim. It does not cover a representative production distribution of local typing, remote merges, undo, or long edit sessions.",
   "",
-  `In one separately traced four-document edit batch, tree / direct tree / native columns spent **${f(tree.editGC[0].gcMs)} / ${f(direct.editGC[0].gcMs)} / ${f(native.editGC[0].gcMs)} ms** in main-thread GC, with **${tree.editGC[0].gcEvents} / ${direct.editGC[0].gcEvents} / ${native.editGC[0].gcEvents}** events. The native implementation saves retained memory but creates substantially more temporary work during editing. This single trace per case is diagnostic, not an estimate of tail GC.`,
+  `In one separately traced four-document edit batch, F08 → IdList.load() / native columns spent **${f(tree.editGC[0].gcMs)} / ${f(native.editGC[0].gcMs)} ms** in main-thread GC, with **${tree.editGC[0].gcEvents} / ${native.editGC[0].gcEvents}** events. The native implementation saves retained memory but creates substantially more temporary work during editing. This single trace per case is diagnostic, not an estimate of tail GC.`,
+  "",
+  "### Audit of the high edit time",
+  "",
+  "The edit-only rerun removes ProseMirror, rendering, frame waits and lookups. Loading and full-state correctness checks remain outside the timer. Three fresh contexts per implementation reproduce the slow native first batch; each context then runs three warmups and ten measured batches. Warming does not remove the gap. See the [diagnostic samples and work counts](results/native/edit-audit.json) and [reproduction script](src/browser/edit-audit.mjs). These diagnostic samples do not replace the original matched load/edit measurements.",
+  "",
+  "| Path | First 200-edit batch range (ms, 3 contexts) | Warmed 200-edit batch median (ms, 30 samples) |",
+  "| --- | ---: | ---: |",
+  ...auditRows,
+  "",
+  "The implementation rebuilds all columns on every insertion/deletion. Instrumentation counts roughly 2.46 million run visits and 2.46 million temporary pending tuples across only 200 edits. It also repeatedly creates per-client maps to reconstruct and re-encode counters. A separate CPU profile places most sampled work in scan, flush and append, not the timer or renderer. Counts exclude the final correctness check; profiling includes that check and is diagnostic only. The ~120 ms is for the entire 200-edit batch (~0.6 ms/edit on average), not the median latency of an individual edit.",
+  "",
+  "**Interpretation correction:** this is a poor first editing implementation, not evidence that native F08 must be slow. The comparison exposes whole-column rebuilding versus IdList’s indexed, structurally shared updates. It has not yet answered how a well-engineered native column implementation would perform. No implementation optimization was made during this audit.",
   "",
   "## Mongo storage: unchanged by this internal-format choice",
   "",
   "| Internal representation | Mongo Snappy KB/document | Mongo Zstd KB/document |",
   "| --- | ---: | ---: |",
-  ...[
-    "I1 — Current IdList tree (either loader)",
-    "I2 — Native F08 columns",
-  ].map((name) => `| ${name} | ${f(disk("snappy"))} | ${f(disk("zstd"))} |`),
+  ...["I1 — F08 → IdList.load()", "I2 — Native F08 columns"].map(
+    (name) => `| ${name} | ${f(disk("snappy"))} | ${f(disk("zstd"))} |`,
+  ),
   "",
   `Both persist the same initial F08 fields. These are the existing **measured Mongo ${mongo.version} collection-file results**, not estimates from JSON/BSON size: ${mongo.documents} documents per layout, independent client dictionaries, compact/checkpoint and locked filesystem sync. Collection indexes/shared server overhead excluded. Mongo was not rerun because the stored payload is unchanged. The measurement is for the initial snapshot, not the post-edit batch. [Storage procedure and raw data](browser.md#physical-mongo-storage-all-measurements).`,
   "",
@@ -367,7 +395,7 @@ lines.push(
   "",
   `Run started ${data.generatedAt}. Chromium ${data.browser}, ${data.cpu}, CPU rate ${data.cpuRate}×. Same ${data.documentCharacters.toLocaleString("en-US")}-character, ${data.paragraphs.toLocaleString("en-US")}-paragraph, ${data.runs.toLocaleString("en-US")}-run Kleppmann trace used by the interchange benchmark, with Matthew's structured IDs. Four documents are four copies of this trace, not a corpus of independent production documents.`,
   "",
-  `Three paths × two document counts × ${data.rounds} fresh-context rounds × ${data.trials} measured replacement loads = **${data.rows.reduce((n, r) => n + r.samples.length, 0)} warm timed loads**, with shuffled case order and no filtered samples. First load in each context is retained separately as cold data, not mixed into the p95. Separate passes: **${data.rows.reduce((n, r) => n + r.gc.length, 0)} traced loads**, **${data.rows.reduce((n, r) => n + r.memory.length, 0)} memory runs**, **${data.rows.reduce((n, r) => n + r.editSamples.length, 0)} edit/lookup batches**, and **${data.rows.reduce((n, r) => n + r.editGC.length, 0)} traced operation batches**. All three paths were measured together; this report does not compare new native timings against the older interchange run.`,
+  `Two paths × two document counts × ${data.rounds} fresh-context rounds × ${data.trials} measured replacement loads = **${comparedRows.reduce((n, r) => n + r.samples.length, 0)} warm timed loads**, with shuffled case order and no filtered samples. First load in each context is retained separately as cold data, not mixed into the p95. Separate passes: **${comparedRows.reduce((n, r) => n + r.gc.length, 0)} traced loads**, **${comparedRows.reduce((n, r) => n + r.memory.length, 0)} memory runs**, **${comparedRows.reduce((n, r) => n + r.editSamples.length, 0)} edit/lookup batches**, and **${comparedRows.reduce((n, r) => n + r.editGC.length, 0)} traced operation batches**. Both compared paths were measured together; this report does not compare new native timings against the older interchange run.`,
   "",
   "Ready is a two-animation-frame proxy, not physical display scan-out. The controlled minimal ProseMirror harness is not the production integration. Server/network transfer and ID generation are excluded. The first edit is measured separately after readiness. GC uses matched main-thread trace windows with paint checks and an outside-window GC canary; timing runs are untraced. Memory measurements are intrusive and separate from primary timing. Cold samples, first edits and raw phases remain available.",
   "",
@@ -377,6 +405,7 @@ lines.push(
   "",
   "```sh",
   "npm run native:run",
+  "npm run native:audit",
   "npm run native:report",
   "npm test",
   "```",

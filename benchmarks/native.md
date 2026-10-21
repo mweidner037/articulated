@@ -1,22 +1,23 @@
-# Same F08 JSON: current IdList tree versus native columns
+# Same F08 JSON: IdList.load() versus native F08 columns
 
 Draft experiment, not a production migration. **Yes: avoiding the translation/tree build saved meaningful time and memory in the four-document test. But the literal, unindexed wire layout was much slower for lookups and edits.** One document reached the rendering threshold at essentially the same time with either design, despite faster native loading.
 
-This is a matched comparison of **two internal formats**, with a third loading path as a control. Every row receives byte-identical **F08 — Columnar store: deduplicate clients + reconstruct counters**, encoded as ordinary JSON. Binary and network transfer are excluded. I1/I2 identify internal designs; F08 identifies the unchanged interchange format.
+This compares exactly **two paths: F08 → SavedIdList → IdList.load(), versus native F08 columns**. Every row receives byte-identical **F08 — Columnar store: deduplicate clients + reconstruct counters**, encoded as ordinary JSON. Binary and network transfer are excluded. I1/I2 identify internal designs; F08 identifies the unchanged interchange format.
+
+The old label ‘current tree’ meant Matthew’s existing IdList implementation. ‘Direct construction’ was an additional experimental loader that skipped temporary SavedIdList objects while building the same internals. It is not one of the two requested choices, so it has been removed from this report’s charts and tables. Its historical samples remain untouched in the raw file; future native runs select only the two requested paths.
 
 ## Four-document result
 
-| Internal format / loading path                           | Ready p95 (ms) | Conversion p95 (ms) | Retained JS (MB) | 200 edits, median (ms) |
-| -------------------------------------------------------- | -------------: | ------------------: | ---------------: | ---------------------: |
-| I2 — Native F08 columns — Adopt decoded arrays; validate |           35.7 |                 4.3 |              2.4 |                  119.9 |
-| I1 — Current IdList tree — Direct tree construction      |           51.7 |                20.4 |              6.5 |                    2.1 |
-| I1 — Current IdList tree — Via IdList.load()             |           58.3 |                21.5 |              6.5 |                    2.1 |
+| Internal format / loading path                                | Ready p95 (ms) | Conversion p95 (ms) | Retained JS (MB) | 200 edits, median (ms) |
+| ------------------------------------------------------------- | -------------: | ------------------: | ---------------: | ---------------------: |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      |           35.7 |                 4.3 |              2.4 |                  119.9 |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |           58.3 |                21.5 |              6.5 |                    2.1 |
 
-Compared with the normal tree loader, native columns reduced ready p95 by **22.6 ms (38.8%)** and retained JS by **4.1 MB (63.1%)**. The conversion/validation interval fell from 21.5 to 4.3 ms. Compared with direct tree construction, the ready-p95 difference was 16.0 ms. These are differences between empirical percentiles, not a decomposition of a single load.
+Compared with the normal tree loader, native columns reduced ready p95 by **22.6 ms (38.8%)** and retained JS by **4.1 MB (63.1%)**. The conversion/validation interval fell from 21.5 to 4.3 ms. These are differences between empirical percentiles, not a decomposition of a single load.
 
 ## What I recommend
 
-1. **Editing performance first:** keep I1, the existing tree. The native prototype's edit batch took 57.1× as long; the lookup batch took 49.1× as long. The direct-tree loader is a smaller optimization to investigate without changing the editing data structure.
+1. **Editing performance first:** keep I1, F08 → SavedIdList → IdList.load(). The native prototype's edit batch took 57.1× as long; the lookup batch took 49.1× as long. This describes the tested implementation, not an inherent cost of storing columns.
 
 2. **Opening many documents / retained memory first:** native columns are worth further work. This experiment demonstrates an actual benefit from not building the tree, not merely a smaller serialized payload. A read-mostly document could retain columns and build a tree only when editing starts, but that hybrid has not been implemented or measured here.
 
@@ -24,7 +25,7 @@ Compared with the normal tree loader, native columns reduced ready p95 by **22.6
 
 ## Exactly what is stored and loaded
 
-All three paths store the same Mongo fields and parse the same JSON. Example: three live IDs from alice_0, one from bob_0, two from alice_1, then two deleted IDs from alice_0:
+Both paths store the same Mongo fields and parse the same JSON. Example: three live IDs from alice_0, one from bob_0, two from alice_1, then two deleted IDs from alice_0:
 
 ```json
 {
@@ -41,11 +42,10 @@ Each position in clientIndices, seqNums and counts is a run. Negative counts mea
 
 **ID limitation:** this is Matthew's structured client_sequence design, where the sequence suffix is base 36. It is NOT a proposed conversion of independent opaque 8-character nanoids. F07 deduplicates whole IDs without that requirement; it is a different format and is not the native implementation tested here.
 
-| Case                          | What happens after JSON.parse                                                                          | What the library uses for lookup/editing              |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------ | ----------------------------------------------------- |
-| I1 / Via IdList.load()        | Reconstruct IDs/counters into SavedIdList run objects, then build the tree                             | Existing IdList tree                                  |
-| I1 / Direct tree construction | Stream reconstructed fields directly into the tree builder, skipping the intermediate run-object array | The same existing tree                                |
-| I2 / Native F08 columns       | Validate the columns and cache visible length; retain those exact arrays                               | F08 columns, with counters reconstructed during scans |
+| Case                     | What happens after JSON.parse                                              | What the library uses for lookup/editing              |
+| ------------------------ | -------------------------------------------------------------------------- | ----------------------------------------------------- |
+| I1 / F08 → IdList.load() | Reconstruct IDs/counters into SavedIdList run objects, then build the tree | Matthew’s existing IdList implementation              |
+| I2 / Native F08 columns  | Validate the columns and cache visible length; retain those exact arrays   | F08 columns, with counters reconstructed during scans |
 
 The actual native implementation is [NativeF08](src/browser/native.ts), not another adapter that eventually invokes IdList.load:
 
@@ -71,7 +71,7 @@ Implemented API subset: length, at, indexOf (including deleted-entry bias), inse
 
 Complete-ready covers decoding → internal list → ProseMirror creation → layout → a rendering opportunity. Conversion is timed directly around the loader and is already part of total. Common editor/layout work is not presented as a separate competitive metric. GC is measured in separate traced runs; do not add that bar to the timed total.
 
-For **one document**, ready p95 was 16.7 ms with the normal tree loader, 17.0 ms with direct tree construction and 16.8 ms with native columns. Native conversion still fell from 6.4 to 2.2 ms, but the rendering-opportunity threshold masked that gain in this workload. Do not promise a visible single-document speedup from these results.
+For **one document**, ready p95 was 16.7 ms with F08 → IdList.load() and 16.8 ms with native columns. Native conversion still fell from 6.4 to 2.2 ms, but the rendering-opportunity threshold masked that gain in this workload. Do not promise a visible single-document speedup from these results.
 
 ## JS memory
 
@@ -87,14 +87,27 @@ Each fresh-context trial retains one or four documents but operates on **one**: 
 
 This is **not** 200 simulated keystrokes or 200 incremental ProseMirror renders. Operation timing isolates library work; batch + render adds one final document replacement/layout/rendering opportunity. Ten trials support medians and ranges, not a robust p95 editing claim. It does not cover a representative production distribution of local typing, remote merges, undo, or long edit sessions.
 
-In one separately traced four-document edit batch, tree / direct tree / native columns spent **0.3 / 0.3 / 5.7 ms** in main-thread GC, with **1 / 1 / 39** events. The native implementation saves retained memory but creates substantially more temporary work during editing. This single trace per case is diagnostic, not an estimate of tail GC.
+In one separately traced four-document edit batch, F08 → IdList.load() / native columns spent **0.3 / 5.7 ms** in main-thread GC, with **1 / 39** events. The native implementation saves retained memory but creates substantially more temporary work during editing. This single trace per case is diagnostic, not an estimate of tail GC.
+
+### Audit of the high edit time
+
+The edit-only rerun removes ProseMirror, rendering, frame waits and lookups. Loading and full-state correctness checks remain outside the timer. Three fresh contexts per implementation reproduce the slow native first batch; each context then runs three warmups and ten measured batches. Warming does not remove the gap. See the [diagnostic samples and work counts](results/native/edit-audit.json) and [reproduction script](src/browser/edit-audit.mjs). These diagnostic samples do not replace the original matched load/edit measurements.
+
+| Path                     | First 200-edit batch range (ms, 3 contexts) | Warmed 200-edit batch median (ms, 30 samples) |
+| ------------------------ | ------------------------------------------: | --------------------------------------------: |
+| I1 — F08 → IdList.load() |                                     2.3–2.4 |                                           0.7 |
+| I2 — Native F08 columns  |                                 117.8–120.2 |                                         106.9 |
+
+The implementation rebuilds all columns on every insertion/deletion. Instrumentation counts roughly 2.46 million run visits and 2.46 million temporary pending tuples across only 200 edits. It also repeatedly creates per-client maps to reconstruct and re-encode counters. A separate CPU profile places most sampled work in scan, flush and append, not the timer or renderer. Counts exclude the final correctness check; profiling includes that check and is diagnostic only. The ~120 ms is for the entire 200-edit batch (~0.6 ms/edit on average), not the median latency of an individual edit.
+
+**Interpretation correction:** this is a poor first editing implementation, not evidence that native F08 must be slow. The comparison exposes whole-column rebuilding versus IdList’s indexed, structurally shared updates. It has not yet answered how a well-engineered native column implementation would perform. No implementation optimization was made during this audit.
 
 ## Mongo storage: unchanged by this internal-format choice
 
-| Internal representation                  | Mongo Snappy KB/document | Mongo Zstd KB/document |
-| ---------------------------------------- | -----------------------: | ---------------------: |
-| I1 — Current IdList tree (either loader) |                    188.7 |                   74.0 |
-| I2 — Native F08 columns                  |                    188.7 |                   74.0 |
+| Internal representation  | Mongo Snappy KB/document | Mongo Zstd KB/document |
+| ------------------------ | -----------------------: | ---------------------: |
+| I1 — F08 → IdList.load() |                    188.7 |                   74.0 |
+| I2 — Native F08 columns  |                    188.7 |                   74.0 |
 
 Both persist the same initial F08 fields. These are the existing **measured Mongo 8.3.3 collection-file results**, not estimates from JSON/BSON size: 100 documents per layout, independent client dictionaries, compact/checkpoint and locked filesystem sync. Collection indexes/shared server overhead excluded. Mongo was not rerun because the stored payload is unchanged. The measurement is for the initial snapshot, not the post-edit batch. [Storage procedure and raw data](browser.md#physical-mongo-storage-all-measurements).
 
@@ -102,25 +115,22 @@ Both persist the same initial F08 fields. These are the existing **measured Mong
 
 <details><summary>1 document(s): load, memory, edits, GC and per-round p95</summary>
 
-| Internal / loader                                        | Decode p95 ms | Conversion p50 / p95 ms | Ready p50 / p95 / max ms | First edit + render p95 ms | Load GC mean ms |
-| -------------------------------------------------------- | ------------: | ----------------------: | -----------------------: | -------------------------: | --------------: |
-| I1 — Current IdList tree — Via IdList.load()             |           0.3 |               5.6 / 6.4 |       16.6 / 16.7 / 16.8 |                       16.8 |             0.7 |
-| I2 — Native F08 columns — Adopt decoded arrays; validate |           0.3 |               0.8 / 2.2 |       16.6 / 16.8 / 17.5 |                       16.9 |             0.5 |
-| I1 — Current IdList tree — Direct tree construction      |           0.3 |               5.3 / 6.3 |       16.7 / 17.0 / 24.9 |                       16.8 |             0.9 |
+| Internal / loader                                             | Decode p95 ms | Conversion p50 / p95 ms | Ready p50 / p95 / max ms | First edit + render p95 ms | Load GC mean ms |
+| ------------------------------------------------------------- | ------------: | ----------------------: | -----------------------: | -------------------------: | --------------: |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |           0.3 |               5.6 / 6.4 |       16.6 / 16.7 / 16.8 |                       16.8 |             0.7 |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      |           0.3 |               0.8 / 2.2 |       16.6 / 16.8 / 17.5 |                       16.9 |             0.5 |
 
-| Internal / loader                                        | Retained median MB | High-water maximum MB | Allocations median MB | Ready p95 by round (ms)          |
-| -------------------------------------------------------- | -----------------: | --------------------: | --------------------: | -------------------------------- |
-| I1 — Current IdList tree — Via IdList.load()             |                1.6 |                   3.7 |                  15.3 | 16.7 / 16.8 / 16.7 / 16.7 / 16.8 |
-| I2 — Native F08 columns — Adopt decoded arrays; validate |                0.5 |                   1.9 |                   6.4 | 16.7 / 16.7 / 16.7 / 16.8 / 16.7 |
-| I1 — Current IdList tree — Direct tree construction      |                1.6 |                   5.0 |                  14.4 | 16.9 / 16.8 / 16.8 / 17.0 / 17.2 |
+| Internal / loader                                             | Retained median MB | High-water maximum MB | Allocations median MB | Ready p95 by round (ms)          |
+| ------------------------------------------------------------- | -----------------: | --------------------: | --------------------: | -------------------------------- |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |                1.6 |                   3.7 |                  15.3 | 16.7 / 16.8 / 16.7 / 16.7 / 16.8 |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      |                0.5 |                   1.9 |                   6.4 | 16.7 / 16.7 / 16.7 / 16.8 / 16.7 |
 
 Operation batches: median [minimum–maximum], ms. GC: one separate traced batch.
 
-| Internal / loader                                        |      256 lookups |           200 edits | Both batches + final render | GC ms / events / longest ms |
-| -------------------------------------------------------- | ---------------: | ------------------: | --------------------------: | --------------------------: |
-| I1 — Current IdList tree — Via IdList.load()             |    0.7 [0.6–0.8] |       2.0 [2.0–2.2] |             12.1 [8.3–15.7] |               0.2 / 1 / 0.2 |
-| I2 — Native F08 columns — Adopt decoded arrays; validate | 34.2 [33.7–34.7] | 119.3 [116.7–124.0] |         161.8 [158.8–168.5] |              5.7 / 40 / 0.2 |
-| I1 — Current IdList tree — Direct tree construction      |    0.7 [0.7–0.8] |       2.1 [2.0–2.2] |             11.1 [9.9–14.7] |               0.2 / 1 / 0.2 |
+| Internal / loader                                             |      256 lookups |           200 edits | Both batches + final render | GC ms / events / longest ms |
+| ------------------------------------------------------------- | ---------------: | ------------------: | --------------------------: | --------------------------: |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |    0.7 [0.6–0.8] |       2.0 [2.0–2.2] |             12.1 [8.3–15.7] |               0.2 / 1 / 0.2 |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      | 34.2 [33.7–34.7] | 119.3 [116.7–124.0] |         161.8 [158.8–168.5] |              5.7 / 40 / 0.2 |
 
 ![One-document load speed](results/native/speed-1.svg)
 
@@ -132,25 +142,22 @@ Operation batches: median [minimum–maximum], ms. GC: one separate traced batch
 
 <details><summary>4 document(s): load, memory, edits, GC and per-round p95</summary>
 
-| Internal / loader                                        | Decode p95 ms | Conversion p50 / p95 ms | Ready p50 / p95 / max ms | First edit + render p95 ms | Load GC mean ms |
-| -------------------------------------------------------- | ------------: | ----------------------: | -----------------------: | -------------------------: | --------------: |
-| I2 — Native F08 columns — Adopt decoded arrays; validate |           1.0 |               2.4 / 4.3 |       33.3 / 35.7 / 41.8 |                       17.0 |             0.9 |
-| I1 — Current IdList tree — Direct tree construction      |           0.9 |             17.4 / 20.4 |       49.9 / 51.7 / 58.4 |                       16.8 |             2.0 |
-| I1 — Current IdList tree — Via IdList.load()             |           0.9 |             18.6 / 21.5 |       49.9 / 58.3 / 59.5 |                       16.8 |             2.2 |
+| Internal / loader                                             | Decode p95 ms | Conversion p50 / p95 ms | Ready p50 / p95 / max ms | First edit + render p95 ms | Load GC mean ms |
+| ------------------------------------------------------------- | ------------: | ----------------------: | -----------------------: | -------------------------: | --------------: |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      |           1.0 |               2.4 / 4.3 |       33.3 / 35.7 / 41.8 |                       17.0 |             0.9 |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |           0.9 |             18.6 / 21.5 |       49.9 / 58.3 / 59.5 |                       16.8 |             2.2 |
 
-| Internal / loader                                        | Retained median MB | High-water maximum MB | Allocations median MB | Ready p95 by round (ms)          |
-| -------------------------------------------------------- | -----------------: | --------------------: | --------------------: | -------------------------------- |
-| I2 — Native F08 columns — Adopt decoded arrays; validate |                2.4 |                   7.5 |                  16.2 | 33.7 / 35.7 / 35.1 / 36.4 / 34.9 |
-| I1 — Current IdList tree — Direct tree construction      |                6.5 |                   9.1 |                  53.8 | 50.1 / 50.1 / 50.7 / 58.3 / 50.1 |
-| I1 — Current IdList tree — Via IdList.load()             |                6.5 |                  10.5 |                  56.6 | 50.9 / 50.5 / 58.4 / 51.0 / 58.4 |
+| Internal / loader                                             | Retained median MB | High-water maximum MB | Allocations median MB | Ready p95 by round (ms)          |
+| ------------------------------------------------------------- | -----------------: | --------------------: | --------------------: | -------------------------------- |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      |                2.4 |                   7.5 |                  16.2 | 33.7 / 35.7 / 35.1 / 36.4 / 34.9 |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |                6.5 |                  10.5 |                  56.6 | 50.9 / 50.5 / 58.4 / 51.0 / 58.4 |
 
 Operation batches: median [minimum–maximum], ms. GC: one separate traced batch.
 
-| Internal / loader                                        |      256 lookups |           200 edits | Both batches + final render | GC ms / events / longest ms |
-| -------------------------------------------------------- | ---------------: | ------------------: | --------------------------: | --------------------------: |
-| I2 — Native F08 columns — Adopt decoded arrays; validate | 34.4 [33.8–35.1] | 119.9 [118.3–120.9] |         163.4 [162.2–166.5] |              5.7 / 39 / 0.3 |
-| I1 — Current IdList tree — Direct tree construction      |    0.7 [0.6–0.8] |       2.1 [2.0–2.3] |             12.6 [9.5–16.1] |               0.3 / 1 / 0.3 |
-| I1 — Current IdList tree — Via IdList.load()             |    0.7 [0.6–0.8] |       2.1 [2.0–2.2] |             12.5 [9.0–15.1] |               0.3 / 1 / 0.3 |
+| Internal / loader                                             |      256 lookups |           200 edits | Both batches + final render | GC ms / events / longest ms |
+| ------------------------------------------------------------- | ---------------: | ------------------: | --------------------------: | --------------------------: |
+| I2 — Native F08 columns — Adopt decoded arrays; validate      | 34.4 [33.8–35.1] | 119.9 [118.3–120.9] |         163.4 [162.2–166.5] |              5.7 / 39 / 0.3 |
+| I1 — F08 → IdList.load() — Convert to SavedIdList; use IdList |    0.7 [0.6–0.8] |       2.1 [2.0–2.2] |             12.5 [9.0–15.1] |               0.3 / 1 / 0.3 |
 
 </details>
 
@@ -158,7 +165,7 @@ Operation batches: median [minimum–maximum], ms. GC: one separate traced batch
 
 Run started 2026-10-21T01:42:08.030Z. Chromium 151.0.7922.34, Apple M5 Pro, CPU rate 1×. Same 104,852-character, 1,173-paragraph, 12,091-run Kleppmann trace used by the interchange benchmark, with Matthew's structured IDs. Four documents are four copies of this trace, not a corpus of independent production documents.
 
-Three paths × two document counts × 5 fresh-context rounds × 20 measured replacement loads = **600 warm timed loads**, with shuffled case order and no filtered samples. First load in each context is retained separately as cold data, not mixed into the p95. Separate passes: **48 traced loads**, **18 memory runs**, **60 edit/lookup batches**, and **6 traced operation batches**. All three paths were measured together; this report does not compare new native timings against the older interchange run.
+Two paths × two document counts × 5 fresh-context rounds × 20 measured replacement loads = **400 warm timed loads**, with shuffled case order and no filtered samples. First load in each context is retained separately as cold data, not mixed into the p95. Separate passes: **32 traced loads**, **12 memory runs**, **40 edit/lookup batches**, and **4 traced operation batches**. Both compared paths were measured together; this report does not compare new native timings against the older interchange run.
 
 Ready is a two-animation-frame proxy, not physical display scan-out. The controlled minimal ProseMirror harness is not the production integration. Server/network transfer and ID generation are excluded. The first edit is measured separately after readiness. GC uses matched main-thread trace windows with paint checks and an outside-window GC canary; timing runs are untraced. Memory measurements are intrusive and separate from primary timing. Cold samples, first edits and raw phases remain available.
 
@@ -168,6 +175,7 @@ From the benchmark package, using the repository's pinned dependencies:
 
 ```sh
 npm run native:run
+npm run native:audit
 npm run native:report
 npm test
 ```

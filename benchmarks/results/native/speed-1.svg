@@ -1,53 +1,45 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="464" viewBox="0 0 1315 464" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="382" viewBox="0 0 1315 382" role="img" aria-labelledby="title desc">
 <title id="title">1 documents: same F08 JSON, different internals</title><desc id="desc">Sorted by complete-ready P95, fastest first. Lower is better in every panel. 100 timed loads per row. Conversion is part of total; percentiles are not additive. GC measured in a separate pass.. Exact values are labeled on every bar.</desc>
-<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="464" fill="white"/>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="382" fill="white"/>
 <text x="24" y="36" class="title">1 documents: same F08 JSON, different internals</text>
 <text x="24" y="68" >Sorted by complete-ready P95, fastest first. Lower is better in every panel.</text>
 <text x="24" y="110" >Internal format / loading path</text>
 <text x="425" y="110" >Complete-ready P95 (ms)</text>
-<line x1="425" x2="425" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="425" y="420" class="small" text-anchor="middle">0.0</text>
-<line x1="532" x2="532" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="532" y="420" class="small" text-anchor="middle">8.9</text>
-<line x1="639" x2="639" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="639" y="420" class="small" text-anchor="middle">17.9</text>
-<rect x="425" y="165" width="199.6536318549897" height="23" fill="#3266a6"/>
-<text x="631.6536318549897" y="183" class="small">16.7</text>
-<rect x="425" y="247" width="200.84916144109974" height="23" fill="#3266a6"/>
-<text x="632.8491614410998" y="265" class="small">16.8</text>
-<rect x="425" y="329" width="203.2402234636872" height="23" fill="#3266a6"/>
-<text x="635.2402234636872" y="347" class="small">17.0</text>
+<line x1="425" x2="425" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="425" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="532" y="338" class="small" text-anchor="middle">8.8</text>
+<line x1="639" x2="639" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="639" y="338" class="small" text-anchor="middle">17.7</text>
+<rect x="425" y="165" width="201.909605096289" height="23" fill="#3266a6"/>
+<text x="633.9096050962889" y="183" class="small">16.7</text>
+<rect x="425" y="247" width="203.11864349128163" height="23" fill="#3266a6"/>
+<text x="635.1186434912817" y="265" class="small">16.8</text>
 <text x="715" y="110" >To internal list P95 (ms)</text>
-<line x1="715" x2="715" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="715" y="420" class="small" text-anchor="middle">0.0</text>
-<line x1="822" x2="822" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="822" y="420" class="small" text-anchor="middle">3.4</text>
-<line x1="929" x2="929" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="929" y="420" class="small" text-anchor="middle">6.8</text>
+<line x1="715" x2="715" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="715" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="822" y="338" class="small" text-anchor="middle">3.4</text>
+<line x1="929" x2="929" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="929" y="338" class="small" text-anchor="middle">6.8</text>
 <rect x="715" y="165" width="201.41176395556505" height="23" fill="#3c8077"/>
 <text x="923.411763955565" y="183" class="small">6.4</text>
 <rect x="715" y="247" width="69.23529561828164" height="23" fill="#3c8077"/>
 <text x="791.2352956182816" y="265" class="small">2.2</text>
-<rect x="715" y="329" width="198.26470813330485" height="23" fill="#3c8077"/>
-<text x="920.2647081333048" y="347" class="small">6.3</text>
 <text x="1005" y="110" >Load GC mean (ms)</text>
-<line x1="1005" x2="1005" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="1005" y="420" class="small" text-anchor="middle">0.0</text>
-<line x1="1112" x2="1112" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="1112" y="420" class="small" text-anchor="middle">0.5</text>
-<line x1="1219" x2="1219" y1="138" y2="397" stroke="#e2e6eb"/>
-<text x="1219" y="420" class="small" text-anchor="middle">1.0</text>
-<rect x="1005" y="165" width="154.58825" height="23" fill="#8571ac"/>
-<text x="1166.58825" y="183" class="small">0.7</text>
-<rect x="1005" y="247" width="106.65225000000001" height="23" fill="#8571ac"/>
-<text x="1118.65225" y="265" class="small">0.5</text>
-<rect x="1005" y="329" width="187.43725000000003" height="23" fill="#8571ac"/>
-<text x="1199.43725" y="347" class="small">0.9</text>
-<text x="24" y="162" >I1 — Current IdList tree</text>
-<text x="24" y="204" class="small">Via IdList.load()</text>
+<line x1="1005" x2="1005" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1005" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1112" y="338" class="small" text-anchor="middle">0.4</text>
+<line x1="1219" x2="1219" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1219" y="338" class="small" text-anchor="middle">0.8</text>
+<rect x="1005" y="165" width="193.2353125" height="23" fill="#8571ac"/>
+<text x="1205.2353125" y="183" class="small">0.7</text>
+<rect x="1005" y="247" width="133.3153125" height="23" fill="#8571ac"/>
+<text x="1145.3153125" y="265" class="small">0.5</text>
+<text x="24" y="162" >I1 — F08 → IdList.load()</text>
+<text x="24" y="204" class="small">Convert to SavedIdList; use IdList</text>
 <text x="24" y="244" >I2 — Native F08 columns</text>
 <text x="24" y="286" class="small">Adopt decoded arrays; validate</text>
-<text x="24" y="326" >I1 — Current IdList tree</text>
-<text x="24" y="368" class="small">Direct tree construction</text>
-<text x="24" y="452" class="small">100 timed loads per row. Conversion is part of total; percentiles are not additive. GC measured in a separate pass.</text>
+<text x="24" y="370" class="small">100 timed loads per row. Conversion is part of total; percentiles are not additive. GC measured in a separate pass.</text>
 </svg>
