@@ -1,0 +1,118 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="920" height="1146" viewBox="0 0 920 1146" role="img" aria-labelledby="title desc">
+<title id="title">Secondary optimization: Mongo encodings</title><desc id="desc">Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately. Actual collection files after compact + checkpoint. Indexes and shared server overhead excluded.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="920" height="1146" fill="white"/>
+<text x="24" y="36" class="title">Secondary optimization: Mongo encodings</text>
+<text x="24" y="68" >Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Snappy (KB / document)</text>
+<line x1="320" x2="320" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="320" y="1102" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="427" y="1102" class="small" text-anchor="middle">129.2</text>
+<line x1="534" x2="534" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="534" y="1102" class="small" text-anchor="middle">258.3</text>
+<rect x="320" y="148" width="29.35387379016647" height="23" fill="#3266a6"/>
+<text x="356.35387379016646" y="166" class="small">35.4</text>
+<rect x="320" y="206" width="37.56617142857143" height="23" fill="#3266a6"/>
+<text x="364.5661714285714" y="224" class="small">45.3</text>
+<rect x="320" y="264" width="51.140217111885406" height="23" fill="#3266a6"/>
+<text x="378.1402171118854" y="282" class="small">61.7</text>
+<rect x="320" y="322" width="57.9272399535424" height="23" fill="#3266a6"/>
+<text x="384.9272399535424" y="340" class="small">69.9</text>
+<rect x="320" y="380" width="61.21894603174603" height="23" fill="#3266a6"/>
+<text x="388.21894603174604" y="398" class="small">73.9</text>
+<rect x="320" y="438" width="81.68181989934186" height="23" fill="#3266a6"/>
+<text x="408.68181989934186" y="456" class="small">98.6</text>
+<rect x="320" y="496" width="102.0428884243128" height="23" fill="#3266a6"/>
+<text x="429.0428884243128" y="514" class="small">123.2</text>
+<rect x="320" y="554" width="129.0891744483159" height="23" fill="#3266a6"/>
+<text x="456.08917444831593" y="572" class="small">155.8</text>
+<rect x="320" y="612" width="132.58449121176926" height="23" fill="#3266a6"/>
+<text x="459.58449121176926" y="630" class="small">160.0</text>
+<rect x="320" y="670" width="139.37151405342624" height="23" fill="#3266a6"/>
+<text x="466.37151405342627" y="688" class="small">168.2</text>
+<rect x="320" y="728" width="146.15853689508322" height="23" fill="#3266a6"/>
+<text x="473.1585368950832" y="746" class="small">176.4</text>
+<rect x="320" y="786" width="149.55204831591172" height="23" fill="#3266a6"/>
+<text x="476.55204831591175" y="804" class="small">180.5</text>
+<rect x="320" y="844" width="156.33907115756872" height="23" fill="#3266a6"/>
+<text x="483.3390711575687" y="862" class="small">188.7</text>
+<rect x="320" y="902" width="163.1260939992257" height="23" fill="#3266a6"/>
+<text x="490.1260939992257" y="920" class="small">196.9</text>
+<rect x="320" y="960" width="185.11604800619432" height="23" fill="#3266a6"/>
+<text x="512.1160480061943" y="978" class="small">223.4</text>
+<rect x="320" y="1018" width="203.74642570654277" height="23" fill="#3266a6"/>
+<text x="530.7464257065428" y="1036" class="small">245.9</text>
+<text x="610" y="110" >Zstd (KB / document)</text>
+<line x1="610" x2="610" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="610" y="1102" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="717" y="1102" class="small" text-anchor="middle">66.8</text>
+<line x1="824" x2="824" y1="138" y2="1079" stroke="#e2e6eb"/>
+<text x="824" y="1102" class="small" text-anchor="middle">133.7</text>
+<rect x="610" y="148" width="23.40510157068063" height="23" fill="#3c8077"/>
+<text x="640.4051015706806" y="166" class="small">14.6</text>
+<rect x="610" y="206" width="46.351279581151836" height="23" fill="#3c8077"/>
+<text x="663.3512795811519" y="224" class="small">29.0</text>
+<rect x="610" y="264" width="52.710648915482416" height="23" fill="#3c8077"/>
+<text x="669.7106489154825" y="282" class="small">32.9</text>
+<rect x="610" y="322" width="79.13153388182499" height="23" fill="#3c8077"/>
+<text x="696.131533881825" y="340" class="small">49.4</text>
+<rect x="610" y="380" width="65.82275063575167" height="23" fill="#3c8077"/>
+<text x="682.8227506357516" y="398" class="small">41.1</text>
+<rect x="610" y="438" width="111.91178818249814" height="23" fill="#3c8077"/>
+<text x="728.9117881824982" y="456" class="small">69.9</text>
+<rect x="610" y="496" width="111.91178818249814" height="23" fill="#3c8077"/>
+<text x="728.9117881824982" y="514" class="small">69.9</text>
+<rect x="610" y="554" width="131.57994076290203" height="23" fill="#3c8077"/>
+<text x="748.579940762902" y="572" class="small">82.2</text>
+<rect x="610" y="612" width="138.13599162303666" height="23" fill="#3c8077"/>
+<text x="755.1359916230367" y="630" class="small">86.3</text>
+<rect x="610" y="670" width="137.93931009723264" height="23" fill="#3c8077"/>
+<text x="754.9393100972327" y="688" class="small">86.2</text>
+<rect x="610" y="728" width="151.24809334330592" height="23" fill="#3c8077"/>
+<text x="768.248093343306" y="746" class="small">94.5</text>
+<rect x="610" y="786" width="137.93931009723264" height="23" fill="#3c8077"/>
+<text x="754.9393100972327" y="804" class="small">86.2</text>
+<rect x="610" y="844" width="118.46783904263276" height="23" fill="#3c8077"/>
+<text x="735.4678390426327" y="862" class="small">74.0</text>
+<rect x="610" y="902" width="152.36262198952878" height="23" fill="#3c8077"/>
+<text x="769.3626219895287" y="920" class="small">95.2</text>
+<rect x="610" y="960" width="184.0283476439791" height="23" fill="#3c8077"/>
+<text x="801.028347643979" y="978" class="small">115.0</text>
+<rect x="610" y="1018" width="203.69650022438296" height="23" fill="#3c8077"/>
+<text x="820.6965002243829" y="1036" class="small">127.3</text>
+<text x="24" y="162" >Client dictionary + omit</text>
+<text x="24" y="182" class="small">protobuf</text>
+<text x="24" y="220" >Split + omit</text>
+<text x="24" y="240" class="small">protobuf</text>
+<text x="24" y="278" >Columns + omit</text>
+<text x="24" y="298" class="small">protobuf</text>
+<text x="24" y="336" >Dictionary + omit</text>
+<text x="24" y="356" class="small">protobuf</text>
+<text x="24" y="394" >Ordinary columns</text>
+<text x="24" y="414" class="small">protobuf</text>
+<text x="24" y="452" >Dictionary columns</text>
+<text x="24" y="472" class="small">bit-packed</text>
+<text x="24" y="510" >Dictionary columns</text>
+<text x="24" y="530" class="small">uint32/int32</text>
+<text x="24" y="568" >Columns + omit</text>
+<text x="24" y="588" class="small">Ordinary BSON fields</text>
+<text x="24" y="626" >Signed tuples</text>
+<text x="24" y="646" class="small">Ordinary BSON fields</text>
+<text x="24" y="684" >Signed objects</text>
+<text x="24" y="704" class="small">Ordinary BSON fields</text>
+<text x="24" y="742" >Dictionary + omit</text>
+<text x="24" y="762" class="small">Ordinary BSON fields</text>
+<text x="24" y="800" >Original objects</text>
+<text x="24" y="820" class="small">Ordinary BSON fields</text>
+<text x="24" y="858" >Client dictionary + omit</text>
+<text x="24" y="878" class="small">Ordinary BSON fields</text>
+<text x="24" y="916" >Split + omit</text>
+<text x="24" y="936" class="small">Ordinary BSON fields</text>
+<text x="24" y="974" >Ordinary columns</text>
+<text x="24" y="994" class="small">Ordinary BSON fields</text>
+<text x="24" y="1032" >Dictionary columns</text>
+<text x="24" y="1052" class="small">Ordinary BSON fields</text>
+<text x="24" y="1134" class="small">Actual collection files after compact + checkpoint. Indexes and shared server overhead excluded.</text>
+</svg>

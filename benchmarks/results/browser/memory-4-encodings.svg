@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="1610" viewBox="0 0 1210 1610" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: encodings and JSON baselines — JS memory</title><desc id="desc">Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="1610" fill="white"/>
+<text x="24" y="36" class="title">4 documents: encodings and JSON baselines — JS memory</text>
+<text x="24" y="68" >Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Retained median (MB)</text>
+<line x1="320" x2="320" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="320" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="427" y="1566" class="small" text-anchor="middle">3.9</text>
+<line x1="534" x2="534" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="534" y="1566" class="small" text-anchor="middle">7.8</text>
+<rect x="320" y="148" width="177.1411064102564" height="23" fill="#3266a6"/>
+<text x="504.1411064102564" y="166" class="small">6.5</text>
+<rect x="320" y="206" width="177.21803666666665" height="23" fill="#3266a6"/>
+<text x="504.21803666666665" y="224" class="small">6.5</text>
+<rect x="320" y="264" width="177.39647974358974" height="23" fill="#3266a6"/>
+<text x="504.39647974358974" y="282" class="small">6.5</text>
+<rect x="320" y="322" width="177.3969187179487" height="23" fill="#3266a6"/>
+<text x="504.39691871794867" y="340" class="small">6.5</text>
+<rect x="320" y="380" width="177.40767358974358" height="23" fill="#3266a6"/>
+<text x="504.4076735897436" y="398" class="small">6.5</text>
+<rect x="320" y="438" width="177.42918333333333" height="23" fill="#3266a6"/>
+<text x="504.4291833333333" y="456" class="small">6.5</text>
+<rect x="320" y="496" width="178.95209512820514" height="23" fill="#3266a6"/>
+<text x="505.95209512820514" y="514" class="small">6.5</text>
+<rect x="320" y="554" width="179.13295256410257" height="23" fill="#3266a6"/>
+<text x="506.13295256410254" y="572" class="small">6.5</text>
+<rect x="320" y="612" width="188.86402641025643" height="23" fill="#3266a6"/>
+<text x="515.8640264102564" y="630" class="small">6.9</text>
+<rect x="320" y="670" width="188.90408282051283" height="23" fill="#3266a6"/>
+<text x="515.9040828205128" y="688" class="small">6.9</text>
+<rect x="320" y="728" width="189.07528282051283" height="23" fill="#3266a6"/>
+<text x="516.0752828205128" y="746" class="small">6.9</text>
+<rect x="320" y="786" width="189.12060692307693" height="23" fill="#3266a6"/>
+<text x="516.1206069230769" y="804" class="small">6.9</text>
+<rect x="320" y="844" width="189.12225307692307" height="23" fill="#3266a6"/>
+<text x="516.122253076923" y="862" class="small">6.9</text>
+<rect x="320" y="902" width="189.12225307692307" height="23" fill="#3266a6"/>
+<text x="516.122253076923" y="920" class="small">6.9</text>
+<rect x="320" y="960" width="189.14222641025643" height="23" fill="#3266a6"/>
+<text x="516.1422264102564" y="978" class="small">6.9</text>
+<rect x="320" y="1018" width="189.77149615384616" height="23" fill="#3266a6"/>
+<text x="516.7714961538461" y="1036" class="small">6.9</text>
+<rect x="320" y="1076" width="201.19777923076924" height="23" fill="#3266a6"/>
+<text x="528.1977792307692" y="1094" class="small">7.3</text>
+<rect x="320" y="1134" width="201.24244487179487" height="23" fill="#3266a6"/>
+<text x="528.2424448717949" y="1152" class="small">7.3</text>
+<rect x="320" y="1192" width="201.42802128205128" height="23" fill="#3266a6"/>
+<text x="528.4280212820513" y="1210" class="small">7.3</text>
+<rect x="320" y="1250" width="201.43120384615386" height="23" fill="#3266a6"/>
+<text x="528.4312038461538" y="1268" class="small">7.3</text>
+<rect x="320" y="1308" width="201.44953102564102" height="23" fill="#3266a6"/>
+<text x="528.449531025641" y="1326" class="small">7.3</text>
+<rect x="320" y="1366" width="201.46050538461537" height="23" fill="#3266a6"/>
+<text x="528.4605053846153" y="1384" class="small">7.3</text>
+<rect x="320" y="1424" width="201.47883256410256" height="23" fill="#3266a6"/>
+<text x="528.4788325641025" y="1442" class="small">7.3</text>
+<rect x="320" y="1482" width="201.99813923076923" height="23" fill="#3266a6"/>
+<text x="528.9981392307692" y="1500" class="small">7.4</text>
+<text x="610" y="110" >Observed high-water (MB)</text>
+<line x1="610" x2="610" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="610" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="717" y="1566" class="small" text-anchor="middle">11.4</text>
+<line x1="824" x2="824" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="824" y="1566" class="small" text-anchor="middle">22.8</text>
+<rect x="610" y="148" width="85.8676689473684" height="23" fill="#3c8077"/>
+<text x="702.8676689473684" y="166" class="small">9.1</text>
+<rect x="610" y="206" width="130.1222307017544" height="23" fill="#3c8077"/>
+<text x="747.1222307017545" y="224" class="small">13.9</text>
+<rect x="610" y="264" width="145.52576298245614" height="23" fill="#3c8077"/>
+<text x="762.5257629824562" y="282" class="small">15.5</text>
+<rect x="610" y="322" width="98.86603833333332" height="23" fill="#3c8077"/>
+<text x="715.8660383333333" y="340" class="small">10.5</text>
+<rect x="610" y="380" width="130.6275992105263" height="23" fill="#3c8077"/>
+<text x="747.6275992105263" y="398" class="small">13.9</text>
+<rect x="610" y="438" width="102.94579815789473" height="23" fill="#3c8077"/>
+<text x="719.9457981578947" y="456" class="small">11.0</text>
+<rect x="610" y="496" width="120.23533684210524" height="23" fill="#3c8077"/>
+<text x="737.2353368421052" y="514" class="small">12.8</text>
+<rect x="610" y="554" width="149.58560578947368" height="23" fill="#3c8077"/>
+<text x="766.5856057894737" y="572" class="small">15.9</text>
+<rect x="610" y="612" width="105.38680605263158" height="23" fill="#3c8077"/>
+<text x="722.3868060526315" y="630" class="small">11.2</text>
+<rect x="610" y="670" width="135.00576701754386" height="23" fill="#3c8077"/>
+<text x="752.0057670175438" y="688" class="small">14.4</text>
+<rect x="610" y="728" width="131.4770947368421" height="23" fill="#3c8077"/>
+<text x="748.4770947368421" y="746" class="small">14.0</text>
+<rect x="610" y="786" width="126.35904070175438" height="23" fill="#3c8077"/>
+<text x="743.3590407017543" y="804" class="small">13.5</text>
+<rect x="610" y="844" width="99.59676385964912" height="23" fill="#3c8077"/>
+<text x="716.5967638596492" y="862" class="small">10.6</text>
+<rect x="610" y="902" width="151.3586145614035" height="23" fill="#3c8077"/>
+<text x="768.3586145614036" y="920" class="small">16.1</text>
+<rect x="610" y="960" width="100.21849956140352" height="23" fill="#3c8077"/>
+<text x="717.2184995614035" y="978" class="small">10.7</text>
+<rect x="610" y="1018" width="102.1472496491228" height="23" fill="#3c8077"/>
+<text x="719.1472496491228" y="1036" class="small">10.9</text>
+<rect x="610" y="1076" width="161.3835196491228" height="23" fill="#3c8077"/>
+<text x="778.3835196491228" y="1094" class="small">17.2</text>
+<rect x="610" y="1134" width="166.45059850877195" height="23" fill="#3c8077"/>
+<text x="783.4505985087719" y="1152" class="small">17.7</text>
+<rect x="610" y="1192" width="158.2007295614035" height="23" fill="#3c8077"/>
+<text x="775.2007295614035" y="1210" class="small">16.9</text>
+<rect x="610" y="1250" width="156.6486007017544" height="23" fill="#3c8077"/>
+<text x="773.6486007017544" y="1268" class="small">16.7</text>
+<rect x="610" y="1308" width="202.95957105263156" height="23" fill="#3c8077"/>
+<text x="819.9595710526315" y="1326" class="small">21.6</text>
+<rect x="610" y="1366" width="161.34075719298244" height="23" fill="#3c8077"/>
+<text x="778.3407571929824" y="1384" class="small">17.2</text>
+<rect x="610" y="1424" width="198.5511147368421" height="23" fill="#3c8077"/>
+<text x="815.5511147368421" y="1442" class="small">21.2</text>
+<rect x="610" y="1482" width="135.7268531578947" height="23" fill="#3c8077"/>
+<text x="752.7268531578948" y="1500" class="small">14.5</text>
+<text x="900" y="110" >Sampled allocations (MB)</text>
+<line x1="900" x2="900" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="900" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="1007" x2="1007" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="1007" y="1566" class="small" text-anchor="middle">44.5</text>
+<line x1="1114" x2="1114" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="1114" y="1566" class="small" text-anchor="middle">88.9</text>
+<rect x="900" y="148" width="131.0688616422947" height="23" fill="#8571ac"/>
+<text x="1038.0688616422947" y="166" class="small">54.4</text>
+<rect x="900" y="206" width="149.35658429696286" height="23" fill="#8571ac"/>
+<text x="1056.3565842969629" y="224" class="small">62.0</text>
+<rect x="900" y="264" width="134.49511478065241" height="23" fill="#8571ac"/>
+<text x="1041.4951147806523" y="282" class="small">55.9</text>
+<rect x="900" y="322" width="137.1380845894263" height="23" fill="#8571ac"/>
+<text x="1044.1380845894264" y="340" class="small">57.0</text>
+<rect x="900" y="380" width="139.88959982002248" height="23" fill="#8571ac"/>
+<text x="1046.8895998200226" y="398" class="small">58.1</text>
+<rect x="900" y="438" width="137.76195356580428" height="23" fill="#8571ac"/>
+<text x="1044.7619535658043" y="456" class="small">57.2</text>
+<rect x="900" y="496" width="147.5506457592801" height="23" fill="#8571ac"/>
+<text x="1054.55064575928" y="514" class="small">61.3</text>
+<rect x="900" y="554" width="140.55180103487064" height="23" fill="#8571ac"/>
+<text x="1047.5518010348706" y="572" class="small">58.4</text>
+<rect x="900" y="612" width="123.54473718785151" height="23" fill="#8571ac"/>
+<text x="1030.5447371878515" y="630" class="small">51.3</text>
+<rect x="900" y="670" width="126.16649475815524" height="23" fill="#8571ac"/>
+<text x="1033.1664947581553" y="688" class="small">52.4</text>
+<rect x="900" y="728" width="126.91938960629922" height="23" fill="#8571ac"/>
+<text x="1033.9193896062993" y="746" class="small">52.7</text>
+<rect x="900" y="786" width="132.2262814848144" height="23" fill="#8571ac"/>
+<text x="1039.2262814848143" y="804" class="small">54.9</text>
+<rect x="900" y="844" width="139.6499775928009" height="23" fill="#8571ac"/>
+<text x="1046.649977592801" y="862" class="small">58.0</text>
+<rect x="900" y="902" width="133.33811860517434" height="23" fill="#8571ac"/>
+<text x="1040.3381186051743" y="920" class="small">55.4</text>
+<rect x="900" y="960" width="135.7915937007874" height="23" fill="#8571ac"/>
+<text x="1042.7915937007874" y="978" class="small">56.4</text>
+<rect x="900" y="1018" width="135.27652049493813" height="23" fill="#8571ac"/>
+<text x="1042.276520494938" y="1036" class="small">56.2</text>
+<rect x="900" y="1076" width="138.004368143982" height="23" fill="#8571ac"/>
+<text x="1045.004368143982" y="1094" class="small">57.3</text>
+<rect x="900" y="1134" width="169.1950631271091" height="23" fill="#8571ac"/>
+<text x="1076.195063127109" y="1152" class="small">70.3</text>
+<rect x="900" y="1192" width="130.92699095613045" height="23" fill="#8571ac"/>
+<text x="1037.9269909561303" y="1210" class="small">54.4</text>
+<rect x="900" y="1250" width="131.25821192350955" height="23" fill="#8571ac"/>
+<text x="1038.2582119235096" y="1268" class="small">54.5</text>
+<rect x="900" y="1308" width="132.97686542182225" height="23" fill="#8571ac"/>
+<text x="1039.9768654218224" y="1326" class="small">55.2</text>
+<rect x="900" y="1366" width="203.5949204049494" height="23" fill="#8571ac"/>
+<text x="1110.5949204049493" y="1384" class="small">84.6</text>
+<rect x="900" y="1424" width="192.96380481439817" height="23" fill="#8571ac"/>
+<text x="1099.9638048143981" y="1442" class="small">80.2</text>
+<rect x="900" y="1482" width="151.09807730033745" height="23" fill="#8571ac"/>
+<text x="1058.0980773003375" y="1500" class="small">62.8</text>
+<text x="24" y="162" >Client dictionary + omit</text>
+<text x="24" y="182" class="small">JSON / direct</text>
+<text x="24" y="220" >Split + omit</text>
+<text x="24" y="240" class="small">protobuf / objects</text>
+<text x="24" y="278" >Columns + omit</text>
+<text x="24" y="298" class="small">JSON / objects</text>
+<text x="24" y="336" >Client dictionary + omit</text>
+<text x="24" y="356" class="small">JSON / objects</text>
+<text x="24" y="394" >Client dictionary + omit</text>
+<text x="24" y="414" class="small">protobuf / objects</text>
+<text x="24" y="452" >Client dictionary + omit</text>
+<text x="24" y="472" class="small">protobuf / direct</text>
+<text x="24" y="510" >Columns + omit</text>
+<text x="24" y="530" class="small">protobuf / objects</text>
+<text x="24" y="568" >Split + omit</text>
+<text x="24" y="588" class="small">JSON / objects</text>
+<text x="24" y="626" >Dictionary columns</text>
+<text x="24" y="646" class="small">JSON / direct</text>
+<text x="24" y="684" >Dictionary columns</text>
+<text x="24" y="704" class="small">uint32/int32 / direct</text>
+<text x="24" y="742" >Dictionary columns</text>
+<text x="24" y="762" class="small">bit-packed / direct</text>
+<text x="24" y="800" >Dictionary + omit</text>
+<text x="24" y="820" class="small">JSON / objects</text>
+<text x="24" y="858" >Dictionary columns</text>
+<text x="24" y="878" class="small">bit-packed / objects</text>
+<text x="24" y="916" >Dictionary columns</text>
+<text x="24" y="936" class="small">JSON / objects</text>
+<text x="24" y="974" >Dictionary columns</text>
+<text x="24" y="994" class="small">uint32/int32 / objects</text>
+<text x="24" y="1032" >Dictionary + omit</text>
+<text x="24" y="1052" class="small">protobuf / objects</text>
+<text x="24" y="1090" >Signed tuples</text>
+<text x="24" y="1110" class="small">JSON / objects</text>
+<text x="24" y="1148" >Signed tuples</text>
+<text x="24" y="1168" class="small">BSON / objects</text>
+<text x="24" y="1206" >Original objects</text>
+<text x="24" y="1226" class="small">JSON / objects</text>
+<text x="24" y="1264" >Ordinary columns</text>
+<text x="24" y="1284" class="small">JSON / objects</text>
+<text x="24" y="1322" >Signed objects</text>
+<text x="24" y="1342" class="small">JSON / objects</text>
+<text x="24" y="1380" >Original objects</text>
+<text x="24" y="1400" class="small">BSON / objects</text>
+<text x="24" y="1438" >Signed objects</text>
+<text x="24" y="1458" class="small">BSON / objects</text>
+<text x="24" y="1496" >Ordinary columns</text>
+<text x="24" y="1516" class="small">protobuf / objects</text>
+<text x="24" y="1598" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+</svg>

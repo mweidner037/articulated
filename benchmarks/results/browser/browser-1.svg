@@ -1,390 +1,101 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1510" height="1282" viewBox="0 0 1510 1282" role="img" aria-labelledby="title desc">
-<title id="title">Browser load, GC, and memory: 1 document(s)</title>
-<desc id="desc">Each row combines the complete measured readiness time and its constituent stages with GC and memory diagnostics. GC is already inside elapsed time, not added to it. High-water memory is sampled, not an exact peak. Numeric equivalents appear in the report table.</desc>
-<style>text{font:18px Arial,Helvetica,sans-serif;fill:#243248} .small{font-size:16px} .title{font-size:26px;font-weight:500}</style><rect width="1510" height="1282" fill="white"/>
-<text x="24" y="35" class="title">1 document(s): the whole browser load, with GC and memory on the same row</text>
-<text x="24" y="65" >Same logical format → JSON / binary encoding → object adapter / direct loader. Lower is better.</text>
-<rect x="24" y="84" width="16" height="16" fill="#3266a6"/>
-<text x="48" y="98" >Decode</text>
-<rect x="274" y="84" width="16" height="16" fill="#b45b21"/>
-<text x="298" y="98" >Build IDs</text>
-<rect x="524" y="84" width="16" height="16" fill="#3c8077"/>
-<text x="548" y="98" >Editor + teardown</text>
-<rect x="774" y="84" width="16" height="16" fill="#8571ac"/>
-<text x="798" y="98" >Layout</text>
-<rect x="1024" y="84" width="16" height="16" fill="#bdc6ce"/>
-<text x="1048" y="98" >Frame wait / paint</text>
-<text x="24" y="133" >Logical format</text>
-<text x="260" y="133" >Encoding / path</text>
-<text x="440" y="133" >Complete ready time (ms)</text>
-<text x="890" y="123" text-anchor="middle">Mean / P50</text>
-<text x="890" y="145" text-anchor="middle" class="small">ms</text>
-<text x="970" y="123" text-anchor="middle">P95</text>
-<text x="970" y="145" text-anchor="middle" class="small">ms</text>
-<text x="1055" y="123" text-anchor="middle">GC¹</text>
-<text x="1055" y="145" text-anchor="middle" class="small">ms</text>
-<text x="1140" y="123" text-anchor="middle">High²</text>
-<text x="1140" y="145" text-anchor="middle" class="small">MB</text>
-<text x="1230" y="123" text-anchor="middle">Kept³</text>
-<text x="1230" y="145" text-anchor="middle" class="small">MB</text>
-<text x="1320" y="123" text-anchor="middle">Alloc⁴</text>
-<text x="1320" y="145" text-anchor="middle" class="small">MB</text>
-<text x="1420" y="123" text-anchor="middle">Edit P95</text>
-<text x="1420" y="145" text-anchor="middle" class="small">ms</text>
-<line x1="440" x2="440" y1="160" y2="1212" stroke="#e2e6eb"/>
-<text x="440" y="1238" text-anchor="middle">0.0</text>
-<line x1="537.5" x2="537.5" y1="160" y2="1212" stroke="#e2e6eb"/>
-<text x="537.5" y="1238" text-anchor="middle">5.0</text>
-<line x1="635" x2="635" y1="160" y2="1212" stroke="#e2e6eb"/>
-<text x="635" y="1238" text-anchor="middle">10.0</text>
-<line x1="732.5" x2="732.5" y1="160" y2="1212" stroke="#e2e6eb"/>
-<text x="732.5" y="1238" text-anchor="middle">15.0</text>
-<line x1="830" x2="830" y1="160" y2="1212" stroke="#e2e6eb"/>
-<text x="830" y="1238" text-anchor="middle">20.0</text>
-<line x1="24" x2="1486" y1="160" y2="160" stroke="#cbd3dc"/>
-<text x="24" y="188" class="small">Original objects</text>
-<text x="260" y="188" class="small">JSON / objects</text>
-<rect x="440" y="173" width="20.04166686038176" height="22" fill="#3266a6"/>
-<rect x="460.0416668603818" y="173" width="95.766666640838" height="22" fill="#b45b21"/>
-<rect x="555.8083335012197" y="173" width="45.174999987085656" height="22" fill="#3c8077"/>
-<rect x="600.9833334883054" y="173" width="97.28333321710429" height="22" fill="#8571ac"/>
-<rect x="698.2666667054098" y="173" width="73.23333329459031" height="22" fill="#bdc6ce"/>
-<text x="890" y="189" text-anchor="middle" class="small">17.0 / 16.6</text>
-<text x="970" y="189" text-anchor="middle" class="small">24.4</text>
-<text x="1055" y="189" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="189" text-anchor="middle" class="small">6.8</text>
-<text x="1230" y="189" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="189" text-anchor="middle" class="small">13.7</text>
-<text x="1420" y="189" text-anchor="middle" class="small">225.3</text>
-<text x="24" y="231" class="small">Original objects</text>
-<text x="260" y="231" class="small">BSON / objects</text>
-<rect x="440" y="216" width="75.29166660209496" height="22" fill="#3266a6"/>
-<rect x="515.291666602095" y="216" width="90.78333334624767" height="22" fill="#b45b21"/>
-<rect x="606.0749999483427" y="216" width="40.083333268761635" height="22" fill="#3c8077"/>
-<rect x="646.1583332171043" y="216" width="91.9750001678864" height="22" fill="#8571ac"/>
-<rect x="738.1333333849907" y="216" width="57.416666731238365" height="22" fill="#bdc6ce"/>
-<text x="890" y="232" text-anchor="middle" class="small">18.2 / 16.6</text>
-<text x="970" y="232" text-anchor="middle" class="small">25.0</text>
-<text x="1055" y="232" text-anchor="middle" class="small">1.1</text>
-<text x="1140" y="232" text-anchor="middle" class="small">5.5</text>
-<text x="1230" y="232" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="232" text-anchor="middle" class="small">21.8</text>
-<text x="1420" y="232" text-anchor="middle" class="small">18.8</text>
-<line x1="24" x2="1486" y1="246" y2="246" stroke="#cbd3dc"/>
-<text x="24" y="274" class="small">Signed objects</text>
-<text x="260" y="274" class="small">JSON / objects</text>
-<rect x="440" y="259" width="18.633333320418995" height="22" fill="#3266a6"/>
-<rect x="458.633333320419" y="259" width="99.01666664083797" height="22" fill="#b45b21"/>
-<rect x="557.649999961257" y="259" width="40.84166678289573" height="22" fill="#3c8077"/>
-<rect x="598.4916667441527" y="259" width="93.27499989668529" height="22" fill="#8571ac"/>
-<rect x="691.7666666408379" y="259" width="67.16666666666667" height="22" fill="#bdc6ce"/>
-<text x="890" y="275" text-anchor="middle" class="small">16.4 / 16.6</text>
-<text x="970" y="275" text-anchor="middle" class="small">21.9</text>
-<text x="1055" y="275" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="275" text-anchor="middle" class="small">7.2</text>
-<text x="1230" y="275" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="275" text-anchor="middle" class="small">14.7</text>
-<text x="1420" y="275" text-anchor="middle" class="small">19.0</text>
-<text x="24" y="317" class="small">Signed objects</text>
-<text x="260" y="317" class="small">BSON / objects</text>
-<rect x="440" y="302" width="60.666666731238365" height="22" fill="#3266a6"/>
-<rect x="500.66666673123837" y="302" width="95.8749998062849" height="22" fill="#b45b21"/>
-<rect x="596.5416665375233" y="302" width="38.891666511694595" height="22" fill="#3c8077"/>
-<rect x="635.4333330492178" y="302" width="90.67500024537244" height="22" fill="#8571ac"/>
-<rect x="726.1083332945902" y="302" width="72.14999996125697" height="22" fill="#bdc6ce"/>
-<text x="890" y="318" text-anchor="middle" class="small">18.4 / 16.6</text>
-<text x="970" y="318" text-anchor="middle" class="small">25.0</text>
-<text x="1055" y="318" text-anchor="middle" class="small">1.1</text>
-<text x="1140" y="318" text-anchor="middle" class="small">4.7</text>
-<text x="1230" y="318" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="318" text-anchor="middle" class="small">20.4</text>
-<text x="1420" y="318" text-anchor="middle" class="small">19.4</text>
-<line x1="24" x2="1486" y1="332" y2="332" stroke="#cbd3dc"/>
-<text x="24" y="360" class="small">Signed tuples</text>
-<text x="260" y="360" class="small">JSON / objects</text>
-<rect x="440" y="345" width="10.183333372076353" height="22" fill="#3266a6"/>
-<rect x="450.18333337207633" y="345" width="99.45000001291433" height="22" fill="#b45b21"/>
-<rect x="549.6333333849907" y="345" width="41.16666660209496" height="22" fill="#3c8077"/>
-<rect x="590.7999999870857" y="345" width="92.30000011622906" height="22" fill="#8571ac"/>
-<rect x="683.1000001033148" y="345" width="72.14999989668527" height="22" fill="#bdc6ce"/>
-<text x="890" y="361" text-anchor="middle" class="small">16.2 / 16.3</text>
-<text x="970" y="361" text-anchor="middle" class="small">20.8</text>
-<text x="1055" y="361" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="361" text-anchor="middle" class="small">5.5</text>
-<text x="1230" y="361" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="361" text-anchor="middle" class="small">15.5</text>
-<text x="1420" y="361" text-anchor="middle" class="small">20.1</text>
-<text x="24" y="403" class="small">Signed tuples</text>
-<text x="260" y="403" class="small">BSON / objects</text>
-<rect x="440" y="388" width="37.3750000645717" height="22" fill="#3266a6"/>
-<rect x="477.3750000645717" y="388" width="97.71666658918063" height="22" fill="#b45b21"/>
-<rect x="575.0916666537523" y="388" width="39.324999948342644" height="22" fill="#3c8077"/>
-<rect x="614.416666602095" y="388" width="92.95000001291434" height="22" fill="#8571ac"/>
-<rect x="707.3666666150093" y="388" width="75.50833344956239" height="22" fill="#bdc6ce"/>
-<text x="890" y="404" text-anchor="middle" class="small">17.6 / 16.7</text>
-<text x="970" y="404" text-anchor="middle" class="small">23.0</text>
-<text x="1055" y="404" text-anchor="middle" class="small">1.0</text>
-<text x="1140" y="404" text-anchor="middle" class="small">7.3</text>
-<text x="1230" y="404" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="404" text-anchor="middle" class="small">17.5</text>
-<text x="1420" y="404" text-anchor="middle" class="small">19.0</text>
-<line x1="24" x2="1486" y1="418" y2="418" stroke="#cbd3dc"/>
-<text x="24" y="446" class="small">Ordinary columns</text>
-<text x="260" y="446" class="small">JSON / objects</text>
-<rect x="440" y="431" width="6.608333294590315" height="22" fill="#3266a6"/>
-<rect x="446.6083332945903" y="431" width="94.2500001291434" height="22" fill="#b45b21"/>
-<rect x="540.8583334237337" y="431" width="39.974999845027924" height="22" fill="#3c8077"/>
-<rect x="580.8333332687616" y="431" width="91.0000000645717" height="22" fill="#8571ac"/>
-<rect x="671.8333333333334" y="431" width="79.19166669249535" height="22" fill="#bdc6ce"/>
-<text x="890" y="447" text-anchor="middle" class="small">16.0 / 16.2</text>
-<text x="970" y="447" text-anchor="middle" class="small">16.8</text>
-<text x="1055" y="447" text-anchor="middle" class="small">0.8</text>
-<text x="1140" y="447" text-anchor="middle" class="small">4.1</text>
-<text x="1230" y="447" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="447" text-anchor="middle" class="small">13.9</text>
-<text x="1420" y="447" text-anchor="middle" class="small">19.7</text>
-<text x="24" y="489" class="small">Ordinary columns</text>
-<text x="260" y="489" class="small">protobuf / objects</text>
-<rect x="440" y="474" width="24.049999922513962" height="22" fill="#3266a6"/>
-<rect x="464.04999992251396" y="474" width="103.350000038743" height="22" fill="#b45b21"/>
-<rect x="567.399999961257" y="474" width="46.041666666666664" height="22" fill="#3c8077"/>
-<rect x="613.4416666279236" y="474" width="97.17500005165735" height="22" fill="#8571ac"/>
-<rect x="710.6166666795809" y="474" width="76.80833324293296" height="22" fill="#bdc6ce"/>
-<text x="890" y="490" text-anchor="middle" class="small">17.8 / 16.7</text>
-<text x="970" y="490" text-anchor="middle" class="small">28.7</text>
-<text x="1055" y="490" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="490" text-anchor="middle" class="small">5.4</text>
-<text x="1230" y="490" text-anchor="middle" class="small">1.7</text>
-<text x="1320" y="490" text-anchor="middle" class="small">15.3</text>
-<text x="1420" y="490" text-anchor="middle" class="small">19.6</text>
-<line x1="24" x2="1486" y1="504" y2="504" stroke="#cbd3dc"/>
-<text x="24" y="532" class="small">Columns + omit</text>
-<text x="260" y="532" class="small">JSON / objects</text>
-<rect x="440" y="517" width="5.4166665375232705" height="22" fill="#3266a6"/>
-<rect x="445.41666653752327" y="517" width="110.93333343664806" height="22" fill="#b45b21"/>
-<rect x="556.3499999741713" y="517" width="43.441666692495346" height="22" fill="#3c8077"/>
-<rect x="599.7916666666666" y="517" width="87.85833329459031" height="22" fill="#8571ac"/>
-<rect x="687.649999961257" y="517" width="74.09999997417133" height="22" fill="#bdc6ce"/>
-<text x="890" y="533" text-anchor="middle" class="small">16.5 / 16.4</text>
-<text x="970" y="533" text-anchor="middle" class="small">20.6</text>
-<text x="1055" y="533" text-anchor="middle" class="small">0.7</text>
-<text x="1140" y="533" text-anchor="middle" class="small">5.5</text>
-<text x="1230" y="533" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="533" text-anchor="middle" class="small">14.6</text>
-<text x="1420" y="533" text-anchor="middle" class="small">19.5</text>
-<text x="24" y="575" class="small">Columns + omit</text>
-<text x="260" y="575" class="small">protobuf / objects</text>
-<rect x="440" y="560" width="20.474999909599624" height="22" fill="#3266a6"/>
-<rect x="460.4749999095996" y="560" width="109.52500021954377" height="22" fill="#b45b21"/>
-<rect x="570.0000001291434" y="560" width="40.841666589180626" height="22" fill="#3c8077"/>
-<rect x="610.841666718324" y="560" width="87.10000003874302" height="22" fill="#8571ac"/>
-<rect x="697.941666757067" y="560" width="73.01666670540969" height="22" fill="#bdc6ce"/>
-<text x="890" y="576" text-anchor="middle" class="small">17.0 / 16.6</text>
-<text x="970" y="576" text-anchor="middle" class="small">22.6</text>
-<text x="1055" y="576" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="576" text-anchor="middle" class="small">4.5</text>
-<text x="1230" y="576" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="576" text-anchor="middle" class="small">16.3</text>
-<text x="1420" y="576" text-anchor="middle" class="small">18.7</text>
-<line x1="24" x2="1486" y1="590" y2="590" stroke="#cbd3dc"/>
-<text x="24" y="618" class="small">Split + omit</text>
-<text x="260" y="618" class="small">JSON / objects</text>
-<rect x="440" y="603" width="5.20000001291434" height="22" fill="#3266a6"/>
-<rect x="445.20000001291436" y="603" width="108.983333359162" height="22" fill="#b45b21"/>
-<rect x="554.1833333720764" y="603" width="40.40833341081937" height="22" fill="#3c8077"/>
-<rect x="594.5916667828958" y="603" width="88.18333330750465" height="22" fill="#8571ac"/>
-<rect x="682.7750000904005" y="603" width="89.26666664083798" height="22" fill="#bdc6ce"/>
-<text x="890" y="619" text-anchor="middle" class="small">17.0 / 16.6</text>
-<text x="970" y="619" text-anchor="middle" class="small">22.1</text>
-<text x="1055" y="619" text-anchor="middle" class="small">0.8</text>
-<text x="1140" y="619" text-anchor="middle" class="small">4.8</text>
-<text x="1230" y="619" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="619" text-anchor="middle" class="small">15.0</text>
-<text x="1420" y="619" text-anchor="middle" class="small">18.7</text>
-<text x="24" y="661" class="small">Split + omit</text>
-<text x="260" y="661" class="small">protobuf / objects</text>
-<rect x="440" y="646" width="17.333333139618237" height="22" fill="#3266a6"/>
-<rect x="457.3333331396182" y="646" width="111.58333339790502" height="22" fill="#b45b21"/>
-<rect x="568.9166665375233" y="646" width="40.40833366910617" height="22" fill="#3c8077"/>
-<rect x="609.3250002066294" y="646" width="90.67499985794225" height="22" fill="#8571ac"/>
-<rect x="700.0000000645716" y="646" width="68.79166673123837" height="22" fill="#bdc6ce"/>
-<text x="890" y="662" text-anchor="middle" class="small">16.9 / 16.5</text>
-<text x="970" y="662" text-anchor="middle" class="small">23.0</text>
-<text x="1055" y="662" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="662" text-anchor="middle" class="small">5.4</text>
-<text x="1230" y="662" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="662" text-anchor="middle" class="small">15.9</text>
-<text x="1420" y="662" text-anchor="middle" class="small">20.1</text>
-<line x1="24" x2="1486" y1="676" y2="676" stroke="#cbd3dc"/>
-<text x="24" y="704" class="small">Dictionary + omit</text>
-<text x="260" y="704" class="small">JSON / objects</text>
-<rect x="440" y="689" width="4.550000051657359" height="22" fill="#3266a6"/>
-<rect x="444.5500000516574" y="689" width="97.50000012914339" height="22" fill="#b45b21"/>
-<rect x="542.0500001808008" y="689" width="44.19999981919924" height="22" fill="#3c8077"/>
-<rect x="586.25" y="689" width="91.0000000645717" height="22" fill="#8571ac"/>
-<rect x="677.2500000645717" y="689" width="73.55833324293296" height="22" fill="#bdc6ce"/>
-<text x="890" y="705" text-anchor="middle" class="small">15.9 / 16.0</text>
-<text x="970" y="705" text-anchor="middle" class="small">18.4</text>
-<text x="1055" y="705" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="705" text-anchor="middle" class="small">5.4</text>
-<text x="1230" y="705" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="705" text-anchor="middle" class="small">14.2</text>
-<text x="1420" y="705" text-anchor="middle" class="small">20.7</text>
-<text x="24" y="747" class="small">Dictionary + omit</text>
-<text x="260" y="747" class="small">protobuf / objects</text>
-<rect x="440" y="732" width="18.633333255847294" height="22" fill="#3266a6"/>
-<rect x="458.6333332558473" y="732" width="95.0083331912756" height="22" fill="#b45b21"/>
-<rect x="553.6416664471228" y="732" width="40.84166684746742" height="22" fill="#3c8077"/>
-<rect x="594.4833332945902" y="732" width="90.34999997417131" height="22" fill="#8571ac"/>
-<rect x="684.8333332687615" y="732" width="77.67500005165736" height="22" fill="#bdc6ce"/>
-<text x="890" y="748" text-anchor="middle" class="small">16.5 / 16.6</text>
-<text x="970" y="748" text-anchor="middle" class="small">20.5</text>
-<text x="1055" y="748" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="748" text-anchor="middle" class="small">5.5</text>
-<text x="1230" y="748" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="748" text-anchor="middle" class="small">14.1</text>
-<text x="1420" y="748" text-anchor="middle" class="small">18.6</text>
-<line x1="24" x2="1486" y1="762" y2="762" stroke="#cbd3dc"/>
-<text x="24" y="790" class="small">Client dictionary + omit</text>
-<text x="260" y="790" class="small">JSON / objects</text>
-<rect x="440" y="775" width="4.116666679581006" height="22" fill="#3266a6"/>
-<rect x="444.116666679581" y="775" width="118.51666676998138" height="22" fill="#b45b21"/>
-<rect x="562.6333334495623" y="775" width="41.81666649878025" height="22" fill="#3c8077"/>
-<rect x="604.4499999483426" y="775" width="94.35833342373371" height="22" fill="#8571ac"/>
-<rect x="698.8083333720763" y="775" width="83.41666673123835" height="22" fill="#bdc6ce"/>
-<text x="890" y="791" text-anchor="middle" class="small">17.6 / 16.7</text>
-<text x="970" y="791" text-anchor="middle" class="small">24.2</text>
-<text x="1055" y="791" text-anchor="middle" class="small">0.7</text>
-<text x="1140" y="791" text-anchor="middle" class="small">3.7</text>
-<text x="1230" y="791" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="791" text-anchor="middle" class="small">14.4</text>
-<text x="1420" y="791" text-anchor="middle" class="small">18.7</text>
-<text x="24" y="833" class="small">Client dictionary + omit</text>
-<text x="260" y="833" class="small">protobuf / objects</text>
-<rect x="440" y="818" width="6.933333307504653" height="22" fill="#3266a6"/>
-<rect x="446.93333330750465" y="818" width="113.75000006457171" height="22" fill="#b45b21"/>
-<rect x="560.6833333720764" y="818" width="41.599999974171325" height="22" fill="#3c8077"/>
-<rect x="602.2833333462477" y="818" width="87.31666662792365" height="22" fill="#8571ac"/>
-<rect x="689.5999999741713" y="818" width="70.09166678289573" height="22" fill="#bdc6ce"/>
-<text x="890" y="834" text-anchor="middle" class="small">16.4 / 16.2</text>
-<text x="970" y="834" text-anchor="middle" class="small">22.6</text>
-<text x="1055" y="834" text-anchor="middle" class="small">1.0</text>
-<text x="1140" y="834" text-anchor="middle" class="small">3.6</text>
-<text x="1230" y="834" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="834" text-anchor="middle" class="small">15.0</text>
-<text x="1420" y="834" text-anchor="middle" class="small">19.6</text>
-<text x="24" y="876" class="small">Client dictionary + omit</text>
-<text x="260" y="876" class="small">JSON / direct</text>
-<rect x="440" y="861" width="3.899999961256981" height="22" fill="#3266a6"/>
-<rect x="443.899999961257" y="861" width="107.35833323001862" height="22" fill="#b45b21"/>
-<rect x="551.2583331912756" y="861" width="41.4916668732961" height="22" fill="#3c8077"/>
-<rect x="592.7500000645717" y="861" width="96.41666660209498" height="22" fill="#8571ac"/>
-<rect x="689.1666666666667" y="861" width="70.85000010331473" height="22" fill="#bdc6ce"/>
-<text x="890" y="877" text-anchor="middle" class="small">16.4 / 16.6</text>
-<text x="970" y="877" text-anchor="middle" class="small">20.6</text>
-<text x="1055" y="877" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="877" text-anchor="middle" class="small">4.9</text>
-<text x="1230" y="877" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="877" text-anchor="middle" class="small">14.0</text>
-<text x="1420" y="877" text-anchor="middle" class="small">20.1</text>
-<text x="24" y="919" class="small">Client dictionary + omit</text>
-<text x="260" y="919" class="small">protobuf / direct</text>
-<rect x="440" y="904" width="6.283333346247673" height="22" fill="#3266a6"/>
-<rect x="446.2833333462477" y="904" width="109.20000007748604" height="22" fill="#b45b21"/>
-<rect x="555.4833334237337" y="904" width="46.799999987085656" height="22" fill="#3c8077"/>
-<rect x="602.2833334108194" y="904" width="93.59999984502792" height="22" fill="#8571ac"/>
-<rect x="695.8833332558473" y="904" width="73.88333325584729" height="22" fill="#bdc6ce"/>
-<text x="890" y="920" text-anchor="middle" class="small">16.9 / 16.5</text>
-<text x="970" y="920" text-anchor="middle" class="small">25.2</text>
-<text x="1055" y="920" text-anchor="middle" class="small">0.8</text>
-<text x="1140" y="920" text-anchor="middle" class="small">3.8</text>
-<text x="1230" y="920" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="920" text-anchor="middle" class="small">14.6</text>
-<text x="1420" y="920" text-anchor="middle" class="small">19.1</text>
-<line x1="24" x2="1486" y1="934" y2="934" stroke="#cbd3dc"/>
-<text x="24" y="962" class="small">Dictionary columns</text>
-<text x="260" y="962" class="small">JSON / objects</text>
-<rect x="440" y="947" width="5.633333255847295" height="22" fill="#3266a6"/>
-<rect x="445.6333332558473" y="947" width="99.55833330750464" height="22" fill="#b45b21"/>
-<rect x="545.1916665633519" y="947" width="41.81666682163874" height="22" fill="#3c8077"/>
-<rect x="587.0083333849906" y="947" width="91.54166660209498" height="22" fill="#8571ac"/>
-<rect x="678.5499999870856" y="947" width="81.57500001291434" height="22" fill="#bdc6ce"/>
-<text x="890" y="963" text-anchor="middle" class="small">16.4 / 16.6</text>
-<text x="970" y="963" text-anchor="middle" class="small">20.6</text>
-<text x="1055" y="963" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="963" text-anchor="middle" class="small">5.6</text>
-<text x="1230" y="963" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="963" text-anchor="middle" class="small">13.8</text>
-<text x="1420" y="963" text-anchor="middle" class="small">19.7</text>
-<text x="24" y="1005" class="small">Dictionary columns</text>
-<text x="260" y="1005" class="small">JSON / direct</text>
-<rect x="440" y="990" width="5.958333204189936" height="22" fill="#3266a6"/>
-<rect x="445.95833320418996" y="990" width="93.05833330750465" height="22" fill="#b45b21"/>
-<rect x="539.0166665116947" y="990" width="41.38333370784919" height="22" fill="#3c8077"/>
-<rect x="580.4000002195438" y="990" width="89.15833321710427" height="22" fill="#8571ac"/>
-<rect x="669.5583334366481" y="990" width="78.7583334495624" height="22" fill="#bdc6ce"/>
-<text x="890" y="1006" text-anchor="middle" class="small">15.8 / 16.6</text>
-<text x="970" y="1006" text-anchor="middle" class="small">16.7</text>
-<text x="1055" y="1006" text-anchor="middle" class="small">0.8</text>
-<text x="1140" y="1006" text-anchor="middle" class="small">5.6</text>
-<text x="1230" y="1006" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="1006" text-anchor="middle" class="small">13.5</text>
-<text x="1420" y="1006" text-anchor="middle" class="small">20.3</text>
-<text x="24" y="1048" class="small">Dictionary columns</text>
-<text x="260" y="1048" class="small">uint32/int32 / objects</text>
-<rect x="440" y="1033" width="6.066666692495346" height="22" fill="#3266a6"/>
-<rect x="446.06666669249535" y="1033" width="98.366666679581" height="22" fill="#b45b21"/>
-<rect x="544.4333333720764" y="1033" width="38.999999741713204" height="22" fill="#3c8077"/>
-<rect x="583.4333331137896" y="1033" width="88.40000002582867" height="22" fill="#8571ac"/>
-<rect x="671.8333331396183" y="1033" width="83.41666686038177" height="22" fill="#bdc6ce"/>
-<text x="890" y="1049" text-anchor="middle" class="small">16.2 / 16.5</text>
-<text x="970" y="1049" text-anchor="middle" class="small">16.9</text>
-<text x="1055" y="1049" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="1049" text-anchor="middle" class="small">3.7</text>
-<text x="1230" y="1049" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="1049" text-anchor="middle" class="small">14.2</text>
-<text x="1420" y="1049" text-anchor="middle" class="small">18.7</text>
-<text x="24" y="1091" class="small">Dictionary columns</text>
-<text x="260" y="1091" class="small">uint32/int32 / direct</text>
-<rect x="440" y="1076" width="5.416666602094968" height="22" fill="#3266a6"/>
-<rect x="445.41666660209495" y="1076" width="93.92499998708566" height="22" fill="#b45b21"/>
-<rect x="539.3416665891806" y="1076" width="47.775000154972076" height="22" fill="#3c8077"/>
-<rect x="587.1166667441527" y="1076" width="92.29999985794225" height="22" fill="#8571ac"/>
-<rect x="679.4166666020949" y="1076" width="78.54166673123837" height="22" fill="#bdc6ce"/>
-<text x="890" y="1092" text-anchor="middle" class="small">16.3 / 16.2</text>
-<text x="970" y="1092" text-anchor="middle" class="small">20.9</text>
-<text x="1055" y="1092" text-anchor="middle" class="small">1.0</text>
-<text x="1140" y="1092" text-anchor="middle" class="small">5.6</text>
-<text x="1230" y="1092" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="1092" text-anchor="middle" class="small">13.6</text>
-<text x="1420" y="1092" text-anchor="middle" class="small">20.0</text>
-<text x="24" y="1134" class="small">Dictionary columns</text>
-<text x="260" y="1134" class="small">bit-packed / objects</text>
-<rect x="440" y="1119" width="5.525000154972076" height="22" fill="#3266a6"/>
-<rect x="445.5250001549721" y="1119" width="105.51666670540969" height="22" fill="#b45b21"/>
-<rect x="551.0416668603817" y="1119" width="42.03333315253258" height="22" fill="#3c8077"/>
-<rect x="593.0750000129143" y="1119" width="88.50833325584729" height="22" fill="#8571ac"/>
-<rect x="681.5833332687616" y="1119" width="85.80000005165736" height="22" fill="#bdc6ce"/>
-<text x="890" y="1135" text-anchor="middle" class="small">16.8 / 16.6</text>
-<text x="970" y="1135" text-anchor="middle" class="small">21.8</text>
-<text x="1055" y="1135" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="1135" text-anchor="middle" class="small">3.6</text>
-<text x="1230" y="1135" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="1135" text-anchor="middle" class="small">14.8</text>
-<text x="1420" y="1135" text-anchor="middle" class="small">19.2</text>
-<text x="24" y="1177" class="small">Dictionary columns</text>
-<text x="260" y="1177" class="small">bit-packed / direct</text>
-<rect x="440" y="1162" width="5.308333307504654" height="22" fill="#3266a6"/>
-<rect x="445.30833330750465" y="1162" width="99.55833337207636" height="22" fill="#b45b21"/>
-<rect x="544.866666679581" y="1162" width="40.95000014205774" height="22" fill="#3c8077"/>
-<rect x="585.8166668216388" y="1162" width="97.82499981919923" height="22" fill="#8571ac"/>
-<rect x="683.641666640838" y="1162" width="81.79166666666667" height="22" fill="#bdc6ce"/>
-<text x="890" y="1178" text-anchor="middle" class="small">16.7 / 16.6</text>
-<text x="970" y="1178" text-anchor="middle" class="small">20.8</text>
-<text x="1055" y="1178" text-anchor="middle" class="small">0.9</text>
-<text x="1140" y="1178" text-anchor="middle" class="small">5.5</text>
-<text x="1230" y="1178" text-anchor="middle" class="small">1.6</text>
-<text x="1320" y="1178" text-anchor="middle" class="small">13.3</text>
-<text x="1420" y="1178" text-anchor="middle" class="small">18.9</text>
-<text x="24" y="1267" class="small">¹Separate trace pass; GC is not extra time. ²Observed high-water, not exact peak. ³Post-GC retained increment. ⁴Sampled JS allocations, separate pass.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="740" viewBox="0 0 1210 740" role="img" aria-labelledby="title desc">
+<title id="title">1 documents: logical JSON formats — browser speed</title><desc id="desc">Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time. ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="740" fill="white"/>
+<text x="24" y="36" class="title">1 documents: logical JSON formats — browser speed</text>
+<text x="24" y="68" >Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Complete-ready P95 (ms)</text>
+<line x1="320" x2="320" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="320" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="427" y="696" class="small" text-anchor="middle">12.8</text>
+<line x1="534" x2="534" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="534" y="696" class="small" text-anchor="middle">25.7</text>
+<rect x="320" y="148" width="139.8910501866025" height="23" fill="#3266a6"/>
+<text x="466.8910501866025" y="166" class="small">16.8</text>
+<rect x="320" y="206" width="153.21400758357365" height="23" fill="#3266a6"/>
+<text x="480.2140075835737" y="224" class="small">18.4</text>
+<rect x="320" y="264" width="171.5330741284886" height="23" fill="#3266a6"/>
+<text x="498.5330741284886" y="282" class="small">20.6</text>
+<rect x="320" y="322" width="171.5330741284886" height="23" fill="#3266a6"/>
+<text x="498.5330741284886" y="340" class="small">20.6</text>
+<rect x="320" y="380" width="173.1984436790303" height="23" fill="#3266a6"/>
+<text x="500.19844367903033" y="398" class="small">20.8</text>
+<rect x="320" y="438" width="182.35797645516897" height="23" fill="#3266a6"/>
+<text x="509.35797645516897" y="456" class="small">21.9</text>
+<rect x="320" y="496" width="184.02334600571064" height="23" fill="#3266a6"/>
+<text x="511.02334600571066" y="514" class="small">22.1</text>
+<rect x="320" y="554" width="201.5097280235142" height="23" fill="#3266a6"/>
+<text x="528.5097280235142" y="572" class="small">24.2</text>
+<rect x="320" y="612" width="203.17509707773706" height="23" fill="#3266a6"/>
+<text x="530.1750970777371" y="630" class="small">24.4</text>
+<text x="610" y="110" >ID-loading P95 (ms)</text>
+<line x1="610" x2="610" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="610" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="717" y="696" class="small" text-anchor="middle">5.0</text>
+<line x1="824" x2="824" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="824" y="696" class="small" text-anchor="middle">10.1</text>
+<rect x="610" y="148" width="131.3663363810813" height="23" fill="#3c8077"/>
+<text x="748.3663363810813" y="166" class="small">6.2</text>
+<rect x="610" y="206" width="161.02970347546116" height="23" fill="#3c8077"/>
+<text x="778.0297034754611" y="224" class="small">7.6</text>
+<rect x="610" y="264" width="141.96039578702192" height="23" fill="#3c8077"/>
+<text x="758.960395787022" y="282" class="small">6.7</text>
+<rect x="610" y="322" width="158.9108910891089" height="23" fill="#3c8077"/>
+<text x="775.9108910891089" y="340" class="small">7.5</text>
+<rect x="610" y="380" width="146.1980205597264" height="23" fill="#3c8077"/>
+<text x="763.1980205597264" y="398" class="small">6.9</text>
+<rect x="610" y="438" width="154.67326757931474" height="23" fill="#3c8077"/>
+<text x="771.6732675793147" y="456" class="small">7.3</text>
+<rect x="610" y="496" width="148.31683168316832" height="23" fill="#3c8077"/>
+<text x="765.3168316831683" y="514" class="small">7.0</text>
+<rect x="610" y="554" width="165.26732698525532" height="23" fill="#3c8077"/>
+<text x="782.2673269852553" y="572" class="small">7.8</text>
+<rect x="610" y="612" width="203.40594109922353" height="23" fill="#3c8077"/>
+<text x="820.4059410992236" y="630" class="small">9.6</text>
+<text x="900" y="110" >GC pause mean (ms)</text>
+<line x1="900" x2="900" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="900" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="1007" x2="1007" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="1007" y="696" class="small" text-anchor="middle">0.5</text>
+<line x1="1114" x2="1114" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="1114" y="696" class="small" text-anchor="middle">1.0</text>
+<rect x="900" y="148" width="178.50275" height="23" fill="#8571ac"/>
+<text x="1085.50275" y="166" class="small">0.8</text>
+<rect x="900" y="206" width="192.46625" height="23" fill="#8571ac"/>
+<text x="1099.46625" y="224" class="small">0.9</text>
+<rect x="900" y="264" width="188.34675000000001" height="23" fill="#8571ac"/>
+<text x="1095.34675" y="282" class="small">0.9</text>
+<rect x="900" y="322" width="148.623" height="23" fill="#8571ac"/>
+<text x="1055.623" y="340" class="small">0.7</text>
+<rect x="900" y="380" width="198.00349999999997" height="23" fill="#8571ac"/>
+<text x="1105.0035" y="398" class="small">0.9</text>
+<rect x="900" y="438" width="183.612" height="23" fill="#8571ac"/>
+<text x="1090.612" y="456" class="small">0.9</text>
+<rect x="900" y="496" width="178.904" height="23" fill="#8571ac"/>
+<text x="1085.904" y="514" class="small">0.8</text>
+<rect x="900" y="554" width="149.42549999999997" height="23" fill="#8571ac"/>
+<text x="1056.4255" y="572" class="small">0.7</text>
+<rect x="900" y="612" width="184.06675" height="23" fill="#8571ac"/>
+<text x="1091.06675" y="630" class="small">0.9</text>
+<text x="24" y="162" >Ordinary columns</text>
+<text x="24" y="182" class="small">JSON / objects</text>
+<text x="24" y="220" >Dictionary + omit</text>
+<text x="24" y="240" class="small">JSON / objects</text>
+<text x="24" y="278" >Dictionary columns</text>
+<text x="24" y="298" class="small">JSON / objects</text>
+<text x="24" y="336" >Columns + omit</text>
+<text x="24" y="356" class="small">JSON / objects</text>
+<text x="24" y="394" >Signed tuples</text>
+<text x="24" y="414" class="small">JSON / objects</text>
+<text x="24" y="452" >Signed objects</text>
+<text x="24" y="472" class="small">JSON / objects</text>
+<text x="24" y="510" >Split + omit</text>
+<text x="24" y="530" class="small">JSON / objects</text>
+<text x="24" y="568" >Client dictionary + omit</text>
+<text x="24" y="588" class="small">JSON / objects</text>
+<text x="24" y="626" >Original objects</text>
+<text x="24" y="646" class="small">JSON / objects</text>
+<text x="24" y="728" class="small">ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.</text>
 </svg>

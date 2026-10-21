@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="740" viewBox="0 0 1210 740" role="img" aria-labelledby="title desc">
+<title id="title">1 documents: logical JSON formats — JS memory</title><desc id="desc">Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="740" fill="white"/>
+<text x="24" y="36" class="title">1 documents: logical JSON formats — JS memory</text>
+<text x="24" y="68" >Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Retained median (MB)</text>
+<line x1="320" x2="320" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="320" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="427" y="696" class="small" text-anchor="middle">0.9</text>
+<line x1="534" x2="534" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="534" y="696" class="small" text-anchor="middle">1.9</text>
+<rect x="320" y="148" width="180.81749789473685" height="23" fill="#3266a6"/>
+<text x="507.81749789473685" y="166" class="small">1.6</text>
+<rect x="320" y="206" width="180.85218842105263" height="23" fill="#3266a6"/>
+<text x="507.85218842105263" y="224" class="small">1.6</text>
+<rect x="320" y="264" width="180.86795684210526" height="23" fill="#3266a6"/>
+<text x="507.8679568421053" y="282" class="small">1.6</text>
+<rect x="320" y="322" width="180.9986094736842" height="23" fill="#3266a6"/>
+<text x="507.9986094736842" y="340" class="small">1.6</text>
+<rect x="320" y="380" width="181.01753157894737" height="23" fill="#3266a6"/>
+<text x="508.01753157894734" y="398" class="small">1.6</text>
+<rect x="320" y="438" width="193.3389757894737" height="23" fill="#3266a6"/>
+<text x="520.3389757894737" y="456" class="small">1.7</text>
+<rect x="320" y="496" width="193.35068947368424" height="23" fill="#3266a6"/>
+<text x="520.3506894736843" y="514" class="small">1.7</text>
+<rect x="320" y="554" width="193.37231473684213" height="23" fill="#3266a6"/>
+<text x="520.3723147368421" y="572" class="small">1.7</text>
+<rect x="320" y="612" width="193.66966210526317" height="23" fill="#3266a6"/>
+<text x="520.6696621052631" y="630" class="small">1.7</text>
+<text x="610" y="110" >Observed high-water (MB)</text>
+<line x1="610" x2="610" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="610" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="717" y="696" class="small" text-anchor="middle">3.8</text>
+<line x1="824" x2="824" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="824" y="696" class="small" text-anchor="middle">7.6</text>
+<rect x="610" y="148" width="157.1778752631579" height="23" fill="#3c8077"/>
+<text x="774.1778752631578" y="166" class="small">5.6</text>
+<rect x="610" y="206" width="155.1964605263158" height="23" fill="#3c8077"/>
+<text x="772.1964605263158" y="224" class="small">5.5</text>
+<rect x="610" y="264" width="151.8638610526316" height="23" fill="#3c8077"/>
+<text x="768.8638610526316" y="282" class="small">5.4</text>
+<rect x="610" y="322" width="104.39883" height="23" fill="#3c8077"/>
+<text x="721.39883" y="340" class="small">3.7</text>
+<rect x="610" y="380" width="135.10580263157894" height="23" fill="#3c8077"/>
+<text x="752.105802631579" y="398" class="small">4.8</text>
+<rect x="610" y="438" width="190.60771631578947" height="23" fill="#3c8077"/>
+<text x="807.6077163157895" y="456" class="small">6.8</text>
+<rect x="610" y="496" width="201.35107947368422" height="23" fill="#3c8077"/>
+<text x="818.3510794736842" y="514" class="small">7.2</text>
+<rect x="610" y="554" width="154.7945347368421" height="23" fill="#3c8077"/>
+<text x="771.7945347368421" y="572" class="small">5.5</text>
+<rect x="610" y="612" width="116.65173789473684" height="23" fill="#3c8077"/>
+<text x="733.6517378947368" y="630" class="small">4.1</text>
+<text x="900" y="110" >Sampled allocations (MB)</text>
+<line x1="900" x2="900" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="900" y="696" class="small" text-anchor="middle">0.0</text>
+<line x1="1007" x2="1007" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="1007" y="696" class="small" text-anchor="middle">8.2</text>
+<line x1="1114" x2="1114" y1="138" y2="673" stroke="#e2e6eb"/>
+<text x="1114" y="696" class="small" text-anchor="middle">16.3</text>
+<rect x="900" y="148" width="181.65554110429449" height="23" fill="#8571ac"/>
+<text x="1088.6555411042946" y="166" class="small">13.8</text>
+<rect x="900" y="206" width="191.30828024539875" height="23" fill="#8571ac"/>
+<text x="1098.3082802453987" y="224" class="small">14.6</text>
+<rect x="900" y="264" width="186.7845565644172" height="23" fill="#8571ac"/>
+<text x="1093.7845565644172" y="282" class="small">14.2</text>
+<rect x="900" y="322" width="189.1025835582822" height="23" fill="#8571ac"/>
+<text x="1096.1025835582823" y="340" class="small">14.4</text>
+<rect x="900" y="380" width="197.36996809815952" height="23" fill="#8571ac"/>
+<text x="1104.3699680981595" y="398" class="small">15.0</text>
+<rect x="900" y="438" width="179.8424490797546" height="23" fill="#8571ac"/>
+<text x="1086.8424490797547" y="456" class="small">13.7</text>
+<rect x="900" y="496" width="193.30323288343556" height="23" fill="#8571ac"/>
+<text x="1100.3032328834356" y="514" class="small">14.7</text>
+<rect x="900" y="554" width="203.5061226993865" height="23" fill="#8571ac"/>
+<text x="1110.5061226993864" y="572" class="small">15.5</text>
+<rect x="900" y="612" width="182.8979489570552" height="23" fill="#8571ac"/>
+<text x="1089.8979489570552" y="630" class="small">13.9</text>
+<text x="24" y="162" >Dictionary columns</text>
+<text x="24" y="182" class="small">JSON / objects</text>
+<text x="24" y="220" >Columns + omit</text>
+<text x="24" y="240" class="small">JSON / objects</text>
+<text x="24" y="278" >Dictionary + omit</text>
+<text x="24" y="298" class="small">JSON / objects</text>
+<text x="24" y="336" >Client dictionary + omit</text>
+<text x="24" y="356" class="small">JSON / objects</text>
+<text x="24" y="394" >Split + omit</text>
+<text x="24" y="414" class="small">JSON / objects</text>
+<text x="24" y="452" >Original objects</text>
+<text x="24" y="472" class="small">JSON / objects</text>
+<text x="24" y="510" >Signed objects</text>
+<text x="24" y="530" class="small">JSON / objects</text>
+<text x="24" y="568" >Signed tuples</text>
+<text x="24" y="588" class="small">JSON / objects</text>
+<text x="24" y="626" >Ordinary columns</text>
+<text x="24" y="646" class="small">JSON / objects</text>
+<text x="24" y="728" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+</svg>

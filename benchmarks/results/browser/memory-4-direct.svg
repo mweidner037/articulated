@@ -1,0 +1,61 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="450" viewBox="0 0 1210 450" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: direct JSON loading — JS memory</title><desc id="desc">Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="450" fill="white"/>
+<text x="24" y="36" class="title">4 documents: direct JSON loading — JS memory</text>
+<text x="24" y="68" >Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Retained median (MB)</text>
+<line x1="320" x2="320" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="320" y="406" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="427" y="406" class="small" text-anchor="middle">3.6</text>
+<line x1="534" x2="534" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="534" y="406" class="small" text-anchor="middle">7.3</text>
+<rect x="320" y="148" width="189.27405890410958" height="23" fill="#3266a6"/>
+<text x="516.2740589041096" y="166" class="small">6.5</text>
+<rect x="320" y="206" width="189.54739260273973" height="23" fill="#3266a6"/>
+<text x="516.5473926027397" y="224" class="small">6.5</text>
+<rect x="320" y="264" width="201.799918630137" height="23" fill="#3266a6"/>
+<text x="528.799918630137" y="282" class="small">6.9</text>
+<rect x="320" y="322" width="202.07583205479452" height="23" fill="#3266a6"/>
+<text x="529.0758320547945" y="340" class="small">6.9</text>
+<text x="610" y="110" >Observed high-water (MB)</text>
+<line x1="610" x2="610" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="610" y="406" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="717" y="406" class="small" text-anchor="middle">8.5</text>
+<line x1="824" x2="824" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="824" y="406" class="small" text-anchor="middle">17.0</text>
+<rect x="610" y="148" width="115.16369717647059" height="23" fill="#3c8077"/>
+<text x="732.1636971764706" y="166" class="small">9.1</text>
+<rect x="610" y="206" width="132.59680435294118" height="23" fill="#3c8077"/>
+<text x="749.5968043529411" y="224" class="small">10.5</text>
+<rect x="610" y="264" width="141.34230458823532" height="23" fill="#3c8077"/>
+<text x="758.3423045882353" y="282" class="small">11.2</text>
+<rect x="610" y="322" width="202.99861247058826" height="23" fill="#3c8077"/>
+<text x="819.9986124705882" y="340" class="small">16.1</text>
+<text x="900" y="110" >Sampled allocations (MB)</text>
+<line x1="900" x2="900" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="900" y="406" class="small" text-anchor="middle">0.0</text>
+<line x1="1007" x2="1007" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="1007" y="406" class="small" text-anchor="middle">29.9</text>
+<line x1="1114" x2="1114" y1="138" y2="383" stroke="#e2e6eb"/>
+<text x="1114" y="406" class="small" text-anchor="middle">59.9</text>
+<rect x="900" y="148" width="194.52457095158599" height="23" fill="#8571ac"/>
+<text x="1101.524570951586" y="166" class="small">54.4</text>
+<rect x="900" y="206" width="203.5321489148581" height="23" fill="#8571ac"/>
+<text x="1110.5321489148582" y="224" class="small">57.0</text>
+<rect x="900" y="264" width="183.35771512520867" height="23" fill="#8571ac"/>
+<text x="1090.3577151252086" y="282" class="small">51.3</text>
+<rect x="900" y="322" width="197.89246651085142" height="23" fill="#8571ac"/>
+<text x="1104.8924665108514" y="340" class="small">55.4</text>
+<text x="24" y="162" >Client dictionary + omit</text>
+<text x="24" y="182" class="small">JSON / direct</text>
+<text x="24" y="220" >Client dictionary + omit</text>
+<text x="24" y="240" class="small">JSON / objects</text>
+<text x="24" y="278" >Dictionary columns</text>
+<text x="24" y="298" class="small">JSON / direct</text>
+<text x="24" y="336" >Dictionary columns</text>
+<text x="24" y="356" class="small">JSON / objects</text>
+<text x="24" y="438" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+</svg>

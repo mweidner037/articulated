@@ -4,6 +4,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { example } from "../full_picture/fixture";
 import { candidates } from "./candidates";
+import { comparisonChart } from "./charts";
 import { mongoState, storageCandidates } from "./mongo";
 import type { BrowserSample } from "./page";
 import type { analyzeTrace } from "./trace";
@@ -68,8 +69,6 @@ const mem = (r: Row, key: keyof Row["memory"][number]) =>
     0.5,
   ) / 1e6;
 const fmt = (n: number) => n.toFixed(1);
-const escape = (s: string) =>
-  s.replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;");
 const workloads = [...new Set(data.rows.map((r) => r.documents))];
 for (const count of workloads) {
   const rows = data.rows.filter((r) => r.documents === count);
@@ -90,153 +89,92 @@ for (const count of workloads) {
       );
   }
 }
-function chart(rows: Row[]) {
-  const w = 1510,
-    top = 160,
-    step = 43,
-    h = top + rows.length * step + 90;
-  const left = 440,
-    plot = 390;
-  const domain =
-    Math.ceil(Math.max(...rows.map((r) => metric(r, "total"))) / 10) * 10;
-  const series = [
-    "decode",
-    "hydrate",
-    "editor",
-    "layout",
-    "frameWait",
-  ] as const;
-  const colors = ["#3266a6", "#b45b21", "#3c8077", "#8571ac", "#bdc6ce"];
-  const text = (x: number, y: number, s: string, extra = "") =>
-    `<text x="${x}" y="${y}" ${extra}>${escape(s)}</text>`;
-  const svg = [
-    `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}" role="img" aria-labelledby="title desc">`,
-    `<title id="title">Browser load, GC, and memory: ${rows[0].documents} document(s)</title>`,
-    `<desc id="desc">Each row combines the complete measured readiness time and its constituent stages with GC and memory diagnostics. GC is already inside elapsed time, not added to it. High-water memory is sampled, not an exact peak. Numeric equivalents appear in the report table.</desc>`,
-    `<style>text{font:18px Arial,Helvetica,sans-serif;fill:#243248} .small{font-size:16px} .title{font-size:26px;font-weight:500}</style><rect width="${w}" height="${h}" fill="white"/>`,
-    text(
-      24,
-      35,
-      `${rows[0].documents} document(s): the whole browser load, with GC and memory on the same row`,
-      'class="title"',
-    ),
-    text(
-      24,
-      65,
-      "Same logical format → JSON / binary encoding → object adapter / direct loader. Lower is better.",
-    ),
-  ];
-  [
-    "Decode",
-    "Build IDs",
-    "Editor + teardown",
-    "Layout",
-    "Frame wait / paint",
-  ].forEach((name, i) => {
-    const x = 24 + i * 250;
-    svg.push(
-      `<rect x="${x}" y="84" width="16" height="16" fill="${colors[i]}"/>`,
-      text(x + 24, 98, name),
-    );
-  });
-  svg.push(
-    text(24, 133, "Logical format"),
-    text(260, 133, "Encoding / path"),
-    text(left, 133, "Complete ready time (ms)"),
+const p95 = (r: Row) =>
+  quantile(
+    r.samples.map((s) => s.total),
+    0.95,
   );
-  const cols = [890, 970, 1055, 1140, 1230, 1320, 1420];
-  ["Mean / P50", "P95", "GC¹", "High²", "Kept³", "Alloc⁴", "Edit P95"].forEach(
-    (name, i) =>
-      svg.push(
-        text(cols[i], 123, name, 'text-anchor="middle"'),
-        text(
-          cols[i],
-          145,
-          i < 3 || i === 6 ? "ms" : "MB",
-          'text-anchor="middle" class="small"',
+const byP95 = (rows: Row[]) =>
+  [...rows].sort((a, b) => p95(a) - p95(b) || a.id.localeCompare(b.id));
+const logicalRows = (n: number) =>
+  data.rows.filter(
+    (r) => r.documents === n && r.encoding === "JSON" && r.path === "objects",
+  );
+function chart(rows: Row[], scope: string) {
+  return comparisonChart(
+    `${rows[0].documents} documents: ${scope} — browser speed`,
+    "Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time.",
+    ["Complete-ready P95 (ms)", "ID-loading P95 (ms)", "GC pause mean (ms)"],
+    byP95(rows).map((r) => ({
+      label: r.shape,
+      detail: `${r.encoding} / ${r.path}`,
+      values: [
+        p95(r),
+        quantile(
+          r.samples.map((s) => s.decode + s.hydrate),
+          0.95,
         ),
-      ),
+        mean(r.gc.map((g) => g.gcMs)),
+      ],
+    })),
+    `ID loading = decode + translate + build tree. GC: separate pass. P95 from ${data.rounds * data.trials} samples${data.rounds * data.trials < 20 ? " is the maximum" : "; empirical estimate"}.`,
   );
-  for (let i = 0; i <= 4; i++) {
-    const x = left + (plot * i) / 4;
-    svg.push(
-      `<line x1="${x}" x2="${x}" y1="${top}" y2="${h - 70}" stroke="#e2e6eb"/>`,
-      text(x, h - 44, fmt((domain * i) / 4), 'text-anchor="middle"'),
-    );
-  }
-  rows.forEach((r, i) => {
-    const y = top + i * step;
-    if (i === 0 || r.shape !== rows[i - 1].shape)
-      svg.push(
-        `<line x1="24" x2="${w - 24}" y1="${y}" y2="${y}" stroke="#cbd3dc"/>`,
-      );
-    svg.push(
-      text(24, y + 28, r.shape, 'class="small"'),
-      text(260, y + 28, `${r.encoding} / ${r.path}`, 'class="small"'),
-    );
-    let x = left;
-    series.forEach((key, j) => {
-      const width = (metric(r, key) / domain) * plot;
-      assert(width >= 0);
-      svg.push(
-        `<rect x="${x}" y="${y + 13}" width="${width}" height="22" fill="${colors[j]}"/>`,
-      );
-      x += width;
-    });
-    const values = [
-      metric(r, "total"),
-      quantile(
-        r.samples.map((s) => s.total),
-        0.95,
-      ),
-      mean(r.gc.map((g) => g.gcMs)),
-      Math.max(...r.memory.map((m) => m.observedHighWaterDelta)) / 1e6,
-      mem(r, "retainedDelta"),
-      mem(r, "sampledAllocation"),
-      quantile(
-        r.samples.map((s) => s.edit),
-        0.95,
-      ),
-    ];
-    values.forEach((v, j) =>
-      svg.push(
-        text(
-          cols[j],
-          y + 29,
-          j === 0
-            ? `${fmt(v)} / ${fmt(
-                quantile(
-                  r.samples.map((s) => s.total),
-                  0.5,
-                ),
-              )}`
-            : fmt(v),
-          'text-anchor="middle" class="small"',
-        ),
-      ),
-    );
-  });
-  svg.push(
-    text(
-      24,
-      h - 15,
-      "¹Separate trace pass; GC is not extra time. ²Observed high-water, not exact peak. ³Post-GC retained increment. ⁴Sampled JS allocations, separate pass.",
-      'class="small"',
-    ),
-    "</svg>",
+}
+function memoryChart(rows: Row[], scope: string) {
+  return comparisonChart(
+    `${rows[0].documents} documents: ${scope} — JS memory`,
+    "Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.",
+    [
+      "Retained median (MB)",
+      "Observed high-water (MB)",
+      "Sampled allocations (MB)",
+    ],
+    [...rows]
+      .sort(
+        (a, b) =>
+          mem(a, "retainedDelta") - mem(b, "retainedDelta") ||
+          a.id.localeCompare(b.id),
+      )
+      .map((r) => ({
+        label: r.shape,
+        detail: `${r.encoding} / ${r.path}`,
+        values: [
+          mem(r, "retainedDelta"),
+          Math.max(...r.memory.map((m) => m.observedHighWaterDelta)) / 1e6,
+          mem(r, "sampledAllocation"),
+        ],
+      })),
+    "Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.",
   );
-  return svg.join("\n") + "\n";
+}
+function storageChart(binary: boolean) {
+  const rows = storageCandidates
+    .filter((c) => binary || c.encoding === "JSON")
+    .map((c) => ({
+      label: c.shape,
+      detail: c.encoding === "JSON" ? "Ordinary BSON fields" : c.encoding,
+      values: ["snappy", "zstd"].map((compressor) => {
+        const row = mongo.rows.find(
+          (r) => r.id === c.id && r.compressor === compressor,
+        );
+        assert(row);
+        return row.storageBytes / mongo.documents / 1000;
+      }),
+    }))
+    .sort((a, b) => a.values[0] - b.values[0]);
+  return comparisonChart(
+    binary
+      ? "Secondary optimization: Mongo encodings"
+      : "Logical formats: Mongo storage",
+    "Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately.",
+    ["Snappy (KB / document)", "Zstd (KB / document)"],
+    rows,
+    "Actual collection files after compact + checkpoint. Indexes and shared server overhead excluded.",
+  );
 }
 const largest = Math.max(...workloads);
 const rowFor = (id: string) =>
   data.rows.find((r) => r.id === id && r.documents === largest)!;
-const typical = (id: string) =>
-  fmt(
-    quantile(
-      rowFor(id).samples.map((s) => s.total),
-      0.5,
-    ),
-  );
 const disk = (id: string) => {
   const r = mongo.rows.find((r) => r.id === id && r.compressor === "snappy");
   assert(r);
@@ -256,40 +194,51 @@ const outliers = data.rows.flatMap((r) =>
     .map((s) => s.total),
 );
 const lines = [
-  "# Two decisions: Mongo storage and complete browser loading",
+  "# Choose the logical format first: browser speed, Mongo storage, and JS memory",
   "",
-  "Draft experiment. Mongo disk usage is separate from browser behavior. Binary is an encoding of a logical JSON structure, never an unrelated alternative structure.",
+  "Draft experiment. Start with the nine logical JSON formats through the same object loader. Compare browser speed, physical Mongo storage, and JS memory separately. Direct loading and binary encodings are secondary optimizations below, not competing logical formats.",
   "",
   `Measured ${data.generatedAt.slice(0, 10)} in Chromium ${data.browser} on ${data.cpu}, CPU rate ${data.cpuRate}×. Each document has ${data.documentCharacters.toLocaleString("en-US")} characters, ${data.paragraphs.toLocaleString("en-US")} paragraphs, and the same 12,091 ID runs. This is a **real, controlled ProseMirror editor in Chromium**, not the production application. The four-document case mounts four copies of that same document; it is a scaling test, not a production corpus.`,
   "",
   "## Conclusions supported by this run",
   "",
-  `- **Binary has a clear storage benefit, but not an automatic browser benefit.** Holding client-dictionary + omitted-counter structure constant, ordinary Mongo fields use ${disk("client")} KB/doc with Snappy versus ${disk("client-proto")} KB/doc as protobuf. Yet the ${largest}-document browser median is ${typical("client")} ms for JSON and ${typical("client-proto")} ms for protobuf; retained JS/backing memory is ${fmt(mem(rowFor("client"), "retainedDelta"))} vs ${fmt(mem(rowFor("client-proto"), "retainedDelta"))} MB. This does not prove identical population performance; it does rule out claiming the storage ratio as a browser-speed ratio.`,
-  `- **Packing the same dictionary columns saves Mongo bytes without a comparable retained-browser-memory saving.** Ordinary fields / uint32-int32 / packed columns occupy ${disk("full")} / ${disk("binary-adapter")} / ${disk("bit-adapter")} KB/doc with Snappy. Through the object loader, their ${largest}-document median readiness times are ${typical("full")} / ${typical("binary-adapter")} / ${typical("bit-adapter")} ms. Retained memory is ${fmt(mem(rowFor("full"), "retainedDelta"))} / ${fmt(mem(rowFor("binary-adapter"), "retainedDelta"))} / ${fmt(mem(rowFor("bit-adapter"), "retainedDelta"))} MB. The compact input is discarded and all paths end in the same library tree.`,
-  `- **Do not choose a browser winner from the mean alone.** ${outliers.length} samples exceed three times their row median${outliers.length ? ` (${outliers.map(fmt).join(", ")} ms)` : ""}. All samples remain in the results. The causes of these stalls were not established, and the separate GC diagnostic pass cannot explain a specific untraced outlier. Use the median, per-round comparisons, and raw distributions together. On the single-document workload, frame scheduling largely masks these small codec differences.`,
-  "- **Decision:** select the logical representation and Mongo encoding for storage savings and acceptable complexity; these measurements do not justify a claim that binary encoding alone substantially reduces retained editing memory or typical browser readiness time. A native compact mutable editing structure is a different project; none of these loaders implements it.",
+  `- **There is a real tradeoff, not one winner.** On the four-document JSON/object comparison, dictionary columns have the lowest observed complete-ready P95 (${fmt(p95(rowFor("full")))} ms versus ${fmt(p95(rowFor("objects")))} ms for original objects), but use ${disk("full")} versus ${disk("objects")} KB/doc in Snappy Mongo. Their retained JS memory is ${fmt(mem(rowFor("full"), "retainedDelta"))} versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB. This is a result for this run, not proof of a stable population ranking.`,
+  `- **Columns + omitted counters deserve a closer look for balance.** They use ${disk("omit")} KB/doc in Snappy versus ${disk("objects")} for original objects, retain ${fmt(mem(rowFor("omit"), "retainedDelta"))} versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB, and have a four-document complete-ready P95 of ${fmt(p95(rowFor("omit")))} versus ${fmt(p95(rowFor("objects")))} ms. The modest speed difference is not established as significant.`,
+  `- **Tail ranking is fragile here.** There are only ${data.rounds * data.trials} primary samples per row. With nearest-rank P95, 18 samples means P95 is the maximum. ${outliers.length} samples exceed three times their row median (${outliers.map(fmt).join(", ")} ms); none were removed. A single unexplained stall can change the ranking. More repetitions and a representative corpus are needed before selecting on tail latency.`,
+  "- **Native memory is still the unresolved architectural question.** Every option builds the existing IdList editing tree. These results compare snapshot loading, not a library that edits directly in compact columns. Binary optimization cannot substitute for that implementation.",
   "",
-  "## How to read the integrated comparison",
+  "## What happened to Build IDs and Layout?",
   "",
-  "Read across one row: complete readiness time first, then its tail latency, GC pauses, temporary memory, and retained memory. Compare encodings **within a logical-format group**, and compare object/direct loaders while holding the encoding fixed. A smaller Mongo file is not evidence of a faster browser.",
+  "**Layout does the same logical work in every row:** identical editor content, DOM, and forced-layout calls. Across the nine JSON/object formats in the four-document case, median layout ranges from 14.1–14.6 ms. Its elapsed time is not mathematically constant: scheduling, GC, and runtime noise can affect it. It is no longer a colored segment or a claimed format benefit. It remains inside the measured complete-ready total; subtracting it would no longer answer how long the document takes to render.",
   "",
-  "The stacked bar is one directly timed operation, partitioned into non-overlapping stages—not a sum of unrelated microbenchmarks. GC happens inside those stages. Its diagnostic column must not be added to the total. Memory profiling and GC tracing run separately from the primary timing pass.",
+  "**Build IDs was a misleading label.** That interval includes format-specific translation plus construction of the shared final editing tree. Its four-document medians range from 15.3–18.6 ms across the JSON/object options. We did not independently time translation and common tree building, so we cannot honestly subtract a constant tree-construction cost. The ID-loading column measures decode + translation + tree construction, excluding editor creation, layout, and frame waiting. Its P95 is calculated from each sample’s sum—not by adding stage percentiles.",
   "",
-  "## Browser: all dimensions together",
+  "## 1. Logical JSON formats",
+  "",
+  "Hold the loader path fixed: ordinary JSON inputs, object adapter, same final editor. Each speed chart is sorted by complete-ready P95 ascending. ID-loading P95 is a diagnostic alongside that total, not added to it. GC comes from a separate trace pass. Storage and memory have their own charts, sorted smallest first; metric scales are independent.",
   "",
   `Each row has ${data.rounds * data.trials} warm timing samples across ${data.rounds} fresh browser contexts, ${data.switches} traced document replacements without forced GC between them, and ${data.memoryTrials} separately profiled memory runs. P95 is an empirical sample percentile, not a reliable population-tail estimate from this small run. Raw cold-start samples and per-round results are retained.`,
   "",
 ];
-for (const n of workloads) {
-  const rows = data.rows.filter((r) => r.documents === n);
-  fs.writeFileSync(path.join(dir, `browser-${n}.svg`), chart(rows));
+function browserSection(n: number, rows: Row[], suffix: string, scope: string) {
+  rows = byP95(rows);
+  fs.writeFileSync(
+    path.join(dir, `browser-${n}${suffix}.svg`),
+    chart(rows, scope),
+  );
+  fs.writeFileSync(
+    path.join(dir, `memory-${n}${suffix}.svg`),
+    memoryChart(rows, scope),
+  );
   lines.push(
-    `### ${n} document(s)`,
+    `### ${n} document(s): ${scope}`,
     "",
-    `![Integrated browser load, GC and memory comparison](results/browser/browser-${n}.svg)`,
+    `![Browser speed sorted by complete-ready P95](results/browser/browser-${n}${suffix}.svg)`,
     "",
-    "| Logical format | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |",
-    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    `![JS memory sorted by retained bytes](results/browser/memory-${n}${suffix}.svg)`,
+    "",
+    "| Logical format | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |",
+    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
   );
   for (const r of rows)
     lines.push(
@@ -298,9 +247,9 @@ for (const n of workloads) {
           r.samples.map((s) => s.total),
           0.5,
         ),
-      )} | ${fmt(
+      )} | ${fmt(p95(r))} | ${fmt(
         quantile(
-          r.samples.map((s) => s.total),
+          r.samples.map((s) => s.decode + s.hydrate),
           0.95,
         ),
       )} | ${fmt(mean(r.cold.map((s) => s.total)))} | ${fmt(mean(r.gc.map((g) => g.gcMs)))} / ${fmt(Math.max(...r.gc.map((g) => g.longestGC)))} | ${fmt(Math.max(...r.memory.map((m) => m.observedHighWaterDelta)) / 1e6)} | ${fmt(mem(r, "retainedDelta"))} | ${fmt(mem(r, "sampledAllocation"))} | ${fmt(
@@ -312,8 +261,54 @@ for (const n of workloads) {
     );
   lines.push("");
 }
+fs.writeFileSync(path.join(dir, "storage.svg"), storageChart(false));
 lines.push(
-  "## Matched comparisons, not cross-format winners",
+  "### Mongo storage: logical formats",
+  "",
+  "Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint protocol for Snappy and Zstd. The physical-storage table and exact stored examples are below.",
+  "",
+  "![Physical Mongo storage, smallest Snappy first](results/browser/storage.svg)",
+  "",
+);
+for (const n of [...workloads].sort((a, b) => b - a))
+  browserSection(n, logicalRows(n), "", "logical JSON formats");
+lines.push(
+  "## 2. Secondary optimization: direct JSON loading",
+  "",
+  "Same JSON structures, with and without an intermediate object-run array. This isolates the loader change from encoding. Mongo storage is unchanged. Direct loading still builds the same final editing tree.",
+  "",
+);
+for (const n of [...workloads].sort((a, b) => b - a))
+  browserSection(
+    n,
+    data.rows.filter(
+      (r) =>
+        r.documents === n &&
+        ["client", "client-direct", "full", "full-direct"].includes(r.id),
+    ),
+    "-direct",
+    "direct JSON loading",
+  );
+lines.push(
+  "## 3. Secondary optimization: binary encoding",
+  "",
+  "Only after choosing a logical structure: compare its JSON row against its binary encoding with the same loader path. JSON baselines are repeated here for reference; this is not a new logical-format contest. No network-size comparison is used.",
+  "",
+);
+fs.writeFileSync(path.join(dir, "storage-encodings.svg"), storageChart(true));
+lines.push(
+  "![Mongo encodings and ordinary-field baselines](results/browser/storage-encodings.svg)",
+  "",
+);
+for (const n of [...workloads].sort((a, b) => b - a))
+  browserSection(
+    n,
+    data.rows.filter((r) => r.documents === n),
+    "-encodings",
+    "encodings and JSON baselines",
+  );
+lines.push(
+  "### Matched encoding and loader comparisons",
   "",
   "These are changes in measured means, not significance claims. The three round deltas show how reproducible the direction was across fresh contexts. Negative means faster.",
   "",
@@ -344,7 +339,7 @@ for (const n of workloads)
   }
 lines.push(
   "",
-  "## Mongo: separate physical-storage comparison",
+  "## Physical Mongo storage: all measurements",
   "",
   `MongoDB ${mongo.version}; ${mongo.documents} documents per layout/compressor, with distinct client dictionaries. Actual allocated collection-file bytes after compact, checkpoint, another compact, and locked fsync. Indexes and shared server overhead excluded; allocated free pages may remain. No logical-BSON or wire-size proxy.`,
   "",

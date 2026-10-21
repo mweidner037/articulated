@@ -1,0 +1,221 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="1610" viewBox="0 0 1210 1610" role="img" aria-labelledby="title desc">
+<title id="title">1 documents: encodings and JSON baselines — browser speed</title><desc id="desc">Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time. ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="1610" fill="white"/>
+<text x="24" y="36" class="title">1 documents: encodings and JSON baselines — browser speed</text>
+<text x="24" y="68" >Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time.</text>
+<text x="24" y="110" >Logical format</text>
+<text x="320" y="110" >Complete-ready P95 (ms)</text>
+<line x1="320" x2="320" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="320" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="427" x2="427" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="427" y="1566" class="small" text-anchor="middle">15.1</text>
+<line x1="534" x2="534" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="534" y="1566" class="small" text-anchor="middle">30.2</text>
+<rect x="320" y="148" width="118.33774825989805" height="23" fill="#3266a6"/>
+<text x="445.33774825989804" y="166" class="small">16.7</text>
+<rect x="320" y="206" width="119.04635727800282" height="23" fill="#3266a6"/>
+<text x="446.0463572780028" y="224" class="small">16.8</text>
+<rect x="320" y="264" width="119.7549667184716" height="23" fill="#3266a6"/>
+<text x="446.75496671847156" y="282" class="small">16.9</text>
+<rect x="320" y="322" width="130.38410579131929" height="23" fill="#3266a6"/>
+<text x="457.38410579131926" y="340" class="small">18.4</text>
+<rect x="320" y="380" width="145.26490066225165" height="23" fill="#3266a6"/>
+<text x="472.26490066225165" y="398" class="small">20.5</text>
+<rect x="320" y="438" width="145.97351010272047" height="23" fill="#3266a6"/>
+<text x="472.97351010272047" y="456" class="small">20.6</text>
+<rect x="320" y="496" width="145.97351010272047" height="23" fill="#3266a6"/>
+<text x="472.97351010272047" y="514" class="small">20.6</text>
+<rect x="320" y="554" width="145.97351010272047" height="23" fill="#3266a6"/>
+<text x="472.97351010272047" y="572" class="small">20.6</text>
+<rect x="320" y="612" width="147.390728561294" height="23" fill="#3266a6"/>
+<text x="474.390728561294" y="630" class="small">20.8</text>
+<rect x="320" y="670" width="147.390728561294" height="23" fill="#3266a6"/>
+<text x="474.390728561294" y="688" class="small">20.8</text>
+<rect x="320" y="728" width="148.0993380017628" height="23" fill="#3266a6"/>
+<text x="475.0993380017628" y="746" class="small">20.9</text>
+<rect x="320" y="786" width="154.47682127652578" height="23" fill="#3266a6"/>
+<text x="481.4768212765258" y="804" class="small">21.8</text>
+<rect x="320" y="844" width="155.18543029463055" height="23" fill="#3266a6"/>
+<text x="482.1854302946306" y="862" class="small">21.9</text>
+<rect x="320" y="902" width="156.6026487532041" height="23" fill="#3266a6"/>
+<text x="483.6026487532041" y="920" class="small">22.1</text>
+<rect x="320" y="960" width="160.14569511082" height="23" fill="#3266a6"/>
+<text x="487.14569511082" y="978" class="small">22.6</text>
+<rect x="320" y="1018" width="160.14569553318404" height="23" fill="#3266a6"/>
+<text x="487.14569553318404" y="1036" class="small">22.6</text>
+<rect x="320" y="1076" width="162.98013245033113" height="23" fill="#3266a6"/>
+<text x="489.9801324503311" y="1094" class="small">23.0</text>
+<rect x="320" y="1134" width="162.98013245033113" height="23" fill="#3266a6"/>
+<text x="489.9801324503311" y="1152" class="small">23.0</text>
+<rect x="320" y="1192" width="171.4834440465005" height="23" fill="#3266a6"/>
+<text x="498.4834440465005" y="1210" class="small">24.2</text>
+<rect x="320" y="1250" width="172.90066208271003" height="23" fill="#3266a6"/>
+<text x="499.90066208271" y="1268" class="small">24.4</text>
+<rect x="320" y="1308" width="177.1523178807947" height="23" fill="#3266a6"/>
+<text x="504.1523178807947" y="1326" class="small">25.0</text>
+<rect x="320" y="1366" width="177.1523178807947" height="23" fill="#3266a6"/>
+<text x="504.1523178807947" y="1384" class="small">25.0</text>
+<rect x="320" y="1424" width="178.56953633936826" height="23" fill="#3266a6"/>
+<text x="505.56953633936826" y="1442" class="small">25.2</text>
+<rect x="320" y="1482" width="203.37086084267952" height="23" fill="#3266a6"/>
+<text x="530.3708608426796" y="1500" class="small">28.7</text>
+<text x="610" y="110" >ID-loading P95 (ms)</text>
+<line x1="610" x2="610" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="610" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="717" x2="717" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="717" y="1566" class="small" text-anchor="middle">7.5</text>
+<line x1="824" x2="824" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="824" y="1566" class="small" text-anchor="middle">15.1</text>
+<rect x="610" y="148" width="83.61589454657195" height="23" fill="#3c8077"/>
+<text x="700.615894546572" y="166" class="small">5.9</text>
+<rect x="610" y="206" width="87.86754949992856" height="23" fill="#3c8077"/>
+<text x="704.8675494999286" y="224" class="small">6.2</text>
+<rect x="610" y="264" width="92.11920529801326" height="23" fill="#3c8077"/>
+<text x="709.1192052980133" y="282" class="small">6.5</text>
+<rect x="610" y="322" width="107.70860960941441" height="23" fill="#3c8077"/>
+<text x="724.7086096094145" y="340" class="small">7.6</text>
+<rect x="610" y="380" width="107.70860960941441" height="23" fill="#3c8077"/>
+<text x="724.7086096094145" y="398" class="small">7.6</text>
+<rect x="610" y="438" width="94.95364221516034" height="23" fill="#3c8077"/>
+<text x="711.9536422151604" y="456" class="small">6.7</text>
+<rect x="610" y="496" width="94.95364221516034" height="23" fill="#3c8077"/>
+<text x="711.9536422151604" y="514" class="small">6.7</text>
+<rect x="610" y="554" width="106.29139072847683" height="23" fill="#3c8077"/>
+<text x="723.2913907284768" y="572" class="small">7.5</text>
+<rect x="610" y="612" width="86.45033146371905" height="23" fill="#3c8077"/>
+<text x="703.4503314637191" y="630" class="small">6.1</text>
+<rect x="610" y="670" width="97.78807997703552" height="23" fill="#3c8077"/>
+<text x="714.7880799770355" y="688" class="small">6.9</text>
+<rect x="610" y="728" width="83.61589454657195" height="23" fill="#3c8077"/>
+<text x="700.615894546572" y="746" class="small">5.9</text>
+<rect x="610" y="786" width="99.20529801324504" height="23" fill="#3c8077"/>
+<text x="716.205298013245" y="804" class="small">7.0</text>
+<rect x="610" y="844" width="103.45695381132973" height="23" fill="#3c8077"/>
+<text x="720.4569538113298" y="862" class="small">7.3</text>
+<rect x="610" y="902" width="99.20529801324504" height="23" fill="#3c8077"/>
+<text x="716.205298013245" y="920" class="small">7.0</text>
+<rect x="610" y="960" width="106.29139072847683" height="23" fill="#3c8077"/>
+<text x="723.2913907284768" y="978" class="small">7.5</text>
+<rect x="610" y="1018" width="111.96026456277102" height="23" fill="#3c8077"/>
+<text x="728.960264562771" y="1036" class="small">7.9</text>
+<rect x="610" y="1076" width="110.54304568183343" height="23" fill="#3c8077"/>
+<text x="727.5430456818334" y="1094" class="small">7.8</text>
+<rect x="610" y="1134" width="140.3046354236982" height="23" fill="#3c8077"/>
+<text x="757.3046354236982" y="1152" class="small">9.9</text>
+<rect x="610" y="1192" width="110.5430465265615" height="23" fill="#3c8077"/>
+<text x="727.5430465265615" y="1210" class="small">7.8</text>
+<rect x="610" y="1250" width="136.05298047034157" height="23" fill="#3c8077"/>
+<text x="753.0529804703416" y="1268" class="small">9.6</text>
+<rect x="610" y="1308" width="178.56953591700423" height="23" fill="#3c8077"/>
+<text x="795.5695359170043" y="1326" class="small">12.6</text>
+<rect x="610" y="1366" width="162.98013245033113" height="23" fill="#3c8077"/>
+<text x="779.9801324503311" y="1384" class="small">11.5</text>
+<rect x="610" y="1424" width="123.29801307608751" height="23" fill="#3c8077"/>
+<text x="740.2980130760875" y="1442" class="small">8.7</text>
+<rect x="610" y="1482" width="202.66225182457478" height="23" fill="#3c8077"/>
+<text x="819.6622518245748" y="1500" class="small">14.3</text>
+<text x="900" y="110" >GC pause mean (ms)</text>
+<line x1="900" x2="900" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="900" y="1566" class="small" text-anchor="middle">0.0</text>
+<line x1="1007" x2="1007" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="1007" y="1566" class="small" text-anchor="middle">0.6</text>
+<line x1="1114" x2="1114" y1="138" y2="1543" stroke="#e2e6eb"/>
+<text x="1114" y="1566" class="small" text-anchor="middle">1.2</text>
+<rect x="900" y="148" width="136.8708333333333" height="23" fill="#8571ac"/>
+<text x="1043.8708333333334" y="166" class="small">0.8</text>
+<rect x="900" y="206" width="148.75229166666668" height="23" fill="#8571ac"/>
+<text x="1055.7522916666667" y="224" class="small">0.8</text>
+<rect x="900" y="264" width="157.20083333333335" height="23" fill="#8571ac"/>
+<text x="1064.2008333333333" y="282" class="small">0.9</text>
+<rect x="900" y="322" width="160.38854166666667" height="23" fill="#8571ac"/>
+<text x="1067.3885416666667" y="340" class="small">0.9</text>
+<rect x="900" y="380" width="156.91104166666668" height="23" fill="#8571ac"/>
+<text x="1063.9110416666667" y="398" class="small">0.9</text>
+<rect x="900" y="438" width="156.48749999999998" height="23" fill="#8571ac"/>
+<text x="1063.4875" y="456" class="small">0.9</text>
+<rect x="900" y="496" width="156.95562500000003" height="23" fill="#8571ac"/>
+<text x="1063.955625" y="514" class="small">0.9</text>
+<rect x="900" y="554" width="123.85249999999999" height="23" fill="#8571ac"/>
+<text x="1030.8525" y="572" class="small">0.7</text>
+<rect x="900" y="612" width="160.76749999999998" height="23" fill="#8571ac"/>
+<text x="1067.7675" y="630" class="small">0.9</text>
+<rect x="900" y="670" width="165.00291666666666" height="23" fill="#8571ac"/>
+<text x="1072.0029166666666" y="688" class="small">0.9</text>
+<rect x="900" y="728" width="173.45145833333333" height="23" fill="#8571ac"/>
+<text x="1080.4514583333334" y="746" class="small">1.0</text>
+<rect x="900" y="786" width="154.83791666666667" height="23" fill="#8571ac"/>
+<text x="1061.8379166666666" y="804" class="small">0.9</text>
+<rect x="900" y="844" width="153.01" height="23" fill="#8571ac"/>
+<text x="1060.01" y="862" class="small">0.9</text>
+<rect x="900" y="902" width="149.08666666666667" height="23" fill="#8571ac"/>
+<text x="1056.0866666666666" y="920" class="small">0.8</text>
+<rect x="900" y="960" width="177.62" height="23" fill="#8571ac"/>
+<text x="1084.62" y="978" class="small">1.0</text>
+<rect x="900" y="1018" width="152.29666666666668" height="23" fill="#8571ac"/>
+<text x="1059.2966666666666" y="1036" class="small">0.9</text>
+<rect x="900" y="1076" width="166.853125" height="23" fill="#8571ac"/>
+<text x="1073.853125" y="1094" class="small">0.9</text>
+<rect x="900" y="1134" width="186.648125" height="23" fill="#8571ac"/>
+<text x="1093.648125" y="1152" class="small">1.0</text>
+<rect x="900" y="1192" width="124.52124999999998" height="23" fill="#8571ac"/>
+<text x="1031.52125" y="1210" class="small">0.7</text>
+<rect x="900" y="1250" width="153.38895833333333" height="23" fill="#8571ac"/>
+<text x="1060.3889583333334" y="1268" class="small">0.9</text>
+<rect x="900" y="1308" width="200.46895833333335" height="23" fill="#8571ac"/>
+<text x="1107.4689583333334" y="1326" class="small">1.1</text>
+<rect x="900" y="1366" width="192.31020833333338" height="23" fill="#8571ac"/>
+<text x="1099.3102083333333" y="1384" class="small">1.1</text>
+<rect x="900" y="1424" width="139.27833333333334" height="23" fill="#8571ac"/>
+<text x="1046.2783333333334" y="1442" class="small">0.8</text>
+<rect x="900" y="1482" width="156.6435416666667" height="23" fill="#8571ac"/>
+<text x="1063.6435416666668" y="1500" class="small">0.9</text>
+<text x="24" y="162" >Dictionary columns</text>
+<text x="24" y="182" class="small">JSON / direct</text>
+<text x="24" y="220" >Ordinary columns</text>
+<text x="24" y="240" class="small">JSON / objects</text>
+<text x="24" y="278" >Dictionary columns</text>
+<text x="24" y="298" class="small">uint32/int32 / objects</text>
+<text x="24" y="336" >Dictionary + omit</text>
+<text x="24" y="356" class="small">JSON / objects</text>
+<text x="24" y="394" >Dictionary + omit</text>
+<text x="24" y="414" class="small">protobuf / objects</text>
+<text x="24" y="452" >Client dictionary + omit</text>
+<text x="24" y="472" class="small">JSON / direct</text>
+<text x="24" y="510" >Dictionary columns</text>
+<text x="24" y="530" class="small">JSON / objects</text>
+<text x="24" y="568" >Columns + omit</text>
+<text x="24" y="588" class="small">JSON / objects</text>
+<text x="24" y="626" >Dictionary columns</text>
+<text x="24" y="646" class="small">bit-packed / direct</text>
+<text x="24" y="684" >Signed tuples</text>
+<text x="24" y="704" class="small">JSON / objects</text>
+<text x="24" y="742" >Dictionary columns</text>
+<text x="24" y="762" class="small">uint32/int32 / direct</text>
+<text x="24" y="800" >Dictionary columns</text>
+<text x="24" y="820" class="small">bit-packed / objects</text>
+<text x="24" y="858" >Signed objects</text>
+<text x="24" y="878" class="small">JSON / objects</text>
+<text x="24" y="916" >Split + omit</text>
+<text x="24" y="936" class="small">JSON / objects</text>
+<text x="24" y="974" >Client dictionary + omit</text>
+<text x="24" y="994" class="small">protobuf / objects</text>
+<text x="24" y="1032" >Columns + omit</text>
+<text x="24" y="1052" class="small">protobuf / objects</text>
+<text x="24" y="1090" >Split + omit</text>
+<text x="24" y="1110" class="small">protobuf / objects</text>
+<text x="24" y="1148" >Signed tuples</text>
+<text x="24" y="1168" class="small">BSON / objects</text>
+<text x="24" y="1206" >Client dictionary + omit</text>
+<text x="24" y="1226" class="small">JSON / objects</text>
+<text x="24" y="1264" >Original objects</text>
+<text x="24" y="1284" class="small">JSON / objects</text>
+<text x="24" y="1322" >Original objects</text>
+<text x="24" y="1342" class="small">BSON / objects</text>
+<text x="24" y="1380" >Signed objects</text>
+<text x="24" y="1400" class="small">BSON / objects</text>
+<text x="24" y="1438" >Client dictionary + omit</text>
+<text x="24" y="1458" class="small">protobuf / direct</text>
+<text x="24" y="1496" >Ordinary columns</text>
+<text x="24" y="1516" class="small">protobuf / objects</text>
+<text x="24" y="1598" class="small">ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.</text>
+</svg>
