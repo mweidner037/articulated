@@ -619,6 +619,51 @@ export class IdList {
     return ans;
   }
 
+  /** Experimental benchmark hook: skip unknown counter gaps and unchanged
+   * visibility. The public delete implementation remains the control.
+   */
+  experimentalDeleteIntervals(id: ElementId, count = 1): IdList {
+    checkCount(count);
+    if (count === 0) return this;
+    const start = id.counter;
+    const end = start + count;
+    // The baseline historically does not validate ElementId counters here.
+    // Keep its behavior for inputs outside the supported safe-integer domain.
+    if (
+      typeof id.bunchId !== "string" ||
+      !Number.isSafeInteger(start) ||
+      start < 0 ||
+      !Number.isSafeInteger(end)
+    )
+      return this.delete(id, count);
+
+    // eslint-disable-next-line @typescript-eslint/no-this-alias
+    let answer: IdList = this;
+    let counter = start;
+    while (counter < end) {
+      const leaf = answer.leafMap.getLeafAtOrAfter(id.bunchId, counter);
+      if (!leaf || leaf.startCounter >= end) break;
+      const from = Math.max(counter, leaf.startCounter);
+      const to = Math.min(end, leaf.startCounter + leaf.count);
+      // SparseIndices counts present IDs before a counter. This also handles
+      // a partially visible leaf whose requested subrange is entirely deleted.
+      const changes =
+        !leaf.present.isEmpty() &&
+        (to - from === 1
+          ? leaf.present.has(from)
+          : leaf.present.countAt(to) !== leaf.present.countAt(from));
+      if (changes) {
+        const located = answer.locate({ bunchId: id.bunchId, counter: from });
+        if (located === null) throw new Error("Internal error");
+        const present = leaf.present.clone();
+        present.delete(from, to - from);
+        answer = answer.replaceLeaf(located, { ...leaf, present });
+      }
+      counter = to;
+    }
+    return answer;
+  }
+
   /**
    * Deletes all ids with indexes in the range [from, to).
    *
@@ -1107,6 +1152,14 @@ export class IdList {
     });
   }
 
+  /** Experimental benchmark hook: same runtime/API, bulk-built auxiliary indexes. */
+  static experimentalLoadBulk(savedState: SavedIdList) {
+    return IdList.loadRuns((append) => {
+      for (const item of savedState)
+        append(item.bunchId, item.startCounter, item.count, item.isDeleted);
+    }, true);
+  }
+
   /** Experimental benchmark hook: build the existing tree from scalar runs. */
   static experimentalLoadFrom(
     read: (
@@ -1117,6 +1170,13 @@ export class IdList {
         deleted: boolean,
       ) => void,
     ) => void,
+  ) {
+    return IdList.loadRuns(read, false);
+  }
+
+  private static loadRuns(
+    read: Parameters<typeof IdList.experimentalLoadFrom>[0],
+    bulkIndexes: boolean,
   ) {
     // 1. Determine the leaves in list order.
 
@@ -1179,8 +1239,40 @@ export class IdList {
       leaves.length === 1
         ? 1
         : Math.ceil(Math.log(leaves.length) / Math.log(M));
-    const root = buildTree(leaves, leafMapMut, parentSeqsMut, 0, depth);
-    const list = new IdList(root, leafMapMut.value, parentSeqsMut.value);
+    let list: IdList;
+    if (bulkIndexes) {
+      const leafEntries: [LeafNode, number][] = [];
+      const parentEntries: [number, number][] = [];
+      let nextSeq = 1;
+      // Same grouping and preorder sequence assignment as buildTree, without
+      // constructing intermediate persistent maps that cannot be observed.
+      const build = (start: number, remaining: number): InnerNode => {
+        const seq = nextSeq++;
+        if (remaining === 1) {
+          const children = leaves.slice(start, start + M);
+          for (const leaf of children) leafEntries.push([leaf, seq]);
+          return new InnerNodeLeaf(seq, children, null);
+        }
+        const children: InnerNode[] = [];
+        const stride = Math.pow(M, remaining - 1);
+        for (let i = 0; i < M && start + i * stride < leaves.length; i++) {
+          const child = build(start + i * stride, remaining - 1);
+          children.push(child);
+          parentEntries.push([child.seq, seq]);
+        }
+        return new InnerNodeInner(seq, children, null);
+      };
+      const root = build(0, depth);
+      parentEntries.push([root.seq, 0]);
+      list = new IdList(
+        root,
+        LeafMap.fromEntries(leafEntries),
+        SeqMap.fromEntries(parentEntries, nextSeq),
+      );
+    } else {
+      const root = buildTree(leaves, leafMapMut, parentSeqsMut, 0, depth);
+      list = new IdList(root, leafMapMut.value, parentSeqsMut.value);
+    }
 
     // 3. Check that savedState had no duplicate ids.
 

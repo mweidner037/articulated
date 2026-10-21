@@ -1,0 +1,25 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="438" viewBox="0 0 980 438" role="img" aria-label="Mongo storage">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#172b4d;font-size:14px}.title{font-size:22px;font-weight:600}.sub{fill:#42526e;font-size:13px}.value{font-variant-numeric:tabular-nums}</style>
+<text class="title" x="24" y="32">Mongo storage</text>
+<text class="sub" x="24" y="56">Physical collection bytes / 100 independently renamed documents; both fresh builds agree.</text>
+<rect x="290" y="72" width="12" height="12" fill="#2459a6"/><text x="310" y="83">Snappy</text>
+<rect x="470" y="72" width="12" height="12" fill="#559d8b"/><text x="490" y="83">zstd</text>
+<line x1="290" x2="290" y1="98" y2="392" stroke="#e3e8ef"/><text class="sub" x="290" y="412" text-anchor="middle">0</text>
+<line x1="425" x2="425" y1="98" y2="392" stroke="#e3e8ef"/><text class="sub" x="425" y="412" text-anchor="middle">54</text>
+<line x1="560" x2="560" y1="98" y2="392" stroke="#e3e8ef"/><text class="sub" x="560" y="412" text-anchor="middle">109</text>
+<line x1="695" x2="695" y1="98" y2="392" stroke="#e3e8ef"/><text class="sub" x="695" y="412" text-anchor="middle">163</text>
+<line x1="830" x2="830" y1="98" y2="392" stroke="#e3e8ef"/><text class="sub" x="830" y="412" text-anchor="middle">217</text>
+<text x="24" y="129">Flat Float64 · Joined IDs</text>
+<rect x="290" y="112" width="214.45674470046083" height="17" fill="#2459a6"/><text class="value" x="512.4567447004608" y="125">86.2</text>
+<rect x="290" y="134" width="143.10706728110597" height="17" fill="#559d8b"/><text class="value" x="441.10706728110597" y="147">57.5</text>
+<text x="24" y="201">Flat JSON · Joined IDs</text>
+<rect x="290" y="184" width="316.38485529953914" height="17" fill="#2459a6"/><text class="value" x="614.3848552995391" y="197">127.1</text>
+<rect x="290" y="206" width="204.26393364055298" height="17" fill="#559d8b"/><text class="value" x="502.263933640553" y="219">82.1</text>
+<text x="24" y="273">F05 · Flat columns / ID array</text>
+<rect x="290" y="256" width="428.5057769585253" height="17" fill="#2459a6"/><text class="value" x="726.5057769585253" y="269">172.2</text>
+<rect x="290" y="278" width="255.22798894009213" height="17" fill="#559d8b"/><text class="value" x="553.2279889400921" y="291">102.6</text>
+<text x="24" y="345">F01 · Original objects</text>
+<rect x="290" y="328" width="489.6626433179723" height="17" fill="#2459a6"/><text class="value" x="787.6626433179723" y="341">196.8</text>
+<rect x="290" y="350" width="275.7155391705069" height="17" fill="#559d8b"/><text class="value" x="573.7155391705069" y="363">110.8</text>
+<text class="sub" x="560" y="432" text-anchor="middle">KB per document · zero-based axis · lower is better</text></svg>

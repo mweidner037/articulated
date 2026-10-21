@@ -15,6 +15,16 @@ export class LeafMap {
     return new this(RedBlackTree.new(compareLeaves));
   }
 
+  /** Initialization only: sort once, then allocate each index node once. */
+  static fromEntries(entries: [LeafNode, number][]): LeafMap {
+    entries.sort((a, b) => compareLeaves(a[0], b[0]));
+    for (let i = 1; i < entries.length; i++) {
+      if (compareLeaves(entries[i - 1][0], entries[i][0]) === 0)
+        throw new Error("Invalid savedState: duplicate ids");
+    }
+    return new LeafMap(RedBlackTree.fromSorted(compareLeaves, entries));
+  }
+
   /**
    * Returns the greatest leaf whose first id is <= the given id,
    * or undefined if none exists. Also returns the associated seq (or -1 if not found).
@@ -27,6 +37,22 @@ export class LeafMap {
   ): [leaf: LeafNode | undefined, seq: number] {
     const iter = this.tree.le({ bunchId, startCounter: counter } as LeafNode);
     return [iter.key, iter.value ?? -1];
+  }
+
+  /** Finds the containing or next known counter interval for this bunch.
+   * Seek against the current version after each replacement, never a stale
+   * iterator into a previous persistent tree.
+   */
+  getLeafAtOrAfter(bunchId: string, counter: number): LeafNode | undefined {
+    const key = { bunchId, startCounter: counter } as LeafNode;
+    const previous = this.tree.le(key).key;
+    if (
+      previous?.bunchId === bunchId &&
+      counter < previous.startCounter + previous.count
+    )
+      return previous;
+    const next = this.tree.ge(key).key;
+    return next?.bunchId === bunchId ? next : undefined;
   }
 
   set(leaf: LeafNode, seq: number): LeafMap {

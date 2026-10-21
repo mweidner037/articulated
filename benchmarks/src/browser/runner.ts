@@ -1,5 +1,6 @@
 import { build } from "esbuild";
 import assert from "node:assert/strict";
+import { createHash } from "node:crypto";
 import fs from "node:fs";
 import http from "node:http";
 import os from "node:os";
@@ -25,6 +26,11 @@ export async function runBrowserBenchmark(
       saved: Awaited<ReturnType<typeof fixture>>,
       text: string,
     ) => EditWorkload;
+    fixture?: {
+      saved: Awaited<ReturnType<typeof fixture>>;
+      finalText: string;
+      description: string;
+    };
   },
 ) {
   const output = path.resolve(__dirname, "../../results", suite.output);
@@ -69,12 +75,13 @@ export async function runBrowserBenchmark(
       });
   }
   fs.mkdirSync(path.join(output, "traces"), { recursive: true });
-  const original = await fixture();
+  const original = suite.fixture?.saved ?? (await fixture());
   const saved =
-    process.env.BROWSER_ID_MODEL === "opaque8"
+    !suite.fixture && process.env.BROWSER_ID_MODEL === "opaque8"
       ? opaqueFixture(original)
       : original;
-  const { finalText } = await loadTrace("kleppmannReal", false);
+  const { finalText } =
+    suite.fixture ?? (await loadTrace("kleppmannReal", false));
   const documentJSON = JSON.stringify({
     type: "doc",
     content: finalText.split("\n").map((text) => ({
@@ -104,6 +111,10 @@ export async function runBrowserBenchmark(
       "node:os": path.join(__dirname, "shims.ts"),
     },
   });
+  fs.writeFileSync(
+    path.join(output, "measured-bundle.js"),
+    bundle.outputFiles[0].contents,
+  );
   const html = `<!doctype html><html><head><meta charset="utf-8"><title>IdList browser benchmark</title><style>body{margin:24px;font:16px/1.45 Arial}section{max-width:760px;margin-bottom:40px}.ProseMirror{white-space:pre-wrap;overflow-wrap:break-word;outline:none}p{margin:0 0 12px}</style></head><body><main id="editors"></main><script src="/bundle.js"></script></body></html>`;
   const server = http.createServer((req, res) => {
     res.setHeader("Cache-Control", "no-store");
@@ -237,6 +248,9 @@ export async function runBrowserBenchmark(
     cpu: os.cpus()[0].model,
     platform: `${process.platform}/${process.arch}`,
     cpuRate,
+    bundleSha256: createHash("sha256")
+      .update(bundle.outputFiles[0].contents)
+      .digest("hex"),
     rounds,
     trials,
     switches,
@@ -244,6 +258,11 @@ export async function runBrowserBenchmark(
     documentCharacters: finalText.length,
     paragraphs: finalText.split("\n").length,
     runs: saved.length,
+    fixtureDescription:
+      suite.fixture?.description ?? "Historical refreshed snapshot",
+    sourceSavedSha256: createHash("sha256")
+      .update(JSON.stringify(saved))
+      .digest("hex"),
     internalFormat: suite.edits ? "Varies by row" : internalFormat,
     conversionMetric:
       "hydrate: decoded interchange state to usable internal list; excludes decoding and rendering",

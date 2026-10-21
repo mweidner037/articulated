@@ -91,6 +91,85 @@ function range(n: number): number[] {
 }
 
 describe("functional-red-black-tree (vendored)", () => {
+  it("ge seeks exact keys, gaps and boundaries on persistent versions", () => {
+    const original = RedBlackTree.fromSorted(numericCompare, [
+      [2, 20],
+      [6, 60],
+      [10, 100],
+    ]);
+    for (const tree of [
+      original,
+      original.set(4, 40).remove(6),
+      RedBlackTree.new<number, number>(numericCompare),
+    ]) {
+      const entries = toEntries(tree);
+      for (let key = -1; key <= 12; key++) {
+        const expected = entries.find(([candidate]) => candidate >= key);
+        const iter = tree.ge(key);
+        expect(iter.key).to.equal(expected?.[0]);
+        expect(iter.value).to.equal(expected?.[1]);
+        checkTree(iter.remove());
+        expect(toEntries(tree)).to.deep.equal(entries);
+      }
+    }
+    expect(toKeys(original)).to.deep.equal([2, 6, 10]);
+  });
+
+  it("bulk construction preserves red-black invariants at every boundary", () => {
+    for (const size of [...range(130), 255, 256, 257, 1023, 1024, 1025]) {
+      const entries = range(size).map((i): [number, number] => [i * 2, i]);
+      const tree = RedBlackTree.fromSorted(numericCompare, entries);
+      checkTree(tree);
+      expect(toEntries(tree)).to.deep.equal(entries);
+      for (const [key, value] of entries) {
+        expect(tree.get(key)).to.equal(value);
+        expect(tree.le(key + 1).key).to.equal(key);
+      }
+    }
+  });
+
+  it("bulk-built trees support persistent insert, replace and remove", () => {
+    for (const size of [1, 2, 3, 4, 7, 8, 9, 31, 32, 33, 128]) {
+      const entries = range(size).map((i): [number, number] => [i * 2, i]);
+      const original = RedBlackTree.fromSorted(numericCompare, entries);
+      let tree = original;
+      const expected = new Map(entries);
+      for (let i = 0; i < size; i++) {
+        tree = tree.set(i * 2 + 1, -i).set(i * 2, i + 100);
+        expected.set(i * 2 + 1, -i).set(i * 2, i + 100);
+        checkTree(tree);
+      }
+      // Alternate ends to exercise different deletion/rebalancing paths.
+      const keys = [...expected.keys()].sort(numericCompare);
+      for (let i = 0; keys.length; i++) {
+        const key = i % 2 ? keys.pop()! : keys.shift()!;
+        tree = tree.remove(key);
+        expected.delete(key);
+        checkTree(tree);
+        expect(toEntries(tree)).to.deep.equal(
+          [...expected.entries()].sort((a, b) => a[0] - b[0]),
+        );
+      }
+      expect(toEntries(original)).to.deep.equal(entries);
+      checkTree(original);
+    }
+  });
+
+  it("bulk construction rejects duplicate and unordered keys", () => {
+    expect(() =>
+      RedBlackTree.fromSorted(numericCompare, [
+        [1, 1],
+        [1, 2],
+      ]),
+    ).to.throw("strictly increasing");
+    expect(() =>
+      RedBlackTree.fromSorted(numericCompare, [
+        [2, 1],
+        [1, 2],
+      ]),
+    ).to.throw("strictly increasing");
+  });
+
   it("set()", () => {
     let u = RedBlackTree.new<number, boolean>(numericCompare);
 

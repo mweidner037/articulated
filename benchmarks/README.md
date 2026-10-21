@@ -1,5 +1,7 @@
 # Benchmarks
 
+**Latest recommendation and full investigation:** [smaller storage, keep the existing editable IdList](recommendation.md). Includes the exact proposed Mongo shape, Snappy/zstd measurements, browser p95 and memory charts, runtime editing tradeoffs, adoption limits, and links to all supporting experiments. This remains a draft exploration, not a production migration.
+
 For the expanded native-container exploration, start with [storage, loading, and editing](exploration.md). It includes the complete Kleppmann paper-edit stream from an empty document, native objects/tuples/columns, eight-character IDs, separate browser memory and physical Mongo measurements, and reproducible raw results. These are draft experiments, not a production migration.
 
 Start with [the paired-format Mongo and real-browser benchmark](browser.md): one integrated browser chart per workload, plus a separate Mongo storage comparison. JSON and binary encodings are paired by logical structure; browser totals include decoding, ID hydration, editor creation, layout and a rendering opportunity, with GC and memory diagnostics alongside them.

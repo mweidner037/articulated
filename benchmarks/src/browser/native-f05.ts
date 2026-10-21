@@ -6,6 +6,12 @@ export type F05 = ReturnType<typeof toTransposedOmit>;
 export interface NativeF05Options {
   ownership?: "shared" | "owned";
   pageSize?: number;
+  /** Experimental negative membership test before probing page-local ID maps. */
+  pageIdFilter?: boolean;
+  /** Adopt fresh, bounded edit arrays instead of copying them a second time. */
+  adoptEdits?: boolean;
+  /** Extend a visible run by copying only counts when its identity index is unchanged. */
+  reuseUnchangedColumns?: boolean;
 }
 type Options = Required<NativeF05Options>;
 type Columns = Pick<F05, "bunchIds" | "counts">;
@@ -16,6 +22,32 @@ interface Page {
   to: number;
   length: number;
   byId: Map<string, number | number[]>;
+  idFilter?: Uint32Array;
+}
+// Two positions in a 512-bit membership filter. False positives fall through to
+// the authoritative Map and interval checks; a filter never establishes identity.
+function idHash(id: string): number {
+  let hash = 2166136261;
+  for (let i = 0; i < id.length; i++)
+    hash = Math.imul(hash ^ id.charCodeAt(i), 16777619);
+  hash ^= hash >>> 16;
+  hash = Math.imul(hash, 0x85ebca6b);
+  hash ^= hash >>> 13;
+  return hash >>> 0;
+}
+function addToFilter(filter: Uint32Array, hash: number) {
+  const first = hash & 511,
+    second = (hash >>> 9) & 511;
+  filter[first >>> 5] |= 1 << (first & 31);
+  filter[second >>> 5] |= 1 << (second & 31);
+}
+function mayContain(filter: Uint32Array, hash: number): boolean {
+  const first = hash & 511,
+    second = (hash >>> 9) & 511;
+  return (
+    !!(filter[first >>> 5] & (1 << (first & 31))) &&
+    !!(filter[second >>> 5] & (1 << (second & 31)))
+  );
 }
 function natural(n: number) {
   if (!Number.isSafeInteger(n) || n < 0)
@@ -29,8 +61,12 @@ function pagesFor(
   columns: Columns,
   starts: Float64Array,
   options: Options,
+  freshEdit = false,
 ): Page[] {
   const pages: Page[] = [];
+  // Only EditBuffer.finish transfers ownership. Loading caller-provided state
+  // never uses this path; split pages still own independent bounded arrays.
+  const adopt = freshEdit && columns.counts.length <= options.pageSize;
   const size = Math.ceil(
     columns.counts.length /
       Math.max(1, Math.ceil(columns.counts.length / options.pageSize)),
@@ -39,13 +75,14 @@ function pagesFor(
     const end = Math.min(offset + size, columns.counts.length);
     // Owned pages never retain a view into a document-sized backing array.
     const owned = options.ownership === "owned";
-    const data = owned
+    const copy = owned && !adopt;
+    const data = copy
       ? {
           bunchIds: columns.bunchIds.slice(offset, end),
           counts: columns.counts.slice(offset, end),
         }
       : columns;
-    const counters = owned ? starts.slice(offset, end) : starts;
+    const counters = copy ? starts.slice(offset, end) : starts;
     const from = owned ? 0 : offset,
       to = owned ? end - offset : end;
     const byId = new Map<string, number | number[]>();
@@ -58,7 +95,19 @@ function pagesFor(
       else rows.push(i);
       if (data.counts[i] > 0) length += data.counts[i];
     }
-    pages.push({ columns: data, starts: counters, from, to, length, byId });
+    const page: Page = {
+      columns: data,
+      starts: counters,
+      from,
+      to,
+      length,
+      byId,
+    };
+    if (options.pageIdFilter) {
+      page.idFilter = new Uint32Array(16);
+      for (const id of byId.keys()) addToFilter(page.idFilter, idHash(id));
+    }
+    pages.push(page);
   }
   return pages;
 }
@@ -90,7 +139,14 @@ class EditBuffer {
     );
   }
   finish(options: Options) {
-    return pagesFor(this.columns, Float64Array.from(this.starts), options);
+    // Terminal operation: neither this buffer nor its arrays are mutated after
+    // finish. The buffer is local to a single edit and is never exposed.
+    return pagesFor(
+      this.columns,
+      Float64Array.from(this.starts),
+      options,
+      options.adoptEdits,
+    );
   }
 }
 
@@ -100,6 +156,13 @@ class EditBuffer {
  * string-reference columns into independent pages, without retaining the input.
  * Both modes copy the flat page directory and rebuild its prefix on mutation.
  * All indexing, validation and ownership copying is part of load timing.
+ * The optional membership filter only avoids some Map probes; page scans and
+ * directory/prefix copying remain linear in page count. Unedited pages, including
+ * their filters, are shared immutably across versions. No wire fields change.
+ * adoptEdits optionally transfers fresh single-page edit buffers directly into
+ * owned pages. Load ownership and split-page isolation remain unchanged.
+ * reuseUnchangedColumns optionally extends an owned visible run by copying only
+ * counts; its immutable identity columns and page-local indexes remain valid.
  */
 export class NativeF05 implements BenchmarkList {
   readonly length: number;
@@ -119,11 +182,17 @@ export class NativeF05 implements BenchmarkList {
     const config: Options = {
       ownership: options.ownership ?? "shared",
       pageSize: options.pageSize ?? 128,
+      pageIdFilter: options.pageIdFilter ?? false,
+      adoptEdits: options.adoptEdits ?? false,
+      reuseUnchangedColumns: options.reuseUnchangedColumns ?? false,
     };
     natural(config.pageSize);
     if (
       config.pageSize === 0 ||
-      (config.ownership !== "shared" && config.ownership !== "owned")
+      (config.ownership !== "shared" && config.ownership !== "owned") ||
+      typeof config.pageIdFilter !== "boolean" ||
+      typeof config.adoptEdits !== "boolean" ||
+      typeof config.reuseUnchangedColumns !== "boolean"
     )
       throw new Error("Invalid page options");
     const { bunchIds, counts, startCounterIndexes, startCounters } = s;
@@ -237,9 +306,11 @@ export class NativeF05 implements BenchmarkList {
   }
   private find(id: ElementId): { page: number; row: number } {
     validId(id);
+    const hash = this.options.pageIdFilter ? idHash(id.bunchId) : undefined;
     for (let p = 0; p < this.pages.length; p++) {
-      const page = this.pages[p],
-        rows = page.byId.get(id.bunchId);
+      const page = this.pages[p];
+      if (hash !== undefined && !mayContain(page.idFilter!, hash)) continue;
+      const rows = page.byId.get(id.bunchId);
       if (rows !== undefined)
         for (
           let j = 0, size = typeof rows === "number" ? 1 : rows.length;
@@ -299,7 +370,9 @@ export class NativeF05 implements BenchmarkList {
     const anchor = before === null ? null : this.find(before);
     if (count === 0) return this;
     natural(this.length + count);
+    const hash = this.options.pageIdFilter ? idHash(id.bunchId) : undefined;
     for (const page of this.pages) {
+      if (hash !== undefined && !mayContain(page.idFilter!, hash)) continue;
       const rows = page.byId.get(id.bunchId);
       if (rows !== undefined)
         for (
@@ -314,6 +387,33 @@ export class NativeF05 implements BenchmarkList {
           )
             throw new Error("Duplicate IDs");
         }
+    }
+    // Validation above includes every later live/deleted interval for this ID.
+    // Continuing a positive run changes only its count, not its start or row.
+    if (
+      this.options.reuseUnchangedColumns &&
+      this.options.ownership === "owned" &&
+      anchor
+    ) {
+      const page = this.pages[anchor.page],
+        row = anchor.row;
+      const oldCount = page.columns.counts[row];
+      if (
+        oldCount > 0 &&
+        page.columns.bunchIds[row] === id.bunchId &&
+        before!.counter === page.starts[row] + oldCount - 1 &&
+        id.counter === before!.counter + 1
+      ) {
+        const counts = page.columns.counts.slice();
+        counts[row] += count;
+        const pages = this.pages.slice();
+        pages[anchor.page] = {
+          ...page,
+          columns: { bunchIds: page.columns.bunchIds, counts },
+          length: page.length + count,
+        };
+        return new NativeF05(pages, this.options);
+      }
     }
     const target = anchor?.page ?? 0,
       page = this.pages[target],
@@ -342,9 +442,14 @@ export class NativeF05 implements BenchmarkList {
     natural(id.counter + count);
     if (!count) return this;
     let result: Page[] | undefined;
+    const hash = this.options.pageIdFilter ? idHash(id.bunchId) : undefined;
     for (let p = 0; p < this.pages.length; p++) {
-      const page = this.pages[p],
-        rows = page.byId.get(id.bunchId);
+      const page = this.pages[p];
+      if (hash !== undefined && !mayContain(page.idFilter!, hash)) {
+        if (result) result.push(page);
+        continue;
+      }
+      const rows = page.byId.get(id.bunchId);
       let hits: number[] | undefined;
       if (rows !== undefined)
         for (

@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="510" viewBox="0 0 980 510" role="img" aria-label="Browser ready p95">
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:Arial,sans-serif;fill:#172b4d;font-size:14px}.title{font-size:22px;font-weight:600}.sub{fill:#42526e;font-size:13px}.value{font-variant-numeric:tabular-nums}</style>
+<text class="title" x="24" y="32">Browser ready p95</text>
+<text class="sub" x="24" y="56">Four editors; sorted by slower batch p95. Two batch results, not confidence intervals.</text>
+<rect x="290" y="72" width="12" height="12" fill="#2459a6"/><text x="310" y="83">Batch 1</text>
+<rect x="470" y="72" width="12" height="12" fill="#559d8b"/><text x="490" y="83">Batch 2</text>
+<line x1="290" x2="290" y1="98" y2="464" stroke="#e3e8ef"/><text class="sub" x="290" y="484" text-anchor="middle">0</text>
+<line x1="425" x2="425" y1="98" y2="464" stroke="#e3e8ef"/><text class="sub" x="425" y="484" text-anchor="middle">16</text>
+<line x1="560" x2="560" y1="98" y2="464" stroke="#e3e8ef"/><text class="sub" x="560" y="484" text-anchor="middle">32</text>
+<line x1="695" x2="695" y1="98" y2="464" stroke="#e3e8ef"/><text class="sub" x="695" y="484" text-anchor="middle">48</text>
+<line x1="830" x2="830" y1="98" y2="464" stroke="#e3e8ef"/><text class="sub" x="830" y="484" text-anchor="middle">64</text>
+<text x="24" y="129">F01 · Original objects</text>
+<rect x="290" y="112" width="426.09375" height="17" fill="#2459a6"/><text class="value" x="724.09375" y="125">50.5</text>
+<rect x="290" y="134" width="422.7187502011657" height="17" fill="#559d8b"/><text class="value" x="720.7187502011657" y="147">50.1</text>
+<text x="24" y="201">F05 · Flat columns / ID array</text>
+<rect x="290" y="184" width="428.625000603497" height="17" fill="#2459a6"/><text class="value" x="726.625000603497" y="197">50.8</text>
+<rect x="290" y="206" width="435.3750002011657" height="17" fill="#559d8b"/><text class="value" x="733.3750002011657" y="219">51.6</text>
+<text x="24" y="273">Flat Float64 · BSON response</text>
+<rect x="290" y="256" width="434.53125" height="17" fill="#2459a6"/><text class="value" x="732.53125" y="269">51.5</text>
+<rect x="290" y="278" width="462.37499959766865" height="17" fill="#559d8b"/><text class="value" x="760.3749995976686" y="291">54.8</text>
+<text x="24" y="345">Flat JSON · Joined IDs</text>
+<rect x="290" y="328" width="426.09375" height="17" fill="#2459a6"/><text class="value" x="724.09375" y="341">50.5</text>
+<rect x="290" y="350" width="470.81249959766865" height="17" fill="#559d8b"/><text class="value" x="768.8124995976686" y="363">55.8</text>
+<text x="24" y="417">Flat JSON · Direct reader</text>
+<rect x="290" y="400" width="489.375" height="17" fill="#2459a6"/><text class="value" x="787.375" y="413">58.0</text>
+<rect x="290" y="422" width="480.9375" height="17" fill="#559d8b"/><text class="value" x="778.9375" y="435">57.0</text>
+<text class="sub" x="560" y="504" text-anchor="middle">Milliseconds · zero-based axis · lower is better</text></svg>
