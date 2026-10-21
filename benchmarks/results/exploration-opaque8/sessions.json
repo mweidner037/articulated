@@ -1,0 +1,4676 @@
+{
+  "complete": true,
+  "browser": "151.0.7922.34",
+  "cpu": "Apple M5 Pro",
+  "platform": "darwin/arm64",
+  "generatedAt": "2026-10-21T03:38:54.334Z",
+  "idModel": "opaque8",
+  "documents": 4,
+  "operations": 2000,
+  "repetitions": 3,
+  "note": "Four real editors by default; only first edited. Each operation applies an incremental ProseMirror transaction. Two animation frames per checkpoint, not per keystroke. Memory = JS heap + backing storage after forced GC; beforeGC is a sampled boundary, not peak. Undo retains last 100 ID-list versions only, not full ProseMirror history. Workloads/checks are not retained in browser between calls.",
+  "rows": [
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.900000214576721,
+          "totalMs": 24.5,
+          "retainedVersions": 0,
+          "retainedBytes": 7125228,
+          "beforeGCBytes": 9127053
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.100000381469727,
+          "totalMs": 64.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 7544832,
+          "beforeGCBytes": 15961787
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.200000524520874,
+          "totalMs": 72.20000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 7742476,
+          "beforeGCBytes": 15652670
+        }
+      ],
+      "releasedHistoryBytes": 7742660
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4656632,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.200000047683716,
+          "totalMs": 24.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 4958776,
+          "beforeGCBytes": 7171395
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.399999618530273,
+          "totalMs": 60.800000071525574,
+          "retainedVersions": 0,
+          "retainedBytes": 5150188,
+          "beforeGCBytes": 13338975
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.5,
+          "totalMs": 68,
+          "retainedVersions": 0,
+          "retainedBytes": 5168580,
+          "beforeGCBytes": 20298511
+        }
+      ],
+      "releasedHistoryBytes": 5168772
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.900000214576721,
+          "totalMs": 24.5,
+          "retainedVersions": 0,
+          "retainedBytes": 7125248,
+          "beforeGCBytes": 9203581
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.999999761581421,
+          "totalMs": 64.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 7548080,
+          "beforeGCBytes": 15819923
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 9.199999690055847,
+          "totalMs": 72.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 7744724,
+          "beforeGCBytes": 15683082
+        }
+      ],
+      "releasedHistoryBytes": 7744908
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.0000001192092896,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5110336,
+          "beforeGCBytes": 8113609
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.400000095367432,
+          "totalMs": 68.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5453932,
+          "beforeGCBytes": 14672507
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.59999966621399,
+          "totalMs": 80.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5597656,
+          "beforeGCBytes": 21660682
+        }
+      ],
+      "releasedHistoryBytes": 4940372
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.899999737739563,
+          "totalMs": 24.59999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 4518460,
+          "beforeGCBytes": 9049941
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.699999570846558,
+          "totalMs": 66.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4832176,
+          "beforeGCBytes": 16637103
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.900000214576721,
+          "totalMs": 76.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 4951920,
+          "beforeGCBytes": 14070542
+        }
+      ],
+      "releasedHistoryBytes": 4952112
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.799999952316284,
+          "totalMs": 24.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 4899092,
+          "beforeGCBytes": 7458873
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.999999761581421,
+          "totalMs": 70.20000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5217984,
+          "beforeGCBytes": 12767931
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.199999570846558,
+          "totalMs": 79.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5327848,
+          "beforeGCBytes": 14561206
+        }
+      ],
+      "releasedHistoryBytes": 5328040
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 6651592,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2,
+          "totalMs": 23.59999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 7010744,
+          "beforeGCBytes": 9208991
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 3.3999996185302734,
+          "totalMs": 56.699999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 7209680,
+          "beforeGCBytes": 15328863
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 4.899999260902405,
+          "totalMs": 67.09999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 7243884,
+          "beforeGCBytes": 15408459
+        }
+      ],
+      "releasedHistoryBytes": 7244068
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4657368,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.100000023841858,
+          "totalMs": 25.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5417932,
+          "beforeGCBytes": 8129107
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.399999976158142,
+          "totalMs": 59.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5672260,
+          "beforeGCBytes": 19046311
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 4.8999998569488525,
+          "totalMs": 68.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 5587740,
+          "beforeGCBytes": 22577131
+        }
+      ],
+      "releasedHistoryBytes": 5170884
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4094300,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.5999997854232788,
+          "totalMs": 23.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 4852676,
+          "beforeGCBytes": 7017495
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.600000023841858,
+          "totalMs": 61.40000009536743,
+          "retainedVersions": 100,
+          "retainedBytes": 5107456,
+          "beforeGCBytes": 17311043
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.700000047683716,
+          "totalMs": 69.20000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 5020692,
+          "beforeGCBytes": 15519535
+        }
+      ],
+      "releasedHistoryBytes": 4605036
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4632204,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.8000003099441528,
+          "totalMs": 23.600000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5240360,
+          "beforeGCBytes": 9529967
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.700000166893005,
+          "totalMs": 63.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5421216,
+          "beforeGCBytes": 12951911
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.09999942779541,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5373408,
+          "beforeGCBytes": 17179731
+        }
+      ],
+      "releasedHistoryBytes": 5095224
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 6653224,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.6999998092651367,
+          "totalMs": 24.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 7123120,
+          "beforeGCBytes": 9501095
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.0000001192092896,
+          "totalMs": 57.5,
+          "retainedVersions": 100,
+          "retainedBytes": 7322236,
+          "beforeGCBytes": 18065991
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 4.100000023841858,
+          "totalMs": 67.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 7348500,
+          "beforeGCBytes": 18913999
+        }
+      ],
+      "releasedHistoryBytes": 7237420
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4835365,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.3999998569488525,
+          "totalMs": 26.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5790309,
+          "beforeGCBytes": 8006482
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.800000309944153,
+          "totalMs": 70.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6154073,
+          "beforeGCBytes": 15582560
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.499998092651367,
+          "totalMs": 83.69999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 6329173,
+          "beforeGCBytes": 20818267
+        }
+      ],
+      "releasedHistoryBytes": 5827145
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 6650992,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.8999996185302734,
+          "totalMs": 26.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 7123872,
+          "beforeGCBytes": 9209273
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.699999809265137,
+          "totalMs": 69.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 7554488,
+          "beforeGCBytes": 15930831
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.800000071525574,
+          "totalMs": 76.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 7751216,
+          "beforeGCBytes": 15669658
+        }
+      ],
+      "releasedHistoryBytes": 7751400
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.200000047683716,
+          "totalMs": 24.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5240040,
+          "beforeGCBytes": 9488079
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.799999833106995,
+          "totalMs": 59.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5420808,
+          "beforeGCBytes": 13001835
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.300000786781311,
+          "totalMs": 71.90000009536743,
+          "retainedVersions": 100,
+          "retainedBytes": 5371216,
+          "beforeGCBytes": 17180723
+        }
+      ],
+      "releasedHistoryBytes": 5093032
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.2999999523162842,
+          "totalMs": 23.899999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4753388,
+          "beforeGCBytes": 6877115
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.100000023841858,
+          "totalMs": 60.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 4928452,
+          "beforeGCBytes": 16138459
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.3999998569488525,
+          "totalMs": 68,
+          "retainedVersions": 0,
+          "retainedBytes": 4944132,
+          "beforeGCBytes": 14985687
+        }
+      ],
+      "releasedHistoryBytes": 4944324
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4430808,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 19.50000023841858,
+          "totalMs": 39.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4900916,
+          "beforeGCBytes": 12492925
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 68.49999988079071,
+          "totalMs": 124.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5225144,
+          "beforeGCBytes": 24689939
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 92.79999876022339,
+          "totalMs": 152.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5349184,
+          "beforeGCBytes": 22287050
+        }
+      ],
+      "releasedHistoryBytes": 5349376
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4826936,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.6000001430511475,
+          "totalMs": 26.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5781860,
+          "beforeGCBytes": 7926417
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.100000143051147,
+          "totalMs": 70.80000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 6155544,
+          "beforeGCBytes": 15876915
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.799999833106995,
+          "totalMs": 85,
+          "retainedVersions": 100,
+          "retainedBytes": 6331076,
+          "beforeGCBytes": 20740570
+        }
+      ],
+      "releasedHistoryBytes": 5829048
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.1999998092651367,
+          "totalMs": 25,
+          "retainedVersions": 0,
+          "retainedBytes": 4967628,
+          "beforeGCBytes": 7250539
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.4000004529953,
+          "totalMs": 63.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5152536,
+          "beforeGCBytes": 13343711
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.800000429153442,
+          "totalMs": 69.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5170952,
+          "beforeGCBytes": 20253027
+        }
+      ],
+      "releasedHistoryBytes": 5171144
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 5182848,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.600000262260437,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 6003320,
+          "beforeGCBytes": 8203697
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.500000715255737,
+          "totalMs": 70,
+          "retainedVersions": 100,
+          "retainedBytes": 6377840,
+          "beforeGCBytes": 15226527
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.700000405311584,
+          "totalMs": 78.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6556472,
+          "beforeGCBytes": 16538498
+        }
+      ],
+      "releasedHistoryBytes": 6056388
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.5999997854232788,
+          "totalMs": 23.799999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 4926724,
+          "beforeGCBytes": 7092043
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.699999809265137,
+          "totalMs": 59.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5075812,
+          "beforeGCBytes": 13697611
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.400000095367432,
+          "totalMs": 70.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 5092880,
+          "beforeGCBytes": 13404663
+        }
+      ],
+      "releasedHistoryBytes": 5093072
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4657112,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.800000190734863,
+          "totalMs": 27.100000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5668356,
+          "beforeGCBytes": 8320445
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 13.399999141693115,
+          "totalMs": 72.69999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 6018896,
+          "beforeGCBytes": 20534735
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.90000021457672,
+          "totalMs": 86.5,
+          "retainedVersions": 100,
+          "retainedBytes": 6163564,
+          "beforeGCBytes": 21307506
+        }
+      ],
+      "releasedHistoryBytes": 5505080
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.8000001907348633,
+          "totalMs": 26.600000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5110184,
+          "beforeGCBytes": 8028173
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.899999856948853,
+          "totalMs": 74.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5454348,
+          "beforeGCBytes": 14748307
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.900000095367432,
+          "totalMs": 84.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5599452,
+          "beforeGCBytes": 21895678
+        }
+      ],
+      "releasedHistoryBytes": 4942168
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.299999952316284,
+          "totalMs": 25.40000009536743,
+          "retainedVersions": 0,
+          "retainedBytes": 4968536,
+          "beforeGCBytes": 7250383
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.000000357627869,
+          "totalMs": 61.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5150496,
+          "beforeGCBytes": 13358235
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.899999976158142,
+          "totalMs": 70.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5169032,
+          "beforeGCBytes": 20337115
+        }
+      ],
+      "releasedHistoryBytes": 5169224
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4094204,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.899999976158142,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4518388,
+          "beforeGCBytes": 9079949
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.900000214576721,
+          "totalMs": 69.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 4832088,
+          "beforeGCBytes": 16785567
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.300000071525574,
+          "totalMs": 79.69999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 4951832,
+          "beforeGCBytes": 14102798
+        }
+      ],
+      "releasedHistoryBytes": 4952024
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.300000190734863,
+          "totalMs": 25.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5076644,
+          "beforeGCBytes": 7632005
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.199999690055847,
+          "totalMs": 72.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5393208,
+          "beforeGCBytes": 16863515
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.2999986410141,
+          "totalMs": 83.20000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5502420,
+          "beforeGCBytes": 17309642
+        }
+      ],
+      "releasedHistoryBytes": 5502612
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4658860,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 28.799999594688416,
+          "totalMs": 49.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 13173620,
+          "beforeGCBytes": 25913557
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 91.90000057220459,
+          "totalMs": 146.70000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 13645652,
+          "beforeGCBytes": 31070541
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 113.29999876022339,
+          "totalMs": 184.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 13951624,
+          "beforeGCBytes": 56626956
+        }
+      ],
+      "releasedHistoryBytes": 5524888
+    },
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.8000000715255737,
+          "totalMs": 26.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 7343156,
+          "beforeGCBytes": 11053593
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.300000190734863,
+          "totalMs": 72.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 7714928,
+          "beforeGCBytes": 15647163
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 10.399999856948853,
+          "totalMs": 82.09999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 7924172,
+          "beforeGCBytes": 16580878
+        }
+      ],
+      "releasedHistoryBytes": 7736708
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4657392,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 19.200000047683716,
+          "totalMs": 40.699999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5078616,
+          "beforeGCBytes": 12708289
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 77.50000035762787,
+          "totalMs": 135.79999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5400192,
+          "beforeGCBytes": 25705519
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 93.20000100135803,
+          "totalMs": 157.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5522984,
+          "beforeGCBytes": 25434274
+        }
+      ],
+      "releasedHistoryBytes": 5523176
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4834882,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.1000001430511475,
+          "totalMs": 26.600000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5338894,
+          "beforeGCBytes": 9067147
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.199999809265137,
+          "totalMs": 73.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 5672846,
+          "beforeGCBytes": 15577921
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.499999523162842,
+          "totalMs": 84.09999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 5827170,
+          "beforeGCBytes": 15546744
+        }
+      ],
+      "releasedHistoryBytes": 5827362
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 20.300000309944153,
+          "totalMs": 40,
+          "retainedVersions": 0,
+          "retainedBytes": 5077868,
+          "beforeGCBytes": 12690773
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 68.29999768733978,
+          "totalMs": 125.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5400264,
+          "beforeGCBytes": 22609543
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 89.40000128746033,
+          "totalMs": 151.29999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5523384,
+          "beforeGCBytes": 23886946
+        }
+      ],
+      "releasedHistoryBytes": 5523576
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.199999928474426,
+          "totalMs": 25.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5076644,
+          "beforeGCBytes": 7604033
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.299999475479126,
+          "totalMs": 70.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5392908,
+          "beforeGCBytes": 14361175
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.999999284744263,
+          "totalMs": 81,
+          "retainedVersions": 0,
+          "retainedBytes": 5502460,
+          "beforeGCBytes": 17392850
+        }
+      ],
+      "releasedHistoryBytes": 5502652
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4632128,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.499999761581421,
+          "totalMs": 27.399999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5739004,
+          "beforeGCBytes": 7999617
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.800000667572021,
+          "totalMs": 69.19999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 6125704,
+          "beforeGCBytes": 15376599
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.800000548362732,
+          "totalMs": 79.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6314636,
+          "beforeGCBytes": 16331794
+        }
+      ],
+      "releasedHistoryBytes": 5810600
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.6000001430511475,
+          "totalMs": 24.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5479256,
+          "beforeGCBytes": 7751563
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.400000333786011,
+          "totalMs": 59.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5613584,
+          "beforeGCBytes": 14395963
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8,
+          "totalMs": 68.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5629724,
+          "beforeGCBytes": 13954819
+        }
+      ],
+      "releasedHistoryBytes": 5629916
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4656008,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.499999761581421,
+          "totalMs": 24.200000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5426360,
+          "beforeGCBytes": 8049471
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.199999451637268,
+          "totalMs": 59.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5673836,
+          "beforeGCBytes": 17921623
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 5.399999976158142,
+          "totalMs": 69.70000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 5587024,
+          "beforeGCBytes": 20685631
+        }
+      ],
+      "releasedHistoryBytes": 5170228
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4632100,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.6999998092651367,
+          "totalMs": 24.899999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 5286656,
+          "beforeGCBytes": 9102633
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.699999928474426,
+          "totalMs": 68.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5646436,
+          "beforeGCBytes": 16234479
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.000001072883606,
+          "totalMs": 76.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5825572,
+          "beforeGCBytes": 18921474
+        }
+      ],
+      "releasedHistoryBytes": 5825764
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.6999999284744263,
+          "totalMs": 23.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 4926724,
+          "beforeGCBytes": 7139259
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.100000023841858,
+          "totalMs": 58.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5076064,
+          "beforeGCBytes": 13765735
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 5.299999833106995,
+          "totalMs": 68.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 5092824,
+          "beforeGCBytes": 13445011
+        }
+      ],
+      "releasedHistoryBytes": 5093016
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 23.600000023841858,
+          "totalMs": 46.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 12982704,
+          "beforeGCBytes": 26218697
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 93.09999990463257,
+          "totalMs": 149.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 13469660,
+          "beforeGCBytes": 30030943
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 117.20000064373016,
+          "totalMs": 181.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 13776532,
+          "beforeGCBytes": 53764731
+        }
+      ],
+      "releasedHistoryBytes": 5349796
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4430752,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.400000214576721,
+          "totalMs": 23.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4754048,
+          "beforeGCBytes": 6925979
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.800000309944153,
+          "totalMs": 58.5,
+          "retainedVersions": 0,
+          "retainedBytes": 4928344,
+          "beforeGCBytes": 14418779
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.1000001430511475,
+          "totalMs": 68.5,
+          "retainedVersions": 0,
+          "retainedBytes": 4944004,
+          "beforeGCBytes": 14979643
+        }
+      ],
+      "releasedHistoryBytes": 4944196
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4835242,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.700000047683716,
+          "totalMs": 25.399999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5791518,
+          "beforeGCBytes": 7934795
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.899999618530273,
+          "totalMs": 68.20000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 6156618,
+          "beforeGCBytes": 15774377
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.600000143051147,
+          "totalMs": 79.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6340670,
+          "beforeGCBytes": 16347368
+        }
+      ],
+      "releasedHistoryBytes": 5841490
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.700000047683716,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4906392,
+          "beforeGCBytes": 7383365
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.600000262260437,
+          "totalMs": 70.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5217588,
+          "beforeGCBytes": 12891375
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.399999737739563,
+          "totalMs": 79.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5328288,
+          "beforeGCBytes": 14563878
+        }
+      ],
+      "releasedHistoryBytes": 5328480
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.9000003337860107,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4517068,
+          "beforeGCBytes": 9131301
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.999999642372131,
+          "totalMs": 68.09999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 4827440,
+          "beforeGCBytes": 12358671
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.80000066757202,
+          "totalMs": 79.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4936292,
+          "beforeGCBytes": 14116306
+        }
+      ],
+      "releasedHistoryBytes": 4936484
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4835575,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.800000309944153,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5340655,
+          "beforeGCBytes": 9005912
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.40000069141388,
+          "totalMs": 68.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5677427,
+          "beforeGCBytes": 15423482
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.699999690055847,
+          "totalMs": 77.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5841411,
+          "beforeGCBytes": 15818373
+        }
+      ],
+      "releasedHistoryBytes": 5841663
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 6653224,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.8000001907348633,
+          "totalMs": 24.600000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 7125248,
+          "beforeGCBytes": 9204493
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.199999690055847,
+          "totalMs": 65.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 7547720,
+          "beforeGCBytes": 15896951
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.1999993324279785,
+          "totalMs": 73.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 7744364,
+          "beforeGCBytes": 15634914
+        }
+      ],
+      "releasedHistoryBytes": 7744548
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.1000006198883057,
+          "totalMs": 24.899999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 5285080,
+          "beforeGCBytes": 9114593
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.799999833106995,
+          "totalMs": 67,
+          "retainedVersions": 0,
+          "retainedBytes": 5641796,
+          "beforeGCBytes": 12553879
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.999999761581421,
+          "totalMs": 76.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5810384,
+          "beforeGCBytes": 18502026
+        }
+      ],
+      "releasedHistoryBytes": 5810576
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.8000003099441528,
+          "totalMs": 23.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 7010720,
+          "beforeGCBytes": 9122587
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 3.1999998092651367,
+          "totalMs": 55.90000009536743,
+          "retainedVersions": 0,
+          "retainedBytes": 7210308,
+          "beforeGCBytes": 15377847
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 3.6999998092651367,
+          "totalMs": 65.80000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 7234040,
+          "beforeGCBytes": 15435275
+        }
+      ],
+      "releasedHistoryBytes": 7234224
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4826874,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.7000001668930054,
+          "totalMs": 25.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5331934,
+          "beforeGCBytes": 9094627
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.000000476837158,
+          "totalMs": 67.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 5679222,
+          "beforeGCBytes": 15614213
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.499998927116394,
+          "totalMs": 78.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5843234,
+          "beforeGCBytes": 15872424
+        }
+      ],
+      "releasedHistoryBytes": 5843486
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.9999998807907104,
+          "totalMs": 24.199999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5202616,
+          "beforeGCBytes": 7879635
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.800000309944153,
+          "totalMs": 59.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5452592,
+          "beforeGCBytes": 17651275
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.899999380111694,
+          "totalMs": 67.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5363440,
+          "beforeGCBytes": 20467879
+        }
+      ],
+      "releasedHistoryBytes": 4946644
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.4999998807907104,
+          "totalMs": 23.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5240364,
+          "beforeGCBytes": 9541035
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.599999666213989,
+          "totalMs": 58.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5421192,
+          "beforeGCBytes": 12964547
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.5999990701675415,
+          "totalMs": 70.69999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 5373384,
+          "beforeGCBytes": 17241879
+        }
+      ],
+      "releasedHistoryBytes": 5095200
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.3000001907348633,
+          "totalMs": 24.600000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 4899092,
+          "beforeGCBytes": 7426753
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.600000143051147,
+          "totalMs": 68.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5218036,
+          "beforeGCBytes": 12862055
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.900000095367432,
+          "totalMs": 79.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 5327896,
+          "beforeGCBytes": 14516246
+        }
+      ],
+      "releasedHistoryBytes": 5328088
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4835236,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.600000023841858,
+          "totalMs": 23.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5444304,
+          "beforeGCBytes": 9651623
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.5999990701675415,
+          "totalMs": 58.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5616152,
+          "beforeGCBytes": 13221195
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.9999998807907104,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5567748,
+          "beforeGCBytes": 17371875
+        }
+      ],
+      "releasedHistoryBytes": 5289100
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.5999999046325684,
+          "totalMs": 23.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 4413068,
+          "beforeGCBytes": 7237507
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.200000166893005,
+          "totalMs": 59.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 4584872,
+          "beforeGCBytes": 15784443
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.900000095367432,
+          "totalMs": 68.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4602508,
+          "beforeGCBytes": 15399283
+        }
+      ],
+      "releasedHistoryBytes": 4602700
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4835402,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.6000001430511475,
+          "totalMs": 25.600000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5790346,
+          "beforeGCBytes": 7987559
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.599999904632568,
+          "totalMs": 69.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6154262,
+          "beforeGCBytes": 15657513
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.600000739097595,
+          "totalMs": 82.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6329262,
+          "beforeGCBytes": 20707680
+        }
+      ],
+      "releasedHistoryBytes": 5827234
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 6653224,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.400000214576721,
+          "totalMs": 24.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 7333964,
+          "beforeGCBytes": 11060497
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.200000286102295,
+          "totalMs": 68.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 7702380,
+          "beforeGCBytes": 15403979
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 9.100000023841858,
+          "totalMs": 75.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 7904072,
+          "beforeGCBytes": 19205390
+        }
+      ],
+      "releasedHistoryBytes": 7724516
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4835054,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.3000001907348633,
+          "totalMs": 23.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5122050,
+          "beforeGCBytes": 7341537
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.299999833106995,
+          "totalMs": 57.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5270314,
+          "beforeGCBytes": 13866133
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 5.800000309944153,
+          "totalMs": 67.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5286022,
+          "beforeGCBytes": 13632145
+        }
+      ],
+      "releasedHistoryBytes": 5286214
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 6652352,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.3000000715255737,
+          "totalMs": 23.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 7011628,
+          "beforeGCBytes": 9158511
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 3.900000214576721,
+          "totalMs": 56.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 7211248,
+          "beforeGCBytes": 15426491
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 4.6000001430511475,
+          "totalMs": 65.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 7234980,
+          "beforeGCBytes": 15376799
+        }
+      ],
+      "releasedHistoryBytes": 7235164
+    },
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 6653208,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.8000000715255737,
+          "totalMs": 24.40000009536743,
+          "retainedVersions": 0,
+          "retainedBytes": 7125232,
+          "beforeGCBytes": 9192385
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.199999809265137,
+          "totalMs": 66.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 7545168,
+          "beforeGCBytes": 16104779
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.599999904632568,
+          "totalMs": 74,
+          "retainedVersions": 0,
+          "retainedBytes": 7742568,
+          "beforeGCBytes": 15836238
+        }
+      ],
+      "releasedHistoryBytes": 7742752
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 6653824,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.8999998569488525,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 7126880,
+          "beforeGCBytes": 9548291
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 3.8000001907348633,
+          "totalMs": 57.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 7326136,
+          "beforeGCBytes": 18088055
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 3.7000001668930054,
+          "totalMs": 65.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 7351776,
+          "beforeGCBytes": 20307167
+        }
+      ],
+      "releasedHistoryBytes": 7240696
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4656860,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 25.09999966621399,
+          "totalMs": 45.90000009536743,
+          "retainedVersions": 100,
+          "retainedBytes": 13172152,
+          "beforeGCBytes": 25911089
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 88.69999992847443,
+          "totalMs": 144.5,
+          "retainedVersions": 100,
+          "retainedBytes": 13645204,
+          "beforeGCBytes": 31691071
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 112.80000019073486,
+          "totalMs": 177.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 13950984,
+          "beforeGCBytes": 55141411
+        }
+      ],
+      "releasedHistoryBytes": 5524248
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4094880,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2,
+          "totalMs": 23.90000009536743,
+          "retainedVersions": 100,
+          "retainedBytes": 4843168,
+          "beforeGCBytes": 7010131
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.799999952316284,
+          "totalMs": 61,
+          "retainedVersions": 100,
+          "retainedBytes": 5108000,
+          "beforeGCBytes": 17271735
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.399999856948853,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5020756,
+          "beforeGCBytes": 15490439
+        }
+      ],
+      "releasedHistoryBytes": 4605100
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4835250,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.0000003576278687,
+          "totalMs": 23.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5121070,
+          "beforeGCBytes": 7356069
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.600000381469727,
+          "totalMs": 57.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5269030,
+          "beforeGCBytes": 13952697
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.200000047683716,
+          "totalMs": 67.80000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 5275942,
+          "beforeGCBytes": 13596193
+        }
+      ],
+      "releasedHistoryBytes": 5276134
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4835536,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.7999995946884155,
+          "totalMs": 23.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5444200,
+          "beforeGCBytes": 9679243
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.8999998569488525,
+          "totalMs": 58,
+          "retainedVersions": 100,
+          "retainedBytes": 5615820,
+          "beforeGCBytes": 13186455
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.1000001430511475,
+          "totalMs": 68.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 5558620,
+          "beforeGCBytes": 17229899
+        }
+      ],
+      "releasedHistoryBytes": 5279972
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.600000262260437,
+          "totalMs": 25.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5668912,
+          "beforeGCBytes": 8301341
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.90000057220459,
+          "totalMs": 71.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6019624,
+          "beforeGCBytes": 20508467
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.699999570846558,
+          "totalMs": 81.80000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 6164416,
+          "beforeGCBytes": 21443418
+        }
+      ],
+      "releasedHistoryBytes": 5505932
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4632055,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.5999995470046997,
+          "totalMs": 25.199999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5740507,
+          "beforeGCBytes": 8059676
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.699999451637268,
+          "totalMs": 70.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 6128147,
+          "beforeGCBytes": 15823674
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.400000095367432,
+          "totalMs": 79.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6326623,
+          "beforeGCBytes": 16386605
+        }
+      ],
+      "releasedHistoryBytes": 5825435
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4835188,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.600000262260437,
+          "totalMs": 25.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 5339200,
+          "beforeGCBytes": 9099413
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.799999952316284,
+          "totalMs": 68.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5673188,
+          "beforeGCBytes": 15521095
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.699999809265137,
+          "totalMs": 80.69999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 5827392,
+          "beforeGCBytes": 15486138
+        }
+      ],
+      "releasedHistoryBytes": 5827584
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4657164,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 19.50000023841858,
+          "totalMs": 41.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5079008,
+          "beforeGCBytes": 12711329
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 69.19999873638153,
+          "totalMs": 123.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5400148,
+          "beforeGCBytes": 25704031
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 86.90000081062317,
+          "totalMs": 150.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5523400,
+          "beforeGCBytes": 25435158
+        }
+      ],
+      "releasedHistoryBytes": 5523592
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4829011,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.000000238418579,
+          "totalMs": 24.699999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5334323,
+          "beforeGCBytes": 9014236
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.699999809265137,
+          "totalMs": 67.20000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5679475,
+          "beforeGCBytes": 15431618
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.59999930858612,
+          "totalMs": 78.79999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5843291,
+          "beforeGCBytes": 15863217
+        }
+      ],
+      "releasedHistoryBytes": 5843543
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 20.09999966621399,
+          "totalMs": 40.300000071525574,
+          "retainedVersions": 0,
+          "retainedBytes": 4900928,
+          "beforeGCBytes": 12492581
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 66.69999933242798,
+          "totalMs": 124.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5225140,
+          "beforeGCBytes": 24689887
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 93.79999935626984,
+          "totalMs": 155.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5349104,
+          "beforeGCBytes": 22287050
+        }
+      ],
+      "releasedHistoryBytes": 5349296
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4836209,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.700000047683716,
+          "totalMs": 25.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5792505,
+          "beforeGCBytes": 7959782
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.299999237060547,
+          "totalMs": 67.19999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 6157681,
+          "beforeGCBytes": 15748536
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 10.500000238418579,
+          "totalMs": 77.70000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 6341933,
+          "beforeGCBytes": 16350447
+        }
+      ],
+      "releasedHistoryBytes": 5842753
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.000000238418579,
+          "totalMs": 24.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5109680,
+          "beforeGCBytes": 7949737
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.200000286102295,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5455124,
+          "beforeGCBytes": 18811527
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.100000619888306,
+          "totalMs": 78.69999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 5608568,
+          "beforeGCBytes": 19657602
+        }
+      ],
+      "releasedHistoryBytes": 4954132
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 5182212,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.4000000953674316,
+          "totalMs": 22.600000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5479152,
+          "beforeGCBytes": 7710671
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.9999998807907104,
+          "totalMs": 57.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5611516,
+          "beforeGCBytes": 14208547
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6,
+          "totalMs": 68.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5629492,
+          "beforeGCBytes": 13953407
+        }
+      ],
+      "releasedHistoryBytes": 5629684
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.90000057220459,
+          "totalMs": 25.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5287216,
+          "beforeGCBytes": 9082433
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.799999117851257,
+          "totalMs": 66.79999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5646852,
+          "beforeGCBytes": 13028371
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.400000214576721,
+          "totalMs": 77.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 5825168,
+          "beforeGCBytes": 15951334
+        }
+      ],
+      "releasedHistoryBytes": 5825420
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4826867,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.1000001430511475,
+          "totalMs": 23.09999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 5122195,
+          "beforeGCBytes": 7348034
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.100000023841858,
+          "totalMs": 58.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5272191,
+          "beforeGCBytes": 13944818
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.6000001430511475,
+          "totalMs": 69,
+          "retainedVersions": 0,
+          "retainedBytes": 5288439,
+          "beforeGCBytes": 13609902
+        }
+      ],
+      "releasedHistoryBytes": 5288631
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.1999995708465576,
+          "totalMs": 25.199999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5109824,
+          "beforeGCBytes": 8041501
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.399999618530273,
+          "totalMs": 68.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5455368,
+          "beforeGCBytes": 18834239
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.600000143051147,
+          "totalMs": 79.09999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 5609176,
+          "beforeGCBytes": 19606590
+        }
+      ],
+      "releasedHistoryBytes": 4954740
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.800000309944153,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5076644,
+          "beforeGCBytes": 7554529
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.700000405311584,
+          "totalMs": 69.70000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5392908,
+          "beforeGCBytes": 14375347
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.200000643730164,
+          "totalMs": 80.79999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5502656,
+          "beforeGCBytes": 17418158
+        }
+      ],
+      "releasedHistoryBytes": 5502848
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 5182316,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.8000001907348633,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 5545012,
+          "beforeGCBytes": 9106581
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.799999356269836,
+          "totalMs": 66.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5890844,
+          "beforeGCBytes": 15797147
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.199999451637268,
+          "totalMs": 76.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 6048972,
+          "beforeGCBytes": 15801782
+        }
+      ],
+      "releasedHistoryBytes": 6049224
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 5182212,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.100000023841858,
+          "totalMs": 23.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5777272,
+          "beforeGCBytes": 10058847
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.200000047683716,
+          "totalMs": 58.300000071525574,
+          "retainedVersions": 100,
+          "retainedBytes": 5960008,
+          "beforeGCBytes": 13527739
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.599999785423279,
+          "totalMs": 70.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5909032,
+          "beforeGCBytes": 17734175
+        }
+      ],
+      "releasedHistoryBytes": 5629456
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.4999998807907104,
+          "totalMs": 23.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4413480,
+          "beforeGCBytes": 7249503
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.900000333786011,
+          "totalMs": 58.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 4583292,
+          "beforeGCBytes": 15709343
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.1000001430511475,
+          "totalMs": 69.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 4602920,
+          "beforeGCBytes": 15454195
+        }
+      ],
+      "releasedHistoryBytes": 4603112
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.5999996662139893,
+          "totalMs": 23.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 4925648,
+          "beforeGCBytes": 7098431
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 3.499999761581421,
+          "totalMs": 57.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5074968,
+          "beforeGCBytes": 13741647
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.799999952316284,
+          "totalMs": 67.60000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 5091728,
+          "beforeGCBytes": 13473875
+        }
+      ],
+      "releasedHistoryBytes": 5091920
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4631943,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 5,
+          "totalMs": 25.399999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5739651,
+          "beforeGCBytes": 7948220
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.800000071525574,
+          "totalMs": 67.80000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 6126751,
+          "beforeGCBytes": 15803382
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.099999904632568,
+          "totalMs": 78.5,
+          "retainedVersions": 100,
+          "retainedBytes": 6326079,
+          "beforeGCBytes": 16421189
+        }
+      ],
+      "releasedHistoryBytes": 5824891
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4834766,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.3000000715255737,
+          "totalMs": 25.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5795374,
+          "beforeGCBytes": 7948807
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.599999904632568,
+          "totalMs": 68.09999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 6160614,
+          "beforeGCBytes": 15789309
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.699999690055847,
+          "totalMs": 80,
+          "retainedVersions": 100,
+          "retainedBytes": 6344746,
+          "beforeGCBytes": 16374740
+        }
+      ],
+      "releasedHistoryBytes": 5845566
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 24.199999690055847,
+          "totalMs": 44.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 12982648,
+          "beforeGCBytes": 31683869
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 91.19999945163727,
+          "totalMs": 149,
+          "retainedVersions": 100,
+          "retainedBytes": 13469568,
+          "beforeGCBytes": 29241344
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 114.50000035762787,
+          "totalMs": 182.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 13776380,
+          "beforeGCBytes": 51708302
+        }
+      ],
+      "releasedHistoryBytes": 5349644
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 5182228,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.500000238418579,
+          "totalMs": 23.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5537928,
+          "beforeGCBytes": 9097249
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.299998998641968,
+          "totalMs": 68.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 5880056,
+          "beforeGCBytes": 15848639
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.699999332427979,
+          "totalMs": 78.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 6026880,
+          "beforeGCBytes": 15714326
+        }
+      ],
+      "releasedHistoryBytes": 6027072
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.7999998331069946,
+          "totalMs": 25.600000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5417512,
+          "beforeGCBytes": 8088915
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.199999928474426,
+          "totalMs": 61.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5672984,
+          "beforeGCBytes": 18928291
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 5.200000047683716,
+          "totalMs": 71.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 5586616,
+          "beforeGCBytes": 22403799
+        }
+      ],
+      "releasedHistoryBytes": 5169760
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4632124,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.100000262260437,
+          "totalMs": 26.699999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5743136,
+          "beforeGCBytes": 7995677
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.999999642372131,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 6129400,
+          "beforeGCBytes": 15403911
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.99999988079071,
+          "totalMs": 82.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6318384,
+          "beforeGCBytes": 16365494
+        }
+      ],
+      "releasedHistoryBytes": 5814348
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.4999998807907104,
+          "totalMs": 25,
+          "retainedVersions": 100,
+          "retainedBytes": 5480472,
+          "beforeGCBytes": 8063653
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.100000023841858,
+          "totalMs": 71.20000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 5844040,
+          "beforeGCBytes": 19727335
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.09999942779541,
+          "totalMs": 81.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5990564,
+          "beforeGCBytes": 22658426
+        }
+      ],
+      "releasedHistoryBytes": 5332080
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4094272,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.5000001192092896,
+          "totalMs": 25.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5109676,
+          "beforeGCBytes": 8018133
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.399999499320984,
+          "totalMs": 70.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5455336,
+          "beforeGCBytes": 18838151
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.500000596046448,
+          "totalMs": 83.20000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 5609176,
+          "beforeGCBytes": 19444022
+        }
+      ],
+      "releasedHistoryBytes": 4954740
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4094204,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.1999993324279785,
+          "totalMs": 25.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 4517468,
+          "beforeGCBytes": 9193445
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.50000011920929,
+          "totalMs": 70.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4830180,
+          "beforeGCBytes": 12445795
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.200000405311584,
+          "totalMs": 80.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4939008,
+          "beforeGCBytes": 14105070
+        }
+      ],
+      "releasedHistoryBytes": 4939200
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.8000001907348633,
+          "totalMs": 25,
+          "retainedVersions": 100,
+          "retainedBytes": 5996324,
+          "beforeGCBytes": 8229269
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.49999988079071,
+          "totalMs": 69.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6372556,
+          "beforeGCBytes": 15151291
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.500000596046448,
+          "totalMs": 78.70000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 6549644,
+          "beforeGCBytes": 16587234
+        }
+      ],
+      "releasedHistoryBytes": 6049572
+    },
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 6652332,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.200000047683716,
+          "totalMs": 24.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 7339220,
+          "beforeGCBytes": 11068765
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.299999833106995,
+          "totalMs": 67.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 7711660,
+          "beforeGCBytes": 15766351
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.40000033378601,
+          "totalMs": 75.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 7913384,
+          "beforeGCBytes": 16481430
+        }
+      ],
+      "releasedHistoryBytes": 7725920
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.399999976158142,
+          "totalMs": 26.200000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5739024,
+          "beforeGCBytes": 8065841
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.000000238418579,
+          "totalMs": 70.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6124908,
+          "beforeGCBytes": 15266535
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.600000739097595,
+          "totalMs": 82.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6314668,
+          "beforeGCBytes": 20719366
+        }
+      ],
+      "releasedHistoryBytes": 5810632
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 5182288,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.600000023841858,
+          "totalMs": 25.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5990816,
+          "beforeGCBytes": 9823745
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.700000405311584,
+          "totalMs": 71.20000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 6366328,
+          "beforeGCBytes": 14874911
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.000000357627869,
+          "totalMs": 80,
+          "retainedVersions": 100,
+          "retainedBytes": 6530400,
+          "beforeGCBytes": 16618478
+        }
+      ],
+      "releasedHistoryBytes": 6027528
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4631876,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.2999998331069946,
+          "totalMs": 25.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 5289176,
+          "beforeGCBytes": 9135869
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.799999713897705,
+          "totalMs": 68,
+          "retainedVersions": 0,
+          "retainedBytes": 5645456,
+          "beforeGCBytes": 12732079
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.600000977516174,
+          "totalMs": 79.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5813832,
+          "beforeGCBytes": 15433218
+        }
+      ],
+      "releasedHistoryBytes": 5814024
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 5182224,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.0999996662139893,
+          "totalMs": 25.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5540528,
+          "beforeGCBytes": 9049841
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.600000381469727,
+          "totalMs": 67.69999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 5882216,
+          "beforeGCBytes": 15749335
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.300000190734863,
+          "totalMs": 80.40000009536743,
+          "retainedVersions": 0,
+          "retainedBytes": 6028164,
+          "beforeGCBytes": 18751282
+        }
+      ],
+      "releasedHistoryBytes": 6028416
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.8999996185302734,
+          "totalMs": 26,
+          "retainedVersions": 100,
+          "retainedBytes": 5480472,
+          "beforeGCBytes": 8038865
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 12.999999165534973,
+          "totalMs": 70.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5844012,
+          "beforeGCBytes": 19648891
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 15.699999928474426,
+          "totalMs": 80.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5990516,
+          "beforeGCBytes": 22532582
+        }
+      ],
+      "releasedHistoryBytes": 5332032
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 6652332,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.9000003337860107,
+          "totalMs": 25.5,
+          "retainedVersions": 100,
+          "retainedBytes": 7334188,
+          "beforeGCBytes": 11004653
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.299999475479126,
+          "totalMs": 66.69999992847443,
+          "retainedVersions": 100,
+          "retainedBytes": 7702608,
+          "beforeGCBytes": 15405243
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.799999952316284,
+          "totalMs": 74,
+          "retainedVersions": 100,
+          "retainedBytes": 7904264,
+          "beforeGCBytes": 16349574
+        }
+      ],
+      "releasedHistoryBytes": 7724648
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 5182272,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.600000023841858,
+          "totalMs": 24.200000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5777992,
+          "beforeGCBytes": 10041015
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.5,
+          "totalMs": 60.200000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5959968,
+          "beforeGCBytes": 13537075
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.1999990940094,
+          "totalMs": 70,
+          "retainedVersions": 100,
+          "retainedBytes": 5901980,
+          "beforeGCBytes": 17682147
+        }
+      ],
+      "releasedHistoryBytes": 5622404
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4632124,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.599999785423279,
+          "totalMs": 25.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5285688,
+          "beforeGCBytes": 9061209
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.200000524520874,
+          "totalMs": 68.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5641928,
+          "beforeGCBytes": 12724399
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.09999966621399,
+          "totalMs": 79.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5810408,
+          "beforeGCBytes": 15513542
+        }
+      ],
+      "releasedHistoryBytes": 5810600
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 5182212,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.7999998331069946,
+          "totalMs": 25.100000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5990692,
+          "beforeGCBytes": 8253093
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.600000858306885,
+          "totalMs": 71.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6363212,
+          "beforeGCBytes": 14843903
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.499999523162842,
+          "totalMs": 79.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6529616,
+          "beforeGCBytes": 16616894
+        }
+      ],
+      "releasedHistoryBytes": 6026744
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.3000001907348633,
+          "totalMs": 23.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5479216,
+          "beforeGCBytes": 7741971
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.099999785423279,
+          "totalMs": 58.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5613564,
+          "beforeGCBytes": 14387115
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.300000905990601,
+          "totalMs": 67.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5629428,
+          "beforeGCBytes": 14023043
+        }
+      ],
+      "releasedHistoryBytes": 5629620
+    },
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 6653224,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.200000047683716,
+          "totalMs": 25.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 7339044,
+          "beforeGCBytes": 11071961
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.200000286102295,
+          "totalMs": 68.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 7710876,
+          "beforeGCBytes": 15755691
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.199999332427979,
+          "totalMs": 76.30000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 7912684,
+          "beforeGCBytes": 16418850
+        }
+      ],
+      "releasedHistoryBytes": 7725220
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4835103,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 5.000000238418579,
+          "totalMs": 25.300000071525574,
+          "retainedVersions": 0,
+          "retainedBytes": 5338539,
+          "beforeGCBytes": 9066420
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.100000381469727,
+          "totalMs": 68.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5672287,
+          "beforeGCBytes": 15526094
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.399999976158142,
+          "totalMs": 79,
+          "retainedVersions": 0,
+          "retainedBytes": 5826491,
+          "beforeGCBytes": 15603745
+        }
+      ],
+      "releasedHistoryBytes": 5826743
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4656692,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 27.200000047683716,
+          "totalMs": 47.60000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 13171064,
+          "beforeGCBytes": 26416457
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 88.4999988079071,
+          "totalMs": 148.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 13644536,
+          "beforeGCBytes": 30242347
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 125.59999942779541,
+          "totalMs": 194.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 13950884,
+          "beforeGCBytes": 57111356
+        }
+      ],
+      "releasedHistoryBytes": 5524148
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.8999998569488525,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 0,
+          "retainedBytes": 4413452,
+          "beforeGCBytes": 7193311
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.100000023841858,
+          "totalMs": 58.799999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 4583668,
+          "beforeGCBytes": 15782479
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 8.999999284744263,
+          "totalMs": 72.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4603128,
+          "beforeGCBytes": 15664999
+        }
+      ],
+      "releasedHistoryBytes": 4603380
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.4000004529953003,
+          "totalMs": 24.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 5545240,
+          "beforeGCBytes": 9107481
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.800000429153442,
+          "totalMs": 67,
+          "retainedVersions": 0,
+          "retainedBytes": 5892576,
+          "beforeGCBytes": 15770591
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.899999737739563,
+          "totalMs": 77.19999992847443,
+          "retainedVersions": 0,
+          "retainedBytes": 6049020,
+          "beforeGCBytes": 16056342
+        }
+      ],
+      "releasedHistoryBytes": 6049272
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.7999991178512573,
+          "totalMs": 24.59999990463257,
+          "retainedVersions": 0,
+          "retainedBytes": 4517232,
+          "beforeGCBytes": 9196213
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.600000262260437,
+          "totalMs": 68.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4827480,
+          "beforeGCBytes": 12393747
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.399999856948853,
+          "totalMs": 79.39999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 4936260,
+          "beforeGCBytes": 14102506
+        }
+      ],
+      "releasedHistoryBytes": 4936452
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.2000001668930054,
+          "totalMs": 24.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 4852524,
+          "beforeGCBytes": 7016679
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.700000047683716,
+          "totalMs": 59.299999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5105868,
+          "beforeGCBytes": 17260003
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.799999952316284,
+          "totalMs": 70,
+          "retainedVersions": 100,
+          "retainedBytes": 5020916,
+          "beforeGCBytes": 15560799
+        }
+      ],
+      "releasedHistoryBytes": 4605260
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 1,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.2999995946884155,
+          "totalMs": 24.59999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 5990296,
+          "beforeGCBytes": 8278329
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 8.500000238418579,
+          "totalMs": 69.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6365068,
+          "beforeGCBytes": 14842839
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.200001120567322,
+          "totalMs": 80.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 6531684,
+          "beforeGCBytes": 16552346
+        }
+      ],
+      "releasedHistoryBytes": 6028812
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 5182212,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.199999809265137,
+          "totalMs": 25.199999928474426,
+          "retainedVersions": 0,
+          "retainedBytes": 5545124,
+          "beforeGCBytes": 9069361
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.50000011920929,
+          "totalMs": 67.20000004768372,
+          "retainedVersions": 0,
+          "retainedBytes": 5891068,
+          "beforeGCBytes": 15781503
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.099999904632568,
+          "totalMs": 76.5,
+          "retainedVersions": 0,
+          "retainedBytes": 6048932,
+          "beforeGCBytes": 16052254
+        }
+      ],
+      "releasedHistoryBytes": 6049184
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 25.100000023841858,
+          "totalMs": 46.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 12982688,
+          "beforeGCBytes": 25433045
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 89.29999947547913,
+          "totalMs": 148.09999990463257,
+          "retainedVersions": 100,
+          "retainedBytes": 13469296,
+          "beforeGCBytes": 32583286
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 119.5000011920929,
+          "totalMs": 185.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 13776264,
+          "beforeGCBytes": 54454975
+        }
+      ],
+      "releasedHistoryBytes": 5349528
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.6999998092651367,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5201600,
+          "beforeGCBytes": 7830835
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.099999785423279,
+          "totalMs": 59.699999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5451248,
+          "beforeGCBytes": 17621511
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.500000476837158,
+          "totalMs": 70.39999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5362388,
+          "beforeGCBytes": 20404667
+        }
+      ],
+      "releasedHistoryBytes": 4945592
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.9000000953674316,
+          "totalMs": 24.399999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 5996836,
+          "beforeGCBytes": 8225161
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.100000143051147,
+          "totalMs": 71.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 6375992,
+          "beforeGCBytes": 15217387
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 12.200000047683716,
+          "totalMs": 80.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6543736,
+          "beforeGCBytes": 16475086
+        }
+      ],
+      "releasedHistoryBytes": 6043664
+    },
+    {
+      "id": "f07-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4656632,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 4.900000214576721,
+          "totalMs": 26,
+          "retainedVersions": 100,
+          "retainedBytes": 5669452,
+          "beforeGCBytes": 8299797
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.700000762939453,
+          "totalMs": 72.80000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 6019248,
+          "beforeGCBytes": 20615019
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 17.100000739097595,
+          "totalMs": 81.70000004768372,
+          "retainedVersions": 100,
+          "retainedBytes": 6163880,
+          "beforeGCBytes": 21520182
+        }
+      ],
+      "releasedHistoryBytes": 5505396
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 5182872,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.1999999284744263,
+          "totalMs": 25,
+          "retainedVersions": 0,
+          "retainedBytes": 5538204,
+          "beforeGCBytes": 9107873
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 11.500000715255737,
+          "totalMs": 68.29999995231628,
+          "retainedVersions": 0,
+          "retainedBytes": 5882380,
+          "beforeGCBytes": 12951819
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 14.200000882148743,
+          "totalMs": 80.30000007152557,
+          "retainedVersions": 0,
+          "retainedBytes": 6026408,
+          "beforeGCBytes": 15514466
+        }
+      ],
+      "releasedHistoryBytes": 6026600
+    },
+    {
+      "id": "f01-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4835226,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.1000001430511475,
+          "totalMs": 23.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5443614,
+          "beforeGCBytes": 9690769
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.900000333786011,
+          "totalMs": 59.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 5616138,
+          "beforeGCBytes": 13209273
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.300000190734863,
+          "totalMs": 70.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5567734,
+          "beforeGCBytes": 17568209
+        }
+      ],
+      "releasedHistoryBytes": 5289086
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 0,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 19.100000023841858,
+          "totalMs": 39.299999952316284,
+          "retainedVersions": 0,
+          "retainedBytes": 4900928,
+          "beforeGCBytes": 12493053
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 68.29999899864197,
+          "totalMs": 122.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5225140,
+          "beforeGCBytes": 24689887
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 84.80000078678131,
+          "totalMs": 148,
+          "retainedVersions": 0,
+          "retainedBytes": 5349144,
+          "beforeGCBytes": 23050234
+        }
+      ],
+      "releasedHistoryBytes": 5349336
+    },
+    {
+      "id": "objects",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.700000286102295,
+          "totalMs": 23.899999976158142,
+          "retainedVersions": 100,
+          "retainedBytes": 7123204,
+          "beforeGCBytes": 9565187
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.8999998569488525,
+          "totalMs": 56.700000047683716,
+          "retainedVersions": 100,
+          "retainedBytes": 7322236,
+          "beforeGCBytes": 18010439
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 3.8999998569488525,
+          "totalMs": 66.5,
+          "retainedVersions": 100,
+          "retainedBytes": 7348500,
+          "beforeGCBytes": 20251163
+        }
+      ],
+      "releasedHistoryBytes": 7237420
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.7000001668930054,
+          "totalMs": 24.5,
+          "retainedVersions": 0,
+          "retainedBytes": 4752568,
+          "beforeGCBytes": 6938723
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 6.3999998569488525,
+          "totalMs": 59.700000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 4927428,
+          "beforeGCBytes": 14472063
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 6.099999666213989,
+          "totalMs": 67.5,
+          "retainedVersions": 0,
+          "retainedBytes": 4942980,
+          "beforeGCBytes": 15002479
+        }
+      ],
+      "releasedHistoryBytes": 4943172
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4094252,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.7999998331069946,
+          "totalMs": 24.600000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5107792,
+          "beforeGCBytes": 8042465
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.799999713897705,
+          "totalMs": 69.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5451896,
+          "beforeGCBytes": 14708315
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 17.199999690055847,
+          "totalMs": 80.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5595716,
+          "beforeGCBytes": 21647706
+        }
+      ],
+      "releasedHistoryBytes": 4938432
+    },
+    {
+      "id": "objects",
+      "workload": "distributed",
+      "historyLimit": 0,
+      "repetition": 2,
+      "loadedBytes": 6652336,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.6999999284744263,
+          "totalMs": 25.200000047683716,
+          "retainedVersions": 0,
+          "retainedBytes": 7125580,
+          "beforeGCBytes": 9208745
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.500000596046448,
+          "totalMs": 66.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 7548348,
+          "beforeGCBytes": 15904287
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 10.399999380111694,
+          "totalMs": 75.10000002384186,
+          "retainedVersions": 0,
+          "retainedBytes": 7745872,
+          "beforeGCBytes": 15647758
+        }
+      ],
+      "releasedHistoryBytes": 7746056
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4632212,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.799999475479126,
+          "totalMs": 25.100000023841858,
+          "retainedVersions": 0,
+          "retainedBytes": 5286784,
+          "beforeGCBytes": 9121157
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.300000548362732,
+          "totalMs": 67.89999997615814,
+          "retainedVersions": 0,
+          "retainedBytes": 5646752,
+          "beforeGCBytes": 12930371
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 13.700000286102295,
+          "totalMs": 77.5,
+          "retainedVersions": 0,
+          "retainedBytes": 5825336,
+          "beforeGCBytes": 15895854
+        }
+      ],
+      "releasedHistoryBytes": 5825588
+    },
+    {
+      "id": "f05-flat-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 0,
+      "repetition": 1,
+      "loadedBytes": 4094280,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.4000003337860107,
+          "totalMs": 25,
+          "retainedVersions": 0,
+          "retainedBytes": 4518536,
+          "beforeGCBytes": 9069329
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.500000238418579,
+          "totalMs": 68.5,
+          "retainedVersions": 0,
+          "retainedBytes": 4832156,
+          "beforeGCBytes": 12424799
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.899999618530273,
+          "totalMs": 76.90000009536743,
+          "retainedVersions": 0,
+          "retainedBytes": 4952068,
+          "beforeGCBytes": 14141734
+        }
+      ],
+      "releasedHistoryBytes": 4952260
+    },
+    {
+      "id": "f02-rows-owned-128",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4632152,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.8999998569488525,
+          "totalMs": 25.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5740604,
+          "beforeGCBytes": 7978077
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 9.899999380111694,
+          "totalMs": 70.29999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6128232,
+          "beforeGCBytes": 15626615
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 11.90000033378601,
+          "totalMs": 78.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 6326744,
+          "beforeGCBytes": 16348850
+        }
+      ],
+      "releasedHistoryBytes": 5825556
+    },
+    {
+      "id": "f03-rows-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 5182256,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 1.5,
+          "totalMs": 24.199999928474426,
+          "retainedVersions": 100,
+          "retainedBytes": 5780920,
+          "beforeGCBytes": 10038591
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 4.899999976158142,
+          "totalMs": 57.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 5963656,
+          "beforeGCBytes": 13565059
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 7.1999993324279785,
+          "totalMs": 70.80000007152557,
+          "retainedVersions": 100,
+          "retainedBytes": 5914436,
+          "beforeGCBytes": 17792747
+        }
+      ],
+      "releasedHistoryBytes": 5634860
+    },
+    {
+      "id": "objects",
+      "workload": "new-bunches",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 6653220,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.1000001430511475,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 7333964,
+          "beforeGCBytes": 11031985
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 7.600000619888306,
+          "totalMs": 65.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 7702348,
+          "beforeGCBytes": 15435563
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 9.000000834465027,
+          "totalMs": 75.89999997615814,
+          "retainedVersions": 100,
+          "retainedBytes": 7904040,
+          "beforeGCBytes": 16314934
+        }
+      ],
+      "releasedHistoryBytes": 7724424
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "distributed",
+      "historyLimit": 100,
+      "repetition": 0,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 3.700000286102295,
+          "totalMs": 25.100000023841858,
+          "retainedVersions": 100,
+          "retainedBytes": 5480436,
+          "beforeGCBytes": 8039741
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 10.299999952316284,
+          "totalMs": 70,
+          "retainedVersions": 100,
+          "retainedBytes": 5843976,
+          "beforeGCBytes": 19648859
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 16.700000762939453,
+          "totalMs": 81.10000002384186,
+          "retainedVersions": 100,
+          "retainedBytes": 5990456,
+          "beforeGCBytes": 22495254
+        }
+      ],
+      "releasedHistoryBytes": 5331972
+    },
+    {
+      "id": "f09-flat-owned-128",
+      "workload": "local",
+      "historyLimit": 100,
+      "repetition": 2,
+      "loadedBytes": 4430788,
+      "checkpoints": [
+        {
+          "completed": 200,
+          "segmentOperations": 200,
+          "listMs": 2.8999998569488525,
+          "totalMs": 24.799999952316284,
+          "retainedVersions": 100,
+          "retainedBytes": 5192428,
+          "beforeGCBytes": 7757011
+        },
+        {
+          "completed": 1000,
+          "segmentOperations": 800,
+          "listMs": 5.599999785423279,
+          "totalMs": 59.5,
+          "retainedVersions": 100,
+          "retainedBytes": 5451776,
+          "beforeGCBytes": 17628979
+        },
+        {
+          "completed": 2000,
+          "segmentOperations": 1000,
+          "listMs": 5.59999942779541,
+          "totalMs": 68.79999995231628,
+          "retainedVersions": 100,
+          "retainedBytes": 5362532,
+          "beforeGCBytes": 20425591
+        }
+      ],
+      "releasedHistoryBytes": 4945736
+    }
+  ]
+}

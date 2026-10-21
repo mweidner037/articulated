@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="792" viewBox="0 0 1025 792" role="img" aria-labelledby="title desc">
+<title id="title">Opaque 8-character IDs: full-stream timings</title><desc id="desc">259,778 operations; observed medians of 3. No dependable editor-speed winner. Lookup + mutation excludes document updates/rendering. Separate passes, not additive; no p95 claim.. Exact values are labeled on every bar. Whiskers: observed min–max (not confidence intervals).</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="792" fill="white"/>
+<text x="24" y="36" class="title">Opaque 8-character IDs: full-stream timings</text>
+<text x="24" y="68" >259,778 operations; observed medians of 3. No dependable editor-speed winner.</text>
+<text x="24" y="110" >Internal representation</text>
+<text x="24" y="89" class="small">Whiskers: observed min–max (not confidence intervals).</text>
+<text x="425" y="110" >ID lookup + mutation (s)</text>
+<line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="425" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="532" y="748" class="small" text-anchor="middle">3.5</text>
+<line x1="639" x2="639" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="639" y="748" class="small" text-anchor="middle">6.9</text>
+<rect x="425" y="165" width="31.23469564921614" height="23" fill="#3266a6"/>
+<text x="463.2346956492161" y="183" class="small">1.0</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F03 · native tuples: observed min 0.693, max 1.0808000000715257</title><line x1="446.49304347826086" x2="458.5204637703343" y1="158" y2="158"/><line x1="446.49304347826086" x2="446.49304347826086" y1="154" y2="162"/><line x1="458.5204637703343" x2="458.5204637703343" y1="154" y2="162"/></g>
+<rect x="425" y="247" width="31.547942026767174" height="23" fill="#3266a6"/>
+<text x="463.54794202676715" y="265" class="small">1.0</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F05 · native columns; reconstruct counters: observed min 0.9448000000715255, max 1.1396999999284745</title><line x1="454.3024927558415" x2="460.34721738908604" y1="240" y2="240"/><line x1="454.3024927558415" x2="454.3024927558415" y1="236" y2="244"/><line x1="460.34721738908604" x2="460.34721738908604" y1="236" y2="244"/></g>
+<rect x="425" y="329" width="27.804492753623187" height="23" fill="#3266a6"/>
+<text x="459.8044927536232" y="347" class="small">0.9</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F01 · native plain objects: observed min 0.7353999999761581, max 0.9375</title><line x1="447.80805797027506" x2="454.07608695652175" y1="322" y2="322"/><line x1="447.80805797027506" x2="447.80805797027506" y1="318" y2="326"/><line x1="454.07608695652175" x2="454.07608695652175" y1="318" y2="326"/></g>
+<rect x="425" y="411" width="12.343768115942028" height="23" fill="#3266a6"/>
+<text x="444.34376811594205" y="429" class="small">0.4</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F01 · existing IdList: observed min 0.3975, max 0.40139999997615816</title><line x1="437.3282608695652" x2="437.4492173905649" y1="404" y2="404"/><line x1="437.3282608695652" x2="437.3282608695652" y1="400" y2="408"/><line x1="437.4492173905649" x2="437.4492173905649" y1="400" y2="408"/></g>
+<rect x="425" y="493" width="46.503130434043165" height="23" fill="#3266a6"/>
+<text x="478.50313043404316" y="511" class="small">1.5</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F07 · native whole-ID dictionary columns: observed min 1.1187000000476837, max 6.529200000047684</title><line x1="459.69591304495714" x2="627.4998260884354" y1="486" y2="486"/><line x1="459.69591304495714" x2="459.69591304495714" y1="482" y2="490"/><line x1="627.4998260884354" x2="627.4998260884354" y1="482" y2="490"/></g>
+<rect x="425" y="575" width="25.385362318840578" height="23" fill="#3266a6"/>
+<text x="457.3853623188406" y="593" class="small">0.8</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F02 · native objects; negative means deleted: observed min 0.8031000000238419, max 0.8326000000238418</title><line x1="449.90773913117425" x2="450.8226666674061" y1="568" y2="568"/><line x1="449.90773913117425" x2="449.90773913117425" y1="564" y2="572"/><line x1="450.8226666674061" x2="450.8226666674061" y1="564" y2="572"/></g>
+<rect x="425" y="657" width="51.29486956447794" height="23" fill="#3266a6"/>
+<text x="483.29486956447795" y="675" class="small">1.7</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F09 · native dictionary + all counters: observed min 1.424600000023842, max 1.7617000000476837</title><line x1="469.18324637755103" x2="479.63823188553687" y1="650" y2="650"/><line x1="469.18324637755103" x2="469.18324637755103" y1="646" y2="654"/><line x1="479.63823188553687" x2="479.63823188553687" y1="646" y2="654"/></g>
+<text x="715" y="110" >Editor seconds</text>
+<line x1="715" x2="715" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="715" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="822" y="748" class="small" text-anchor="middle">55.5</text>
+<line x1="929" x2="929" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="929" y="748" class="small" text-anchor="middle">111.1</text>
+<rect x="715" y="165" width="93.76474527443561" height="23" fill="#3c8077"/>
+<text x="815.7647452744357" y="183" class="small">48.7</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F03 · native tuples: observed min 38.5575, max 64.04870000004769</title><line x1="789.2691719171917" x2="838.3701332134132" y1="158" y2="158"/><line x1="789.2691719171917" x2="789.2691719171917" y1="154" y2="162"/><line x1="838.3701332134132" x2="838.3701332134132" y1="154" y2="162"/></g>
+<rect x="715" y="247" width="100.17338073779828" height="23" fill="#3c8077"/>
+<text x="822.1733807377983" y="265" class="small">52.0</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F05 · native columns; reconstruct counters: observed min 50.344099999904635, max 63.225399999976155</title><line x1="811.9724338432006" x2="836.7842988298371" y1="240" y2="240"/><line x1="811.9724338432006" x2="811.9724338432006" y1="236" y2="244"/><line x1="836.7842988298371" x2="836.7842988298371" y1="236" y2="244"/></g>
+<rect x="715" y="329" width="107.91436363622587" height="23" fill="#3c8077"/>
+<text x="829.9143636362259" y="347" class="small">56.0</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F01 · native plain objects: observed min 50.609799999952315, max 58.42249999988079</title><line x1="812.4842232222304" x2="827.5329882986002" y1="322" y2="322"/><line x1="812.4842232222304" x2="812.4842232222304" y1="318" y2="326"/><line x1="827.5329882986002" x2="827.5329882986002" y1="318" y2="326"/></g>
+<rect x="715" y="411" width="111.5573717369441" height="23" fill="#3c8077"/>
+<text x="833.5573717369441" y="429" class="small">57.9</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F01 · existing IdList: observed min 51.735099999785426, max 64.67189999997616</title><line x1="814.6517677763644" x2="839.5705364535995" y1="404" y2="404"/><line x1="814.6517677763644" x2="814.6517677763644" y1="400" y2="408"/><line x1="839.5705364535995" x2="839.5705364535995" y1="400" y2="408"/></g>
+<rect x="715" y="493" width="111.58087128722057" height="23" fill="#3c8077"/>
+<text x="833.5808712872206" y="511" class="small">57.9</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F07 · native whole-ID dictionary columns: observed min 50.06989999997616, max 60.77130000007153</title><line x1="811.4442718271368" x2="832.0572295230901" y1="486" y2="486"/><line x1="811.4442718271368" x2="811.4442718271368" y1="482" y2="490"/><line x1="832.0572295230901" x2="832.0572295230901" y1="482" y2="490"/></g>
+<rect x="715" y="575" width="113.12278847893974" height="23" fill="#3c8077"/>
+<text x="835.1227884789397" y="593" class="small">58.7</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F02 · native objects; negative means deleted: observed min 49.83210000002384, max 65.59890000009537</title><line x1="810.9862232223682" x2="841.3561170118849" y1="568" y2="568"/><line x1="810.9862232223682" x2="810.9862232223682" y1="564" y2="572"/><line x1="841.3561170118849" x2="841.3561170118849" y1="564" y2="572"/></g>
+<rect x="715" y="657" width="201.21836363650144" height="23" fill="#3c8077"/>
+<text x="923.2183636365014" y="675" class="small">104.5</text>
+<g class="observed-range" stroke="#657184" stroke-width="1.2" fill="none"><title>F09 · native dictionary + all counters: observed min 79.18880000019074, max 105.79819999992847</title><line x1="867.5328820885762" x2="918.7877119710594" y1="650" y2="650"/><line x1="867.5328820885762" x2="867.5328820885762" y1="646" y2="654"/><line x1="918.7877119710594" x2="918.7877119710594" y1="646" y2="654"/></g>
+<text x="24" y="162" >F03 · native tuples</text>
+<text x="24" y="204" class="small">Ranges: ID 0.7–1.1 s; editor 38.6–64.0 s</text>
+<text x="24" y="244" >F05 · native columns; reconstruct counters</text>
+<text x="24" y="286" class="small">Ranges: ID 0.9–1.1 s; editor 50.3–63.2 s</text>
+<text x="24" y="326" >F01 · native plain objects</text>
+<text x="24" y="368" class="small">Ranges: ID 0.7–0.9 s; editor 50.6–58.4 s</text>
+<text x="24" y="408" >F01 · existing IdList</text>
+<text x="24" y="450" class="small">Ranges: ID 0.4–0.4 s; editor 51.7–64.7 s</text>
+<text x="24" y="490" >F07 · native whole-ID dictionary columns</text>
+<text x="24" y="532" class="small">Ranges: ID 1.1–6.5 s; editor 50.1–60.8 s</text>
+<text x="24" y="572" >F02 · native objects; negative means</text>
+<text x="24" y="592" >deleted</text>
+<text x="24" y="614" class="small">Ranges: ID 0.8–0.8 s; editor 49.8–65.6 s</text>
+<text x="24" y="654" >F09 · native dictionary + all counters</text>
+<text x="24" y="696" class="small">Ranges: ID 1.4–1.8 s; editor 79.2–105.8 s</text>
+<text x="24" y="780" class="small">Lookup + mutation excludes document updates/rendering. Separate passes, not additive; no p95 claim.</text>
+</svg>

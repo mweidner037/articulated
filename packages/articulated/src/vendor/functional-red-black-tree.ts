@@ -51,6 +51,40 @@ export class RedBlackTree<K, V> {
     return new RedBlackTree<K, V>(compare, null);
   }
 
+  /** Build once from strictly ordered entries without persistent path copies.
+   * Entries are not retained. Subsequent updates use the normal persistent API.
+   */
+  static fromSorted<K, V>(
+    compare: (key1: K, key2: K) => number,
+    entries: readonly (readonly [K, V])[],
+  ): RedBlackTree<K, V> {
+    for (let i = 1; i < entries.length; i++) {
+      if (!(compare(entries[i - 1][0], entries[i][0]) < 0))
+        throw new Error("Expected strictly increasing red-black tree keys");
+    }
+    // A median-split tree has at most two leaf depths. Color only the
+    // partially occupied bottom level red, giving every null path the same
+    // black height. A perfect tree has no nodes at redLevel.
+    let redLevel = 0;
+    for (let remaining = entries.length; remaining > 0;) {
+      redLevel++;
+      remaining = Math.floor((remaining - 1) / 2);
+    }
+    function build(lo: number, hi: number, level: number): RBNode<K, V> | null {
+      if (lo >= hi) return null;
+      const mid = lo + Math.floor((hi - lo) / 2);
+      const [key, value] = entries[mid];
+      return new RBNode(
+        level === redLevel ? RED : BLACK,
+        key,
+        value,
+        build(lo, mid, level + 1),
+        build(mid + 1, hi, level + 1),
+      );
+    }
+    return new RedBlackTree(compare, build(0, entries.length, 0));
+  }
+
   /**
    * Creates a new tree with `key` set to `value`, overwriting any
    * existing value.
@@ -274,6 +308,25 @@ export class RedBlackTree<K, V> {
     }
     stack.length = last_ptr;
     return new RedBlackTreeIterator<K, V>(this, stack);
+  }
+
+  /** Finds the first item whose key is >= key, or an empty iterator. */
+  ge(key: K): RedBlackTreeIterator<K, V> {
+    let node = this.root;
+    const stack: RBNode<K, V>[] = [];
+    let first = 0;
+    while (node) {
+      const order = this.compare(key, node.key);
+      stack.push(node);
+      if (order <= 0) {
+        first = stack.length;
+        node = node.left;
+      } else {
+        node = node.right;
+      }
+    }
+    stack.length = first;
+    return new RedBlackTreeIterator(this, stack);
   }
 
   /**

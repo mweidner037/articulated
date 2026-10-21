@@ -1,0 +1,4 @@
+# Keep archived benchmark evidence available without overwhelming code review.
+benchmarks/results/** linguist-generated=true
+# Preserve executed bundles byte for byte, including generated whitespace.
+benchmarks/results/**/measured-bundle.js -whitespace

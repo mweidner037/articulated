@@ -1,0 +1,5453 @@
+{
+  "complete": true,
+  "generatedAt": "2026-10-21T11:30:25.294Z",
+  "browser": "151.0.7922.34",
+  "node": "v24.19.0",
+  "platform": "darwin/arm64",
+  "cpu": "Apple M5 Pro",
+  "cpuRate": 1,
+  "browserIsolation": "process",
+  "browserBundleSha256": "ec27054fc0c88adae8ea60413cb5267aadaf4cf6809e00ef564b5f53c964faca",
+  "expectedRows": 42,
+  "repetitions": 3,
+  "operations": 2000,
+  "fixture": {
+    "model": "opaque8",
+    "savedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+    "f05Sha256": "57658b8baa5eb49edf8782347287083a7ac5a7ae36298e8ac1157c4740f917b8",
+    "rows": 11757,
+    "uniqueBunchIds": 5382,
+    "sparseCounterExceptions": 0,
+    "maxAbsoluteCount": 1396,
+    "canonical": {
+      "trace": "kleppmannReal",
+      "traceSha256": "3af48f64f4ff18a09ec2cc21570accccfa912cffa702b45181ab383502bfe176",
+      "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+      "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+      "finalSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+      "counts": {
+        "operations": 259778,
+        "insertions": 182315,
+        "deletions": 77463,
+        "newlineInsertions": 1767,
+        "newlineDeletions": 595,
+        "finalCharacters": 104852
+      },
+      "seed": "42",
+      "startState": "empty",
+      "refreshInterval": null,
+      "checkpoints": [
+        10000,
+        50000,
+        100000,
+        200000,
+        259778
+      ],
+      "idPolicy": "Harness-assigned opaque 8-character IDs: collision-checked deterministic SHA256/base64url prefixes map EACH WHOLE generated structured bunch ID bijectively. Counters, run grouping, operation order, anchors and characters are identical to the structured replay. Not recorded collaborator identities; no refresh or regrouping.",
+      "bunchCount": 5382,
+      "source": {
+        "upstreamCommit": "da212e984c777d31ee7d888f82637288aa4c61d3",
+        "traceUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+        "readmeUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/README.md",
+        "rawUrl": "https://raw.githubusercontent.com/automerge/automerge-perf/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+        "license": "CC-BY-4.0",
+        "attribution": "Editing trace by Martin Kleppmann and the paper's authors, from automerge/automerge-perf. The upstream README states CC-BY-4.0 for the trace. Its concurrent history was flattened to index-based single-character edits; cursor moves are omitted.",
+        "upstreamVerification": {
+          "verified": true,
+          "upstreamSha256": "23116070719243e2950c310006dd50b3d80744be7542a86c62e7d5c2ed7326d0",
+          "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+          "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+          "operations": 259778,
+          "method": "Local operation/text digests match pinned upstream JSON-literal comparison"
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "storage": "ordinary",
+      "pageSize": 0
+    },
+    {
+      "storage": "ordinary",
+      "pageSize": 128
+    },
+    {
+      "storage": "ordinary",
+      "pageSize": 256
+    },
+    {
+      "storage": "typed32",
+      "pageSize": 0
+    },
+    {
+      "storage": "typed32",
+      "pageSize": 128
+    },
+    {
+      "storage": "typed32",
+      "pageSize": 256
+    },
+    {
+      "storage": "dense-only",
+      "pageSize": 128
+    }
+  ],
+  "calibration": {
+    "before": {
+      "usedSize": 492164,
+      "backingStorageSize": 0,
+      "total": 492164
+    },
+    "after": {
+      "usedSize": 519076,
+      "backingStorageSize": 8388634,
+      "total": 8907710
+    }
+  },
+  "methodology": {
+    "scope": "Numerical-container experiment only, not a complete IdList, ID lookup benchmark, editor or Mongo storage claim. Strings remain opaque eight-character IDs. Same F05 JSON in every case; flat vs paged topology is a separate factor from numeric representation.",
+    "representation": "Each page owns bunchId string references, signed counts, explicit reconstructed start counters, and Map<string,row-index-array>. A flat directory and cumulative visible-length prefix index cover pages. Ordinary uses JS small-integer arrays for all numeric arrays; typed32 (typed-all) uses Int32 counts plus Uint32 starts, map row indexes, and prefixes. Dense-only uses typed counts/starts/prefix but keeps ordinary small row-index arrays. This separates dense-column optimization from thousands of tiny typed-buffer wrappers.",
+    "loading": "Fetch excluded. JSON parse plus complete validation, sparse-counter reconstruction, page allocation, all typed conversions and index building are timed. Parse+initialize TOTAL is the outcome; conversion breakdown is diagnostic, not a reason to reject cheap translation that benefits runtime memory/editing. Parsed source references disappear when load returns, before GC. No original JSON retained. Cold creation in a fresh browser process per trial; no p95 claims from three editing trials/six loads per configuration.",
+    "editing": "2,000 deterministic whole-run visibility toggles, not character edits. Every mutation copies the affected count array, page object, flat page directory and prefix array, updating later prefix entries. Unchanged strings, start counters and identity maps are shared. History maintenance is timed. No forced GC inside the timed loop; common workload generation and observable checksums/verification are outside it.",
+    "memory": "Prepared-page baseline precedes load. Three consecutive after-GC heap+backing observations at each stage preserve raw ranges; 8MiB buffer calibration rejects double counting backing bytes. No workload/expected arrays retained between calls. History is 100 prior numeric-container versions only. Current state and three retained old versions are checked before memory observations. Memory ranges show collection noise, not confidence intervals or peak allocation.",
+    "widths": "Both representations deliberately enforce the same narrow domain: nonzero signed counts with magnitude <=2^31−1; start counters, end counters, row indexes, total visible length and prefixes <=2^32−1. Values outside this domain are rejected, never silently truncated. Production needs a validated Float64/safe-number fallback or wider representation; this probe does not implement it.",
+    "limitations": "No insertion, split/merge, counter mutation, new-string growth, persistent balanced-tree update or rendering is exercised. This is not proof that replacing NativeF05 columns by typed arrays has identical overall results. Retained memory includes small row-index arrays and maps; not all numeric arrays are large columns. Keep all trials, including outliers."
+  },
+  "rows": [
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:25.299Z",
+      "finishedAt": "2026-10-21T11:30:25.656Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.6000000238418579,
+        "convertMs": 4.899999976158142,
+        "totalMs": 5.5,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.4000000953674316,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996364,
+          "backingStorageSize": 105486,
+          "total": 2101850
+        },
+        {
+          "usedSize": 1996172,
+          "backingStorageSize": 105486,
+          "total": 2101658
+        },
+        {
+          "usedSize": 1996172,
+          "backingStorageSize": 105486,
+          "total": 2101658
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2013860,
+          "backingStorageSize": 105486,
+          "total": 2119346
+        },
+        {
+          "usedSize": 2013640,
+          "backingStorageSize": 105486,
+          "total": 2119126
+        },
+        {
+          "usedSize": 2013640,
+          "backingStorageSize": 105486,
+          "total": 2119126
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2013920,
+          "backingStorageSize": 105486,
+          "total": 2119406
+        },
+        {
+          "usedSize": 2013920,
+          "backingStorageSize": 105486,
+          "total": 2119406
+        },
+        {
+          "usedSize": 2013920,
+          "backingStorageSize": 105486,
+          "total": 2119406
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049128,
+        "minimum": 1049128,
+        "maximum": 1049320
+      },
+      "retainedEditedBytes": {
+        "median": 1066596,
+        "minimum": 1066596,
+        "maximum": 1066816
+      },
+      "retainedReleasedBytes": {
+        "median": 1066876,
+        "minimum": 1066876,
+        "maximum": 1066876
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:25.673Z",
+      "finishedAt": "2026-10-21T11:30:25.813Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.200000047683716,
+        "totalMs": 4.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1414632,
+        "minimum": 1414632,
+        "maximum": 1414632
+      },
+      "retainedReleasedBytes": {
+        "median": 1242096,
+        "minimum": 1242096,
+        "maximum": 1242096
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:25.830Z",
+      "finishedAt": "2026-10-21T11:30:25.965Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.699999928474426,
+        "totalMs": 5.199999928474426,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.6999999284744263,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2222324,
+          "backingStorageSize": 108538,
+          "total": 2330862
+        },
+        {
+          "usedSize": 2222324,
+          "backingStorageSize": 108538,
+          "total": 2330862
+        },
+        {
+          "usedSize": 2222324,
+          "backingStorageSize": 108538,
+          "total": 2330862
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2222604,
+          "backingStorageSize": 108538,
+          "total": 2331142
+        },
+        {
+          "usedSize": 2222604,
+          "backingStorageSize": 108538,
+          "total": 2331142
+        },
+        {
+          "usedSize": 2222604,
+          "backingStorageSize": 108538,
+          "total": 2331142
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263208,
+        "minimum": 1263208,
+        "maximum": 1263208
+      },
+      "retainedEditedBytes": {
+        "median": 1278332,
+        "minimum": 1278332,
+        "maximum": 1278332
+      },
+      "retainedReleasedBytes": {
+        "median": 1278612,
+        "minimum": 1278612,
+        "maximum": 1278612
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:25.982Z",
+      "finishedAt": "2026-10-21T11:30:26.117Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.100000023841858,
+        "totalMs": 3.600000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.8999999761581421,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2090420,
+          "backingStorageSize": 11058,
+          "total": 2101478
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1047248,
+        "minimum": 1047248,
+        "maximum": 1048948
+      },
+      "retainedReleasedBytes": {
+        "median": 1047528,
+        "minimum": 1047528,
+        "maximum": 1047528
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:26.136Z",
+      "finishedAt": "2026-10-21T11:30:26.267Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.100000023841858,
+        "totalMs": 3.600000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 3.899999976158142,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2000780,
+          "backingStorageSize": 11058,
+          "total": 2011838
+        },
+        {
+          "usedSize": 2000560,
+          "backingStorageSize": 11058,
+          "total": 2011618
+        },
+        {
+          "usedSize": 2000560,
+          "backingStorageSize": 11058,
+          "total": 2011618
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        },
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        },
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 959088,
+        "minimum": 959088,
+        "maximum": 959308
+      },
+      "retainedReleasedBytes": {
+        "median": 959368,
+        "minimum": 959368,
+        "maximum": 959368
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:26.282Z",
+      "finishedAt": "2026-10-21T11:30:26.412Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.3000000715255737,
+        "totalMs": 3.8000000715255737,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.7999999523162842,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2067972,
+          "backingStorageSize": 11058,
+          "total": 2079030
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1024800,
+        "minimum": 1024800,
+        "maximum": 1026500
+      },
+      "retainedReleasedBytes": {
+        "median": 1025080,
+        "minimum": 1025080,
+        "maximum": 1025080
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:26.427Z",
+      "finishedAt": "2026-10-21T11:30:26.558Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.299999952316284,
+        "totalMs": 3.799999952316284,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 3.799999952316284,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2004520,
+          "backingStorageSize": 11058,
+          "total": 2015578
+        },
+        {
+          "usedSize": 2004300,
+          "backingStorageSize": 11058,
+          "total": 2015358
+        },
+        {
+          "usedSize": 2004300,
+          "backingStorageSize": 11058,
+          "total": 2015358
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2004580,
+          "backingStorageSize": 11058,
+          "total": 2015638
+        },
+        {
+          "usedSize": 2004580,
+          "backingStorageSize": 11058,
+          "total": 2015638
+        },
+        {
+          "usedSize": 2004580,
+          "backingStorageSize": 11058,
+          "total": 2015638
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 962828,
+        "minimum": 962828,
+        "maximum": 963048
+      },
+      "retainedReleasedBytes": {
+        "median": 963108,
+        "minimum": 963108,
+        "maximum": 963108
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:26.573Z",
+      "finishedAt": "2026-10-21T11:30:26.722Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 4.300000071525574,
+        "totalMs": 4.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 10.399999976158142,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        },
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        },
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        },
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        },
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 5890944,
+        "minimum": 5890944,
+        "maximum": 5890944
+      },
+      "retainedReleasedBytes": {
+        "median": 1153056,
+        "minimum": 1153056,
+        "maximum": 1153056
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:26.739Z",
+      "finishedAt": "2026-10-21T11:30:26.867Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.200000047683716,
+        "totalMs": 3.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.8999999761581421,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2067972,
+          "backingStorageSize": 11058,
+          "total": 2079030
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1024800,
+        "minimum": 1024800,
+        "maximum": 1026500
+      },
+      "retainedReleasedBytes": {
+        "median": 1025080,
+        "minimum": 1025080,
+        "maximum": 1025080
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:26.883Z",
+      "finishedAt": "2026-10-21T11:30:27.014Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.199999928474426,
+        "totalMs": 4.699999928474426,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.4000000953674316,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        },
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        },
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        },
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        },
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1241316,
+        "minimum": 1241316,
+        "maximum": 1241316
+      },
+      "retainedReleasedBytes": {
+        "median": 1241596,
+        "minimum": 1241596,
+        "maximum": 1241596
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:27.031Z",
+      "finishedAt": "2026-10-21T11:30:27.170Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.199999928474426,
+        "totalMs": 4.699999928474426,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.600000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1414632,
+        "minimum": 1414632,
+        "maximum": 1414632
+      },
+      "retainedReleasedBytes": {
+        "median": 1242096,
+        "minimum": 1242096,
+        "maximum": 1242096
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:27.187Z",
+      "finishedAt": "2026-10-21T11:30:27.316Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.1999999284744263,
+        "totalMs": 3.5999999046325684,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.3000000715255737,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2222152,
+          "backingStorageSize": 11058,
+          "total": 2233210
+        },
+        {
+          "usedSize": 2222152,
+          "backingStorageSize": 11058,
+          "total": 2233210
+        },
+        {
+          "usedSize": 2222152,
+          "backingStorageSize": 11058,
+          "total": 2233210
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2067216,
+          "backingStorageSize": 11058,
+          "total": 2078274
+        },
+        {
+          "usedSize": 2067216,
+          "backingStorageSize": 11058,
+          "total": 2078274
+        },
+        {
+          "usedSize": 2067216,
+          "backingStorageSize": 11058,
+          "total": 2078274
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1180680,
+        "minimum": 1180680,
+        "maximum": 1180680
+      },
+      "retainedReleasedBytes": {
+        "median": 1025744,
+        "minimum": 1025744,
+        "maximum": 1025744
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:27.331Z",
+      "finishedAt": "2026-10-21T11:30:27.471Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.100000023841858,
+        "totalMs": 4.600000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 7.399999976158142,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2095956,
+          "backingStorageSize": 109042,
+          "total": 2204998
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 1152248,
+        "minimum": 1152248,
+        "maximum": 1152468
+      },
+      "retainedReleasedBytes": {
+        "median": 1152528,
+        "minimum": 1152528,
+        "maximum": 1152528
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:27.487Z",
+      "finishedAt": "2026-10-21T11:30:27.618Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.3000000715255737,
+        "totalMs": 3.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.2000000476837158,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2222068,
+          "backingStorageSize": 11058,
+          "total": 2233126
+        },
+        {
+          "usedSize": 2222068,
+          "backingStorageSize": 11058,
+          "total": 2233126
+        },
+        {
+          "usedSize": 2222068,
+          "backingStorageSize": 11058,
+          "total": 2233126
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2067132,
+          "backingStorageSize": 11058,
+          "total": 2078190
+        },
+        {
+          "usedSize": 2067132,
+          "backingStorageSize": 11058,
+          "total": 2078190
+        },
+        {
+          "usedSize": 2067132,
+          "backingStorageSize": 11058,
+          "total": 2078190
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1180596,
+        "minimum": 1180596,
+        "maximum": 1180596
+      },
+      "retainedReleasedBytes": {
+        "median": 1025660,
+        "minimum": 1025660,
+        "maximum": 1025660
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:27.635Z",
+      "finishedAt": "2026-10-21T11:30:27.762Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.5,
+        "totalMs": 3.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.100000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        },
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        },
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        },
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        },
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1188684,
+        "minimum": 1188684,
+        "maximum": 1188684
+      },
+      "retainedReleasedBytes": {
+        "median": 1048072,
+        "minimum": 1048072,
+        "maximum": 1048072
+      }
+    },
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:27.777Z",
+      "finishedAt": "2026-10-21T11:30:27.905Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.3000000715255737,
+        "totalMs": 3.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.600000023841858,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996468,
+          "backingStorageSize": 105486,
+          "total": 2101954
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2011508,
+          "backingStorageSize": 105486,
+          "total": 2116994
+        },
+        {
+          "usedSize": 2011308,
+          "backingStorageSize": 105486,
+          "total": 2116794
+        },
+        {
+          "usedSize": 2011308,
+          "backingStorageSize": 105486,
+          "total": 2116794
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2011588,
+          "backingStorageSize": 105486,
+          "total": 2117074
+        },
+        {
+          "usedSize": 2011588,
+          "backingStorageSize": 105486,
+          "total": 2117074
+        },
+        {
+          "usedSize": 2011588,
+          "backingStorageSize": 105486,
+          "total": 2117074
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049212,
+        "minimum": 1049212,
+        "maximum": 1049424
+      },
+      "retainedEditedBytes": {
+        "median": 1064264,
+        "minimum": 1064264,
+        "maximum": 1064464
+      },
+      "retainedReleasedBytes": {
+        "median": 1064544,
+        "minimum": 1064544,
+        "maximum": 1064544
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:27.922Z",
+      "finishedAt": "2026-10-21T11:30:28.063Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.399999976158142,
+        "totalMs": 4.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.600000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207340,
+          "backingStorageSize": 108538,
+          "total": 2315878
+        },
+        {
+          "usedSize": 2207340,
+          "backingStorageSize": 108538,
+          "total": 2315878
+        },
+        {
+          "usedSize": 2207340,
+          "backingStorageSize": 108538,
+          "total": 2315878
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2292876,
+          "backingStorageSize": 196862,
+          "total": 2489738
+        },
+        {
+          "usedSize": 2292876,
+          "backingStorageSize": 196862,
+          "total": 2489738
+        },
+        {
+          "usedSize": 2292876,
+          "backingStorageSize": 196862,
+          "total": 2489738
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2222988,
+          "backingStorageSize": 108538,
+          "total": 2331526
+        },
+        {
+          "usedSize": 2222988,
+          "backingStorageSize": 108538,
+          "total": 2331526
+        },
+        {
+          "usedSize": 2222988,
+          "backingStorageSize": 108538,
+          "total": 2331526
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263348,
+        "minimum": 1263348,
+        "maximum": 1263348
+      },
+      "retainedEditedBytes": {
+        "median": 1437208,
+        "minimum": 1437208,
+        "maximum": 1437208
+      },
+      "retainedReleasedBytes": {
+        "median": 1278996,
+        "minimum": 1278996,
+        "maximum": 1278996
+      }
+    },
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:28.080Z",
+      "finishedAt": "2026-10-21T11:30:28.206Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.399999976158142,
+        "totalMs": 3.799999952316284,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996468,
+          "backingStorageSize": 105486,
+          "total": 2101954
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2011640,
+          "backingStorageSize": 105486,
+          "total": 2117126
+        },
+        {
+          "usedSize": 2011440,
+          "backingStorageSize": 105486,
+          "total": 2116926
+        },
+        {
+          "usedSize": 2011440,
+          "backingStorageSize": 105486,
+          "total": 2116926
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2011720,
+          "backingStorageSize": 105486,
+          "total": 2117206
+        },
+        {
+          "usedSize": 2011720,
+          "backingStorageSize": 105486,
+          "total": 2117206
+        },
+        {
+          "usedSize": 2011720,
+          "backingStorageSize": 105486,
+          "total": 2117206
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049212,
+        "minimum": 1049212,
+        "maximum": 1049424
+      },
+      "retainedEditedBytes": {
+        "median": 1064396,
+        "minimum": 1064396,
+        "maximum": 1064596
+      },
+      "retainedReleasedBytes": {
+        "median": 1064676,
+        "minimum": 1064676,
+        "maximum": 1064676
+      }
+    },
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:28.222Z",
+      "finishedAt": "2026-10-21T11:30:28.350Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.6000000238418579,
+        "convertMs": 3.299999952316284,
+        "totalMs": 3.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.600000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996468,
+          "backingStorageSize": 105486,
+          "total": 2101954
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2082336,
+          "backingStorageSize": 193810,
+          "total": 2276146
+        },
+        {
+          "usedSize": 2082336,
+          "backingStorageSize": 193810,
+          "total": 2276146
+        },
+        {
+          "usedSize": 2082336,
+          "backingStorageSize": 193810,
+          "total": 2276146
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2012448,
+          "backingStorageSize": 105486,
+          "total": 2117934
+        },
+        {
+          "usedSize": 2012448,
+          "backingStorageSize": 105486,
+          "total": 2117934
+        },
+        {
+          "usedSize": 2012448,
+          "backingStorageSize": 105486,
+          "total": 2117934
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049212,
+        "minimum": 1049212,
+        "maximum": 1049424
+      },
+      "retainedEditedBytes": {
+        "median": 1223616,
+        "minimum": 1223616,
+        "maximum": 1223616
+      },
+      "retainedReleasedBytes": {
+        "median": 1065404,
+        "minimum": 1065404,
+        "maximum": 1065404
+      }
+    },
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:28.366Z",
+      "finishedAt": "2026-10-21T11:30:28.501Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.6000000238418579,
+        "convertMs": 3.5,
+        "totalMs": 4.100000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.8000000715255737,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996468,
+          "backingStorageSize": 105486,
+          "total": 2101954
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2082256,
+          "backingStorageSize": 193810,
+          "total": 2276066
+        },
+        {
+          "usedSize": 2082256,
+          "backingStorageSize": 193810,
+          "total": 2276066
+        },
+        {
+          "usedSize": 2082256,
+          "backingStorageSize": 193810,
+          "total": 2276066
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2012368,
+          "backingStorageSize": 105486,
+          "total": 2117854
+        },
+        {
+          "usedSize": 2012368,
+          "backingStorageSize": 105486,
+          "total": 2117854
+        },
+        {
+          "usedSize": 2012368,
+          "backingStorageSize": 105486,
+          "total": 2117854
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049212,
+        "minimum": 1049212,
+        "maximum": 1049424
+      },
+      "retainedEditedBytes": {
+        "median": 1223536,
+        "minimum": 1223536,
+        "maximum": 1223536
+      },
+      "retainedReleasedBytes": {
+        "median": 1065324,
+        "minimum": 1065324,
+        "maximum": 1065324
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:28.517Z",
+      "finishedAt": "2026-10-21T11:30:28.645Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5999999046325684,
+        "convertMs": 3.4000000953674316,
+        "totalMs": 4,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.8000000715255737,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2090420,
+          "backingStorageSize": 11058,
+          "total": 2101478
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1047248,
+        "minimum": 1047248,
+        "maximum": 1048948
+      },
+      "retainedReleasedBytes": {
+        "median": 1047528,
+        "minimum": 1047528,
+        "maximum": 1047528
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:28.661Z",
+      "finishedAt": "2026-10-21T11:30:28.803Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.5,
+        "totalMs": 5,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 7.600000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        },
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        },
+        {
+          "usedSize": 2131632,
+          "backingStorageSize": 4811842,
+          "total": 6943474
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        },
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        },
+        {
+          "usedSize": 2096544,
+          "backingStorageSize": 109042,
+          "total": 2205586
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 5890944,
+        "minimum": 5890944,
+        "maximum": 5890944
+      },
+      "retainedReleasedBytes": {
+        "median": 1153056,
+        "minimum": 1153056,
+        "maximum": 1153056
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:28.819Z",
+      "finishedAt": "2026-10-21T11:30:28.944Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.5999999046325684,
+        "totalMs": 4.099999904632568,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.8000000715255737,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2090420,
+          "backingStorageSize": 11058,
+          "total": 2101478
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        },
+        {
+          "usedSize": 2088720,
+          "backingStorageSize": 11058,
+          "total": 2099778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        },
+        {
+          "usedSize": 2089000,
+          "backingStorageSize": 11058,
+          "total": 2100058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1047248,
+        "minimum": 1047248,
+        "maximum": 1048948
+      },
+      "retainedReleasedBytes": {
+        "median": 1047528,
+        "minimum": 1047528,
+        "maximum": 1047528
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:28.960Z",
+      "finishedAt": "2026-10-21T11:30:29.093Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.200000047683716,
+        "totalMs": 4.700000047683716,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2222256,
+          "backingStorageSize": 108538,
+          "total": 2330794
+        },
+        {
+          "usedSize": 2222256,
+          "backingStorageSize": 108538,
+          "total": 2330794
+        },
+        {
+          "usedSize": 2222256,
+          "backingStorageSize": 108538,
+          "total": 2330794
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2222536,
+          "backingStorageSize": 108538,
+          "total": 2331074
+        },
+        {
+          "usedSize": 2222536,
+          "backingStorageSize": 108538,
+          "total": 2331074
+        },
+        {
+          "usedSize": 2222536,
+          "backingStorageSize": 108538,
+          "total": 2331074
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263208,
+        "minimum": 1263208,
+        "maximum": 1263208
+      },
+      "retainedEditedBytes": {
+        "median": 1278264,
+        "minimum": 1278264,
+        "maximum": 1278264
+      },
+      "retainedReleasedBytes": {
+        "median": 1278544,
+        "minimum": 1278544,
+        "maximum": 1278544
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:29.108Z",
+      "finishedAt": "2026-10-21T11:30:29.240Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.1999999284744263,
+        "totalMs": 3.6999999284744263,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.100000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2240696,
+          "backingStorageSize": 11058,
+          "total": 2251754
+        },
+        {
+          "usedSize": 2222268,
+          "backingStorageSize": 11058,
+          "total": 2233326
+        },
+        {
+          "usedSize": 2222268,
+          "backingStorageSize": 11058,
+          "total": 2233326
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2067332,
+          "backingStorageSize": 11058,
+          "total": 2078390
+        },
+        {
+          "usedSize": 2067332,
+          "backingStorageSize": 11058,
+          "total": 2078390
+        },
+        {
+          "usedSize": 2067332,
+          "backingStorageSize": 11058,
+          "total": 2078390
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1180796,
+        "minimum": 1180796,
+        "maximum": 1199224
+      },
+      "retainedReleasedBytes": {
+        "median": 1025860,
+        "minimum": 1025860,
+        "maximum": 1025860
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:29.256Z",
+      "finishedAt": "2026-10-21T11:30:29.383Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3,
+        "totalMs": 3.5,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 0.7999999523162842,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2050208,
+          "backingStorageSize": 11058,
+          "total": 2061266
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        },
+        {
+          "usedSize": 2049996,
+          "backingStorageSize": 11058,
+          "total": 2061054
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2067972,
+          "backingStorageSize": 11058,
+          "total": 2079030
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        },
+        {
+          "usedSize": 2066272,
+          "backingStorageSize": 11058,
+          "total": 2077330
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        },
+        {
+          "usedSize": 2066552,
+          "backingStorageSize": 11058,
+          "total": 2077610
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1008524,
+        "minimum": 1008524,
+        "maximum": 1008736
+      },
+      "retainedEditedBytes": {
+        "median": 1024800,
+        "minimum": 1024800,
+        "maximum": 1026500
+      },
+      "retainedReleasedBytes": {
+        "median": 1025080,
+        "minimum": 1025080,
+        "maximum": 1025080
+      }
+    },
+    {
+      "options": {
+        "storage": "dense-only",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:29.399Z",
+      "finishedAt": "2026-10-21T11:30:29.530Z",
+      "hostLoadAverageBefore": [
+        5.482421875,
+        3.74609375,
+        2.9453125
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.1999999284744263,
+        "totalMs": 3.6999999284744263,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 94428,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1996468,
+          "backingStorageSize": 105486,
+          "total": 2101954
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        },
+        {
+          "usedSize": 1996256,
+          "backingStorageSize": 105486,
+          "total": 2101742
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2082316,
+          "backingStorageSize": 193810,
+          "total": 2276126
+        },
+        {
+          "usedSize": 2082316,
+          "backingStorageSize": 193810,
+          "total": 2276126
+        },
+        {
+          "usedSize": 2082316,
+          "backingStorageSize": 193810,
+          "total": 2276126
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2012428,
+          "backingStorageSize": 105486,
+          "total": 2117914
+        },
+        {
+          "usedSize": 2012428,
+          "backingStorageSize": 105486,
+          "total": 2117914
+        },
+        {
+          "usedSize": 2012428,
+          "backingStorageSize": 105486,
+          "total": 2117914
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1049212,
+        "minimum": 1049212,
+        "maximum": 1049424
+      },
+      "retainedEditedBytes": {
+        "median": 1223596,
+        "minimum": 1223596,
+        "maximum": 1223596
+      },
+      "retainedReleasedBytes": {
+        "median": 1065384,
+        "minimum": 1065384,
+        "maximum": 1065384
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:29.547Z",
+      "finishedAt": "2026-10-21T11:30:29.681Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.6000000238418579,
+        "convertMs": 4.199999928474426,
+        "totalMs": 4.799999952316284,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        },
+        {
+          "usedSize": 2237172,
+          "backingStorageSize": 229990,
+          "total": 2467162
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        },
+        {
+          "usedSize": 2185684,
+          "backingStorageSize": 108942,
+          "total": 2294626
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1414632,
+        "minimum": 1414632,
+        "maximum": 1414632
+      },
+      "retainedReleasedBytes": {
+        "median": 1242096,
+        "minimum": 1242096,
+        "maximum": 1242096
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:29.698Z",
+      "finishedAt": "2026-10-21T11:30:29.852Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.399999976158142,
+        "totalMs": 3.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 17.199999928474426,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        },
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        },
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        },
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        },
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 5677912,
+        "minimum": 5677912,
+        "maximum": 5677912
+      },
+      "retainedReleasedBytes": {
+        "median": 958424,
+        "minimum": 958424,
+        "maximum": 958424
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:29.869Z",
+      "finishedAt": "2026-10-21T11:30:30.008Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.600000023841858,
+        "totalMs": 5.100000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5999999046325684,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2296676,
+          "backingStorageSize": 196862,
+          "total": 2493538
+        },
+        {
+          "usedSize": 2296676,
+          "backingStorageSize": 196862,
+          "total": 2493538
+        },
+        {
+          "usedSize": 2296676,
+          "backingStorageSize": 196862,
+          "total": 2493538
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2226788,
+          "backingStorageSize": 108538,
+          "total": 2335326
+        },
+        {
+          "usedSize": 2226788,
+          "backingStorageSize": 108538,
+          "total": 2335326
+        },
+        {
+          "usedSize": 2226788,
+          "backingStorageSize": 108538,
+          "total": 2335326
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263208,
+        "minimum": 1263208,
+        "maximum": 1263208
+      },
+      "retainedEditedBytes": {
+        "median": 1441008,
+        "minimum": 1441008,
+        "maximum": 1441008
+      },
+      "retainedReleasedBytes": {
+        "median": 1282796,
+        "minimum": 1282796,
+        "maximum": 1282796
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:30.025Z",
+      "finishedAt": "2026-10-21T11:30:30.159Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.100000023841858,
+        "totalMs": 4.600000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        },
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        },
+        {
+          "usedSize": 2184904,
+          "backingStorageSize": 108942,
+          "total": 2293846
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        },
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        },
+        {
+          "usedSize": 2185184,
+          "backingStorageSize": 108942,
+          "total": 2294126
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1241316,
+        "minimum": 1241316,
+        "maximum": 1241316
+      },
+      "retainedReleasedBytes": {
+        "median": 1241596,
+        "minimum": 1241596,
+        "maximum": 1241596
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:30.178Z",
+      "finishedAt": "2026-10-21T11:30:30.328Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.100000023841858,
+        "totalMs": 3.5,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 16.299999952316284,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        },
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        },
+        {
+          "usedSize": 6719384,
+          "backingStorageSize": 11058,
+          "total": 6730442
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        },
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        },
+        {
+          "usedSize": 1999896,
+          "backingStorageSize": 11058,
+          "total": 2010954
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 5677912,
+        "minimum": 5677912,
+        "maximum": 5677912
+      },
+      "retainedReleasedBytes": {
+        "median": 958424,
+        "minimum": 958424,
+        "maximum": 958424
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:30.345Z",
+      "finishedAt": "2026-10-21T11:30:30.492Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.399999976158142,
+        "totalMs": 4.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 8.700000047683716,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2095956,
+          "backingStorageSize": 109042,
+          "total": 2204998
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 1152248,
+        "minimum": 1152248,
+        "maximum": 1152468
+      },
+      "retainedReleasedBytes": {
+        "median": 1152528,
+        "minimum": 1152528,
+        "maximum": 1152528
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:30.511Z",
+      "finishedAt": "2026-10-21T11:30:30.651Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 4.299999952316284,
+        "totalMs": 4.699999928474426,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 8,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2095956,
+          "backingStorageSize": 109042,
+          "total": 2204998
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        },
+        {
+          "usedSize": 2095736,
+          "backingStorageSize": 109042,
+          "total": 2204778
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        },
+        {
+          "usedSize": 2096016,
+          "backingStorageSize": 109042,
+          "total": 2205058
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 1152248,
+        "minimum": 1152248,
+        "maximum": 1152468
+      },
+      "retainedReleasedBytes": {
+        "median": 1152528,
+        "minimum": 1152528,
+        "maximum": 1152528
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:30.668Z",
+      "finishedAt": "2026-10-21T11:30:30.818Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.6000000238418579,
+        "convertMs": 4.299999952316284,
+        "totalMs": 4.899999976158142,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 141092,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 7.699999928474426,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        },
+        {
+          "usedSize": 2080292,
+          "backingStorageSize": 109042,
+          "total": 2189334
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2131536,
+          "backingStorageSize": 4811842,
+          "total": 6943378
+        },
+        {
+          "usedSize": 2131536,
+          "backingStorageSize": 4811842,
+          "total": 6943378
+        },
+        {
+          "usedSize": 2131536,
+          "backingStorageSize": 4811842,
+          "total": 6943378
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2096448,
+          "backingStorageSize": 109042,
+          "total": 2205490
+        },
+        {
+          "usedSize": 2096448,
+          "backingStorageSize": 109042,
+          "total": 2205490
+        },
+        {
+          "usedSize": 2096448,
+          "backingStorageSize": 109042,
+          "total": 2205490
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1136804,
+        "minimum": 1136804,
+        "maximum": 1136804
+      },
+      "retainedEditedBytes": {
+        "median": 5890848,
+        "minimum": 5890848,
+        "maximum": 5890848
+      },
+      "retainedReleasedBytes": {
+        "median": 1152960,
+        "minimum": 1152960,
+        "maximum": 1152960
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:30.836Z",
+      "finishedAt": "2026-10-21T11:30:30.968Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.400000095367432,
+        "totalMs": 4.900000095367432,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5999999046325684,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2222116,
+          "backingStorageSize": 108538,
+          "total": 2330654
+        },
+        {
+          "usedSize": 2222116,
+          "backingStorageSize": 108538,
+          "total": 2330654
+        },
+        {
+          "usedSize": 2222116,
+          "backingStorageSize": 108538,
+          "total": 2330654
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2222396,
+          "backingStorageSize": 108538,
+          "total": 2330934
+        },
+        {
+          "usedSize": 2222396,
+          "backingStorageSize": 108538,
+          "total": 2330934
+        },
+        {
+          "usedSize": 2222396,
+          "backingStorageSize": 108538,
+          "total": 2330934
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263208,
+        "minimum": 1263208,
+        "maximum": 1263208
+      },
+      "retainedEditedBytes": {
+        "median": 1278124,
+        "minimum": 1278124,
+        "maximum": 1278124
+      },
+      "retainedReleasedBytes": {
+        "median": 1278404,
+        "minimum": 1278404,
+        "maximum": 1278404
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 100,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:30.986Z",
+      "finishedAt": "2026-10-21T11:30:31.135Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.200000047683716,
+        "totalMs": 3.600000023841858,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 16.700000047683716,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 6720904,
+          "backingStorageSize": 11058,
+          "total": 6731962
+        },
+        {
+          "usedSize": 6720904,
+          "backingStorageSize": 11058,
+          "total": 6731962
+        },
+        {
+          "usedSize": 6720904,
+          "backingStorageSize": 11058,
+          "total": 6731962
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2001416,
+          "backingStorageSize": 11058,
+          "total": 2012474
+        },
+        {
+          "usedSize": 2001416,
+          "backingStorageSize": 11058,
+          "total": 2012474
+        },
+        {
+          "usedSize": 2001416,
+          "backingStorageSize": 11058,
+          "total": 2012474
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 5679432,
+        "minimum": 5679432,
+        "maximum": 5679432
+      },
+      "retainedReleasedBytes": {
+        "median": 959944,
+        "minimum": 959944,
+        "maximum": 959944
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 256
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:31.152Z",
+      "finishedAt": "2026-10-21T11:30:31.282Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.300000071525574,
+        "totalMs": 4.800000071525574,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 46,
+          "numericArrays": 6004,
+          "numericElements": 35318,
+          "typedBackingBytes": 141272,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.3000000715255737,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        },
+        {
+          "usedSize": 2169972,
+          "backingStorageSize": 108942,
+          "total": 2278914
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2184964,
+          "backingStorageSize": 108942,
+          "total": 2293906
+        },
+        {
+          "usedSize": 2184964,
+          "backingStorageSize": 108942,
+          "total": 2293906
+        },
+        {
+          "usedSize": 2184964,
+          "backingStorageSize": 108942,
+          "total": 2293906
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2185244,
+          "backingStorageSize": 108942,
+          "total": 2294186
+        },
+        {
+          "usedSize": 2185244,
+          "backingStorageSize": 108942,
+          "total": 2294186
+        },
+        {
+          "usedSize": 2185244,
+          "backingStorageSize": 108942,
+          "total": 2294186
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1226384,
+        "minimum": 1226384,
+        "maximum": 1226384
+      },
+      "retainedEditedBytes": {
+        "median": 1241376,
+        "minimum": 1241376,
+        "maximum": 1241376
+      },
+      "retainedReleasedBytes": {
+        "median": 1241656,
+        "minimum": 1241656,
+        "maximum": 1241656
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:31.298Z",
+      "finishedAt": "2026-10-21T11:30:31.426Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.3999999761581421,
+        "convertMs": 3.299999952316284,
+        "totalMs": 3.6999999284744263,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.0999999046325684,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2248688,
+          "backingStorageSize": 11058,
+          "total": 2259746
+        },
+        {
+          "usedSize": 2230260,
+          "backingStorageSize": 11058,
+          "total": 2241318
+        },
+        {
+          "usedSize": 2230260,
+          "backingStorageSize": 11058,
+          "total": 2241318
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089648,
+          "backingStorageSize": 11058,
+          "total": 2100706
+        },
+        {
+          "usedSize": 2089648,
+          "backingStorageSize": 11058,
+          "total": 2100706
+        },
+        {
+          "usedSize": 2089648,
+          "backingStorageSize": 11058,
+          "total": 2100706
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1188788,
+        "minimum": 1188788,
+        "maximum": 1207216
+      },
+      "retainedReleasedBytes": {
+        "median": 1048176,
+        "minimum": 1048176,
+        "maximum": 1048176
+      }
+    },
+    {
+      "options": {
+        "storage": "typed32",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 2,
+      "startedAt": "2026-10-21T11:30:31.443Z",
+      "finishedAt": "2026-10-21T11:30:31.584Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 4.300000071525574,
+        "totalMs": 4.800000071525574,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 141456,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.5,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        },
+        {
+          "usedSize": 2207200,
+          "backingStorageSize": 108538,
+          "total": 2315738
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2296692,
+          "backingStorageSize": 196862,
+          "total": 2493554
+        },
+        {
+          "usedSize": 2296692,
+          "backingStorageSize": 196862,
+          "total": 2493554
+        },
+        {
+          "usedSize": 2296692,
+          "backingStorageSize": 196862,
+          "total": 2493554
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2226804,
+          "backingStorageSize": 108538,
+          "total": 2335342
+        },
+        {
+          "usedSize": 2226804,
+          "backingStorageSize": 108538,
+          "total": 2335342
+        },
+        {
+          "usedSize": 2226804,
+          "backingStorageSize": 108538,
+          "total": 2335342
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1263208,
+        "minimum": 1263208,
+        "maximum": 1263208
+      },
+      "retainedEditedBytes": {
+        "median": 1441024,
+        "minimum": 1441024,
+        "maximum": 1441024
+      },
+      "retainedReleasedBytes": {
+        "median": 1282812,
+        "minimum": 1282812,
+        "maximum": 1282812
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 128
+      },
+      "historyLimit": 100,
+      "repetition": 0,
+      "startedAt": "2026-10-21T11:30:31.602Z",
+      "finishedAt": "2026-10-21T11:30:31.734Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.1999999284744263,
+        "totalMs": 3.6999999284744263,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 92,
+          "numericArrays": 6257,
+          "numericElements": 35364,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 1.100000023841858,
+        "operations": 2000,
+        "retainedVersions": 100,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 3,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 2074124,
+          "backingStorageSize": 11058,
+          "total": 2085182
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        },
+        {
+          "usedSize": 2073912,
+          "backingStorageSize": 11058,
+          "total": 2084970
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        },
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        },
+        {
+          "usedSize": 2230156,
+          "backingStorageSize": 11058,
+          "total": 2241214
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        },
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        },
+        {
+          "usedSize": 2089544,
+          "backingStorageSize": 11058,
+          "total": 2100602
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 1032440,
+        "minimum": 1032440,
+        "maximum": 1032652
+      },
+      "retainedEditedBytes": {
+        "median": 1188684,
+        "minimum": 1188684,
+        "maximum": 1188684
+      },
+      "retainedReleasedBytes": {
+        "median": 1048072,
+        "minimum": 1048072,
+        "maximum": 1048072
+      }
+    },
+    {
+      "options": {
+        "storage": "ordinary",
+        "pageSize": 0
+      },
+      "historyLimit": 0,
+      "repetition": 1,
+      "startedAt": "2026-10-21T11:30:31.754Z",
+      "finishedAt": "2026-10-21T11:30:31.889Z",
+      "hostLoadAverageBefore": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "hostLoadAverageAfter": [
+        5.123046875,
+        3.7001953125,
+        2.93359375
+      ],
+      "load": {
+        "parseMs": 0.5,
+        "convertMs": 3.299999952316284,
+        "totalMs": 3.799999952316284,
+        "checksum": 2573197895,
+        "stats": {
+          "pages": 1,
+          "numericArrays": 5385,
+          "numericElements": 35273,
+          "typedBackingBytes": 0,
+          "rows": 11757
+        }
+      },
+      "edit": {
+        "elapsedMs": 3.899999976158142,
+        "operations": 2000,
+        "retainedVersions": 0,
+        "checksum": 52662555
+      },
+      "check": {
+        "currentValidated": true,
+        "oldVersionsValidated": 0,
+        "checksum": 52662555
+      },
+      "baseline": [
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        },
+        {
+          "usedSize": 1041480,
+          "backingStorageSize": 11050,
+          "total": 1052530
+        }
+      ],
+      "loaded": [
+        {
+          "usedSize": 1984048,
+          "backingStorageSize": 11058,
+          "total": 1995106
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        },
+        {
+          "usedSize": 1983836,
+          "backingStorageSize": 11058,
+          "total": 1994894
+        }
+      ],
+      "edited": [
+        {
+          "usedSize": 2000780,
+          "backingStorageSize": 11058,
+          "total": 2011838
+        },
+        {
+          "usedSize": 2000560,
+          "backingStorageSize": 11058,
+          "total": 2011618
+        },
+        {
+          "usedSize": 2000560,
+          "backingStorageSize": 11058,
+          "total": 2011618
+        }
+      ],
+      "released": [
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        },
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        },
+        {
+          "usedSize": 2000840,
+          "backingStorageSize": 11058,
+          "total": 2011898
+        }
+      ],
+      "retainedLoadedBytes": {
+        "median": 942364,
+        "minimum": 942364,
+        "maximum": 942576
+      },
+      "retainedEditedBytes": {
+        "median": 959088,
+        "minimum": 959088,
+        "maximum": 959308
+      },
+      "retainedReleasedBytes": {
+        "median": 959368,
+        "minimum": 959368,
+        "maximum": 959368
+      }
+    }
+  ]
+}

@@ -1,0 +1,1248 @@
+{
+  "complete": true,
+  "generatedAt": "2026-10-21T11:32:29.510Z",
+  "version": "8.3.3",
+  "mongoGitVersion": "3ef86ea0d67623e3f8299275cd6bd93e5f9454e6",
+  "nodeVersion": "v24.19.0",
+  "cpu": "Apple M5 Pro",
+  "platform": "darwin",
+  "arch": "arm64",
+  "dbPath": "/private/tmp/articulated-direct-storage-jtx7us",
+  "port": 27186,
+  "documents": 100,
+  "pageSize": 128,
+  "primaryCompressor": "zstd",
+  "canonicalSource": {
+    "trace": "kleppmannReal",
+    "traceSha256": "3af48f64f4ff18a09ec2cc21570accccfa912cffa702b45181ab383502bfe176",
+    "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+    "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+    "counts": {
+      "operations": 259778,
+      "insertions": 182315,
+      "deletions": 77463,
+      "newlineInsertions": 1767,
+      "newlineDeletions": 595,
+      "finalCharacters": 104852
+    },
+    "seed": "42",
+    "startState": "empty",
+    "refreshInterval": null,
+    "checkpoints": [
+      10000,
+      50000,
+      100000,
+      200000,
+      259778
+    ],
+    "idPolicy": "Harness-assigned opaque 8-character IDs: collision-checked deterministic SHA256/base64url prefixes map EACH WHOLE generated structured bunch ID bijectively. Counters, run grouping, operation order, anchors and characters are identical to the structured replay. Not recorded collaborator identities; no refresh or regrouping.",
+    "bunchCount": 5382,
+    "source": {
+      "upstreamCommit": "da212e984c777d31ee7d888f82637288aa4c61d3",
+      "traceUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "readmeUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/README.md",
+      "rawUrl": "https://raw.githubusercontent.com/automerge/automerge-perf/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "license": "CC-BY-4.0",
+      "attribution": "Editing trace by Martin Kleppmann and the paper's authors, from automerge/automerge-perf. The upstream README states CC-BY-4.0 for the trace. Its concurrent history was flattened to index-based single-character edits; cursor moves are omitted.",
+      "upstreamVerification": {
+        "verified": true,
+        "upstreamSha256": "23116070719243e2950c310006dd50b3d80744be7542a86c62e7d5c2ed7326d0",
+        "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+        "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+        "operations": 259778,
+        "method": "JSON-literal extraction; upstream JavaScript never executed"
+      }
+    },
+    "finalSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b"
+  },
+  "reusedFixturePath": "/private/tmp/articulated-direct-canonical-opaque8.json",
+  "sourceSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "document0SavedSha256": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+  "fixture": {
+    "runs": 11757,
+    "distinctWholeIds": 5382,
+    "visibleIds": 104852
+  },
+  "measurement": "Actual physical collection .wt file length / 100, including collection allocation/free space. All layouts use exactly the same {_id,state} wrapper. Index/shared-database files excluded. Logical BSON and network sizes not used.",
+  "gateMeaning": "Measured gate on this fixture only: physical bytes must not exceed paired same-run F01 under the same compressor. This is not a universal storage ceiling guarantee for unseen documents or production migrations.",
+  "readiness": "DS01/DS02/DS07/DS08 are leaf-only proposals; DS03 adds position navigation only. DS04/DS05/DS06 persist the specified complete navigation metadata, but their editing implementations, load work, typed-array conversion, and performance have NOT been built or measured. No hidden production IdList tree is assumed.",
+  "objective": "Optimize lossless stored shape under the measured F01 ceiling. Cheap conversion to a different runtime is allowed and may be preferable. Persisted navigation indexes are optional cost counterexamples, NOT requirements for a winning storage format or the optimization target.",
+  "procedure": [
+    "Fresh isolated localhost27186 MongoDB with dbPath/bind/port verified before writes; no database dropped",
+    "100 independently renamed whole-ID documents per layout, all opaque IDs exactly8chars and collisionchecked",
+    "Full exact SavedIdList roundtrip plus IdList validation for documents0/99; persisted indexes validated where present",
+    "Compact everycollection; fsync checkpoint; compact everycollection again; fsync with lock",
+    "Verify actual .wt file length equals storageSize and compressor matches requested value while locked; unlock afterward"
+  ],
+  "caveats": [
+    "Single uninterrupted canonical trace with harness-assigned IDs, not production corpus",
+    "One collection build per case, not statistical repeats; page allocations may produce ties",
+    "Identical run structure across independently renamed documents",
+    "Final snapshots freshly inserted, not Mongo update fragmentation",
+    "Metadata overhead is a paired compressed-file difference, not uncompressed metadata bytes; compression interactions may affect its sign"
+  ],
+  "examples": [
+    {
+      "id": "F01",
+      "label": "Plain SavedIdList objects — paired baseline",
+      "readiness": "Existing library interchange baseline, loaded into existing IdList; not a dump of its editable internal tree",
+      "storedDocument": {
+        "_id": 0,
+        "state": [
+          {
+            "bunchId": "aB3dE5fG",
+            "startCounter": 0,
+            "count": 3,
+            "isDeleted": false
+          },
+          {
+            "bunchId": "aB3dE5fG",
+            "startCounter": 3,
+            "count": 2,
+            "isDeleted": true
+          },
+          {
+            "bunchId": "hJ7kL9mN",
+            "startCounter": 20,
+            "count": 1,
+            "isDeleted": false
+          },
+          {
+            "bunchId": "aB3dE5fG",
+            "startCounter": 8,
+            "count": 2,
+            "isDeleted": false
+          }
+        ]
+      }
+    },
+    {
+      "id": "F05",
+      "label": "Whole-ID columns; reconstruct counters — paired reference",
+      "readiness": "Existing columnar interchange; runtime indexes are not persisted",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "aB3dE5fG",
+            "aB3dE5fG",
+            "hJ7kL9mN",
+            "aB3dE5fG"
+          ],
+          "startCounterIndexes": [
+            2,
+            1
+          ],
+          "startCounters": [
+            20,
+            8
+          ],
+          "counts": [
+            3,
+            -2,
+            1,
+            2
+          ]
+        }
+      }
+    },
+    {
+      "id": "DS01",
+      "label": "Identity spans + separate visibility",
+      "readiness": "Leaf payload only. Identity, order and visibility are lossless; no persisted navigation/index metadata. Not a ready indexed native snapshot",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "aB3dE5fG",
+            "hJ7kL9mN",
+            "aB3dE5fG"
+          ],
+          "startCounters": [
+            0,
+            20,
+            8
+          ],
+          "identityCounts": [
+            5,
+            1,
+            2
+          ],
+          "visibilityCounts": [
+            3,
+            -2,
+            3
+          ]
+        }
+      }
+    },
+    {
+      "id": "DS02",
+      "label": "128-run pages; explicit counters",
+      "readiness": "Leaf pages only. No visible directory or identity index; runtime navigation construction remains unmeasured",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": [
+            {
+              "bunchIds": [
+                "aB3dE5fG",
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounters": [
+                0,
+                3,
+                20,
+                8
+              ],
+              "counts": [
+                3,
+                -2,
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "DS03",
+      "label": "Explicit-counter pages + visible prefix ends",
+      "readiness": "Position-navigation metadata only: at(index) can use visibleEnds and page-local scans. Identity lookup remains linear without building a separate index. Not the fully indexed proposal",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": [
+            {
+              "bunchIds": [
+                "aB3dE5fG",
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounters": [
+                0,
+                3,
+                20,
+                8
+              ],
+              "counts": [
+                3,
+                -2,
+                1,
+                2
+              ]
+            }
+          ],
+          "visibleEnds": [
+            6
+          ]
+        }
+      }
+    },
+    {
+      "id": "DS04",
+      "label": "Explicit-counter pages + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": {
+            "0": {
+              "bunchIds": [
+                "aB3dE5fG",
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounters": [
+                0,
+                3,
+                20,
+                8
+              ],
+              "counts": [
+                3,
+                -2,
+                1,
+                2
+              ]
+            }
+          },
+          "pageOrder": [
+            0
+          ],
+          "pagePositions": [
+            0
+          ],
+          "visibleEnds": [
+            6
+          ],
+          "identityLocations": {
+            "aB3dE5fG": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              3
+            ],
+            "hJ7kL9mN": [
+              0,
+              2
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "DS05",
+      "label": "Identity-span pages + visibility + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": {
+            "0": {
+              "bunchIds": [
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounters": [
+                0,
+                20,
+                8
+              ],
+              "identityCounts": [
+                5,
+                1,
+                2
+              ],
+              "visibilityCounts": [
+                3,
+                -2,
+                3
+              ]
+            }
+          },
+          "pageOrder": [
+            0
+          ],
+          "pagePositions": [
+            0
+          ],
+          "visibleEnds": [
+            6
+          ],
+          "identityLocations": {
+            "aB3dE5fG": [
+              0,
+              0,
+              0,
+              2
+            ],
+            "hJ7kL9mN": [
+              0,
+              1
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "DS06",
+      "label": "Page-local reconstructed-counter columns + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": {
+            "0": {
+              "bunchIds": [
+                "aB3dE5fG",
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounterIndexes": [
+                2,
+                1
+              ],
+              "startCounters": [
+                20,
+                8
+              ],
+              "counts": [
+                3,
+                -2,
+                1,
+                2
+              ]
+            }
+          },
+          "pageOrder": [
+            0
+          ],
+          "pagePositions": [
+            0
+          ],
+          "visibleEnds": [
+            6
+          ],
+          "identityLocations": {
+            "aB3dE5fG": [
+              0,
+              0,
+              0,
+              1,
+              0,
+              3
+            ],
+            "hJ7kL9mN": [
+              0,
+              2
+            ]
+          }
+        }
+      }
+    },
+    {
+      "id": "DS07",
+      "label": "128-run identity-span pages + separate visibility",
+      "readiness": "Leaf pages only; paired control isolates the metadata added by DS05",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": [
+            {
+              "bunchIds": [
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounters": [
+                0,
+                20,
+                8
+              ],
+              "identityCounts": [
+                5,
+                1,
+                2
+              ],
+              "visibilityCounts": [
+                3,
+                -2,
+                3
+              ]
+            }
+          ]
+        }
+      }
+    },
+    {
+      "id": "DS08",
+      "label": "128-run page-local reconstructed-counter columns",
+      "readiness": "Leaf pages only; page-local counter exceptions restart at each page; paired control isolates metadata added by DS06",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "pages": [
+            {
+              "bunchIds": [
+                "aB3dE5fG",
+                "aB3dE5fG",
+                "hJ7kL9mN",
+                "aB3dE5fG"
+              ],
+              "startCounterIndexes": [
+                2,
+                1
+              ],
+              "startCounters": [
+                20,
+                8
+              ],
+              "counts": [
+                3,
+                -2,
+                1,
+                2
+              ]
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "collection": "zstd_f01",
+      "id": "F01",
+      "label": "Plain SavedIdList objects — paired baseline",
+      "readiness": "Existing library interchange baseline, loaded into existing IdList; not a dump of its editable internal tree",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11091968,
+      "storageBytesPerDocument": 110919.68,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-d9cdcf32-b276-466b-80d9-278161bf63ff.wt",
+      "filesystemAllocatedBytes": 11726848,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 0,
+        "deltaBytesPerDocument": 0
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "zstd_f05",
+      "id": "F05",
+      "label": "Whole-ID columns; reconstruct counters — paired reference",
+      "readiness": "Existing columnar interchange; runtime indexes are not persisted",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 10268672,
+      "storageBytesPerDocument": 102686.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-0f26058f-423c-4182-a1dd-e875368dc7a2.wt",
+      "filesystemAllocatedBytes": 11309056,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 8232.959999999992,
+        "deltaBytesPerDocument": -8232.959999999992
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "zstd_ds01",
+      "id": "DS01",
+      "label": "Identity spans + separate visibility",
+      "readiness": "Leaf payload only. Identity, order and visibility are lossless; no persisted navigation/index metadata. Not a ready indexed native snapshot",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "f180931aeb411b9d3e511d4e8ff1ca9b5f91f56889a4319b26b4f33e77d5baf3",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11497472,
+      "storageBytesPerDocument": 114974.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-583f1387-a66a-4147-aeb4-99b8808311c3.wt",
+      "filesystemAllocatedBytes": 12537856,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -4055.040000000008,
+        "deltaBytesPerDocument": 4055.040000000008
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "zstd_ds02",
+      "id": "DS02",
+      "label": "128-run pages; explicit counters",
+      "readiness": "Leaf pages only. No visible directory or identity index; runtime navigation construction remains unmeasured",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d3cf4b1aa1cae48f51948ac4574b78e2fee08757aa9cf1da79f67b5bfd19e80b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 9859072,
+      "storageBytesPerDocument": 98590.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-142ab348-d064-4840-bd96-3a7f4e796e5b.wt",
+      "filesystemAllocatedBytes": 10895360,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 12328.959999999992,
+        "deltaBytesPerDocument": -12328.959999999992
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "zstd_ds03",
+      "id": "DS03",
+      "label": "Explicit-counter pages + visible prefix ends",
+      "readiness": "Position-navigation metadata only: at(index) can use visibleEnds and page-local scans. Identity lookup remains linear without building a separate index. Not the fully indexed proposal",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d6dbba5bd3d808c5e88f462f47c9271cd4f5120a40538a43b0041f46650b1559",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 9932800,
+      "storageBytesPerDocument": 99328,
+      "freeBytes": 86016,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-31952ff0-d0ff-4371-bbb1-c06a60ce16cb.wt",
+      "filesystemAllocatedBytes": 9932800,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 11591.679999999993,
+        "deltaBytesPerDocument": -11591.679999999993
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS02",
+        "additionalCompressedBytesPerDocument": 737.2799999999988
+      }
+    },
+    {
+      "collection": "zstd_ds04",
+      "id": "DS04",
+      "label": "Explicit-counter pages + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "bec5cfb4de663f8df381c11ec54f9c8454e65fa1f6268ec60072ab883c08e956",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 14774272,
+      "storageBytesPerDocument": 147742.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-6aa3896c-99b6-43c6-bd08-c005dd9c9334.wt",
+      "filesystemAllocatedBytes": 15814656,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -36823.04000000001,
+        "deltaBytesPerDocument": 36823.04000000001
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS02",
+        "additionalCompressedBytesPerDocument": 49152
+      }
+    },
+    {
+      "collection": "zstd_ds05",
+      "id": "DS05",
+      "label": "Identity-span pages + visibility + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "847cd1cd23b97a0c03fc336840cec2d2703b7b3039d35c74c2493724a09d626b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 13135872,
+      "storageBytesPerDocument": 131358.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-1449c01a-c04c-48d5-89bb-bee2af923203.wt",
+      "filesystemAllocatedBytes": 13635584,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -20439.040000000008,
+        "deltaBytesPerDocument": 20439.040000000008
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS07",
+        "additionalCompressedBytesPerDocument": 45056
+      }
+    },
+    {
+      "collection": "zstd_ds06",
+      "id": "DS06",
+      "label": "Page-local reconstructed-counter columns + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d143966a7cc05de76e1745c88c45cc6dd98c39f8f924711ebf6e7d1239845fe1",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 13950976,
+      "storageBytesPerDocument": 139509.76,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-53035fa3-fa95-4c56-9391-45ae13f71797.wt",
+      "filesystemAllocatedBytes": 14991360,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -28590.080000000016,
+        "deltaBytesPerDocument": 28590.080000000016
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS08",
+        "additionalCompressedBytesPerDocument": 53207.04000000001
+      }
+    },
+    {
+      "collection": "zstd_ds07",
+      "id": "DS07",
+      "label": "128-run identity-span pages + separate visibility",
+      "readiness": "Leaf pages only; paired control isolates the metadata added by DS05",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "cb5b7804410d1d0b577998882dca17b48cb23ed798ddc7dabc0203a286d787b5",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8630272,
+      "storageBytesPerDocument": 86302.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-a5d78f79-62e1-47ef-9cb9-e86b85baca38.wt",
+      "filesystemAllocatedBytes": 9666560,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 24616.959999999992,
+        "deltaBytesPerDocument": -24616.959999999992
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "zstd_ds08",
+      "id": "DS08",
+      "label": "128-run page-local reconstructed-counter columns",
+      "readiness": "Leaf pages only; page-local counter exceptions restart at each page; paired control isolates metadata added by DS06",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0cb7728b959c72cf18a032d49aea22b33cfb1b685360240cca9e4c8c41468527",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 8630272,
+      "storageBytesPerDocument": 86302.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-872740cd-7b3c-43d8-a00d-2c4e2e915ccf.wt",
+      "filesystemAllocatedBytes": 9666560,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 110919.68,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 24616.959999999992,
+        "deltaBytesPerDocument": -24616.959999999992
+      },
+      "f05PairedHeadroomBytesPerDocument": 8232.959999999992,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_f01",
+      "id": "F01",
+      "label": "Plain SavedIdList objects — paired baseline",
+      "readiness": "Existing library interchange baseline, loaded into existing IdList; not a dump of its editable internal tree",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 19689472,
+      "storageBytesPerDocument": 196894.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-bd214ab9-b45f-462e-a414-8d46eaddc970.wt",
+      "filesystemAllocatedBytes": 20729856,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 0,
+        "deltaBytesPerDocument": 0
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_f05",
+      "id": "F05",
+      "label": "Whole-ID columns; reconstruct counters — paired reference",
+      "readiness": "Existing columnar interchange; runtime indexes are not persisted",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 17231872,
+      "storageBytesPerDocument": 172318.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-d9ece5d5-5efe-44bd-83a6-252d82c6ff97.wt",
+      "filesystemAllocatedBytes": 18272256,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 24576,
+        "deltaBytesPerDocument": -24576
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_ds01",
+      "id": "DS01",
+      "label": "Identity spans + separate visibility",
+      "readiness": "Leaf payload only. Identity, order and visibility are lossless; no persisted navigation/index metadata. Not a ready indexed native snapshot",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "f180931aeb411b9d3e511d4e8ff1ca9b5f91f56889a4319b26b4f33e77d5baf3",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 22966272,
+      "storageBytesPerDocument": 229662.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-c651fad9-2d7d-4d75-91ed-0c6e4e20415a.wt",
+      "filesystemAllocatedBytes": 24002560,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -32768,
+        "deltaBytesPerDocument": 32768
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_ds02",
+      "id": "DS02",
+      "label": "128-run pages; explicit counters",
+      "readiness": "Leaf pages only. No visible directory or identity index; runtime navigation construction remains unmeasured",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d3cf4b1aa1cae48f51948ac4574b78e2fee08757aa9cf1da79f67b5bfd19e80b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 20475904,
+      "storageBytesPerDocument": 204759.04,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-9e0dcd54-65f2-4a3c-b9ff-1b251a6955e7.wt",
+      "filesystemAllocatedBytes": 21516288,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -7864.320000000007,
+        "deltaBytesPerDocument": 7864.320000000007
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_ds03",
+      "id": "DS03",
+      "label": "Explicit-counter pages + visible prefix ends",
+      "readiness": "Position-navigation metadata only: at(index) can use visibleEnds and page-local scans. Identity lookup remains linear without building a separate index. Not the fully indexed proposal",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d6dbba5bd3d808c5e88f462f47c9271cd4f5120a40538a43b0041f46650b1559",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 20508672,
+      "storageBytesPerDocument": 205086.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-f2452a2d-2b1a-436e-bdb4-1d35896fff7d.wt",
+      "filesystemAllocatedBytes": 21549056,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -8192,
+        "deltaBytesPerDocument": 8192
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS02",
+        "additionalCompressedBytesPerDocument": 327.679999999993
+      }
+    },
+    {
+      "collection": "snappy_ds04",
+      "id": "DS04",
+      "label": "Explicit-counter pages + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "bec5cfb4de663f8df381c11ec54f9c8454e65fa1f6268ec60072ab883c08e956",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 33587200,
+      "storageBytesPerDocument": 335872,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-5ff1e39f-4b29-4150-b4c9-07003d63ef70.wt",
+      "filesystemAllocatedBytes": 34627584,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -138977.28,
+        "deltaBytesPerDocument": 138977.28
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS02",
+        "additionalCompressedBytesPerDocument": 131112.96
+      }
+    },
+    {
+      "collection": "snappy_ds05",
+      "id": "DS05",
+      "label": "Identity-span pages + visibility + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "847cd1cd23b97a0c03fc336840cec2d2703b7b3039d35c74c2493724a09d626b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 31158272,
+      "storageBytesPerDocument": 311582.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-895f7094-7237-4bb1-a710-d206b754f1c6.wt",
+      "filesystemAllocatedBytes": 31297536,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -114687.99999999997,
+        "deltaBytesPerDocument": 114687.99999999997
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS07",
+        "additionalCompressedBytesPerDocument": 118906.87999999998
+      }
+    },
+    {
+      "collection": "snappy_ds06",
+      "id": "DS06",
+      "label": "Page-local reconstructed-counter columns + complete navigation metadata",
+      "readiness": "Complete proposed navigation metadata: stable page IDs/order/positions, visible prefix ends, and whole-ID-to-page/row locations sorted by counter. Bounded within-page scans remain. Editing code and performance are NOT implemented or measured; immutable directory/index update costs remain to be evaluated.",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d143966a7cc05de76e1745c88c45cc6dd98c39f8f924711ebf6e7d1239845fe1",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 29110272,
+      "storageBytesPerDocument": 291102.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-a91b7279-a6d6-4a0a-bce1-dc2a35b29cd4.wt",
+      "filesystemAllocatedBytes": 30150656,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": false,
+        "remainingBytesPerDocument": -94207.99999999997,
+        "deltaBytesPerDocument": 94207.99999999997
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": {
+        "pairedLeafId": "DS08",
+        "additionalCompressedBytesPerDocument": 131194.87999999998
+      }
+    },
+    {
+      "collection": "snappy_ds07",
+      "id": "DS07",
+      "label": "128-run identity-span pages + separate visibility",
+      "readiness": "Leaf pages only; paired control isolates the metadata added by DS05",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "cb5b7804410d1d0b577998882dca17b48cb23ed798ddc7dabc0203a286d787b5",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 19267584,
+      "storageBytesPerDocument": 192675.84,
+      "freeBytes": 0,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-7310d6d5-dcb6-4265-8e36-971ea38cfe4a.wt",
+      "filesystemAllocatedBytes": 19267584,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 4218.880000000005,
+        "deltaBytesPerDocument": -4218.880000000005
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    },
+    {
+      "collection": "snappy_ds08",
+      "id": "DS08",
+      "label": "128-run page-local reconstructed-counter columns",
+      "readiness": "Leaf pages only; page-local counter exceptions restart at each page; paired control isolates metadata added by DS06",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0cb7728b959c72cf18a032d49aea22b33cfb1b685360240cca9e4c8c41468527",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 15990784,
+      "storageBytesPerDocument": 159907.84,
+      "freeBytes": 0,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-direct-storage-jtx7us/collection-d45c8cb3-6bdc-420e-b5fc-63cf88497bf3.wt",
+      "filesystemAllocatedBytes": 15990784,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none",
+      "gate": {
+        "reference": "Same-run F01, same canonical snapshot and compressor",
+        "baselineBytesPerDocument": 196894.72,
+        "passesMeasuredStorageCeiling": true,
+        "remainingBytesPerDocument": 36986.880000000005,
+        "deltaBytesPerDocument": -36986.880000000005
+      },
+      "f05PairedHeadroomBytesPerDocument": 24576,
+      "navigationMetadataDelta": null
+    }
+  ]
+}

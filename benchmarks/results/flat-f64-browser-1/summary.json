@@ -1,0 +1,205 @@
+{
+  "sourceHash": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "rows": [
+    {
+      "id": "F01",
+      "label": "Original objects → existing IdList",
+      "storageId": "F01",
+      "snappyKB": [
+        196.77184,
+        196.77184
+      ],
+      "zstdKB": [
+        110.7968,
+        110.7968
+      ],
+      "timings": [
+        {
+          "parseAndLoadP95": 21,
+          "readyP95": 50.5,
+          "decodeMedian": 4.299999952316284,
+          "hydrateMedian": 13.199999928474426,
+          "retainedMB": 6.261873,
+          "highWaterMB": 15.979296,
+          "gcMedian": 1.933,
+          "coldMedian": 58
+        },
+        {
+          "parseAndLoadP95": 18.899999976158142,
+          "readyP95": 50.10000002384186,
+          "decodeMedian": 4.299999952316284,
+          "hydrateMedian": 13,
+          "retainedMB": 6.263209,
+          "highWaterMB": 15.997632,
+          "gcMedian": 1.922,
+          "coldMedian": 58.199999928474426
+        }
+      ],
+      "passesF01": true
+    },
+    {
+      "id": "F05",
+      "label": "Flat columns, ID array → existing IdList",
+      "storageId": "F05",
+      "snappyKB": [
+        172.19584,
+        172.19584
+      ],
+      "zstdKB": [
+        102.56384,
+        102.56384
+      ],
+      "timings": [
+        {
+          "parseAndLoadP95": 19.399999976158142,
+          "readyP95": 50.800000071525574,
+          "decodeMedian": 1.5,
+          "hydrateMedian": 14.200000047683716,
+          "retainedMB": 6.265737,
+          "highWaterMB": 13.7648,
+          "gcMedian": 1.565,
+          "coldMedian": 58.40000009536743
+        },
+        {
+          "parseAndLoadP95": 19.399999976158142,
+          "readyP95": 51.60000002384186,
+          "decodeMedian": 1.5,
+          "hydrateMedian": 14.200000166893005,
+          "retainedMB": 6.265361,
+          "highWaterMB": 11.680948,
+          "gcMedian": 1.92,
+          "coldMedian": 57.39999997615814
+        }
+      ],
+      "passesF01": true
+    },
+    {
+      "id": "Sflat-joined",
+      "label": "Flat JSON, concatenated IDs; previous decoder",
+      "storageId": "Sflat-joined",
+      "snappyKB": [
+        127.13983999999999,
+        127.13983999999999
+      ],
+      "zstdKB": [
+        82.08384,
+        82.08384
+      ],
+      "timings": [
+        {
+          "parseAndLoadP95": 21.09999978542328,
+          "readyP95": 50.5,
+          "decodeMedian": 0.3999999761581421,
+          "hydrateMedian": 18.40000021457672,
+          "retainedMB": 6.264989,
+          "highWaterMB": 14.091684,
+          "gcMedian": 2.307,
+          "coldMedian": 59.40000009536743
+        },
+        {
+          "parseAndLoadP95": 21.300000071525574,
+          "readyP95": 55.799999952316284,
+          "decodeMedian": 0.3999999761581421,
+          "hydrateMedian": 18.299999952316284,
+          "retainedMB": 6.263693,
+          "highWaterMB": 14.607188,
+          "gcMedian": 2.276,
+          "coldMedian": 58.299999952316284
+        }
+      ],
+      "passesF01": true
+    },
+    {
+      "id": "Flat-JSON-direct",
+      "label": "Same flat JSON; direct decoder",
+      "storageId": "Sflat-joined",
+      "snappyKB": [
+        127.13983999999999,
+        127.13983999999999
+      ],
+      "zstdKB": [
+        82.08384,
+        82.08384
+      ],
+      "timings": [
+        {
+          "parseAndLoadP95": 23.09999990463257,
+          "readyP95": 58,
+          "decodeMedian": 0.3999999761581421,
+          "hydrateMedian": 17.59999990463257,
+          "retainedMB": 6.263245,
+          "highWaterMB": 10.293524,
+          "gcMedian": 1.795,
+          "coldMedian": 58.299999952316284
+        },
+        {
+          "parseAndLoadP95": 22.299999952316284,
+          "readyP95": 57,
+          "decodeMedian": 0.3999999761581421,
+          "hydrateMedian": 17.399999976158142,
+          "retainedMB": 6.263241,
+          "highWaterMB": 13.924232,
+          "gcMedian": 1.753,
+          "coldMedian": 57.799999952316284
+        }
+      ],
+      "passesF01": true
+    },
+    {
+      "id": "Flat-F64",
+      "label": "Same flat shape; Float64 binary fields + direct decoder",
+      "storageId": "Flat-F64",
+      "snappyKB": [
+        86.17984,
+        86.17984
+      ],
+      "zstdKB": [
+        57.507839999999995,
+        57.507839999999995
+      ],
+      "timings": [
+        {
+          "parseAndLoadP95": 20.300000071525574,
+          "readyP95": 51.5,
+          "decodeMedian": 0.10000002384185791,
+          "hydrateMedian": 17.800000071525574,
+          "retainedMB": 6.265397,
+          "highWaterMB": 14.896929,
+          "gcMedian": 1.373,
+          "coldMedian": 58.10000002384186
+        },
+        {
+          "parseAndLoadP95": 20.600000023841858,
+          "readyP95": 54.799999952316284,
+          "decodeMedian": 0.10000002384185791,
+          "hydrateMedian": 17.700000047683716,
+          "retainedMB": 6.263945,
+          "highWaterMB": 14.880925,
+          "gcMedian": 1.518,
+          "coldMedian": 59.10000002384186
+        }
+      ],
+      "passesF01": true
+    }
+  ],
+  "alignmentAudit": [
+    {
+      "field": "startCounterIndexes",
+      "bytes": 0,
+      "offsetModulo8": 0,
+      "needsAlignmentCopy": false
+    },
+    {
+      "field": "startCounters",
+      "bytes": 0,
+      "offsetModulo8": 4,
+      "needsAlignmentCopy": true
+    },
+    {
+      "field": "counts",
+      "bytes": 94056,
+      "offsetModulo8": 1,
+      "needsAlignmentCopy": true
+    }
+  ]
+}

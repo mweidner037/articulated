@@ -99,7 +99,7 @@ type TransposedSavedState = {
   counts: number[];
 };
 
-function toTransposed(saved: SavedIdList): TransposedSavedState {
+export function toTransposed(saved: SavedIdList): TransposedSavedState {
   const out: TransposedSavedState = {
     bunchIds: new Array(saved.length),
     startCounters: new Array(saved.length),
@@ -114,7 +114,7 @@ function toTransposed(saved: SavedIdList): TransposedSavedState {
   return out;
 }
 
-function fromTransposed({
+export function fromTransposed({
   bunchIds,
   startCounters,
   counts,
@@ -573,7 +573,7 @@ type BunchIndexOmitSavedState = {
   counts: number[];
 };
 
-function toBunchIndexOmit(saved: SavedIdList): BunchIndexOmitSavedState {
+export function toBunchIndexOmit(saved: SavedIdList): BunchIndexOmitSavedState {
   const bunchIndexMap = new Map<string, number>();
   // Indexed by bunchIndex.
   const nextCounters: number[] = [];
@@ -606,7 +606,7 @@ function toBunchIndexOmit(saved: SavedIdList): BunchIndexOmitSavedState {
   return out;
 }
 
-function fromBunchIndexOmit({
+export function fromBunchIndexOmit({
   bunchIds,
   bunchIndices,
   startCounterIndexes,
@@ -681,7 +681,9 @@ type ClientIndexOmitSavedState = {
   counts: number[];
 };
 
-function toClientIndexOmit(saved: SavedIdList): ClientIndexOmitSavedState {
+export function toClientIndexOmit(
+  saved: SavedIdList,
+): ClientIndexOmitSavedState {
   const clientIndexMap = new Map<string, number>();
   const nextCounters = new Map<string, number>();
   const out: ClientIndexOmitSavedState = {
@@ -715,7 +717,7 @@ function toClientIndexOmit(saved: SavedIdList): ClientIndexOmitSavedState {
   return out;
 }
 
-function fromClientIndexOmit({
+export function fromClientIndexOmit({
   clientIds,
   clientIndices,
   seqNums,
@@ -847,7 +849,7 @@ type TransposedOmitSavedState = SparseStartCounters & {
   counts: number[];
 };
 
-function toTransposedOmit(saved: SavedIdList): TransposedOmitSavedState {
+export function toTransposedOmit(saved: SavedIdList): TransposedOmitSavedState {
   const bunchIds: string[] = new Array(saved.length);
   const counts: number[] = new Array(saved.length);
   for (let i = 0; i < saved.length; i++) {
@@ -857,7 +859,9 @@ function toTransposedOmit(saved: SavedIdList): TransposedOmitSavedState {
   return { bunchIds, ...toSparseStartCounters(saved), counts };
 }
 
-function fromTransposedOmit(state: TransposedOmitSavedState): SavedIdList {
+export function fromTransposedOmit(
+  state: TransposedOmitSavedState,
+): SavedIdList {
   return fromSparseStartCounters(state.bunchIds, state.counts, state);
 }
 
@@ -899,7 +903,7 @@ type SplitTransposedOmitSavedState = SparseStartCounters & {
   counts: number[];
 };
 
-function toSplitTransposedOmit(
+export function toSplitTransposedOmit(
   saved: SavedIdList,
 ): SplitTransposedOmitSavedState {
   const clientIds: string[] = new Array(saved.length);
@@ -912,7 +916,7 @@ function toSplitTransposedOmit(
   return { clientIds, seqNums, ...toSparseStartCounters(saved), counts };
 }
 
-function fromSplitTransposedOmit(
+export function fromSplitTransposedOmit(
   state: SplitTransposedOmitSavedState,
 ): SavedIdList {
   const { clientIds, seqNums } = state;

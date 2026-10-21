@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="382" viewBox="0 0 1315 382" role="img" aria-labelledby="title desc">
+<title id="title">4 documents retained: operations on one document</title><desc id="desc">256 lookups and 200 immutable edits. Ten fresh-context trials per row; lower is better. Total includes both operation batches and ONE final render. This is not 200 keystrokes or per-keystroke latency.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="382" fill="white"/>
+<text x="24" y="36" class="title">4 documents retained: operations on one document</text>
+<text x="24" y="68" >256 lookups and 200 immutable edits. Ten fresh-context trials per row; lower is better.</text>
+<text x="24" y="110" >Internal format / loading path</text>
+<text x="425" y="110" >Lookup batch median (ms)</text>
+<line x1="425" x2="425" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="425" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="532" y="338" class="small" text-anchor="middle">0.5</text>
+<line x1="639" x2="639" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="639" y="338" class="small" text-anchor="middle">0.9</text>
+<rect x="425" y="165" width="190.22221088409424" height="23" fill="#3266a6"/>
+<text x="622.2222108840942" y="183" class="small">0.8</text>
+<rect x="425" y="247" width="142.66667233573065" height="23" fill="#3266a6"/>
+<text x="574.6666723357307" y="265" class="small">0.6</text>
+<text x="715" y="110" >Edit batch median (ms)</text>
+<line x1="715" x2="715" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="715" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="822" y="338" class="small" text-anchor="middle">2.1</text>
+<line x1="929" x2="929" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="929" y="338" class="small" text-anchor="middle">4.2</text>
+<rect x="715" y="165" width="112.09524052483695" height="23" fill="#3c8077"/>
+<text x="834.095240524837" y="183" class="small">2.2</text>
+<rect x="715" y="247" width="203.8095238095238" height="23" fill="#3c8077"/>
+<text x="925.8095238095239" y="265" class="small">4.0</text>
+<text x="1005" y="110" >Batch + render median (ms)</text>
+<line x1="1005" x2="1005" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1005" y="338" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1112" y="338" class="small" text-anchor="middle">8.8</text>
+<line x1="1219" x2="1219" y1="138" y2="315" stroke="#e2e6eb"/>
+<text x="1219" y="338" class="small" text-anchor="middle">17.5</text>
+<rect x="1005" y="165" width="150.41142798832485" height="23" fill="#8571ac"/>
+<text x="1162.411427988325" y="183" class="small">12.3</text>
+<rect x="1005" y="247" width="202.99428600583758" height="23" fill="#8571ac"/>
+<text x="1214.9942860058377" y="265" class="small">16.6</text>
+<text x="24" y="162" >I1 — F08 → IdList.load()</text>
+<text x="24" y="204" class="small">Convert to SavedIdList; use IdList</text>
+<text x="24" y="244" >I2 — Native F08 columns</text>
+<text x="24" y="286" class="small">Adopt arrays; build chunk indexes</text>
+<text x="24" y="370" class="small">Total includes both operation batches and ONE final render. This is not 200 keystrokes or per-keystroke latency.</text>
+</svg>

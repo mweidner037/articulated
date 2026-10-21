@@ -1,0 +1,567 @@
+{
+  "sourceSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "jsonWinner": "S128-joined",
+  "binaryWinner": "S128-joined-binary",
+  "confirmation": [
+    {
+      "id": "F01",
+      "parseAndLoadP95": 19,
+      "readyP95": 50.10000002384186,
+      "retainedMB": 6.263213
+    },
+    {
+      "id": "F05",
+      "parseAndLoadP95": 19.50000011920929,
+      "readyP95": 50.09999990463257,
+      "retainedMB": 6.265457
+    },
+    {
+      "id": "DS08",
+      "parseAndLoadP95": 19.700000047683716,
+      "readyP95": 51,
+      "retainedMB": 6.269297
+    },
+    {
+      "id": "S128-joined",
+      "parseAndLoadP95": 20.800000190734863,
+      "readyP95": 58.300000071525574,
+      "retainedMB": 6.267977
+    },
+    {
+      "id": "S128-joined-binary",
+      "parseAndLoadP95": 22.300000071525574,
+      "readyP95": 58.299999952316284,
+      "retainedMB": 6.270781
+    }
+  ],
+  "rows": [
+    {
+      "id": "S128-joined-binary",
+      "label": "128-run pages; IDs concatenated into one string; binary numeric columns",
+      "binary": true,
+      "pageSize": 128,
+      "idEncoding": "joined",
+      "snappyKB": [
+        90.27584,
+        90.27584
+      ],
+      "zstdKB": [
+        61.60384,
+        61.60384
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.30000007152557373,
+      "hydrateMedian": 20.09999990463257,
+      "parseAndLoadP95": 23.399999856948853,
+      "readyP95": 59.40000009536743,
+      "coldMedian": 65.80000007152557,
+      "gcMedianMs": 1.942,
+      "retainedMB": 6.270761,
+      "observedHighWaterMB": 10.018821
+    },
+    {
+      "id": "S128-dictionary-binary",
+      "label": "128-run pages; ID dictionary + numeric references; binary numeric columns",
+      "binary": true,
+      "pageSize": 128,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        127.13983999999999,
+        127.13983999999999
+      ],
+      "zstdKB": [
+        73.89184,
+        73.89184
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.9999998807907104,
+      "hydrateMedian": 19.899999976158142,
+      "parseAndLoadP95": 23.200000047683716,
+      "readyP95": 58.299999952316284,
+      "coldMedian": 66.20000004768372,
+      "gcMedianMs": 2.001,
+      "retainedMB": 6.264845,
+      "observedHighWaterMB": 10.077989
+    },
+    {
+      "id": "S128-array-binary",
+      "label": "128-run pages; ordinary ID arrays; binary numeric columns",
+      "binary": true,
+      "pageSize": 128,
+      "idEncoding": "array",
+      "snappyKB": [
+        131.23584,
+        131.23584
+      ],
+      "zstdKB": [
+        73.89184,
+        73.89184
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.7000000476837158,
+      "hydrateMedian": 19.5,
+      "parseAndLoadP95": 23.399999976158142,
+      "readyP95": 58.39999997615814,
+      "coldMedian": 66.5,
+      "gcMedianMs": 2.187,
+      "retainedMB": 6.290881,
+      "observedHighWaterMB": 13.867619
+    },
+    {
+      "id": "S128-joined",
+      "label": "128-run pages; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 128,
+      "idEncoding": "joined",
+      "snappyKB": [
+        118.94784,
+        118.94784
+      ],
+      "zstdKB": [
+        74.01472,
+        74.01472
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.40000009536743164,
+      "hydrateMedian": 18.899999976158142,
+      "parseAndLoadP95": 21.40000021457672,
+      "readyP95": 58.299999952316284,
+      "coldMedian": 58.89999997615814,
+      "gcMedianMs": 2.17,
+      "retainedMB": 6.267961,
+      "observedHighWaterMB": 14.821426
+    },
+    {
+      "id": "S512-joined",
+      "label": "512-run pages; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 512,
+      "idEncoding": "joined",
+      "snappyKB": [
+        122.4704,
+        122.4704
+      ],
+      "zstdKB": [
+        77.98783999999999,
+        77.98783999999999
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.3999999761581421,
+      "hydrateMedian": 18.799999952316284,
+      "parseAndLoadP95": 24.100000143051147,
+      "readyP95": 58.39999997615814,
+      "coldMedian": 58.5,
+      "gcMedianMs": 2.038,
+      "retainedMB": 6.263849,
+      "observedHighWaterMB": 14.076136
+    },
+    {
+      "id": "S64-joined",
+      "label": "64-run pages; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 64,
+      "idEncoding": "joined",
+      "snappyKB": [
+        118.82496,
+        118.82496
+      ],
+      "zstdKB": [
+        78.11072,
+        78.11072
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.5,
+      "hydrateMedian": 19.299999952316284,
+      "parseAndLoadP95": 24.90000009536743,
+      "readyP95": 58.299999952316284,
+      "coldMedian": 59.10000002384186,
+      "gcMedianMs": 2.083,
+      "retainedMB": 6.262625,
+      "observedHighWaterMB": 14.299558
+    },
+    {
+      "id": "S32-joined",
+      "label": "32-run pages; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 32,
+      "idEncoding": "joined",
+      "snappyKB": [
+        118.94784,
+        118.94784
+      ],
+      "zstdKB": [
+        78.11072,
+        78.11072
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.6000000238418579,
+      "hydrateMedian": 19.100000262260437,
+      "parseAndLoadP95": 22.199999928474426,
+      "readyP95": 58.200000047683716,
+      "coldMedian": 58.299999952316284,
+      "gcMedianMs": 2.327,
+      "retainedMB": 6.262617,
+      "observedHighWaterMB": 12.463426
+    },
+    {
+      "id": "S256-joined",
+      "label": "256-run pages; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 256,
+      "idEncoding": "joined",
+      "snappyKB": [
+        123.00288,
+        123.00288
+      ],
+      "zstdKB": [
+        78.11072,
+        78.11072
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.3999999761581421,
+      "hydrateMedian": 18.90000009536743,
+      "parseAndLoadP95": 24.799999833106995,
+      "readyP95": 58.39999997615814,
+      "coldMedian": 66.60000002384186,
+      "gcMedianMs": 2.132,
+      "retainedMB": 6.264325,
+      "observedHighWaterMB": 14.244448
+    },
+    {
+      "id": "Sflat-joined",
+      "label": "Whole-document columns; IDs concatenated into one string",
+      "binary": false,
+      "pageSize": 0,
+      "idEncoding": "joined",
+      "snappyKB": [
+        127.26272,
+        127.26272
+      ],
+      "zstdKB": [
+        82.20672,
+        82.20672
+      ],
+      "passesF01": true,
+      "decodeMedian": 0.3999999761581421,
+      "hydrateMedian": 18.700000047683716,
+      "parseAndLoadP95": 22.40000009536743,
+      "readyP95": 58.299999952316284,
+      "coldMedian": 59,
+      "gcMedianMs": 2.037,
+      "retainedMB": 6.265029,
+      "observedHighWaterMB": 14.171484
+    },
+    {
+      "id": "S32-array",
+      "label": "32-run pages; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 32,
+      "idEncoding": "array",
+      "snappyKB": [
+        151.71584,
+        151.71584
+      ],
+      "zstdKB": [
+        86.30272000000001,
+        86.30272000000001
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.7999999523162842,
+      "hydrateMedian": 14.700000047683716,
+      "parseAndLoadP95": 22.799999833106995,
+      "readyP95": 52.39999997615814,
+      "coldMedian": 58.200000047683716,
+      "gcMedianMs": 2.024,
+      "retainedMB": 6.263157,
+      "observedHighWaterMB": 14.168844
+    },
+    {
+      "id": "S64-array",
+      "label": "64-run pages; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 64,
+      "idEncoding": "array",
+      "snappyKB": [
+        151.71584,
+        151.71584
+      ],
+      "zstdKB": [
+        86.30272000000001,
+        86.30272000000001
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.5999999046325684,
+      "hydrateMedian": 14.5,
+      "parseAndLoadP95": 20.00000011920929,
+      "readyP95": 50.800000071525574,
+      "coldMedian": 58.199999928474426,
+      "gcMedianMs": 2.145,
+      "retainedMB": 6.265437,
+      "observedHighWaterMB": 13.962764
+    },
+    {
+      "id": "DS08",
+      "label": "128-run pages; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 128,
+      "idEncoding": "array",
+      "snappyKB": [
+        159.90784,
+        159.90784
+      ],
+      "zstdKB": [
+        86.30272000000001,
+        86.30272000000001
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.5999999046325684,
+      "hydrateMedian": 14.699999928474426,
+      "parseAndLoadP95": 20.699999928474426,
+      "readyP95": 58.39999997615814,
+      "coldMedian": 58.299999952316284,
+      "gcMedianMs": 1.365,
+      "retainedMB": 6.269293,
+      "observedHighWaterMB": 13.830136
+    },
+    {
+      "id": "S256-array",
+      "label": "256-run pages; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 256,
+      "idEncoding": "array",
+      "snappyKB": [
+        164.00384,
+        164.00384
+      ],
+      "zstdKB": [
+        86.30272000000001,
+        86.30272000000001
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.5,
+      "hydrateMedian": 14.400000095367432,
+      "parseAndLoadP95": 20.399999856948853,
+      "readyP95": 51,
+      "coldMedian": 58.299999952316284,
+      "gcMedianMs": 2.232,
+      "retainedMB": 6.265093,
+      "observedHighWaterMB": 12.474782
+    },
+    {
+      "id": "S32-dictionary",
+      "label": "32-run pages; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 32,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        163.71712,
+        163.71712
+      ],
+      "zstdKB": [
+        90.39872,
+        90.39872
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.5000001192092896,
+      "hydrateMedian": 14.900000095367432,
+      "parseAndLoadP95": 20.100000023841858,
+      "readyP95": 50.39999997615814,
+      "coldMedian": 58.300000071525574,
+      "gcMedianMs": 2.274,
+      "retainedMB": 6.263065,
+      "observedHighWaterMB": 11.141192
+    },
+    {
+      "id": "S512-array",
+      "label": "512-run pages; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 512,
+      "idEncoding": "array",
+      "snappyKB": [
+        164.00384,
+        164.00384
+      ],
+      "zstdKB": [
+        90.27584,
+        90.39872
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.5,
+      "hydrateMedian": 14.5,
+      "parseAndLoadP95": 21.399999976158142,
+      "readyP95": 58.199999928474426,
+      "coldMedian": 58.10000002384186,
+      "gcMedianMs": 1.399,
+      "retainedMB": 6.262533,
+      "observedHighWaterMB": 14.317472
+    },
+    {
+      "id": "S64-dictionary",
+      "label": "64-run pages; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 64,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        168.09984,
+        168.09984
+      ],
+      "zstdKB": [
+        90.39872,
+        90.39872
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.399999976158142,
+      "hydrateMedian": 14.899999976158142,
+      "parseAndLoadP95": 21,
+      "readyP95": 58.39999997615814,
+      "coldMedian": 58.90000009536743,
+      "gcMedianMs": 1.831,
+      "retainedMB": 6.264641,
+      "observedHighWaterMB": 14.07558
+    },
+    {
+      "id": "S128-dictionary",
+      "label": "128-run pages; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 128,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        180.38783999999998,
+        180.38783999999998
+      ],
+      "zstdKB": [
+        90.39872,
+        90.39872
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.2000001668930054,
+      "hydrateMedian": 14.699999928474426,
+      "parseAndLoadP95": 21.399999856948853,
+      "readyP95": 58.300000071525574,
+      "coldMedian": 58.39999997615814,
+      "gcMedianMs": 2.254,
+      "retainedMB": 6.265145,
+      "observedHighWaterMB": 14.043526
+    },
+    {
+      "id": "S256-dictionary",
+      "label": "256-run pages; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 256,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        189.8496,
+        189.8496
+      ],
+      "zstdKB": [
+        94.08511999999999,
+        94.08511999999999
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.2000000476837158,
+      "hydrateMedian": 14.699999928474426,
+      "parseAndLoadP95": 20.200000166893005,
+      "readyP95": 50.199999928474426,
+      "coldMedian": 58.10000002384186,
+      "gcMedianMs": 2.141,
+      "retainedMB": 6.265613,
+      "observedHighWaterMB": 13.937526
+    },
+    {
+      "id": "S512-dictionary",
+      "label": "512-run pages; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 512,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        196.32128,
+        196.32128
+      ],
+      "zstdKB": [
+        98.46784,
+        98.46784
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.1000001430511475,
+      "hydrateMedian": 14.799999952316284,
+      "parseAndLoadP95": 21.799999952316284,
+      "readyP95": 50.39999997615814,
+      "coldMedian": 58.299999952316284,
+      "gcMedianMs": 2.28,
+      "retainedMB": 6.263157,
+      "observedHighWaterMB": 14.51798
+    },
+    {
+      "id": "F05",
+      "label": "Whole-document columns; ordinary ID arrays",
+      "binary": false,
+      "pageSize": 0,
+      "idEncoding": "array",
+      "snappyKB": [
+        172.31872,
+        172.31872
+      ],
+      "zstdKB": [
+        102.68672000000001,
+        102.68672000000001
+      ],
+      "passesF01": true,
+      "decodeMedian": 1.4999998807907104,
+      "hydrateMedian": 14.5,
+      "parseAndLoadP95": 19.600000023841858,
+      "readyP95": 50.5,
+      "coldMedian": 57.89999997615814,
+      "gcMedianMs": 1.401,
+      "retainedMB": 6.265517,
+      "observedHighWaterMB": 11.696192
+    },
+    {
+      "id": "F01",
+      "label": "Original saved objects",
+      "binary": false,
+      "pageSize": 0,
+      "idEncoding": "array",
+      "snappyKB": [
+        196.77184,
+        196.77184
+      ],
+      "zstdKB": [
+        110.91968,
+        110.91968
+      ],
+      "passesF01": true,
+      "decodeMedian": 4.300000071525574,
+      "hydrateMedian": 13.100000143051147,
+      "parseAndLoadP95": 19.100000143051147,
+      "readyP95": 50.800000071525574,
+      "coldMedian": 58.299999952316284,
+      "gcMedianMs": 1.689,
+      "retainedMB": 6.261877,
+      "observedHighWaterMB": 10.937532
+    },
+    {
+      "id": "Sflat-dictionary",
+      "label": "Whole-document columns; ID dictionary + numeric references",
+      "binary": false,
+      "pageSize": 0,
+      "idEncoding": "dictionary",
+      "snappyKB": [
+        200.99072,
+        200.86784
+      ],
+      "zstdKB": [
+        119.07072,
+        119.07072
+      ],
+      "passesF01": false,
+      "decodeMedian": 1.1000001430511475,
+      "hydrateMedian": 14.800000071525574,
+      "parseAndLoadP95": 21.200000047683716,
+      "readyP95": 51.40000009536743,
+      "coldMedian": 58.10000002384186,
+      "gcMedianMs": 1.438,
+      "retainedMB": 6.265997,
+      "observedHighWaterMB": 14.544138
+    }
+  ]
+}

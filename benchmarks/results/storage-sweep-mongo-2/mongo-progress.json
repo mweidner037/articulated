@@ -1,0 +1,754 @@
+{
+  "complete": false,
+  "sourceSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "entries": [
+    {
+      "collection": "zstd_f01",
+      "id": "F01",
+      "label": "Original saved objects",
+      "readiness": "Unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_f05",
+      "id": "F05",
+      "label": "Whole-document columns; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_sflat-joined",
+      "id": "Sflat-joined",
+      "label": "Whole-document columns; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d04aa99b19e0f5904bfd9d4beac9836dae364978abb40460b89e171b41dc785",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_sflat-dictionary",
+      "id": "Sflat-dictionary",
+      "label": "Whole-document columns; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3313119801d8a63a6320e7aae0fcff39cd28045c8e9d6db6e7354669b60c6652",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s32-array",
+      "id": "S32-array",
+      "label": "32-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d254e8a50261690f0120650c96c86da925c3dc94e54052a93c16c8cda2eaeae",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s32-joined",
+      "id": "S32-joined",
+      "label": "32-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "5962aa19d1d8f54ff1a9dfe4131096b7319ee1bedab0dfe850c1daadf3b69543",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s32-dictionary",
+      "id": "S32-dictionary",
+      "label": "32-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "1273c8fa9f07cc155339baf21c427c5ba46c9fe86ff13ce721daa09ef064aa76",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s64-array",
+      "id": "S64-array",
+      "label": "64-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "86d7441964c2a7223a3af620ba63942176718360fb54a8019c92b91c06953dce",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s64-joined",
+      "id": "S64-joined",
+      "label": "64-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "510615b558625042d9140f4345601f363f7671aff98d38a8a33841ed32a4fb2d",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s64-dictionary",
+      "id": "S64-dictionary",
+      "label": "64-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "bfa7ad88db795559827783533bd2aa361f4cb8350d2ef51b5ef1a7dc2ffb2f52",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_ds08",
+      "id": "DS08",
+      "label": "128-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0cb7728b959c72cf18a032d49aea22b33cfb1b685360240cca9e4c8c41468527",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s128-joined",
+      "id": "S128-joined",
+      "label": "128-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "8bf65c6f036d256b99638c6af580982a825c4357fa371a049d349904e10de079",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s128-dictionary",
+      "id": "S128-dictionary",
+      "label": "128-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "196abb06f9d97b6c3308b5e26daa4d27079e6d1527a0e97f7826b7199f3ae739",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s256-array",
+      "id": "S256-array",
+      "label": "256-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "55b1e905446937ce61fbae324cef7c2a526c6093154ef08f0cc1c673f7d1817a",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s256-joined",
+      "id": "S256-joined",
+      "label": "256-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "fe0b989ebecf04520d5c9db103bd5e44a14be7cd0713661d7084eabd2e6b7a98",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s256-dictionary",
+      "id": "S256-dictionary",
+      "label": "256-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3c38023e83d4014012fd2b75cbf6e20f8c3bfab795c543010e15e00f13e31961",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s512-array",
+      "id": "S512-array",
+      "label": "512-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "6f890ece25df3d852f43fef92d0b460250adbef2252e3495f8182adc8b23e325",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s512-joined",
+      "id": "S512-joined",
+      "label": "512-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "419fcd22deeb461c0ffb941cc4a1b7eb0635dfb68a735b24c6ec6a04d81686a4",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s512-dictionary",
+      "id": "S512-dictionary",
+      "label": "512-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0795e5fcfa2dcdca562cba0b8e0cc34e280d845a21627acb9bbf1e7d3d2052f3",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s128-array-binary",
+      "id": "S128-array-binary",
+      "label": "128-run pages; array IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "cd0f9f97fb1f73d74d8245be7b821d1d9ab7703f90a1b5af861bebf9de4f6f4b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s128-joined-binary",
+      "id": "S128-joined-binary",
+      "label": "128-run pages; joined IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "1e097e86e65faa39cd5a50c200f8eb6f3aedf42c452bc3fa94b71b4302839fd4",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_s128-dictionary-binary",
+      "id": "S128-dictionary-binary",
+      "label": "128-run pages; dictionary IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c693a359c418fe66cf5c689affaa3e9cfd24e85f8558976180fd32c7ca30731d",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_f01",
+      "id": "F01",
+      "label": "Original saved objects",
+      "readiness": "Unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_f05",
+      "id": "F05",
+      "label": "Whole-document columns; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_sflat-joined",
+      "id": "Sflat-joined",
+      "label": "Whole-document columns; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d04aa99b19e0f5904bfd9d4beac9836dae364978abb40460b89e171b41dc785",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_sflat-dictionary",
+      "id": "Sflat-dictionary",
+      "label": "Whole-document columns; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3313119801d8a63a6320e7aae0fcff39cd28045c8e9d6db6e7354669b60c6652",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s32-array",
+      "id": "S32-array",
+      "label": "32-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d254e8a50261690f0120650c96c86da925c3dc94e54052a93c16c8cda2eaeae",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s32-joined",
+      "id": "S32-joined",
+      "label": "32-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "5962aa19d1d8f54ff1a9dfe4131096b7319ee1bedab0dfe850c1daadf3b69543",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s32-dictionary",
+      "id": "S32-dictionary",
+      "label": "32-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "1273c8fa9f07cc155339baf21c427c5ba46c9fe86ff13ce721daa09ef064aa76",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s64-array",
+      "id": "S64-array",
+      "label": "64-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "86d7441964c2a7223a3af620ba63942176718360fb54a8019c92b91c06953dce",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s64-joined",
+      "id": "S64-joined",
+      "label": "64-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "510615b558625042d9140f4345601f363f7671aff98d38a8a33841ed32a4fb2d",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s64-dictionary",
+      "id": "S64-dictionary",
+      "label": "64-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "bfa7ad88db795559827783533bd2aa361f4cb8350d2ef51b5ef1a7dc2ffb2f52",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_ds08",
+      "id": "DS08",
+      "label": "128-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0cb7728b959c72cf18a032d49aea22b33cfb1b685360240cca9e4c8c41468527",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s128-joined",
+      "id": "S128-joined",
+      "label": "128-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "8bf65c6f036d256b99638c6af580982a825c4357fa371a049d349904e10de079",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s128-dictionary",
+      "id": "S128-dictionary",
+      "label": "128-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "196abb06f9d97b6c3308b5e26daa4d27079e6d1527a0e97f7826b7199f3ae739",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s256-array",
+      "id": "S256-array",
+      "label": "256-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "55b1e905446937ce61fbae324cef7c2a526c6093154ef08f0cc1c673f7d1817a",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s256-joined",
+      "id": "S256-joined",
+      "label": "256-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "fe0b989ebecf04520d5c9db103bd5e44a14be7cd0713661d7084eabd2e6b7a98",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s256-dictionary",
+      "id": "S256-dictionary",
+      "label": "256-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3c38023e83d4014012fd2b75cbf6e20f8c3bfab795c543010e15e00f13e31961",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s512-array",
+      "id": "S512-array",
+      "label": "512-run pages; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "6f890ece25df3d852f43fef92d0b460250adbef2252e3495f8182adc8b23e325",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s512-joined",
+      "id": "S512-joined",
+      "label": "512-run pages; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "419fcd22deeb461c0ffb941cc4a1b7eb0635dfb68a735b24c6ec6a04d81686a4",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s512-dictionary",
+      "id": "S512-dictionary",
+      "label": "512-run pages; dictionary IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "0795e5fcfa2dcdca562cba0b8e0cc34e280d845a21627acb9bbf1e7d3d2052f3",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s128-array-binary",
+      "id": "S128-array-binary",
+      "label": "128-run pages; array IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "cd0f9f97fb1f73d74d8245be7b821d1d9ab7703f90a1b5af861bebf9de4f6f4b",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s128-joined-binary",
+      "id": "S128-joined-binary",
+      "label": "128-run pages; joined IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "1e097e86e65faa39cd5a50c200f8eb6f3aedf42c452bc3fa94b71b4302839fd4",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_s128-dictionary-binary",
+      "id": "S128-dictionary-binary",
+      "label": "128-run pages; dictionary IDs; int32 binary numeric columns",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c693a359c418fe66cf5c689affaa3e9cfd24e85f8558976180fd32c7ca30731d",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    }
+  ]
+}

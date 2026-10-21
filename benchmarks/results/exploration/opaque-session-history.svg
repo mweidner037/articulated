@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="792" viewBox="0 0 1315 792" role="img" aria-labelledby="title desc">
+<title id="title">Opaque IDs: 100 prior ID versions retained</title><desc id="desc">Memory after 2,000 operations; three different trajectories. Lower is better. Whole IDs stay opaque; new-bunches tests growth in distinct IDs, with no client decomposition.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="792" fill="white"/>
+<text x="24" y="36" class="title">Opaque IDs: 100 prior ID versions retained</text>
+<text x="24" y="68" >Memory after 2,000 operations; three different trajectories. Lower is better.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Local typing (MB)</text>
+<line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="425" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="532" y="748" class="small" text-anchor="middle">3.9</text>
+<line x1="639" x2="639" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="639" y="748" class="small" text-anchor="middle">7.8</text>
+<rect x="425" y="165" width="137.74894666666668" height="23" fill="#3266a6"/>
+<text x="569.7489466666667" y="183" class="small">5.0</text>
+<rect x="425" y="247" width="147.12587794871794" height="23" fill="#3266a6"/>
+<text x="579.125877948718" y="265" class="small">5.4</text>
+<rect x="425" y="329" width="153.28501743589743" height="23" fill="#3266a6"/>
+<text x="585.2850174358974" y="347" class="small">5.6</text>
+<rect x="425" y="411" width="147.4236123076923" height="23" fill="#3266a6"/>
+<text x="579.4236123076923" y="429" class="small">5.4</text>
+<rect x="425" y="493" width="152.75577897435898" height="23" fill="#3266a6"/>
+<text x="584.7557789743589" y="511" class="small">5.6</text>
+<rect x="425" y="575" width="162.1195958974359" height="23" fill="#3266a6"/>
+<text x="594.1195958974358" y="593" class="small">5.9</text>
+<rect x="425" y="657" width="201.6126923076923" height="23" fill="#3266a6"/>
+<text x="633.6126923076923" y="675" class="small">7.3</text>
+<text x="715" y="110" >Distributed (MB)</text>
+<line x1="715" x2="715" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="715" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="822" y="748" class="small" text-anchor="middle">4.2</text>
+<line x1="929" x2="929" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="929" y="748" class="small" text-anchor="middle">8.4</text>
+<rect x="715" y="165" width="142.60695047619046" height="23" fill="#3c8077"/>
+<text x="864.6069504761905" y="183" class="small">5.6</text>
+<rect x="715" y="247" width="152.61552666666665" height="23" fill="#3c8077"/>
+<text x="874.6155266666667" y="265" class="small">6.0</text>
+<rect x="715" y="329" width="157.03218095238094" height="23" fill="#3c8077"/>
+<text x="879.0321809523809" y="347" class="small">6.2</text>
+<rect x="715" y="411" width="160.87368476190477" height="23" fill="#3c8077"/>
+<text x="882.8736847619048" y="429" class="small">6.3</text>
+<rect x="715" y="493" width="161.24548428571427" height="23" fill="#3c8077"/>
+<text x="883.2454842857143" y="511" class="small">6.3</text>
+<rect x="715" y="575" width="166.36971428571428" height="23" fill="#3c8077"/>
+<text x="888.3697142857143" y="593" class="small">6.5</text>
+<rect x="715" y="657" width="201.60287809523808" height="23" fill="#3c8077"/>
+<text x="923.6028780952381" y="675" class="small">7.9</text>
+<text x="1005" y="110" >New bunch IDs (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1005" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1112" y="748" class="small" text-anchor="middle">7.3</text>
+<line x1="1219" x2="1219" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1219" y="748" class="small" text-anchor="middle">14.7</text>
+<rect x="1005" y="165" width="81.65739210884354" height="23" fill="#8571ac"/>
+<text x="1093.6573921088436" y="183" class="small">5.6</text>
+<rect x="1005" y="247" width="200.55410340136055" height="23" fill="#8571ac"/>
+<text x="1212.5541034013606" y="265" class="small">13.8</text>
+<rect x="1005" y="329" width="203.09595755102043" height="23" fill="#8571ac"/>
+<text x="1215.0959575510205" y="347" class="small">14.0</text>
+<rect x="1005" y="411" width="92.10185863945578" height="23" fill="#8571ac"/>
+<text x="1104.1018586394557" y="429" class="small">6.3</text>
+<rect x="1005" y="493" width="92.32473891156462" height="23" fill="#8571ac"/>
+<text x="1104.3247389115645" y="511" class="small">6.3</text>
+<rect x="1005" y="575" width="95.34855891156462" height="23" fill="#8571ac"/>
+<text x="1107.3485589115646" y="593" class="small">6.5</text>
+<rect x="1005" y="657" width="115.06608217687076" height="23" fill="#8571ac"/>
+<text x="1127.0660821768709" y="675" class="small">7.9</text>
+<text x="24" y="162" >F05 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Columns; infer counters</text>
+<text x="24" y="244" >F09 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="326" >F07 · flat columns · owned 128</text>
+<text x="24" y="368" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="408" >F02 · native rows · owned 128</text>
+<text x="24" y="450" class="small">Objects; signed counts</text>
+<text x="24" y="490" >F01 · native rows · owned 128</text>
+<text x="24" y="532" class="small">Plain SavedIdList objects</text>
+<text x="24" y="572" >F03 · native rows · owned 128</text>
+<text x="24" y="614" class="small">Tuples; signed counts</text>
+<text x="24" y="654" >F01 → existing IdList</text>
+<text x="24" y="696" class="small">Plain SavedIdList objects</text>
+<text x="24" y="780" class="small">Whole IDs stay opaque; new-bunches tests growth in distinct IDs, with no client decomposition.</text>
+</svg>
