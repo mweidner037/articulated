@@ -1,101 +1,106 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="740" viewBox="0 0 1210 740" role="img" aria-labelledby="title desc">
-<title id="title">4 documents: logical JSON formats — browser speed</title><desc id="desc">Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time. ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.. Exact values are labeled on every bar.</desc>
-<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="740" fill="white"/>
-<text x="24" y="36" class="title">4 documents: logical JSON formats — browser speed</text>
-<text x="24" y="68" >Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time.</text>
-<text x="24" y="110" >Logical format</text>
-<text x="320" y="110" >Complete-ready P95 (ms)</text>
-<line x1="320" x2="320" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="320" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="427" x2="427" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="427" y="696" class="small" text-anchor="middle">148.3</text>
-<line x1="534" x2="534" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="534" y="696" class="small" text-anchor="middle">296.7</text>
-<rect x="320" y="148" width="36.85675768487414" height="23" fill="#3266a6"/>
-<text x="363.85675768487414" y="166" class="small">51.1</text>
-<rect x="320" y="206" width="40.39096730704415" height="23" fill="#3266a6"/>
-<text x="367.39096730704415" y="224" class="small">56.0</text>
-<rect x="320" y="264" width="40.53522075311399" height="23" fill="#3266a6"/>
-<text x="367.535220753114" y="282" class="small">56.2</text>
-<rect x="320" y="322" width="41.54499496158462" height="23" fill="#3266a6"/>
-<text x="368.5449949615846" y="340" class="small">57.6</text>
-<rect x="320" y="380" width="41.8335018537243" height="23" fill="#3266a6"/>
-<text x="368.83350185372433" y="398" class="small">58.0</text>
-<rect x="320" y="438" width="41.8335018537243" height="23" fill="#3266a6"/>
-<text x="368.83350185372433" y="456" class="small">58.0</text>
-<rect x="320" y="496" width="42.0498820443245" height="23" fill="#3266a6"/>
-<text x="369.0498820443245" y="514" class="small">58.3</text>
-<rect x="320" y="554" width="42.26626219193382" height="23" fill="#3266a6"/>
-<text x="369.26626219193383" y="572" class="small">58.6</text>
-<rect x="320" y="612" width="203.75800471857096" height="23" fill="#3266a6"/>
-<text x="530.758004718571" y="630" class="small">282.5</text>
-<text x="610" y="110" >ID-loading P95 (ms)</text>
-<line x1="610" x2="610" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="610" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="717" x2="717" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="717" y="696" class="small" text-anchor="middle">126.2</text>
-<line x1="824" x2="824" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="824" y="696" class="small" text-anchor="middle">252.4</text>
-<rect x="610" y="148" width="16.87242470244787" height="23" fill="#3c8077"/>
-<text x="633.8724247024479" y="166" class="small">19.9</text>
-<rect x="610" y="206" width="18.99207610005244" height="23" fill="#3c8077"/>
-<text x="635.9920761000525" y="224" class="small">22.4</text>
-<rect x="610" y="264" width="17.889857389469718" height="23" fill="#3c8077"/>
-<text x="634.8898573894697" y="282" class="small">21.1</text>
-<rect x="610" y="322" width="19.8399366388797" height="23" fill="#3c8077"/>
-<text x="636.8399366388797" y="340" class="small">23.4</text>
-<rect x="610" y="380" width="19.500792443563366" height="23" fill="#3c8077"/>
-<text x="636.5007924435633" y="398" class="small">23.0</text>
-<rect x="610" y="438" width="21.535657665997793" height="23" fill="#3c8077"/>
-<text x="638.5356576659977" y="456" class="small">25.4</text>
-<rect x="610" y="496" width="19.924722662440573" height="23" fill="#3c8077"/>
-<text x="636.9247226624406" y="514" class="small">23.5</text>
-<rect x="610" y="554" width="20.263866908293327" height="23" fill="#3c8077"/>
-<text x="637.2638669082934" y="572" class="small">23.9</text>
-<rect x="610" y="612" width="203.74088754083388" height="23" fill="#3c8077"/>
-<text x="820.7408875408339" y="630" class="small">240.3</text>
-<text x="900" y="110" >GC pause mean (ms)</text>
-<line x1="900" x2="900" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="900" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="1007" x2="1007" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="1007" y="696" class="small" text-anchor="middle">1.8</text>
-<line x1="1114" x2="1114" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="1114" y="696" class="small" text-anchor="middle">3.6</text>
-<rect x="900" y="148" width="139.29319444444445" height="23" fill="#8571ac"/>
-<text x="1046.2931944444445" y="166" class="small">2.3</text>
-<rect x="900" y="206" width="132.4570833333333" height="23" fill="#8571ac"/>
-<text x="1039.4570833333332" y="224" class="small">2.2</text>
-<rect x="900" y="264" width="129.8192361111111" height="23" fill="#8571ac"/>
-<text x="1036.8192361111112" y="282" class="small">2.2</text>
-<rect x="900" y="322" width="128.24395833333332" height="23" fill="#8571ac"/>
-<text x="1035.2439583333332" y="340" class="small">2.2</text>
-<rect x="900" y="380" width="128.12506944444442" height="23" fill="#8571ac"/>
-<text x="1035.1250694444443" y="398" class="small">2.2</text>
-<rect x="900" y="438" width="132.47194444444443" height="23" fill="#8571ac"/>
-<text x="1039.4719444444445" y="456" class="small">2.2</text>
-<rect x="900" y="496" width="125.1082638888889" height="23" fill="#8571ac"/>
-<text x="1032.1082638888888" y="514" class="small">2.1</text>
-<rect x="900" y="554" width="138.9959722222222" height="23" fill="#8571ac"/>
-<text x="1045.9959722222222" y="572" class="small">2.3</text>
-<rect x="900" y="612" width="202.56437499999998" height="23" fill="#8571ac"/>
-<text x="1109.564375" y="630" class="small">3.4</text>
-<text x="24" y="162" >Dictionary columns</text>
-<text x="24" y="182" class="small">JSON / objects</text>
-<text x="24" y="220" >Client dictionary + omit</text>
-<text x="24" y="240" class="small">JSON / objects</text>
-<text x="24" y="278" >Columns + omit</text>
-<text x="24" y="298" class="small">JSON / objects</text>
-<text x="24" y="336" >Split + omit</text>
-<text x="24" y="356" class="small">JSON / objects</text>
-<text x="24" y="394" >Dictionary + omit</text>
-<text x="24" y="414" class="small">JSON / objects</text>
-<text x="24" y="452" >Original objects</text>
-<text x="24" y="472" class="small">JSON / objects</text>
-<text x="24" y="510" >Ordinary columns</text>
-<text x="24" y="530" class="small">JSON / objects</text>
-<text x="24" y="568" >Signed tuples</text>
-<text x="24" y="588" class="small">JSON / objects</text>
-<text x="24" y="626" >Signed objects</text>
-<text x="24" y="646" class="small">JSON / objects</text>
-<text x="24" y="728" class="small">ID loading = decode + translate + build tree. GC: separate pass. P95 from 18 samples is the maximum.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="956" viewBox="0 0 1315 956" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: JSON interchange formats — browser speed</title><desc id="desc">Internal format: Existing IdList tree. Sorted by complete-ready P95, fastest first. To internal tree = conversion + tree construction, excluding decode/render. GC: separate pass. P95 from 100 samples; empirical estimate.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="956" fill="white"/>
+<text x="24" y="36" class="title">4 documents: JSON interchange formats — browser speed</text>
+<text x="24" y="68" >Internal format: Existing IdList tree. Sorted by complete-ready P95, fastest first.</text>
+<text x="24" y="110" >Interchange format</text>
+<text x="425" y="110" >Complete-ready P95 (ms)</text>
+<line x1="425" x2="425" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="425" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="532" y="912" class="small" text-anchor="middle">31.1</text>
+<line x1="639" x2="639" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="639" y="912" class="small" text-anchor="middle">62.2</text>
+<rect x="425" y="165" width="184.4115756447292" height="23" fill="#3266a6"/>
+<text x="616.4115756447292" y="183" class="small">53.6</text>
+<rect x="425" y="247" width="200.237942286243" height="23" fill="#3266a6"/>
+<text x="632.237942286243" y="265" class="small">58.2</text>
+<rect x="425" y="329" width="200.5819934050753" height="23" fill="#3266a6"/>
+<text x="632.5819934050753" y="347" class="small">58.3</text>
+<rect x="425" y="411" width="200.5819934050753" height="23" fill="#3266a6"/>
+<text x="632.5819934050753" y="429" class="small">58.3</text>
+<rect x="425" y="493" width="200.58199381521658" height="23" fill="#3266a6"/>
+<text x="632.5819938152166" y="511" class="small">58.3</text>
+<rect x="425" y="575" width="200.58199381521658" height="23" fill="#3266a6"/>
+<text x="632.5819938152166" y="593" class="small">58.3</text>
+<rect x="425" y="657" width="201.2700964630225" height="23" fill="#3266a6"/>
+<text x="633.2700964630225" y="675" class="small">58.5</text>
+<rect x="425" y="739" width="201.2700964630225" height="23" fill="#3266a6"/>
+<text x="633.2700964630225" y="757" class="small">58.5</text>
+<rect x="425" y="821" width="203.67845634555508" height="23" fill="#3266a6"/>
+<text x="635.6784563455551" y="839" class="small">59.2</text>
+<text x="715" y="110" >To internal tree P95 (ms)</text>
+<line x1="715" x2="715" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="715" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="822" y="912" class="small" text-anchor="middle">12.2</text>
+<line x1="929" x2="929" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="929" y="912" class="small" text-anchor="middle">24.4</text>
+<rect x="715" y="165" width="166.63934530781918" height="23" fill="#3c8077"/>
+<text x="888.6393453078192" y="183" class="small">19.0</text>
+<rect x="715" y="247" width="199.0901622615877" height="23" fill="#3c8077"/>
+<text x="921.0901622615877" y="265" class="small">22.7</text>
+<rect x="715" y="329" width="192.07377132822256" height="23" fill="#3c8077"/>
+<text x="914.0737713282226" y="347" class="small">21.9</text>
+<rect x="715" y="411" width="159.62295123788178" height="23" fill="#3c8077"/>
+<text x="881.6229512378818" y="429" class="small">18.2</text>
+<rect x="715" y="493" width="187.68852438105912" height="23" fill="#3c8077"/>
+<text x="909.6885243810591" y="511" class="small">21.4</text>
+<rect x="715" y="575" width="194.70491845099653" height="23" fill="#3c8077"/>
+<text x="916.7049184509965" y="593" class="small">22.2</text>
+<rect x="715" y="657" width="203.47541025427523" height="23" fill="#3c8077"/>
+<text x="925.4754102542752" y="675" class="small">23.2</text>
+<rect x="715" y="739" width="168.39344304116048" height="23" fill="#3c8077"/>
+<text x="890.3934430411605" y="757" class="small">19.2</text>
+<rect x="715" y="821" width="199.96721269654446" height="23" fill="#3c8077"/>
+<text x="921.9672126965445" y="839" class="small">22.8</text>
+<text x="1005" y="110" >GC pause mean (ms)</text>
+<line x1="1005" x2="1005" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1005" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1112" y="912" class="small" text-anchor="middle">1.4</text>
+<line x1="1219" x2="1219" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1219" y="912" class="small" text-anchor="middle">2.8</text>
+<rect x="1005" y="165" width="192.13187500000004" height="23" fill="#8571ac"/>
+<text x="1204.131875" y="183" class="small">2.5</text>
+<rect x="1005" y="247" width="176.52133928571428" height="23" fill="#8571ac"/>
+<text x="1188.5213392857142" y="265" class="small">2.3</text>
+<rect x="1005" y="329" width="169.20330357142862" height="23" fill="#8571ac"/>
+<text x="1181.2033035714287" y="347" class="small">2.2</text>
+<rect x="1005" y="411" width="162.706875" height="23" fill="#8571ac"/>
+<text x="1174.706875" y="429" class="small">2.1</text>
+<rect x="1005" y="493" width="170.97071428571425" height="23" fill="#8571ac"/>
+<text x="1182.9707142857142" y="511" class="small">2.2</text>
+<rect x="1005" y="575" width="171.01848214285718" height="23" fill="#8571ac"/>
+<text x="1183.0184821428572" y="593" class="small">2.2</text>
+<rect x="1005" y="657" width="180.90642857142853" height="23" fill="#8571ac"/>
+<text x="1192.9064285714285" y="675" class="small">2.4</text>
+<rect x="1005" y="739" width="201.44660714285715" height="23" fill="#8571ac"/>
+<text x="1213.4466071428571" y="757" class="small">2.6</text>
+<rect x="1005" y="821" width="168.64919642857143" height="23" fill="#8571ac"/>
+<text x="1180.6491964285715" y="839" class="small">2.2</text>
+<text x="24" y="162" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="182" >counters</text>
+<text x="24" y="204" class="small">JSON · Via run objects</text>
+<text x="24" y="244" >Columnar store: all counters</text>
+<text x="24" y="286" class="small">JSON · Via run objects</text>
+<text x="24" y="326" >Columnar store: deduplicate IDs +</text>
+<text x="24" y="346" >reconstruct counters</text>
+<text x="24" y="368" class="small">JSON · Via run objects</text>
+<text x="24" y="408" >Object records: deletion flag</text>
+<text x="24" y="450" class="small">JSON · Via run objects</text>
+<text x="24" y="490" >Columnar store: reconstruct counters</text>
+<text x="24" y="532" class="small">JSON · Via run objects</text>
+<text x="24" y="572" >Columnar store: split IDs + reconstruct</text>
+<text x="24" y="592" >counters</text>
+<text x="24" y="614" class="small">JSON · Via run objects</text>
+<text x="24" y="654" >Columnar store: deduplicate clients +</text>
+<text x="24" y="674" >reconstruct counters</text>
+<text x="24" y="696" class="small">JSON · Via run objects</text>
+<text x="24" y="736" >Object records: negative count means</text>
+<text x="24" y="756" >deleted</text>
+<text x="24" y="778" class="small">JSON · Via run objects</text>
+<text x="24" y="818" >Tuple records: negative count means deleted</text>
+<text x="24" y="860" class="small">JSON · Via run objects</text>
+<text x="24" y="944" class="small">To internal tree = conversion + tree construction, excluding decode/render. GC: separate pass. P95 from 100 samples; empirical estimate.</text>
 </svg>

@@ -1,101 +1,106 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1210" height="740" viewBox="0 0 1210 740" role="img" aria-labelledby="title desc">
-<title id="title">4 documents: logical JSON formats — JS memory</title><desc id="desc">Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
-<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1210" height="740" fill="white"/>
-<text x="24" y="36" class="title">4 documents: logical JSON formats — JS memory</text>
-<text x="24" y="68" >Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.</text>
-<text x="24" y="110" >Logical format</text>
-<text x="320" y="110" >Retained median (MB)</text>
-<line x1="320" x2="320" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="320" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="427" x2="427" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="427" y="696" class="small" text-anchor="middle">3.9</text>
-<line x1="534" x2="534" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="534" y="696" class="small" text-anchor="middle">7.8</text>
-<rect x="320" y="148" width="177.39647974358974" height="23" fill="#3266a6"/>
-<text x="504.39647974358974" y="166" class="small">6.5</text>
-<rect x="320" y="206" width="177.3969187179487" height="23" fill="#3266a6"/>
-<text x="504.39691871794867" y="224" class="small">6.5</text>
-<rect x="320" y="264" width="179.13295256410257" height="23" fill="#3266a6"/>
-<text x="506.13295256410254" y="282" class="small">6.5</text>
-<rect x="320" y="322" width="189.12060692307693" height="23" fill="#3266a6"/>
-<text x="516.1206069230769" y="340" class="small">6.9</text>
-<rect x="320" y="380" width="189.12225307692307" height="23" fill="#3266a6"/>
-<text x="516.122253076923" y="398" class="small">6.9</text>
-<rect x="320" y="438" width="201.19777923076924" height="23" fill="#3266a6"/>
-<text x="528.1977792307692" y="456" class="small">7.3</text>
-<rect x="320" y="496" width="201.42802128205128" height="23" fill="#3266a6"/>
-<text x="528.4280212820513" y="514" class="small">7.3</text>
-<rect x="320" y="554" width="201.43120384615386" height="23" fill="#3266a6"/>
-<text x="528.4312038461538" y="572" class="small">7.3</text>
-<rect x="320" y="612" width="201.44953102564102" height="23" fill="#3266a6"/>
-<text x="528.449531025641" y="630" class="small">7.3</text>
-<text x="610" y="110" >Observed high-water (MB)</text>
-<line x1="610" x2="610" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="610" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="717" x2="717" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="717" y="696" class="small" text-anchor="middle">11.4</text>
-<line x1="824" x2="824" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="824" y="696" class="small" text-anchor="middle">22.8</text>
-<rect x="610" y="148" width="145.52576298245614" height="23" fill="#3c8077"/>
-<text x="762.5257629824562" y="166" class="small">15.5</text>
-<rect x="610" y="206" width="98.86603833333332" height="23" fill="#3c8077"/>
-<text x="715.8660383333333" y="224" class="small">10.5</text>
-<rect x="610" y="264" width="149.58560578947368" height="23" fill="#3c8077"/>
-<text x="766.5856057894737" y="282" class="small">15.9</text>
-<rect x="610" y="322" width="126.35904070175438" height="23" fill="#3c8077"/>
-<text x="743.3590407017543" y="340" class="small">13.5</text>
-<rect x="610" y="380" width="151.3586145614035" height="23" fill="#3c8077"/>
-<text x="768.3586145614036" y="398" class="small">16.1</text>
-<rect x="610" y="438" width="161.3835196491228" height="23" fill="#3c8077"/>
-<text x="778.3835196491228" y="456" class="small">17.2</text>
-<rect x="610" y="496" width="158.2007295614035" height="23" fill="#3c8077"/>
-<text x="775.2007295614035" y="514" class="small">16.9</text>
-<rect x="610" y="554" width="156.6486007017544" height="23" fill="#3c8077"/>
-<text x="773.6486007017544" y="572" class="small">16.7</text>
-<rect x="610" y="612" width="202.95957105263156" height="23" fill="#3c8077"/>
-<text x="819.9595710526315" y="630" class="small">21.6</text>
-<text x="900" y="110" >Sampled allocations (MB)</text>
-<line x1="900" x2="900" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="900" y="696" class="small" text-anchor="middle">0.0</text>
-<line x1="1007" x2="1007" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="1007" y="696" class="small" text-anchor="middle">30.7</text>
-<line x1="1114" x2="1114" y1="138" y2="673" stroke="#e2e6eb"/>
-<text x="1114" y="696" class="small" text-anchor="middle">61.4</text>
-<rect x="900" y="148" width="194.73315478827362" height="23" fill="#8571ac"/>
-<text x="1101.7331547882736" y="166" class="small">55.9</text>
-<rect x="900" y="206" width="198.55986514657982" height="23" fill="#8571ac"/>
-<text x="1105.5598651465798" y="224" class="small">57.0</text>
-<rect x="900" y="264" width="203.50252625407168" height="23" fill="#8571ac"/>
-<text x="1110.5025262540717" y="282" class="small">58.4</text>
-<rect x="900" y="322" width="191.44815022801302" height="23" fill="#8571ac"/>
-<text x="1098.448150228013" y="340" class="small">54.9</text>
-<rect x="900" y="380" width="193.05796" height="23" fill="#8571ac"/>
-<text x="1100.05796" y="398" class="small">55.4</text>
-<rect x="900" y="438" width="199.81414214983715" height="23" fill="#8571ac"/>
-<text x="1106.8141421498372" y="456" class="small">57.3</text>
-<rect x="900" y="496" width="189.56692990228012" height="23" fill="#8571ac"/>
-<text x="1096.5669299022802" y="514" class="small">54.4</text>
-<rect x="900" y="554" width="190.0464990228013" height="23" fill="#8571ac"/>
-<text x="1097.0464990228013" y="572" class="small">54.5</text>
-<rect x="900" y="612" width="192.534907752443" height="23" fill="#8571ac"/>
-<text x="1099.534907752443" y="630" class="small">55.2</text>
-<text x="24" y="162" >Columns + omit</text>
-<text x="24" y="182" class="small">JSON / objects</text>
-<text x="24" y="220" >Client dictionary + omit</text>
-<text x="24" y="240" class="small">JSON / objects</text>
-<text x="24" y="278" >Split + omit</text>
-<text x="24" y="298" class="small">JSON / objects</text>
-<text x="24" y="336" >Dictionary + omit</text>
-<text x="24" y="356" class="small">JSON / objects</text>
-<text x="24" y="394" >Dictionary columns</text>
-<text x="24" y="414" class="small">JSON / objects</text>
-<text x="24" y="452" >Signed tuples</text>
-<text x="24" y="472" class="small">JSON / objects</text>
-<text x="24" y="510" >Original objects</text>
-<text x="24" y="530" class="small">JSON / objects</text>
-<text x="24" y="568" >Ordinary columns</text>
-<text x="24" y="588" class="small">JSON / objects</text>
-<text x="24" y="626" >Signed objects</text>
-<text x="24" y="646" class="small">JSON / objects</text>
-<text x="24" y="728" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="956" viewBox="0 0 1315 956" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: JSON interchange formats — JS memory</title><desc id="desc">Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="956" fill="white"/>
+<text x="24" y="36" class="title">4 documents: JSON interchange formats — JS memory</text>
+<text x="24" y="68" >Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first.</text>
+<text x="24" y="110" >Interchange format</text>
+<text x="425" y="110" >Retained median (MB)</text>
+<line x1="425" x2="425" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="425" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="532" y="912" class="small" text-anchor="middle">3.9</text>
+<line x1="639" x2="639" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="639" y="912" class="small" text-anchor="middle">7.8</text>
+<rect x="425" y="165" width="177.39340692307695" height="23" fill="#3266a6"/>
+<text x="609.393406923077" y="183" class="small">6.5</text>
+<rect x="425" y="247" width="177.3943946153846" height="23" fill="#3266a6"/>
+<text x="609.3943946153846" y="265" class="small">6.5</text>
+<rect x="425" y="329" width="179.13295256410257" height="23" fill="#3266a6"/>
+<text x="611.1329525641025" y="347" class="small">6.5</text>
+<rect x="425" y="411" width="189.08625717948718" height="23" fill="#3266a6"/>
+<text x="621.0862571794871" y="429" class="small">6.9</text>
+<rect x="425" y="493" width="189.12225307692307" height="23" fill="#3266a6"/>
+<text x="621.122253076923" y="511" class="small">6.9</text>
+<rect x="425" y="575" width="201.42593615384615" height="23" fill="#3266a6"/>
+<text x="633.4259361538461" y="593" class="small">7.3</text>
+<rect x="425" y="657" width="201.42802128205128" height="23" fill="#3266a6"/>
+<text x="633.4280212820513" y="675" class="small">7.3</text>
+<rect x="425" y="739" width="201.45029923076922" height="23" fill="#3266a6"/>
+<text x="633.4502992307692" y="757" class="small">7.3</text>
+<rect x="425" y="821" width="201.45655461538462" height="23" fill="#3266a6"/>
+<text x="633.4565546153847" y="839" class="small">7.3</text>
+<text x="715" y="110" >Observed high-water (MB)</text>
+<line x1="715" x2="715" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="715" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="822" y="912" class="small" text-anchor="middle">11.4</text>
+<line x1="929" x2="929" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="929" y="912" class="small" text-anchor="middle">22.8</text>
+<rect x="715" y="165" width="146.08817" height="23" fill="#3c8077"/>
+<text x="868.08817" y="183" class="small">15.6</text>
+<rect x="715" y="247" width="98.5113896491228" height="23" fill="#3c8077"/>
+<text x="820.5113896491227" y="265" class="small">10.5</text>
+<rect x="715" y="329" width="143.93484192982456" height="23" fill="#3c8077"/>
+<text x="865.9348419298245" y="347" class="small">15.3</text>
+<rect x="715" y="411" width="126.91547824561403" height="23" fill="#3c8077"/>
+<text x="848.915478245614" y="429" class="small">13.5</text>
+<rect x="715" y="493" width="151.90010964912278" height="23" fill="#3c8077"/>
+<text x="873.9001096491228" y="511" class="small">16.2</text>
+<rect x="715" y="575" width="142.6294043859649" height="23" fill="#3c8077"/>
+<text x="864.6294043859649" y="593" class="small">15.2</text>
+<rect x="715" y="657" width="156.65366912280703" height="23" fill="#3c8077"/>
+<text x="878.6536691228071" y="675" class="small">16.7</text>
+<rect x="715" y="739" width="203.36065210526314" height="23" fill="#3c8077"/>
+<text x="925.3606521052632" y="757" class="small">21.7</text>
+<rect x="715" y="821" width="121.07342842105261" height="23" fill="#3c8077"/>
+<text x="843.0734284210527" y="839" class="small">12.9</text>
+<text x="1005" y="110" >Sampled allocations (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1005" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1112" y="912" class="small" text-anchor="middle">30.7</text>
+<line x1="1219" x2="1219" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="1219" y="912" class="small" text-anchor="middle">61.4</text>
+<rect x="1005" y="165" width="193.61624208469055" height="23" fill="#8571ac"/>
+<text x="1205.6162420846906" y="183" class="small">55.6</text>
+<rect x="1005" y="247" width="197.4599051465798" height="23" fill="#8571ac"/>
+<text x="1209.4599051465798" y="265" class="small">56.7</text>
+<rect x="1005" y="329" width="200.17548846905538" height="23" fill="#8571ac"/>
+<text x="1212.1754884690554" y="347" class="small">57.4</text>
+<rect x="1005" y="411" width="186.68888781758957" height="23" fill="#8571ac"/>
+<text x="1198.6888878175896" y="429" class="small">53.6</text>
+<rect x="1005" y="493" width="191.02364951140066" height="23" fill="#8571ac"/>
+<text x="1203.0236495114007" y="511" class="small">54.8</text>
+<rect x="1005" y="575" width="188.40803973941368" height="23" fill="#8571ac"/>
+<text x="1200.4080397394137" y="593" class="small">54.1</text>
+<rect x="1005" y="657" width="187.4621039739414" height="23" fill="#8571ac"/>
+<text x="1199.4621039739413" y="675" class="small">53.8</text>
+<rect x="1005" y="739" width="200.9985728990228" height="23" fill="#8571ac"/>
+<text x="1212.9985728990227" y="757" class="small">57.7</text>
+<rect x="1005" y="821" width="203.78118631921825" height="23" fill="#8571ac"/>
+<text x="1215.7811863192182" y="839" class="small">58.5</text>
+<text x="24" y="162" >Columnar store: reconstruct counters</text>
+<text x="24" y="204" class="small">JSON · Via run objects</text>
+<text x="24" y="244" >Columnar store: deduplicate clients +</text>
+<text x="24" y="264" >reconstruct counters</text>
+<text x="24" y="286" class="small">JSON · Via run objects</text>
+<text x="24" y="326" >Columnar store: split IDs + reconstruct</text>
+<text x="24" y="346" >counters</text>
+<text x="24" y="368" class="small">JSON · Via run objects</text>
+<text x="24" y="408" >Columnar store: deduplicate IDs +</text>
+<text x="24" y="428" >reconstruct counters</text>
+<text x="24" y="450" class="small">JSON · Via run objects</text>
+<text x="24" y="490" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="510" >counters</text>
+<text x="24" y="532" class="small">JSON · Via run objects</text>
+<text x="24" y="572" >Object records: deletion flag</text>
+<text x="24" y="614" class="small">JSON · Via run objects</text>
+<text x="24" y="654" >Columnar store: all counters</text>
+<text x="24" y="696" class="small">JSON · Via run objects</text>
+<text x="24" y="736" >Object records: negative count means</text>
+<text x="24" y="756" >deleted</text>
+<text x="24" y="778" class="small">JSON · Via run objects</text>
+<text x="24" y="818" >Tuple records: negative count means deleted</text>
+<text x="24" y="860" class="small">JSON · Via run objects</text>
+<text x="24" y="944" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
 </svg>

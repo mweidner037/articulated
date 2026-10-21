@@ -1,6 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { comparisonChart } from "./charts";
+import { formats } from "./formats";
 
 test("comparison charts preserve caller ranking, label values and escape text", () => {
   const svg = comparisonChart(
@@ -34,4 +35,21 @@ test("comparison charts reject missing or invalid metrics", () => {
       ),
     );
   assert.throws(() => comparisonChart("Title", "Subtitle", ["MB"], [], "Note"));
+});
+
+test("every interchange name fits the chart and has an explanation", () => {
+  const names = Object.values(formats).map((f) => f.name);
+  assert.equal(new Set(names).size, 9);
+  for (const f of Object.values(formats)) {
+    assert(f.explanation.length > 20);
+    const svg = comparisonChart(
+      "Title",
+      "Internal format: existing IdList tree",
+      ["ms"],
+      [{ label: f.name, values: [1], detail: "JSON · Via run objects" }],
+      "Note",
+    );
+    assert(svg.includes("Interchange format"));
+    assert(!svg.includes("NaN"));
+  }
 });

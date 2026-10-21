@@ -5,6 +5,7 @@ import path from "node:path";
 import { example } from "../full_picture/fixture";
 import { candidates } from "./candidates";
 import { comparisonChart } from "./charts";
+import { formats, internalFormat, loaderName } from "./formats";
 import { mongoState, storageCandidates } from "./mongo";
 import type { BrowserSample } from "./page";
 import type { analyzeTrace } from "./trace";
@@ -69,6 +70,12 @@ const mem = (r: Row, key: keyof Row["memory"][number]) =>
     0.5,
   ) / 1e6;
 const fmt = (n: number) => n.toFixed(1);
+const measuredDate = new Intl.DateTimeFormat("en-CA", {
+  timeZone: "America/New_York",
+  year: "numeric",
+  month: "2-digit",
+  day: "2-digit",
+}).format(new Date(data.generatedAt));
 const workloads = [...new Set(data.rows.map((r) => r.documents))];
 for (const count of workloads) {
   const rows = data.rows.filter((r) => r.documents === count);
@@ -77,16 +84,23 @@ for (const count of workloads) {
     candidates.map((c) => c.id),
   );
   for (const r of rows) {
+    assert.equal(r.shape, candidates.find((c) => c.id === r.id)!.shape);
     assert.equal(r.samples.length, data.rounds * data.trials);
     assert.equal(r.gc.length, data.switches);
     assert.equal(r.memory.length, data.memoryTrials);
     assert(r.gc.every((g) => g.paintEvents > 0));
-    for (const s of r.samples)
+    for (const s of r.samples) {
+      assert(
+        [s.decode, s.hydrate, s.total].every(
+          (value) => Number.isFinite(value) && value >= 0,
+        ),
+      );
       assert(
         Math.abs(
           s.total - s.decode - s.hydrate - s.editor - s.layout - s.frameWait,
         ) < 0.001,
       );
+    }
   }
 }
 const p95 = (r: Row) =>
@@ -103,27 +117,31 @@ const logicalRows = (n: number) =>
 function chart(rows: Row[], scope: string) {
   return comparisonChart(
     `${rows[0].documents} documents: ${scope} — browser speed`,
-    "Sorted by complete-ready P95, fastest first. ID loading is part of total, not additional time.",
-    ["Complete-ready P95 (ms)", "ID-loading P95 (ms)", "GC pause mean (ms)"],
+    `Internal format: ${internalFormat}. Sorted by complete-ready P95, fastest first.`,
+    [
+      "Complete-ready P95 (ms)",
+      "To internal tree P95 (ms)",
+      "GC pause mean (ms)",
+    ],
     byP95(rows).map((r) => ({
       label: r.shape,
-      detail: `${r.encoding} / ${r.path}`,
+      detail: `${r.encoding} · ${loaderName(r.path)}`,
       values: [
         p95(r),
         quantile(
-          r.samples.map((s) => s.decode + s.hydrate),
+          r.samples.map((s) => s.hydrate),
           0.95,
         ),
         mean(r.gc.map((g) => g.gcMs)),
       ],
     })),
-    `ID loading = decode + translate + build tree. GC: separate pass. P95 from ${data.rounds * data.trials} samples${data.rounds * data.trials < 20 ? " is the maximum" : "; empirical estimate"}.`,
+    `To internal tree = conversion + tree construction, excluding decode/render. GC: separate pass. P95 from ${data.rounds * data.trials} samples${data.rounds * data.trials < 20 ? " is the maximum" : "; empirical estimate"}.`,
   );
 }
 function memoryChart(rows: Row[], scope: string) {
   return comparisonChart(
     `${rows[0].documents} documents: ${scope} — JS memory`,
-    "Sorted by retained memory, smallest first. Includes JS heap and ArrayBuffer backing stores.",
+    `Internal format: ${internalFormat}. Sorted by retained JS + backing bytes, smallest first.`,
     [
       "Retained median (MB)",
       "Observed high-water (MB)",
@@ -137,7 +155,7 @@ function memoryChart(rows: Row[], scope: string) {
       )
       .map((r) => ({
         label: r.shape,
-        detail: `${r.encoding} / ${r.path}`,
+        detail: `${r.encoding} · ${loaderName(r.path)}`,
         values: [
           mem(r, "retainedDelta"),
           Math.max(...r.memory.map((m) => m.observedHighWaterDelta)) / 1e6,
@@ -165,7 +183,7 @@ function storageChart(binary: boolean) {
   return comparisonChart(
     binary
       ? "Secondary optimization: Mongo encodings"
-      : "Logical formats: Mongo storage",
+      : "Interchange formats: Mongo storage",
     "Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately.",
     ["Snappy (KB / document)", "Zstd (KB / document)"],
     rows,
@@ -175,6 +193,30 @@ function storageChart(binary: boolean) {
 const largest = Math.max(...workloads);
 const rowFor = (id: string) =>
   data.rows.find((r) => r.id === id && r.documents === largest)!;
+const fastestJSON = byP95(logicalRows(largest))[0];
+const namingExample = [
+  { bunchId: "writer_0", startCounter: 0, count: 3, isDeleted: false },
+  { bunchId: "writer_0", startCounter: 3, count: 2, isDeleted: true },
+];
+function namingExamples() {
+  return [
+    "### What the columnar names change: one small example",
+    "",
+    "Two runs of the same ID: three live entries starting at 0, then two deleted entries starting at 3. These illustrative rows are not the benchmark workload. The second start can be reconstructed as 0 + 3; storing an ID once is a separate choice from reconstructing counters.",
+    "",
+    ...["columns", "omit", "full"].flatMap((id) => {
+      const c = candidates.find((c) => c.id === id)!;
+      return [
+        `**${c.shape}**`,
+        "",
+        "```json",
+        JSON.stringify(c.logical(c.decode(c.encode(namingExample))), null, 2),
+        "```",
+        "",
+      ];
+    }),
+  ];
+}
 const disk = (id: string) => {
   const r = mongo.rows.find((r) => r.id === id && r.compressor === "snappy");
   assert(r);
@@ -193,38 +235,99 @@ const outliers = data.rows.flatMap((r) =>
     )
     .map((s) => s.total),
 );
+function rerunNotes(): string[] {
+  const previousPath = path.join(dir, "previous/browser.json");
+  if (!fs.existsSync(previousPath)) return [];
+  const previous = JSON.parse(
+    fs.readFileSync(previousPath, "utf8"),
+  ) as typeof data;
+  const prior = previous.rows.find(
+    (r) => r.id === "signed" && r.documents === largest,
+  )!;
+  const current = rowFor("signed");
+  const stats = (r: Row) => ({
+    p50: fmt(
+      quantile(
+        r.samples.map((s) => s.total),
+        0.5,
+      ),
+    ),
+    p95: fmt(p95(r)),
+    max: fmt(Math.max(...r.samples.map((s) => s.total))),
+    conversion: fmt(
+      quantile(
+        r.samples.map((s) => s.hydrate),
+        0.95,
+      ),
+    ),
+    stalls: r.samples.filter((s) => s.total > 200).length,
+  });
+  const a = stats(prior),
+    b = stats(current);
+  return [
+    "## Rerun of the suspect object-record result",
+    "",
+    `All 24 options were rerun, not just the suspicious row: ${data.rounds} fresh-context rounds × ${data.trials} loads = ${current.samples.length} samples per option/workload (previously ${prior.samples.length}). The loading implementation and timer boundaries are unchanged; only labels, metadata and sample count changed. Previous samples and all traces are [preserved](results/browser/previous/browser.json). No samples were filtered from either run. Mongo was not rerun: its unchanged measurements are separate from browser timing.`,
+    "",
+    `**${formats.signed.name}, ${largest} documents:** previous complete-ready P50 / P95 / maximum: **${a.p50} / ${a.p95} / ${a.max} ms**. Rerun: **${b.p50} / ${b.p95} / ${b.max} ms**. Conversion-to-tree P95: **${a.conversion} → ${b.conversion} ms**. Loads over 200 ms: **${a.stalls}/${prior.samples.length} → ${b.stalls}/${current.samples.length}**.`,
+    "",
+    `The original P95 was the maximum of 18 samples; the new P95 is observation ${Math.ceil(current.samples.length * 0.95)} of ${current.samples.length}. These are different tail estimators in practice; a lower new P95 does not prove the original stall was invalid. Its cause remains unknown. The old result is superseded for comparison, not erased. The rerun retains ${outliers.length} loads exceeding three times their row median. Fresh-context round results and all raw samples remain available; none of this establishes a stable production ranking.`,
+  ];
+}
+
 const lines = [
-  "# Choose the logical format first: browser speed, Mongo storage, and JS memory",
+  "# Interchange formats → the existing internal IdList tree",
   "",
-  "Draft experiment. Start with the nine logical JSON formats through the same object loader. Compare browser speed, physical Mongo storage, and JS memory separately. Direct loading and binary encodings are secondary optimizations below, not competing logical formats.",
+  "Draft exploration. **Interchange format** means the saved objects, tuples, or columnar store. **Internal format** means the live structure used for lookup and editing. Every measured row still ends in the existing IdList tree. No native columnar internal implementation is measured here. JSON versus binary is only an encoding choice, covered separately.",
   "",
-  `Measured ${data.generatedAt.slice(0, 10)} in Chromium ${data.browser} on ${data.cpu}, CPU rate ${data.cpuRate}×. Each document has ${data.documentCharacters.toLocaleString("en-US")} characters, ${data.paragraphs.toLocaleString("en-US")} paragraphs, and the same 12,091 ID runs. This is a **real, controlled ProseMirror editor in Chromium**, not the production application. The four-document case mounts four copies of that same document; it is a scaling test, not a production corpus.`,
+  `Measured ${measuredDate} (America/New_York) in Chromium ${data.browser} on ${data.cpu}, CPU rate ${data.cpuRate}×. Each document has ${data.documentCharacters.toLocaleString("en-US")} characters, ${data.paragraphs.toLocaleString("en-US")} paragraphs, and the same 12,091 ID runs. This is a controlled ProseMirror editor, not the production application. Four documents means four copies of this trace, not four production documents.`,
   "",
-  "## Three recommendations, depending on what matters most",
+  "## Read the names",
   "",
-  "**My default: pursue ordinary columns with omitted counters, then validate them on our actual documents and IDs.** This is a logical-format choice, with ordinary Mongo arrays and JSON in the browser. Binary is optional follow-up work, not part of this recommendation. These are recommendations for what to pursue next, not approval to migrate production from a single synthetic workload.",
+  "These names describe the **interchange** representation. A columnar store is one object containing arrays, not a different Mongo storage engine. All non-baseline options encode deletion as a negative count: -2 means two deleted IDs. That is what the old word ‘signed’ meant.",
   "",
-  `1. **Mongo storage and a balanced improvement → Columns + omit.** It has the smallest Snappy collection among the nine ordinary-field formats: ${disk("omit")} versus ${disk("objects")} KB/doc for original objects (about 14% less). Four-document retained JS memory also falls from ${fmt(mem(rowFor("objects"), "retainedDelta"))} to ${fmt(mem(rowFor("omit"), "retainedDelta"))} MB (about 12% less). Ready P95 is ${fmt(p95(rowFor("omit")))} versus ${fmt(p95(rowFor("objects")))} ms; do not count that small difference as a proven speedup. Tradeoff: a translation step and omitted-counter reconstruction. This recommendation targets your current Snappy setup; Zstd has a different storage ranking.`,
+  ...Object.entries(formats).map(
+    ([id, f]) =>
+      `- **${f.name}:** ${f.explanation} [Stored example](#format-${id}).`,
+  ),
   "",
-  `2. **Temporary browser memory pressure → Client dictionary + omit, with a direct JSON loader, only if IDs actually have shared client/sequence structure.** Observed four-document high-water memory is ${fmt(Math.max(...rowFor("client-direct").memory.map((m) => m.observedHighWaterDelta)) / 1e6)} MB versus ${fmt(Math.max(...rowFor("objects").memory.map((m) => m.observedHighWaterDelta)) / 1e6)} MB for original objects. Retained memory is ${fmt(mem(rowFor("client-direct"), "retainedDelta"))} MB—essentially the same as Columns + omit, not a further steady-state saving. Tradeoffs: a custom direct loader and ${disk("client")} KB/doc in Snappy, more than original objects. The high-water measurement is sampled, not an exact peak or proof of fewer GC stalls. **For independent opaque 8-character nanoids, do not adopt this split-ID format based on this fixture; use recommendation 1 instead.** If retained memory alone is the priority, recommendation 1 is also the simpler choice.`,
+  "**Loader labels:** ‘Via run objects’ first reconstructs the library’s saved run objects and then loads its tree. ‘Direct to tree’ feeds the decoded fields straight into tree construction, skipping that intermediate array. Neither means a different internal representation.",
   "",
-  `3. **Browser loading speed, accepting a Mongo storage penalty → Investigate dictionary columns through the existing object loader.** It has the lowest observed four-document JSON/object ready P95: ${fmt(p95(rowFor("full")))} versus ${fmt(p95(rowFor("objects")))} ms, with ID-loading P95 19.9 versus 25.4 ms. Tradeoff: ${disk("full")} versus ${disk("objects")} KB/doc in Snappy (about 36% more). Do not ship on this timing ranking yet: the single-document winner differs, and P95 here is the maximum of only 18 samples. Run a larger, representative timing study first. This is not a recommendation for binary or for the direct loader.`,
+  ...namingExamples(),
   "",
-  "**If the goal is a large reduction in retained editor memory, none of these formats establishes that.** Every loader still builds the existing mutable IdList tree. A native column-backed editing representation needs its own implementation and benchmark. The measured percentages above come from Matthew’s structured-ID trace; opaque nanoid workloads need their own run before a migration decision.",
+  "## Three recommendations",
   "",
-  "## Evidence and limits behind those recommendations",
+  `1. **Mongo storage first: ${formats.omit.name}.** This is the smallest ordinary-field option with Snappy: ${disk("omit")} versus ${disk("objects")} KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.`,
   "",
-  `- **Tail ranking is fragile here.** There are only ${data.rounds * data.trials} primary samples per row. With nearest-rank P95, 18 samples means P95 is the maximum. ${outliers.length} samples exceed three times their row median (${outliers.map(fmt).join(", ")} ms); none were removed. A single unexplained stall can change the ranking. More repetitions and a representative corpus are needed before selecting on tail latency.`,
+  `2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** ${formats.omit.name} retains ${fmt(mem(rowFor("omit"), "retainedDelta"))} MB versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.`,
   "",
-  "## What happened to Build IDs and Layout?",
+  `3. **Browser speed first: investigate ${fastestJSON.shape}, through the existing loader.** It has the lowest observed ${largest}-document complete-ready P95 among JSON interchange options: ${fmt(p95(fastestJSON))} versus ${fmt(p95(rowFor("objects")))} ms for the baseline. Conversion-to-tree P95 is ${fmt(
+    quantile(
+      fastestJSON.samples.map((s) => s.hydrate),
+      0.95,
+    ),
+  )} versus ${fmt(
+    quantile(
+      rowFor("objects").samples.map((s) => s.hydrate),
+      0.95,
+    ),
+  )} ms. Its Snappy storage is ${disk(fastestJSON.id)} versus ${disk("objects")} KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough, and native columnar editing remains untested.`,
   "",
-  "**Layout does the same logical work in every row:** identical editor content, DOM, and forced-layout calls. Across the nine JSON/object formats in the four-document case, median layout ranges from 14.1–14.6 ms. Its elapsed time is not mathematically constant: scheduling, GC, and runtime noise can affect it. It is no longer a colored segment or a claimed format benefit. It remains inside the measured complete-ready total; subtracting it would no longer answer how long the document takes to render.",
+  "None of these results justifies changing independent opaque 8-character nanoids into structured IDs. The split-ID/client-sharing options require Matthew’s client/sequence structure; those measurements are not evidence for opaque nanoids. Binary stays an optional later optimization.",
   "",
-  "**Build IDs was a misleading label.** That interval includes format-specific translation plus construction of the shared final editing tree. Its four-document medians range from 15.3–18.6 ms across the JSON/object options. We did not independently time translation and common tree building, so we cannot honestly subtract a constant tree-construction cost. The ID-loading column measures decode + translation + tree construction, excluding editor creation, layout, and frame waiting. Its P95 is calculated from each sample’s sum—not by adding stage percentiles.",
+  "## Time spent converting to the internal format",
   "",
-  "## 1. Logical JSON formats",
+  "**Decode:** response bytes → decoded interchange objects/arrays. **To internal tree:** decoded interchange state → a usable IdList, including counter reconstruction, ID reconstruction, intermediate run objects when used, validation, tree nodes and indexes. This second interval is timed directly around the loader—not calculated by subtracting other measurements. It excludes decode, ProseMirror creation, layout, and frame waiting. The raw field is named `hydrate` for compatibility with the original data.",
   "",
-  "Hold the loader path fixed: ordinary JSON inputs, object adapter, same final editor. Each speed chart is sorted by complete-ready P95 ascending. ID-loading P95 is a diagnostic alongside that total, not added to it. GC comes from a separate trace pass. Storage and memory have their own charts, sorted smallest first; metric scales are independent.",
+  "The speed chart shows conversion-to-tree P95 alongside complete-ready P95. Expanded tables include decode P95 and conversion mean, P50 and P95. Each percentile comes from that interval’s actual samples; percentiles are not additive. This does not split tree construction from preprocessing, and it does not measure a native columnar internal library.",
+  "",
+  "**Layout:** same document and DOM work in every row, with variable elapsed time. It stays inside complete-ready timing but is not a separate format-cost bar.",
+  "",
+  ...rerunNotes(),
+  "",
+  "## 1. JSON interchange formats",
+  "",
+  "Hold the loader path fixed: ordinary JSON inputs, object adapter, same final editor. Each speed chart is sorted by complete-ready P95 ascending. Conversion-to-tree P95 excludes decoding and is already inside that total, not added to it. GC comes from a separate trace pass. Storage and memory have their own charts, sorted smallest first; metric scales are independent.",
   "",
   `Each row has ${data.rounds * data.trials} warm timing samples across ${data.rounds} fresh browser contexts, ${data.switches} traced document replacements without forced GC between them, and ${data.memoryTrials} separately profiled memory runs. P95 is an empirical sample percentile, not a reliable population-tail estimate from this small run. Raw cold-start samples and per-round results are retained.`,
   "",
@@ -246,19 +349,29 @@ function browserSection(n: number, rows: Row[], suffix: string, scope: string) {
     "",
     `![JS memory sorted by retained bytes](results/browser/memory-${n}${suffix}.svg)`,
     "",
-    "| Logical format | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |",
-    "|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
+    "| Interchange format | Internal format | Encoding | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |",
+    "|---|---|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|",
   );
   for (const r of rows)
     lines.push(
-      `| ${r.shape} | ${r.encoding} / ${r.path} | ${fmt(metric(r, "total"))} | ${fmt(
+      `| ${r.shape} | ${internalFormat} | ${r.encoding} | ${loaderName(r.path)} | ${fmt(metric(r, "total"))} | ${fmt(
         quantile(
           r.samples.map((s) => s.total),
           0.5,
         ),
-      )} | ${fmt(p95(r))} | ${fmt(
+      )} | ${fmt(p95(r))} | ${fmt(Math.max(...r.samples.map((s) => s.total)))} | ${fmt(
         quantile(
-          r.samples.map((s) => s.decode + s.hydrate),
+          r.samples.map((s) => s.decode),
+          0.95,
+        ),
+      )} | ${fmt(metric(r, "hydrate"))} | ${fmt(
+        quantile(
+          r.samples.map((s) => s.hydrate),
+          0.5,
+        ),
+      )} | ${fmt(
+        quantile(
+          r.samples.map((s) => s.hydrate),
           0.95,
         ),
       )} | ${fmt(mean(r.cold.map((s) => s.total)))} | ${fmt(mean(r.gc.map((g) => g.gcMs)))} / ${fmt(Math.max(...r.gc.map((g) => g.longestGC)))} | ${fmt(Math.max(...r.memory.map((m) => m.observedHighWaterDelta)) / 1e6)} | ${fmt(mem(r, "retainedDelta"))} | ${fmt(mem(r, "sampledAllocation"))} | ${fmt(
@@ -272,7 +385,7 @@ function browserSection(n: number, rows: Row[], suffix: string, scope: string) {
 }
 fs.writeFileSync(path.join(dir, "storage.svg"), storageChart(false));
 lines.push(
-  "### Mongo storage: logical formats",
+  "### Mongo storage: interchange formats",
   "",
   "Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint protocol for Snappy and Zstd. The physical-storage table and exact stored examples are below.",
   "",
@@ -280,7 +393,7 @@ lines.push(
   "",
 );
 for (const n of [...workloads].sort((a, b) => b - a))
-  browserSection(n, logicalRows(n), "", "logical JSON formats");
+  browserSection(n, logicalRows(n), "", "JSON interchange formats");
 lines.push(
   "## 2. Secondary optimization: direct JSON loading",
   "",
@@ -319,9 +432,9 @@ for (const n of [...workloads].sort((a, b) => b - a))
 lines.push(
   "### Matched encoding and loader comparisons",
   "",
-  "These are changes in measured means, not significance claims. The three round deltas show how reproducible the direction was across fresh contexts. Negative means faster.",
+  "These are changes in measured means, not significance claims. The per-round deltas show how reproducible the direction was across fresh contexts. Negative means faster.",
   "",
-  "| Documents | Same logical structure | Comparison | Ready change ms | Per-round changes ms | Kept change MB |",
+  "| Documents | Same interchange format | Encoding and conversion path | Ready change ms | Per-round changes ms | Kept change MB |",
   "|---:|---|---|---:|---|---:|",
 );
 for (const n of workloads)
@@ -343,7 +456,7 @@ for (const n of workloads)
       ),
     );
     lines.push(
-      `| ${n} | ${x.shape} | ${x.encoding}/${x.path} → ${y.encoding}/${y.path} | ${fmt(metric(y, "total") - metric(x, "total"))} | ${roundDiff.join(", ")} | ${fmt(mem(y, "retainedDelta") - mem(x, "retainedDelta"))} |`,
+      `| ${n} | ${x.shape} | ${x.encoding}, ${loaderName(x.path)} → ${y.encoding}, ${loaderName(y.path)} | ${fmt(metric(y, "total") - metric(x, "total"))} | ${roundDiff.join(", ")} | ${fmt(mem(y, "retainedDelta") - mem(x, "retainedDelta"))} |`,
     );
   }
 lines.push(
@@ -354,7 +467,7 @@ lines.push(
   "",
   "JSON rows mean ordinary BSON objects/arrays in Mongo, **not JSON strings**. Protobuf rows mean one BSON Binary. Numeric-column encodings mean a dictionary plus separate BSON Binary fields. The BSON browser-response variant for objects/tuples uses the same ordinary Mongo layout; it does not imply storing a second blob. Direct/object loader paths also share storage.",
   "",
-  "| Logical structure | Mongo representation | Snappy KB/doc | Zstd KB/doc |",
+  "| Interchange format | Mongo representation | Snappy KB/doc | Zstd KB/doc |",
   "|---|---|---:|---:|",
 );
 for (const c of storageCandidates) {
@@ -371,7 +484,7 @@ for (const c of storageCandidates) {
 }
 lines.push(
   "",
-  "## Exact logical structures and Mongo examples",
+  "## Exact interchange structures and Mongo examples",
   "",
   "Every encoding in a group round-trips to the **same** logical JSON. This is asserted for empty and example inputs in unit tests, and for the full fixture before browser measurement. The browser additionally checks all saved runs, visible paragraph text, and a successful first edit.",
   "",
@@ -379,6 +492,7 @@ lines.push(
 for (const shape of [...new Set(candidates.map((c) => c.shape))]) {
   const group = storageCandidates.filter((c) => c.shape === shape);
   lines.push(
+    `<a id="format-${group[0].id}"></a>`,
     `<details><summary>${shape}: JSON and actual Mongo representations</summary>`,
     "",
   );
@@ -419,10 +533,10 @@ lines.push(
   "pnpm --filter benchmarks exec playwright install chromium",
   "pnpm --filter articulated build",
   "pnpm --filter benchmarks test",
-  "BROWSER_ROUNDS=3 BROWSER_TRIALS=6 pnpm --filter benchmarks browser:run",
+  "BROWSER_ROUNDS=5 BROWSER_TRIALS=20 pnpm --filter benchmarks browser:run",
   "```",
   "",
-  "The runner binds only loopback on a random port and shuts down its browser/server. Optional BROWSER_CPU_RATE controls emulated CPU slowdown (not equivalent to a specific device); BROWSER_DOCUMENTS, BROWSER_ROUNDS, BROWSER_TRIALS, BROWSER_SWITCHES, BROWSER_MEMORY_TRIALS, BROWSER_CASES and BROWSER_EXECUTABLE control reruns. Partial-case smoke runs are useful for development but cannot generate the full report.",
+  "The runner binds only loopback on a random port and shuts down its browser/server. Optional BROWSER_CPU_RATE controls emulated CPU slowdown (not equivalent to a specific device); BROWSER_DOCUMENTS, BROWSER_ROUNDS, BROWSER_TRIALS, BROWSER_SWITCHES, BROWSER_MEMORY_TRIALS, BROWSER_CASES and BROWSER_EXECUTABLE control reruns. Partial-case smoke runs are useful for development but cannot generate the full report. This rerun used BROWSER_ARCHIVE_PREVIOUS=1 to preserve the original browser samples, GC traces, completion record and screenshot under results/browser/previous; that option refuses to overwrite an existing archive.",
   "",
   "After the browser finishes, run Mongo separately:",
   "",

@@ -27,6 +27,7 @@ import {
   TransposedOmitSavedIdListMessage,
   TransposedSavedIdListMessage,
 } from "../generated/id_list_saved_state";
+import { formats } from "./formats";
 
 export interface Candidate {
   id: string;
@@ -136,36 +137,36 @@ function fromColumns(s: Columns): SavedIdList {
   );
   return out;
 }
-const objects = original("objects", "Original objects");
-const signed = original("signed", "Signed objects");
-const tuples = original("tuples", "Signed tuples");
+const objects = original("objects", formats.objects.name);
+const signed = original("signed", formats.signed.name);
+const tuples = original("tuples", formats.tuples.name);
 const columns = json(
   "columns",
-  "Ordinary columns",
+  formats.columns.name,
   toTransposed,
   fromTransposed,
 );
 const omit = json(
   "omit",
-  "Columns + omit",
+  formats.omit.name,
   toTransposedOmit,
   fromTransposedOmit,
 );
 const split = json(
   "split",
-  "Split + omit",
+  formats.split.name,
   toSplitTransposedOmit,
   fromSplitTransposedOmit,
 );
 const dictionary = json(
   "dictionary",
-  "Dictionary + omit",
+  formats.dictionary.name,
   toBunchIndexOmit,
   fromBunchIndexOmit,
 );
 const client = json(
   "client",
-  "Client dictionary + omit",
+  formats.client.name,
   toClientIndexOmit,
   fromClientIndexOmit,
 );
@@ -175,7 +176,7 @@ const clientProto = proto(
   (s) => ClientIndexOmitSavedIdListMessage.encode(s).finish(),
   (b) => ClientIndexOmitSavedIdListMessage.decode(b),
 );
-const full = json("full", "Dictionary columns", toColumns, fromColumns);
+const full = json("full", formats.full.name, toColumns, fromColumns);
 function binary(packed: boolean, direct: boolean): Candidate {
   const codec = getCodec(
     `${packed ? "bit" : "binary"}-${direct ? "direct" : "adapter"}`,

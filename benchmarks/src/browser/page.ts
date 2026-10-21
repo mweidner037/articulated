@@ -6,6 +6,10 @@ import { candidate } from "./candidates";
 
 export interface BrowserSample {
   decode: number;
+  /** Decoded interchange state -> usable internal IdList tree, including
+   * reconstruction, intermediate run objects (if any), validation and indexes.
+   * Excludes decoding and editor/rendering. Kept as `hydrate` for raw-data compatibility.
+   */
   hydrate: number;
   editor: number;
   layout: number;
@@ -80,6 +84,7 @@ window.benchmark = {
       result.decode += performance.now() - t;
       await probe("decoded");
       t = performance.now();
+      // Explicit conversion-to-internal-format interval, independent of decode.
       const list = c.hydrate(state);
       result.hydrate += performance.now() - t;
       // eslint-disable-next-line no-useless-assignment -- release before the intrusive memory probe

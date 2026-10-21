@@ -9,13 +9,14 @@ import { chromium, type CDPSession, type Page } from "playwright";
 import { fixture } from "../full_picture/fixture";
 import { loadTrace } from "../internal/trace";
 import { candidates, type Candidate } from "./candidates";
+import { internalFormat } from "./formats";
 import type { BrowserSample } from "./page";
 import { analyzeTrace, type TraceEvent } from "./trace";
 
 async function main() {
   const output = path.resolve(__dirname, "../../results/browser");
-  const rounds = Number(process.env.BROWSER_ROUNDS ?? 2);
-  const trials = Number(process.env.BROWSER_TRIALS ?? 5);
+  const rounds = Number(process.env.BROWSER_ROUNDS ?? 5);
+  const trials = Number(process.env.BROWSER_TRIALS ?? 20);
   const switches = Number(process.env.BROWSER_SWITCHES ?? 8);
   const memoryTrials = Number(process.env.BROWSER_MEMORY_TRIALS ?? 3);
   const counts = (process.env.BROWSER_DOCUMENTS ?? "1,4")
@@ -34,6 +35,26 @@ async function main() {
       )
     : candidates;
   assert(selected.length > 0);
+  if (process.env.BROWSER_ARCHIVE_PREVIOUS === "1") {
+    const archive = path.join(output, "previous");
+    assert(!fs.existsSync(archive), "Refuse to overwrite an archived run");
+    const previous = JSON.parse(
+      fs.readFileSync(path.join(output, "browser.json"), "utf8"),
+    );
+    assert(previous.complete, "Only archive a completed reference run");
+    fs.mkdirSync(archive);
+    for (const name of [
+      "browser.json",
+      "complete.json",
+      "traces",
+      "rendered-editor.png",
+    ])
+      fs.cpSync(path.join(output, name), path.join(archive, name), {
+        recursive: true,
+        errorOnExist: true,
+        force: false,
+      });
+  }
   fs.mkdirSync(path.join(output, "traces"), { recursive: true });
   const saved = await fixture();
   const { finalText } = await loadTrace("kleppmannReal", false);
@@ -198,6 +219,9 @@ async function main() {
     documentCharacters: finalText.length,
     paragraphs: finalText.split("\n").length,
     runs: saved.length,
+    internalFormat,
+    conversionMetric:
+      "hydrate: decoded interchange state to usable IdList tree; excludes decoding and rendering",
     rows,
   };
   const save = () =>
