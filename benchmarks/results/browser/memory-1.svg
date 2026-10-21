@@ -79,28 +79,29 @@
 <text x="1200.3108761676647" y="757" class="small">14.7</text>
 <rect x="1005" y="821" width="183.90662802395212" height="23" fill="#8571ac"/>
 <text x="1195.9066280239522" y="839" class="small">14.4</text>
-<text x="24" y="162" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="162" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="182" >counters</text>
-<text x="24" y="204" class="small">JSON · Via run objects</text>
-<text x="24" y="244" >Columnar store: reconstruct counters</text>
-<text x="24" y="286" class="small">JSON · Via run objects</text>
-<text x="24" y="326" >Columnar store: deduplicate clients +</text>
+<text x="24" y="204" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="244" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="286" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="326" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="346" >reconstruct counters</text>
-<text x="24" y="368" class="small">JSON · Via run objects</text>
-<text x="24" y="408" >Columnar store: deduplicate IDs +</text>
+<text x="24" y="368" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="408" >F07 — Columnar store: deduplicate IDs +</text>
 <text x="24" y="428" >reconstruct counters</text>
-<text x="24" y="450" class="small">JSON · Via run objects</text>
-<text x="24" y="490" >Columnar store: split IDs + reconstruct</text>
-<text x="24" y="510" >counters</text>
-<text x="24" y="532" class="small">JSON · Via run objects</text>
-<text x="24" y="572" >Object records: deletion flag</text>
-<text x="24" y="614" class="small">JSON · Via run objects</text>
-<text x="24" y="654" >Tuple records: negative count means deleted</text>
-<text x="24" y="696" class="small">JSON · Via run objects</text>
-<text x="24" y="736" >Object records: negative count means</text>
+<text x="24" y="450" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="490" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="510" >reconstruct counters</text>
+<text x="24" y="532" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="572" >F01 — Object records: deletion flag</text>
+<text x="24" y="614" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="654" >F03 — Tuple records: negative count means</text>
+<text x="24" y="674" >deleted</text>
+<text x="24" y="696" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="736" >F02 — Object records: negative count means</text>
 <text x="24" y="756" >deleted</text>
-<text x="24" y="778" class="small">JSON · Via run objects</text>
-<text x="24" y="818" >Columnar store: all counters</text>
-<text x="24" y="860" class="small">JSON · Via run objects</text>
+<text x="24" y="778" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="818" >F04 — Columnar store: all counters</text>
+<text x="24" y="860" class="small">JSON · Via IdList.load()</text>
 <text x="24" y="944" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
 </svg>

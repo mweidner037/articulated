@@ -169,69 +169,71 @@
 <text x="1212.732" y="1987" class="small">1.4</text>
 <rect x="1005" y="2051" width="194.3298333333333" height="23" fill="#8571ac"/>
 <text x="1206.3298333333332" y="2069" class="small">1.4</text>
-<text x="24" y="162" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="162" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="182" >counters</text>
-<text x="24" y="204" class="small">JSON · Direct to tree</text>
-<text x="24" y="244" >Columnar store: deduplicate clients +</text>
+<text x="24" y="204" class="small">JSON · Direct tree construction</text>
+<text x="24" y="244" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="264" >reconstruct counters</text>
-<text x="24" y="286" class="small">JSON · Via run objects</text>
-<text x="24" y="326" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="286" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="326" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="346" >counters</text>
-<text x="24" y="368" class="small">uint32/int32 · Direct to tree</text>
-<text x="24" y="408" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="368" class="small">uint32/int32 · Direct tree construction</text>
+<text x="24" y="408" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="428" >counters</text>
-<text x="24" y="450" class="small">JSON · Via run objects</text>
-<text x="24" y="490" >Columnar store: split IDs + reconstruct</text>
-<text x="24" y="510" >counters</text>
-<text x="24" y="532" class="small">JSON · Via run objects</text>
-<text x="24" y="572" >Columnar store: all counters</text>
-<text x="24" y="614" class="small">JSON · Via run objects</text>
-<text x="24" y="654" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="450" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="490" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="510" >reconstruct counters</text>
+<text x="24" y="532" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="572" >F04 — Columnar store: all counters</text>
+<text x="24" y="614" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="654" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="674" >counters</text>
-<text x="24" y="696" class="small">bit-packed · Via run objects</text>
-<text x="24" y="736" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="696" class="small">bit-packed · Via IdList.load()</text>
+<text x="24" y="736" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="756" >counters</text>
-<text x="24" y="778" class="small">bit-packed · Direct to tree</text>
-<text x="24" y="818" >Tuple records: negative count means deleted</text>
-<text x="24" y="860" class="small">JSON · Via run objects</text>
-<text x="24" y="900" >Columnar store: deduplicate clients +</text>
+<text x="24" y="778" class="small">bit-packed · Direct tree construction</text>
+<text x="24" y="818" >F03 — Tuple records: negative count means</text>
+<text x="24" y="838" >deleted</text>
+<text x="24" y="860" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="900" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="920" >reconstruct counters</text>
-<text x="24" y="942" class="small">protobuf · Via run objects</text>
-<text x="24" y="982" >Columnar store: reconstruct counters</text>
-<text x="24" y="1024" class="small">JSON · Via run objects</text>
-<text x="24" y="1064" >Object records: negative count means</text>
+<text x="24" y="942" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="982" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="1024" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1064" >F02 — Object records: negative count means</text>
 <text x="24" y="1084" >deleted</text>
-<text x="24" y="1106" class="small">JSON · Via run objects</text>
-<text x="24" y="1146" >Columnar store: all counters</text>
-<text x="24" y="1188" class="small">protobuf · Via run objects</text>
-<text x="24" y="1228" >Object records: deletion flag</text>
-<text x="24" y="1270" class="small">JSON · Via run objects</text>
-<text x="24" y="1310" >Columnar store: deduplicate clients +</text>
+<text x="24" y="1106" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1146" >F04 — Columnar store: all counters</text>
+<text x="24" y="1188" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="1228" >F01 — Object records: deletion flag</text>
+<text x="24" y="1270" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1310" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="1330" >reconstruct counters</text>
-<text x="24" y="1352" class="small">protobuf · Direct to tree</text>
-<text x="24" y="1392" >Columnar store: deduplicate clients +</text>
+<text x="24" y="1352" class="small">protobuf · Direct tree construction</text>
+<text x="24" y="1392" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="1412" >reconstruct counters</text>
-<text x="24" y="1434" class="small">JSON · Direct to tree</text>
-<text x="24" y="1474" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1434" class="small">JSON · Direct tree construction</text>
+<text x="24" y="1474" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="1494" >counters</text>
-<text x="24" y="1516" class="small">uint32/int32 · Via run objects</text>
-<text x="24" y="1556" >Columnar store: deduplicate IDs +</text>
+<text x="24" y="1516" class="small">uint32/int32 · Via IdList.load()</text>
+<text x="24" y="1556" >F07 — Columnar store: deduplicate IDs +</text>
 <text x="24" y="1576" >reconstruct counters</text>
-<text x="24" y="1598" class="small">JSON · Via run objects</text>
-<text x="24" y="1638" >Columnar store: deduplicate IDs +</text>
+<text x="24" y="1598" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1638" >F07 — Columnar store: deduplicate IDs +</text>
 <text x="24" y="1658" >reconstruct counters</text>
-<text x="24" y="1680" class="small">protobuf · Via run objects</text>
-<text x="24" y="1720" >Tuple records: negative count means deleted</text>
-<text x="24" y="1762" class="small">BSON · Via run objects</text>
-<text x="24" y="1802" >Columnar store: reconstruct counters</text>
-<text x="24" y="1844" class="small">protobuf · Via run objects</text>
-<text x="24" y="1884" >Columnar store: split IDs + reconstruct</text>
-<text x="24" y="1904" >counters</text>
-<text x="24" y="1926" class="small">protobuf · Via run objects</text>
-<text x="24" y="1966" >Object records: deletion flag</text>
-<text x="24" y="2008" class="small">BSON · Via run objects</text>
-<text x="24" y="2048" >Object records: negative count means</text>
+<text x="24" y="1680" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="1720" >F03 — Tuple records: negative count means</text>
+<text x="24" y="1740" >deleted</text>
+<text x="24" y="1762" class="small">BSON · Via IdList.load()</text>
+<text x="24" y="1802" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="1844" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="1884" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="1904" >reconstruct counters</text>
+<text x="24" y="1926" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="1966" >F01 — Object records: deletion flag</text>
+<text x="24" y="2008" class="small">BSON · Via IdList.load()</text>
+<text x="24" y="2048" >F02 — Object records: negative count means</text>
 <text x="24" y="2068" >deleted</text>
-<text x="24" y="2090" class="small">BSON · Via run objects</text>
+<text x="24" y="2090" class="small">BSON · Via IdList.load()</text>
 <text x="24" y="2174" class="small">To internal tree = conversion + tree construction, excluding decode/render. GC: separate pass. P95 from 100 samples; empirical estimate.</text>
 </svg>

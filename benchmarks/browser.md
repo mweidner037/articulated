@@ -8,33 +8,37 @@ Measured 2026-10-20 (America/New_York) in Chromium 151.0.7922.34 on Apple M5 Pro
 
 These names describe the **interchange** representation. A columnar store is one object containing arrays, not a different Mongo storage engine. All non-baseline options encode deletion as a negative count: -2 means two deleted IDs. That is what the old word ‘signed’ meant.
 
-- **Object records: deletion flag:** One object per run, with separate count and isDeleted fields. [Stored example](#format-objects).
-- **Object records: negative count means deleted:** One object per run. Replace the separate deletion flag with a negative count for deleted IDs: count: -2 means two deleted IDs. [Stored example](#format-signed).
-- **Tuple records: negative count means deleted:** One three-element array per run: [bunchId, startCounter, count]. Negative count means deleted. This measured variant is a triple, not a four-tuple. [Stored example](#format-tuples).
-- **Columnar store: all counters:** Separate arrays for bunchIds, startCounters, and counts. Each position describes one run. Negative counts mean deleted; IDs repeat in the bunchIds column. [Stored example](#format-columns).
-- **Columnar store: reconstruct counters:** The same columns, but infer each start counter from the previous run for that ID (or zero for its first run). Store only exceptions and their delta-encoded run indexes. No data is discarded. [Stored example](#format-omit).
-- **Columnar store: split IDs + reconstruct counters:** Reconstruct counters as above; additionally split each structured clientId_sequence ID into clientIds and seqNums columns. Client strings still repeat. This is not valid for arbitrary opaque nanoids. [Stored example](#format-split).
-- **Columnar store: deduplicate IDs + reconstruct counters:** Reconstruct counters and store each distinct whole ID once in bunchIds. A bunchIndices column refers to that list; this does not split or change the IDs. [Stored example](#format-dictionary).
-- **Columnar store: deduplicate clients + reconstruct counters:** Split structured clientId_sequence IDs, store each distinct client string once, and use clientIndices plus seqNums for each run. Reconstruct counters. Requires structured IDs, not arbitrary opaque nanoids. [Stored example](#format-client).
-- **Columnar store: deduplicate IDs + all counters:** Store each distinct whole ID once in bunchIds, use bunchIndices per run, and store every start counter. IDs remain intact. Counts are negative for deleted runs. [Stored example](#format-full).
+Format IDs F01–F09 are stable identifiers, not ranks. The same ID is used across charts, recommendations, JSON/binary encodings, and loader paths. Expand a format below the recommendations to see its complete JSON.
 
-**Loader labels:** ‘Via run objects’ first reconstructs the library’s saved run objects and then loads its tree. ‘Direct to tree’ feeds the decoded fields straight into tree construction, skipping that intermediate array. Neither means a different internal representation.
+- [F01 — Object records: deletion flag](#f01).
+- [F02 — Object records: negative count means deleted](#f02).
+- [F03 — Tuple records: negative count means deleted](#f03).
+- [F04 — Columnar store: all counters](#f04).
+- [F05 — Columnar store: reconstruct counters](#f05).
+- [F06 — Columnar store: split IDs + reconstruct counters](#f06).
+- [F07 — Columnar store: deduplicate IDs + reconstruct counters](#f07).
+- [F08 — Columnar store: deduplicate clients + reconstruct counters](#f08).
+- [F09 — Columnar store: deduplicate IDs + all counters](#f09).
 
-### What the columnar names change: one small example
+**Conversion paths:** ‘Via IdList.load()’ means wire format → the run objects that IdList.load expects → the internal tree. For F01 those run objects are already the decoded shape. ‘Direct tree construction’ feeds decoded fields straight into the same tree, skipping that intermediate array. Neither changes the internal format.
 
-Two runs of the same ID: three live entries starting at 0, then two deleted entries starting at 3. These illustrative rows are not the benchmark workload. The second start can be reconstructed as 0 + 3; storing an ID once is a separate choice from reconstructing counters.
+## Three recommendations
 
-**Columnar store: all counters**
+1. **Mongo storage first: F05 — Columnar store: reconstruct counters.** This is the smallest ordinary-field option with Snappy: 155.8 versus 180.5 KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.
 
-```json
-{
-  "bunchIds": ["writer_0", "writer_0"],
-  "startCounters": [0, 3],
-  "counts": [3, -2]
-}
-```
+2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** F05 — Columnar store: reconstruct counters retains 6.5 MB versus 7.3 MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.
 
-**Columnar store: reconstruct counters**
+3. **Browser speed first: investigate F09 — Columnar store: deduplicate IDs + all counters, through the existing loader.** It has the lowest observed 4-document complete-ready P95 among JSON interchange options: 53.6 versus 58.3 ms for the baseline. Conversion-to-tree P95 is 19.0 versus 18.2 ms. Its Snappy storage is 245.9 versus 180.5 KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough, and native columnar editing remains untested.
+
+None of these results justifies changing independent opaque 8-character nanoids into structured IDs. The split-ID/client-sharing options require Matthew’s client/sequence structure; those measurements are not evidence for opaque nanoids. Binary stays an optional later optimization.
+
+### F05 versus F09: two different things to save
+
+Both are columnar stores. **F05 saves predictable start counters, but repeats the ID for every run. F09 saves repeated ID strings, but stores every start counter.** Neither changes the internal IdList tree. These are independent choices: F07 combines deduplicated IDs with reconstructed counters.
+
+For two runs of writer_0—three live entries starting at 0, then two deleted entries starting at 3—the same data looks like this. These tiny examples illustrate the layouts; they are not the measured workload.
+
+**F05 — Columnar store: reconstruct counters**
 
 ```json
 {
@@ -45,7 +49,7 @@ Two runs of the same ID: three live entries starting at 0, then two deleted entr
 }
 ```
 
-**Columnar store: deduplicate IDs + all counters**
+**F09 — Columnar store: deduplicate IDs + all counters**
 
 ```json
 {
@@ -56,15 +60,212 @@ Two runs of the same ID: three live entries starting at 0, then two deleted entr
 }
 ```
 
-## Three recommendations
+### Expand each format: the same data in nine layouts
 
-1. **Mongo storage first: Columnar store: reconstruct counters.** This is the smallest ordinary-field option with Snappy: 155.8 versus 180.5 KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.
+All nine examples below contain the same four runs: alice_0 has three live entries, bob_0 has one live entry, alice_1 has two live entries, then alice_0 has two deleted entries starting at counter 3. Structured IDs here make F06/F08 meaningful; they do not imply changing opaque nanoids. These JSON objects/arrays are also the ordinary Mongo field values, not JSON strings.
 
-2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** Columnar store: reconstruct counters retains 6.5 MB versus 7.3 MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.
+<a id="f01"></a>
+<details><summary>F01 — Object records: deletion flag — expand JSON</summary>
 
-3. **Browser speed first: investigate Columnar store: deduplicate IDs + all counters, through the existing loader.** It has the lowest observed 4-document complete-ready P95 among JSON interchange options: 53.6 versus 58.3 ms for the baseline. Conversion-to-tree P95 is 19.0 versus 18.2 ms. Its Snappy storage is 245.9 versus 180.5 KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough, and native columnar editing remains untested.
+One object per run, with separate count and isDeleted fields.
 
-None of these results justifies changing independent opaque 8-character nanoids into structured IDs. The split-ID/client-sharing options require Matthew’s client/sequence structure; those measurements are not evidence for opaque nanoids. Binary stays an optional later optimization.
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+[
+  {
+    "bunchId": "alice_0",
+    "startCounter": 0,
+    "count": 3,
+    "isDeleted": false
+  },
+  {
+    "bunchId": "bob_0",
+    "startCounter": 0,
+    "count": 1,
+    "isDeleted": false
+  },
+  {
+    "bunchId": "alice_1",
+    "startCounter": 0,
+    "count": 2,
+    "isDeleted": false
+  },
+  {
+    "bunchId": "alice_0",
+    "startCounter": 3,
+    "count": 2,
+    "isDeleted": true
+  }
+]
+```
+
+</details>
+
+<a id="f02"></a>
+<details><summary>F02 — Object records: negative count means deleted — expand JSON</summary>
+
+One object per run. Replace the separate deletion flag with a negative count for deleted IDs: count: -2 means two deleted IDs.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+[
+  {
+    "bunchId": "alice_0",
+    "startCounter": 0,
+    "count": 3
+  },
+  {
+    "bunchId": "bob_0",
+    "startCounter": 0,
+    "count": 1
+  },
+  {
+    "bunchId": "alice_1",
+    "startCounter": 0,
+    "count": 2
+  },
+  {
+    "bunchId": "alice_0",
+    "startCounter": 3,
+    "count": -2
+  }
+]
+```
+
+</details>
+
+<a id="f03"></a>
+<details><summary>F03 — Tuple records: negative count means deleted — expand JSON</summary>
+
+One three-element array per run: [bunchId, startCounter, count]. Negative count means deleted. This measured variant is a triple, not a four-tuple.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+[
+  ["alice_0", 0, 3],
+  ["bob_0", 0, 1],
+  ["alice_1", 0, 2],
+  ["alice_0", 3, -2]
+]
+```
+
+</details>
+
+<a id="f04"></a>
+<details><summary>F04 — Columnar store: all counters — expand JSON</summary>
+
+Separate arrays for bunchIds, startCounters, and counts. Each position describes one run. Negative counts mean deleted; IDs repeat in the bunchIds column.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "bunchIds": ["alice_0", "bob_0", "alice_1", "alice_0"],
+  "startCounters": [0, 0, 0, 3],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+</details>
+
+<a id="f05"></a>
+<details><summary>F05 — Columnar store: reconstruct counters — expand JSON</summary>
+
+The same columns, but infer each start counter from the previous run for that ID (or zero for its first run). Store only exceptions and their delta-encoded run indexes. No data is discarded.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "bunchIds": ["alice_0", "bob_0", "alice_1", "alice_0"],
+  "startCounterIndexes": [],
+  "startCounters": [],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+Here startCounters and startCounterIndexes are empty because every start is predictable. If alice_0 resumed at counter 8 instead of 3, this example would store startCounterIndexes: [3] and startCounters: [8]; the 3 locates the fourth run (zero-based). The other starts are still reconstructed.
+
+</details>
+
+<a id="f06"></a>
+<details><summary>F06 — Columnar store: split IDs + reconstruct counters — expand JSON</summary>
+
+Reconstruct counters as above; additionally split each structured clientId_sequence ID into clientIds and seqNums columns. Client strings still repeat. This is not valid for arbitrary opaque nanoids.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "clientIds": ["alice", "bob", "alice", "alice"],
+  "seqNums": [0, 0, 1, 0],
+  "startCounterIndexes": [],
+  "startCounters": [],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+</details>
+
+<a id="f07"></a>
+<details><summary>F07 — Columnar store: deduplicate IDs + reconstruct counters — expand JSON</summary>
+
+Reconstruct counters and store each distinct whole ID once in bunchIds. A bunchIndices column refers to that list; this does not split or change the IDs.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "bunchIds": ["alice_0", "bob_0", "alice_1"],
+  "bunchIndices": [0, 1, 2, 0],
+  "startCounterIndexes": [],
+  "startCounters": [],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+</details>
+
+<a id="f08"></a>
+<details><summary>F08 — Columnar store: deduplicate clients + reconstruct counters — expand JSON</summary>
+
+Split structured clientId_sequence IDs, store each distinct client string once, and use clientIndices plus seqNums for each run. Reconstruct counters. Requires structured IDs, not arbitrary opaque nanoids.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "clientIds": ["alice", "bob"],
+  "clientIndices": [0, 1, 0, 0],
+  "seqNums": [0, 0, 1, 0],
+  "startCounterIndexes": [],
+  "startCounters": [],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+</details>
+
+<a id="f09"></a>
+<details><summary>F09 — Columnar store: deduplicate IDs + all counters — expand JSON</summary>
+
+Store each distinct whole ID once in bunchIds, use bunchIndices per run, and store every start counter. IDs remain intact. Counts are negative for deleted runs.
+
+Interchange format shown below; internal format after load: **existing IdList tree**.
+
+```json
+{
+  "bunchIds": ["alice_0", "bob_0", "alice_1"],
+  "bunchIndices": [0, 1, 2, 0],
+  "startCounters": [0, 0, 0, 3],
+  "counts": [3, 1, 2, -2]
+}
+```
+
+</details>
 
 ## Time spent converting to the internal format
 
@@ -78,7 +279,7 @@ The speed chart shows conversion-to-tree P95 alongside complete-ready P95. Expan
 
 All 24 options were rerun, not just the suspicious row: 5 fresh-context rounds × 20 loads = 100 samples per option/workload (previously 18). The loading implementation and timer boundaries are unchanged; only labels, metadata and sample count changed. Previous samples and all traces are [preserved](results/browser/previous/browser.json). No samples were filtered from either run. Mongo was not rerun: its unchanged measurements are separate from browser timing.
 
-**Object records: negative count means deleted, 4 documents:** previous complete-ready P50 / P95 / maximum: **49.8 / 282.5 / 282.5 ms**. Rerun: **50.0 / 58.5 / 66.8 ms**. Conversion-to-tree P95: **235.5 → 19.2 ms**. Loads over 200 ms: **1/18 → 0/100**.
+**F02 — Object records: negative count means deleted, 4 documents:** previous complete-ready P50 / P95 / maximum: **49.8 / 282.5 / 282.5 ms**. Rerun: **50.0 / 58.5 / 66.8 ms**. Conversion-to-tree P95: **235.5 → 19.2 ms**. Loads over 200 ms: **1/18 → 0/100**.
 
 The original P95 was the maximum of 18 samples; the new P95 is observation 95 of 100. These are different tail estimators in practice; a lower new P95 does not prove the original stall was invalid. Its cause remains unknown. The old result is superseded for comparison, not erased. The rerun retains 0 loads exceeding three times their row median. Fresh-context round results and all raw samples remain available; none of this establishes a stable production ranking.
 
@@ -102,17 +303,17 @@ Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint prot
 
 <details><summary>Show numeric results (9 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | -------- | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via run objects |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
-| Columnar store: all counters                               | Existing IdList tree | JSON     | Via run objects |          46.8 |         49.1 |         58.2 |             59.4 |           1.8 |            16.2 |           15.8 |           22.7 |         58.3 |              2.3 / 1.6 |             16.7 |     7.3 |                   53.8 |              17.7 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON     | Via run objects |          46.8 |         42.6 |         58.3 |             70.2 |           1.0 |            16.5 |           15.5 |           21.9 |         58.5 |              2.2 / 1.6 |             13.5 |     6.9 |                   53.6 |              17.4 |
-| Object records: deletion flag                              | Existing IdList tree | JSON     | Via run objects |          50.0 |         49.9 |         58.3 |             69.7 |           4.7 |            15.9 |           15.5 |           18.2 |         60.0 |              2.1 / 1.5 |             15.2 |     7.3 |                   54.1 |              17.6 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | JSON     | Via run objects |          50.6 |         50.0 |         58.3 |             70.1 |           1.1 |            19.3 |           18.7 |           21.4 |         61.6 |              2.2 / 1.4 |             15.6 |     6.5 |                   55.6 |              17.2 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON     | Via run objects |          51.0 |         50.0 |         58.3 |             59.3 |           1.3 |            19.5 |           19.1 |           22.2 |         60.0 |              2.2 / 1.5 |             15.3 |     6.5 |                   57.4 |              17.5 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via run objects |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
-| Object records: negative count means deleted               | Existing IdList tree | JSON     | Via run objects |          50.8 |         50.0 |         58.5 |             66.8 |           3.8 |            16.5 |           16.0 |           19.2 |         61.7 |              2.6 / 1.4 |             21.7 |     7.3 |                   57.7 |              17.7 |
-| Tuple records: negative count means deleted                | Existing IdList tree | JSON     | Via run objects |          49.5 |         49.9 |         59.2 |             79.6 |           2.1 |            17.1 |           16.1 |           22.8 |         61.8 |              2.2 / 1.4 |             12.9 |     7.3 |                   58.5 |              17.7 |
+| Interchange format                                               | Internal format      | Encoding | Conversion path   | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | -------- | ----------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via IdList.load() |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | JSON     | Via IdList.load() |          46.8 |         49.1 |         58.2 |             59.4 |           1.8 |            16.2 |           15.8 |           22.7 |         58.3 |              2.3 / 1.6 |             16.7 |     7.3 |                   53.8 |              17.7 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON     | Via IdList.load() |          46.8 |         42.6 |         58.3 |             70.2 |           1.0 |            16.5 |           15.5 |           21.9 |         58.5 |              2.2 / 1.6 |             13.5 |     6.9 |                   53.6 |              17.4 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | JSON     | Via IdList.load() |          50.0 |         49.9 |         58.3 |             69.7 |           4.7 |            15.9 |           15.5 |           18.2 |         60.0 |              2.1 / 1.5 |             15.2 |     7.3 |                   54.1 |              17.6 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | JSON     | Via IdList.load() |          50.6 |         50.0 |         58.3 |             70.1 |           1.1 |            19.3 |           18.7 |           21.4 |         61.6 |              2.2 / 1.4 |             15.6 |     6.5 |                   55.6 |              17.2 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON     | Via IdList.load() |          51.0 |         50.0 |         58.3 |             59.3 |           1.3 |            19.5 |           19.1 |           22.2 |         60.0 |              2.2 / 1.5 |             15.3 |     6.5 |                   57.4 |              17.5 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via IdList.load() |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | JSON     | Via IdList.load() |          50.8 |         50.0 |         58.5 |             66.8 |           3.8 |            16.5 |           16.0 |           19.2 |         61.7 |              2.6 / 1.4 |             21.7 |     7.3 |                   57.7 |              17.7 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | JSON     | Via IdList.load() |          49.5 |         49.9 |         59.2 |             79.6 |           2.1 |            17.1 |           16.1 |           22.8 |         61.8 |              2.2 / 1.4 |             12.9 |     7.3 |                   58.5 |              17.7 |
 
 </details>
 
@@ -124,17 +325,17 @@ Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint prot
 
 <details><summary>Show numeric results (9 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | -------- | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via run objects |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         17.0 |             22.6 |           0.4 |             5.6 |            5.6 |            6.5 |         26.7 |              0.9 / 1.2 |              4.8 |     1.6 |                   14.7 |              17.8 |
-| Columnar store: all counters                               | Existing IdList tree | JSON     | Via run objects |          16.7 |         16.6 |         17.1 |             25.0 |           0.5 |             4.8 |            4.6 |            5.8 |         25.0 |              0.9 / 1.1 |              4.1 |     1.7 |                   14.4 |              17.6 |
-| Tuple records: negative count means deleted                | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         17.5 |             22.2 |           0.6 |             4.7 |            4.6 |            6.0 |         24.4 |              1.1 / 1.1 |              5.7 |     1.7 |                   15.8 |              17.2 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | JSON     | Via run objects |          16.7 |         16.6 |         17.6 |             22.5 |           0.4 |             5.5 |            5.5 |            6.3 |         25.0 |              0.9 / 1.1 |              5.1 |     1.6 |                   14.0 |              17.7 |
-| Object records: negative count means deleted               | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         17.6 |             22.3 |           1.1 |             4.8 |            4.7 |            5.8 |         25.0 |              1.0 / 1.3 |              7.2 |     1.7 |                   14.7 |              17.6 |
-| Object records: deletion flag                              | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         17.9 |             21.6 |           1.2 |             4.6 |            4.6 |            5.6 |         24.7 |              0.8 / 1.1 |              6.8 |     1.7 |                   14.1 |              17.7 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         20.6 |             24.9 |           0.3 |             4.8 |            4.7 |            5.9 |         24.6 |              0.9 / 1.3 |              5.3 |     1.6 |                   14.1 |              17.6 |
+| Interchange format                                               | Internal format      | Encoding | Conversion path   | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | -------- | ----------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via IdList.load() |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         17.0 |             22.6 |           0.4 |             5.6 |            5.6 |            6.5 |         26.7 |              0.9 / 1.2 |              4.8 |     1.6 |                   14.7 |              17.8 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | JSON     | Via IdList.load() |          16.7 |         16.6 |         17.1 |             25.0 |           0.5 |             4.8 |            4.6 |            5.8 |         25.0 |              0.9 / 1.1 |              4.1 |     1.7 |                   14.4 |              17.6 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         17.5 |             22.2 |           0.6 |             4.7 |            4.6 |            6.0 |         24.4 |              1.1 / 1.1 |              5.7 |     1.7 |                   15.8 |              17.2 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | JSON     | Via IdList.load() |          16.7 |         16.6 |         17.6 |             22.5 |           0.4 |             5.5 |            5.5 |            6.3 |         25.0 |              0.9 / 1.1 |              5.1 |     1.6 |                   14.0 |              17.7 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         17.6 |             22.3 |           1.1 |             4.8 |            4.7 |            5.8 |         25.0 |              1.0 / 1.3 |              7.2 |     1.7 |                   14.7 |              17.6 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         17.9 |             21.6 |           1.2 |             4.6 |            4.6 |            5.6 |         24.7 |              0.8 / 1.1 |              6.8 |     1.7 |                   14.1 |              17.7 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON     | Via IdList.load() |          16.8 |         16.6 |         20.6 |             24.9 |           0.3 |             4.8 |            4.7 |            5.9 |         24.6 |              0.9 / 1.3 |              5.3 |     1.6 |                   14.1 |              17.6 |
 
 </details>
 
@@ -150,12 +351,12 @@ Same JSON structures, with and without an intermediate object-run array. This is
 
 <details><summary>Show numeric results (4 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | -------- | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Direct to tree  |          43.7 |         41.7 |         50.0 |             51.4 |           1.2 |            14.2 |           14.0 |           16.0 |         58.5 |              2.3 / 1.5 |             11.2 |     6.9 |                   51.9 |              17.7 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Direct to tree  |          48.3 |         49.9 |         51.9 |             58.4 |           0.9 |            18.3 |           18.0 |           20.8 |         59.9 |              2.1 / 1.3 |              9.2 |     6.5 |                   53.5 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via run objects |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via run objects |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
+| Interchange format                                               | Internal format      | Encoding | Conversion path          | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | -------- | ------------------------ | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Direct tree construction |          43.7 |         41.7 |         50.0 |             51.4 |           1.2 |            14.2 |           14.0 |           16.0 |         58.5 |              2.3 / 1.5 |             11.2 |     6.9 |                   51.9 |              17.7 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Direct tree construction |          48.3 |         49.9 |         51.9 |             58.4 |           0.9 |            18.3 |           18.0 |           20.8 |         59.9 |              2.1 / 1.3 |              9.2 |     6.5 |                   53.5 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via IdList.load()        |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via IdList.load()        |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
 
 </details>
 
@@ -167,12 +368,12 @@ Same JSON structures, with and without an intermediate object-run array. This is
 
 <details><summary>Show numeric results (4 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | -------- | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Direct to tree  |          16.5 |         16.6 |         16.7 |             24.6 |           0.4 |             4.6 |            4.4 |            5.6 |         24.6 |              0.8 / 0.7 |              5.6 |     1.6 |                   12.5 |              17.6 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via run objects |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via run objects |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Direct to tree  |          16.8 |         16.6 |         18.4 |             24.9 |           0.3 |             5.3 |            5.2 |            6.4 |         25.2 |              0.9 / 1.3 |              4.9 |     1.6 |                   13.5 |              17.7 |
+| Interchange format                                               | Internal format      | Encoding | Conversion path          | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | -------- | ------------------------ | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Direct tree construction |          16.5 |         16.6 |         16.7 |             24.6 |           0.4 |             4.6 |            4.4 |            5.6 |         24.6 |              0.8 / 0.7 |              5.6 |     1.6 |                   12.5 |              17.6 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Via IdList.load()        |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON     | Via IdList.load()        |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON     | Direct tree construction |          16.8 |         16.6 |         18.4 |             24.9 |           0.3 |             5.3 |            5.2 |            6.4 |         25.2 |              0.9 / 1.3 |              4.9 |     1.6 |                   13.5 |              17.7 |
 
 </details>
 
@@ -190,32 +391,32 @@ Only after choosing a logical structure: compare its JSON row against its binary
 
 <details><summary>Show numeric results (24 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding     | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | ------------ | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Direct to tree  |          43.7 |         41.7 |         50.0 |             51.4 |           1.2 |            14.2 |           14.0 |           16.0 |         58.5 |              2.3 / 1.5 |             11.2 |     6.9 |                   51.9 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Direct to tree  |          44.8 |         41.7 |         50.1 |             58.2 |           1.8 |            15.0 |           14.7 |           16.7 |         61.9 |              2.2 / 1.7 |             14.0 |     6.9 |                   52.2 |              17.6 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Direct to tree  |          45.1 |         42.1 |         50.5 |             59.1 |           1.9 |            14.9 |           14.7 |           16.4 |         63.2 |              2.3 / 1.4 |             14.3 |     6.9 |                   53.2 |              17.7 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Direct to tree  |          48.3 |         49.9 |         51.9 |             58.4 |           0.9 |            18.3 |           18.0 |           20.8 |         59.9 |              2.1 / 1.3 |              9.2 |     6.5 |                   53.5 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Via run objects |          45.8 |         42.5 |         52.1 |             58.4 |           1.9 |            16.1 |           15.9 |           19.5 |         65.1 |              2.4 / 1.3 |             14.5 |     6.9 |                   57.4 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Via run objects |          46.3 |         48.9 |         52.5 |             58.4 |           2.0 |            16.0 |           15.7 |           19.3 |         62.0 |              2.4 / 1.4 |             14.7 |     6.9 |                   56.2 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Via run objects |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Direct to tree  |          49.0 |         50.0 |         57.9 |             59.8 |           1.0 |            18.5 |           18.3 |           20.4 |         61.6 |              2.2 / 1.2 |             14.6 |     6.5 |                   57.1 |              17.3 |
-| Columnar store: all counters                               | Existing IdList tree | JSON         | Via run objects |          46.8 |         49.1 |         58.2 |             59.4 |           1.8 |            16.2 |           15.8 |           22.7 |         58.3 |              2.3 / 1.6 |             16.7 |     7.3 |                   53.8 |              17.7 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON         | Via run objects |          46.8 |         42.6 |         58.3 |             70.2 |           1.0 |            16.5 |           15.5 |           21.9 |         58.5 |              2.2 / 1.6 |             13.5 |     6.9 |                   53.6 |              17.4 |
-| Object records: deletion flag                              | Existing IdList tree | JSON         | Via run objects |          50.0 |         49.9 |         58.3 |             69.7 |           4.7 |            15.9 |           15.5 |           18.2 |         60.0 |              2.1 / 1.5 |             15.2 |     7.3 |                   54.1 |              17.6 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | protobuf     | Via run objects |          47.9 |         49.0 |         58.3 |             83.9 |           2.8 |            17.1 |           16.0 |           22.7 |         58.7 |              2.6 / 1.5 |             15.3 |     6.9 |                   58.4 |              17.7 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | JSON         | Via run objects |          50.6 |         50.0 |         58.3 |             70.1 |           1.1 |            19.3 |           18.7 |           21.4 |         61.6 |              2.2 / 1.4 |             15.6 |     6.5 |                   55.6 |              17.2 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON         | Via run objects |          51.0 |         50.0 |         58.3 |             59.3 |           1.3 |            19.5 |           19.1 |           22.2 |         60.0 |              2.2 / 1.5 |             15.3 |     6.5 |                   57.4 |              17.5 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Via run objects |          51.0 |         50.0 |         58.4 |             76.4 |           1.7 |            19.9 |           19.3 |           22.4 |         64.9 |              2.6 / 1.4 |             15.1 |     6.5 |                   58.5 |              17.7 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | protobuf     | Via run objects |          51.8 |         49.9 |         58.4 |             76.8 |           3.2 |            19.8 |           18.8 |           22.6 |         66.4 |              2.4 / 1.4 |             12.8 |     6.5 |                   61.0 |              17.7 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Via run objects |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
-| Object records: negative count means deleted               | Existing IdList tree | JSON         | Via run objects |          50.8 |         50.0 |         58.5 |             66.8 |           3.8 |            16.5 |           16.0 |           19.2 |         61.7 |              2.6 / 1.4 |             21.7 |     7.3 |                   57.7 |              17.7 |
-| Tuple records: negative count means deleted                | Existing IdList tree | BSON         | Via run objects |          51.8 |         50.0 |         58.5 |             75.4 |           6.3 |            16.2 |           15.1 |           21.2 |         66.7 |              3.3 / 2.0 |             17.8 |     7.3 |                   68.9 |              17.6 |
-| Tuple records: negative count means deleted                | Existing IdList tree | JSON         | Via run objects |          49.5 |         49.9 |         59.2 |             79.6 |           2.1 |            17.1 |           16.1 |           22.8 |         61.8 |              2.2 / 1.4 |             12.9 |     7.3 |                   58.5 |              17.7 |
-| Columnar store: all counters                               | Existing IdList tree | protobuf     | Via run objects |          50.4 |         49.9 |         66.7 |             85.7 |           5.7 |            17.5 |           16.6 |           25.1 |         64.7 |              2.5 / 1.5 |             14.6 |     7.4 |                   60.9 |              17.6 |
-| Object records: negative count means deleted               | Existing IdList tree | BSON         | Via run objects |          57.8 |         58.3 |         66.7 |             75.0 |          10.1 |            18.8 |           18.4 |           23.5 |         73.9 |              3.4 / 2.0 |             21.2 |     7.3 |                   79.7 |              17.6 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | protobuf     | Via run objects |          52.0 |         50.0 |         66.7 |             84.1 |           2.7 |            20.1 |           19.3 |           26.8 |         66.4 |              2.3 / 1.6 |             13.8 |     6.5 |                   62.2 |              17.6 |
-| Object records: deletion flag                              | Existing IdList tree | BSON         | Via run objects |          60.1 |         58.3 |         68.8 |             76.0 |          13.3 |            19.2 |           18.9 |           21.7 |         74.9 |              3.2 / 1.8 |             17.1 |     7.3 |                   85.2 |              17.6 |
+| Interchange format                                               | Internal format      | Encoding     | Conversion path          | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | ------------ | ------------------------ | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Direct tree construction |          43.7 |         41.7 |         50.0 |             51.4 |           1.2 |            14.2 |           14.0 |           16.0 |         58.5 |              2.3 / 1.5 |             11.2 |     6.9 |                   51.9 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Direct tree construction |          44.8 |         41.7 |         50.1 |             58.2 |           1.8 |            15.0 |           14.7 |           16.7 |         61.9 |              2.2 / 1.7 |             14.0 |     6.9 |                   52.2 |              17.6 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Direct tree construction |          45.1 |         42.1 |         50.5 |             59.1 |           1.9 |            14.9 |           14.7 |           16.4 |         63.2 |              2.3 / 1.4 |             14.3 |     6.9 |                   53.2 |              17.7 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Direct tree construction |          48.3 |         49.9 |         51.9 |             58.4 |           0.9 |            18.3 |           18.0 |           20.8 |         59.9 |              2.1 / 1.3 |              9.2 |     6.5 |                   53.5 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Via IdList.load()        |          45.8 |         42.5 |         52.1 |             58.4 |           1.9 |            16.1 |           15.9 |           19.5 |         65.1 |              2.4 / 1.3 |             14.5 |     6.9 |                   57.4 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Via IdList.load()        |          46.3 |         48.9 |         52.5 |             58.4 |           2.0 |            16.0 |           15.7 |           19.3 |         62.0 |              2.4 / 1.4 |             14.7 |     6.9 |                   56.2 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Via IdList.load()        |          46.7 |         49.4 |         53.6 |             58.9 |           1.3 |            16.0 |           15.7 |           19.0 |         60.2 |              2.5 / 1.7 |             16.2 |     6.9 |                   54.8 |              17.4 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Direct tree construction |          49.0 |         50.0 |         57.9 |             59.8 |           1.0 |            18.5 |           18.3 |           20.4 |         61.6 |              2.2 / 1.2 |             14.6 |     6.5 |                   57.1 |              17.3 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | JSON         | Via IdList.load()        |          46.8 |         49.1 |         58.2 |             59.4 |           1.8 |            16.2 |           15.8 |           22.7 |         58.3 |              2.3 / 1.6 |             16.7 |     7.3 |                   53.8 |              17.7 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON         | Via IdList.load()        |          46.8 |         42.6 |         58.3 |             70.2 |           1.0 |            16.5 |           15.5 |           21.9 |         58.5 |              2.2 / 1.6 |             13.5 |     6.9 |                   53.6 |              17.4 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | JSON         | Via IdList.load()        |          50.0 |         49.9 |         58.3 |             69.7 |           4.7 |            15.9 |           15.5 |           18.2 |         60.0 |              2.1 / 1.5 |             15.2 |     7.3 |                   54.1 |              17.6 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | protobuf     | Via IdList.load()        |          47.9 |         49.0 |         58.3 |             83.9 |           2.8 |            17.1 |           16.0 |           22.7 |         58.7 |              2.6 / 1.5 |             15.3 |     6.9 |                   58.4 |              17.7 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | JSON         | Via IdList.load()        |          50.6 |         50.0 |         58.3 |             70.1 |           1.1 |            19.3 |           18.7 |           21.4 |         61.6 |              2.2 / 1.4 |             15.6 |     6.5 |                   55.6 |              17.2 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON         | Via IdList.load()        |          51.0 |         50.0 |         58.3 |             59.3 |           1.3 |            19.5 |           19.1 |           22.2 |         60.0 |              2.2 / 1.5 |             15.3 |     6.5 |                   57.4 |              17.5 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Via IdList.load()        |          51.0 |         50.0 |         58.4 |             76.4 |           1.7 |            19.9 |           19.3 |           22.4 |         64.9 |              2.6 / 1.4 |             15.1 |     6.5 |                   58.5 |              17.7 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | protobuf     | Via IdList.load()        |          51.8 |         49.9 |         58.4 |             76.8 |           3.2 |            19.8 |           18.8 |           22.6 |         66.4 |              2.4 / 1.4 |             12.8 |     6.5 |                   61.0 |              17.7 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Via IdList.load()        |          51.1 |         49.9 |         58.5 |             61.1 |           0.9 |            19.9 |           19.5 |           23.2 |         65.0 |              2.4 / 1.6 |             10.5 |     6.5 |                   56.7 |              17.9 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | JSON         | Via IdList.load()        |          50.8 |         50.0 |         58.5 |             66.8 |           3.8 |            16.5 |           16.0 |           19.2 |         61.7 |              2.6 / 1.4 |             21.7 |     7.3 |                   57.7 |              17.7 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | BSON         | Via IdList.load()        |          51.8 |         50.0 |         58.5 |             75.4 |           6.3 |            16.2 |           15.1 |           21.2 |         66.7 |              3.3 / 2.0 |             17.8 |     7.3 |                   68.9 |              17.6 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | JSON         | Via IdList.load()        |          49.5 |         49.9 |         59.2 |             79.6 |           2.1 |            17.1 |           16.1 |           22.8 |         61.8 |              2.2 / 1.4 |             12.9 |     7.3 |                   58.5 |              17.7 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | protobuf     | Via IdList.load()        |          50.4 |         49.9 |         66.7 |             85.7 |           5.7 |            17.5 |           16.6 |           25.1 |         64.7 |              2.5 / 1.5 |             14.6 |     7.4 |                   60.9 |              17.6 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | BSON         | Via IdList.load()        |          57.8 |         58.3 |         66.7 |             75.0 |          10.1 |            18.8 |           18.4 |           23.5 |         73.9 |              3.4 / 2.0 |             21.2 |     7.3 |                   79.7 |              17.6 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | protobuf     | Via IdList.load()        |          52.0 |         50.0 |         66.7 |             84.1 |           2.7 |            20.1 |           19.3 |           26.8 |         66.4 |              2.3 / 1.6 |             13.8 |     6.5 |                   62.2 |              17.6 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | BSON         | Via IdList.load()        |          60.1 |         58.3 |         68.8 |             76.0 |          13.3 |            19.2 |           18.9 |           21.7 |         74.9 |              3.2 / 1.8 |             17.1 |     7.3 |                   85.2 |              17.6 |
 
 </details>
 
@@ -227,32 +428,32 @@ Only after choosing a logical structure: compare its JSON row against its binary
 
 <details><summary>Show numeric results (24 rows)</summary>
 
-| Interchange format                                         | Internal format      | Encoding     | Conversion path | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
-| ---------------------------------------------------------- | -------------------- | ------------ | --------------- | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Direct to tree  |          16.5 |         16.6 |         16.7 |             24.6 |           0.4 |             4.6 |            4.4 |            5.6 |         24.6 |              0.8 / 0.7 |              5.6 |     1.6 |                   12.5 |              17.6 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Direct to tree  |          16.5 |         16.6 |         16.8 |             24.9 |           0.4 |             4.5 |            4.5 |            5.5 |         24.6 |              1.1 / 1.4 |              5.6 |     1.6 |                   13.6 |              17.6 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Via run objects |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         17.0 |             22.6 |           0.4 |             5.6 |            5.6 |            6.5 |         26.7 |              0.9 / 1.2 |              4.8 |     1.6 |                   14.7 |              17.8 |
-| Columnar store: all counters                               | Existing IdList tree | JSON         | Via run objects |          16.7 |         16.6 |         17.1 |             25.0 |           0.5 |             4.8 |            4.6 |            5.8 |         25.0 |              0.9 / 1.1 |              4.1 |     1.7 |                   14.4 |              17.6 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Via run objects |          16.7 |         16.6 |         17.3 |             24.1 |           0.4 |             4.9 |            4.7 |            6.3 |         24.9 |              0.8 / 0.7 |              3.6 |     1.6 |                   14.4 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Direct to tree  |          16.7 |         16.6 |         17.5 |             25.4 |           0.3 |             4.7 |            4.6 |            5.8 |         24.9 |              1.0 / 1.2 |              5.5 |     1.6 |                   13.4 |              17.7 |
-| Tuple records: negative count means deleted                | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         17.5 |             22.2 |           0.6 |             4.7 |            4.6 |            6.0 |         24.4 |              1.1 / 1.1 |              5.7 |     1.7 |                   15.8 |              17.2 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Via run objects |          16.7 |         16.6 |         17.6 |             24.8 |           0.7 |             5.9 |            5.8 |            6.7 |         25.1 |              0.9 / 0.8 |              3.8 |     1.6 |                   15.4 |              17.7 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | JSON         | Via run objects |          16.7 |         16.6 |         17.6 |             22.5 |           0.4 |             5.5 |            5.5 |            6.3 |         25.0 |              0.9 / 1.1 |              5.1 |     1.6 |                   14.0 |              17.7 |
-| Object records: negative count means deleted               | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         17.6 |             22.3 |           1.1 |             4.8 |            4.7 |            5.8 |         25.0 |              1.0 / 1.3 |              7.2 |     1.7 |                   14.7 |              17.6 |
-| Columnar store: all counters                               | Existing IdList tree | protobuf     | Via run objects |          16.8 |         16.6 |         17.7 |             22.1 |           1.3 |             4.7 |            4.6 |            5.6 |         25.0 |              1.1 / 1.2 |              5.5 |     1.7 |                   15.3 |              17.5 |
-| Object records: deletion flag                              | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         17.9 |             21.6 |           1.2 |             4.6 |            4.6 |            5.6 |         24.7 |              0.8 / 1.1 |              6.8 |     1.7 |                   14.1 |              17.7 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Direct to tree  |          16.9 |         16.6 |         18.2 |             25.0 |           0.6 |             5.4 |            5.4 |            6.2 |         25.0 |              0.8 / 1.2 |              3.8 |     1.6 |                   14.5 |              17.7 |
-| Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Direct to tree  |          16.8 |         16.6 |         18.4 |             24.9 |           0.3 |             5.3 |            5.2 |            6.4 |         25.2 |              0.9 / 1.3 |              4.9 |     1.6 |                   13.5 |              17.7 |
-| Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Via run objects |          16.8 |         16.6 |         20.2 |             25.1 |           0.4 |             4.8 |            4.7 |            6.2 |         24.9 |              0.9 / 0.9 |              3.7 |     1.6 |                   14.3 |              17.5 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON         | Via run objects |          16.8 |         16.6 |         20.6 |             24.9 |           0.3 |             4.8 |            4.7 |            5.9 |         24.6 |              0.9 / 1.3 |              5.3 |     1.6 |                   14.1 |              17.6 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | protobuf     | Via run objects |          16.8 |         16.6 |         20.9 |             25.1 |           1.3 |             4.8 |            4.6 |            5.8 |         24.9 |              0.9 / 1.2 |              5.5 |     1.6 |                   14.7 |              17.7 |
-| Tuple records: negative count means deleted                | Existing IdList tree | BSON         | Via run objects |          16.9 |         16.6 |         20.9 |             25.5 |           2.0 |             4.9 |            4.8 |            5.9 |         25.0 |              1.1 / 1.5 |              6.1 |     1.7 |                   18.5 |              17.7 |
-| Columnar store: reconstruct counters                       | Existing IdList tree | protobuf     | Via run objects |          16.8 |         16.6 |         21.1 |             24.9 |           1.6 |             5.4 |            5.3 |            6.3 |         25.1 |              0.9 / 0.7 |              4.6 |     1.6 |                   15.3 |              17.5 |
-| Columnar store: split IDs + reconstruct counters           | Existing IdList tree | protobuf     | Via run objects |          16.9 |         16.6 |         21.3 |             24.4 |           1.4 |             5.6 |            5.5 |            6.4 |         25.0 |              1.0 / 1.1 |              5.4 |     1.6 |                   16.5 |              17.7 |
-| Object records: deletion flag                              | Existing IdList tree | BSON         | Via run objects |          17.6 |         16.6 |         24.9 |             28.5 |           3.9 |             5.1 |            5.1 |            6.2 |         30.4 |              1.4 / 1.2 |              5.5 |     1.7 |                   21.8 |              17.7 |
-| Object records: negative count means deleted               | Existing IdList tree | BSON         | Via run objects |          17.7 |         16.6 |         24.9 |             33.3 |           3.1 |             5.3 |            5.1 |            6.1 |         28.5 |              1.4 / 1.3 |              4.7 |     1.7 |                   21.3 |              17.8 |
+| Interchange format                                               | Internal format      | Encoding     | Conversion path          | Ready mean ms | Ready P50 ms | Ready P95 ms | Ready maximum ms | Decode P95 ms | To tree mean ms | To tree P50 ms | To tree P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
+| ---------------------------------------------------------------- | -------------------- | ------------ | ------------------------ | ------------: | -----------: | -----------: | ---------------: | ------------: | --------------: | -------------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Direct tree construction |          16.5 |         16.6 |         16.7 |             24.6 |           0.4 |             4.6 |            4.4 |            5.6 |         24.6 |              0.8 / 0.7 |              5.6 |     1.6 |                   12.5 |              17.6 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         16.8 |             24.8 |           0.3 |             5.7 |            5.6 |            6.6 |         25.4 |              0.8 / 0.7 |              3.7 |     1.6 |                   14.8 |              17.4 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Direct tree construction |          16.5 |         16.6 |         16.8 |             24.9 |           0.4 |             4.5 |            4.5 |            5.5 |         24.6 |              1.1 / 1.4 |              5.6 |     1.6 |                   13.6 |              17.6 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | JSON         | Via IdList.load()        |          16.6 |         16.6 |         16.9 |             25.4 |           0.4 |             4.9 |            4.7 |            6.1 |         25.0 |              0.9 / 1.2 |              3.9 |     1.6 |                   14.2 |              17.9 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         17.0 |             22.6 |           0.4 |             5.6 |            5.6 |            6.5 |         26.7 |              0.9 / 1.2 |              4.8 |     1.6 |                   14.7 |              17.8 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | JSON         | Via IdList.load()        |          16.7 |         16.6 |         17.1 |             25.0 |           0.5 |             4.8 |            4.6 |            5.8 |         25.0 |              0.9 / 1.1 |              4.1 |     1.7 |                   14.4 |              17.6 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Via IdList.load()        |          16.7 |         16.6 |         17.3 |             24.1 |           0.4 |             4.9 |            4.7 |            6.3 |         24.9 |              0.8 / 0.7 |              3.6 |     1.6 |                   14.4 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | bit-packed   | Direct tree construction |          16.7 |         16.6 |         17.5 |             25.4 |           0.3 |             4.7 |            4.6 |            5.8 |         24.9 |              1.0 / 1.2 |              5.5 |     1.6 |                   13.4 |              17.7 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         17.5 |             22.2 |           0.6 |             4.7 |            4.6 |            6.0 |         24.4 |              1.1 / 1.1 |              5.7 |     1.7 |                   15.8 |              17.2 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Via IdList.load()        |          16.7 |         16.6 |         17.6 |             24.8 |           0.7 |             5.9 |            5.8 |            6.7 |         25.1 |              0.9 / 0.8 |              3.8 |     1.6 |                   15.4 |              17.7 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | JSON         | Via IdList.load()        |          16.7 |         16.6 |         17.6 |             22.5 |           0.4 |             5.5 |            5.5 |            6.3 |         25.0 |              0.9 / 1.1 |              5.1 |     1.6 |                   14.0 |              17.7 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         17.6 |             22.3 |           1.1 |             4.8 |            4.7 |            5.8 |         25.0 |              1.0 / 1.3 |              7.2 |     1.7 |                   14.7 |              17.6 |
+| F04 — Columnar store: all counters                               | Existing IdList tree | protobuf     | Via IdList.load()        |          16.8 |         16.6 |         17.7 |             22.1 |           1.3 |             4.7 |            4.6 |            5.6 |         25.0 |              1.1 / 1.2 |              5.5 |     1.7 |                   15.3 |              17.5 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         17.9 |             21.6 |           1.2 |             4.6 |            4.6 |            5.6 |         24.7 |              0.8 / 1.1 |              6.8 |     1.7 |                   14.1 |              17.7 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | protobuf     | Direct tree construction |          16.9 |         16.6 |         18.2 |             25.0 |           0.6 |             5.4 |            5.4 |            6.2 |         25.0 |              0.8 / 1.2 |              3.8 |     1.6 |                   14.5 |              17.7 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Existing IdList tree | JSON         | Direct tree construction |          16.8 |         16.6 |         18.4 |             24.9 |           0.3 |             5.3 |            5.2 |            6.4 |         25.2 |              0.9 / 1.3 |              4.9 |     1.6 |                   13.5 |              17.7 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Existing IdList tree | uint32/int32 | Via IdList.load()        |          16.8 |         16.6 |         20.2 |             25.1 |           0.4 |             4.8 |            4.7 |            6.2 |         24.9 |              0.9 / 0.9 |              3.7 |     1.6 |                   14.3 |              17.5 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | JSON         | Via IdList.load()        |          16.8 |         16.6 |         20.6 |             24.9 |           0.3 |             4.8 |            4.7 |            5.9 |         24.6 |              0.9 / 1.3 |              5.3 |     1.6 |                   14.1 |              17.6 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Existing IdList tree | protobuf     | Via IdList.load()        |          16.8 |         16.6 |         20.9 |             25.1 |           1.3 |             4.8 |            4.6 |            5.8 |         24.9 |              0.9 / 1.2 |              5.5 |     1.6 |                   14.7 |              17.7 |
+| F03 — Tuple records: negative count means deleted                | Existing IdList tree | BSON         | Via IdList.load()        |          16.9 |         16.6 |         20.9 |             25.5 |           2.0 |             4.9 |            4.8 |            5.9 |         25.0 |              1.1 / 1.5 |              6.1 |     1.7 |                   18.5 |              17.7 |
+| F05 — Columnar store: reconstruct counters                       | Existing IdList tree | protobuf     | Via IdList.load()        |          16.8 |         16.6 |         21.1 |             24.9 |           1.6 |             5.4 |            5.3 |            6.3 |         25.1 |              0.9 / 0.7 |              4.6 |     1.6 |                   15.3 |              17.5 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Existing IdList tree | protobuf     | Via IdList.load()        |          16.9 |         16.6 |         21.3 |             24.4 |           1.4 |             5.6 |            5.5 |            6.4 |         25.0 |              1.0 / 1.1 |              5.4 |     1.6 |                   16.5 |              17.7 |
+| F01 — Object records: deletion flag                              | Existing IdList tree | BSON         | Via IdList.load()        |          17.6 |         16.6 |         24.9 |             28.5 |           3.9 |             5.1 |            5.1 |            6.2 |         30.4 |              1.4 / 1.2 |              5.5 |     1.7 |                   21.8 |              17.7 |
+| F02 — Object records: negative count means deleted               | Existing IdList tree | BSON         | Via IdList.load()        |          17.7 |         16.6 |         24.9 |             33.3 |           3.1 |             5.3 |            5.1 |            6.1 |         28.5 |              1.4 / 1.3 |              4.7 |     1.7 |                   21.3 |              17.8 |
 
 </details>
 
@@ -262,22 +463,22 @@ These are changes in measured means, not significance claims. The per-round delt
 
 <details><summary>Show numeric results (14 rows)</summary>
 
-| Documents | Same interchange format                                    | Encoding and conversion path                                 | Ready change ms | Per-round changes ms         | Kept change MB |
-| --------: | ---------------------------------------------------------- | ------------------------------------------------------------ | --------------: | ---------------------------- | -------------: |
-|         1 | Columnar store: deduplicate clients + reconstruct counters | JSON, Via run objects → protobuf, Via run objects            |            -0.1 | -0.0, 0.3, -0.6, -0.1, -0.2  |            0.0 |
-|         1 | Columnar store: deduplicate clients + reconstruct counters | JSON, Direct to tree → protobuf, Direct to tree              |             0.1 | 0.2, 0.2, 0.1, 0.4, -0.3     |            0.0 |
-|         1 | Columnar store: deduplicate IDs + all counters             | JSON, Via run objects → uint32/int32, Via run objects        |             0.2 | 0.1, 0.3, 0.4, 0.6, -0.4     |            0.0 |
-|         1 | Columnar store: deduplicate IDs + all counters             | JSON, Direct to tree → uint32/int32, Direct to tree          |            -0.0 | -0.5, 0.2, -0.4, 0.1, 0.6    |           -0.0 |
-|         1 | Columnar store: deduplicate IDs + all counters             | JSON, Direct to tree → bit-packed, Direct to tree            |             0.2 | -0.0, 0.1, -0.0, 0.0, 1.0    |            0.0 |
-|         1 | Columnar store: deduplicate IDs + all counters             | uint32/int32, Via run objects → uint32/int32, Direct to tree |            -0.3 | -0.8, -0.1, -0.7, -0.3, 0.4  |           -0.0 |
-|         1 | Columnar store: deduplicate IDs + all counters             | bit-packed, Via run objects → bit-packed, Direct to tree     |             0.0 | -0.0, -0.3, 0.2, -0.5, 0.9   |            0.0 |
-|         4 | Columnar store: deduplicate clients + reconstruct counters | JSON, Via run objects → protobuf, Via run objects            |            -0.1 | 0.0, 1.4, -0.3, -0.5, -1.2   |            0.0 |
-|         4 | Columnar store: deduplicate clients + reconstruct counters | JSON, Direct to tree → protobuf, Direct to tree              |             0.7 | -2.7, 3.0, 1.9, 0.5, 0.7     |            0.0 |
-|         4 | Columnar store: deduplicate IDs + all counters             | JSON, Via run objects → uint32/int32, Via run objects        |            -0.4 | -0.2, -2.7, -1.8, 0.5, 2.3   |            0.0 |
-|         4 | Columnar store: deduplicate IDs + all counters             | JSON, Direct to tree → uint32/int32, Direct to tree          |             1.4 | 2.4, 1.2, 1.1, 0.6, 1.9      |           -0.0 |
-|         4 | Columnar store: deduplicate IDs + all counters             | JSON, Direct to tree → bit-packed, Direct to tree            |             1.1 | 2.8, 1.9, -0.2, -1.3, 2.5    |            0.0 |
-|         4 | Columnar store: deduplicate IDs + all counters             | uint32/int32, Via run objects → uint32/int32, Direct to tree |            -1.2 | -2.0, -2.0, -1.6, 0.7, -1.0  |           -0.0 |
-|         4 | Columnar store: deduplicate IDs + all counters             | bit-packed, Via run objects → bit-packed, Direct to tree     |            -1.0 | -1.5, -0.1, -2.3, -0.9, -0.3 |            0.0 |
+| Documents | Same interchange format                                          | Encoding and conversion path                                             | Ready change ms | Per-round changes ms         | Kept change MB |
+| --------: | ---------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------: | ---------------------------- | -------------: |
+|         1 | F08 — Columnar store: deduplicate clients + reconstruct counters | JSON, Via IdList.load() → protobuf, Via IdList.load()                    |            -0.1 | -0.0, 0.3, -0.6, -0.1, -0.2  |            0.0 |
+|         1 | F08 — Columnar store: deduplicate clients + reconstruct counters | JSON, Direct tree construction → protobuf, Direct tree construction      |             0.1 | 0.2, 0.2, 0.1, 0.4, -0.3     |            0.0 |
+|         1 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Via IdList.load() → uint32/int32, Via IdList.load()                |             0.2 | 0.1, 0.3, 0.4, 0.6, -0.4     |            0.0 |
+|         1 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Direct tree construction → uint32/int32, Direct tree construction  |            -0.0 | -0.5, 0.2, -0.4, 0.1, 0.6    |           -0.0 |
+|         1 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Direct tree construction → bit-packed, Direct tree construction    |             0.2 | -0.0, 0.1, -0.0, 0.0, 1.0    |            0.0 |
+|         1 | F09 — Columnar store: deduplicate IDs + all counters             | uint32/int32, Via IdList.load() → uint32/int32, Direct tree construction |            -0.3 | -0.8, -0.1, -0.7, -0.3, 0.4  |           -0.0 |
+|         1 | F09 — Columnar store: deduplicate IDs + all counters             | bit-packed, Via IdList.load() → bit-packed, Direct tree construction     |             0.0 | -0.0, -0.3, 0.2, -0.5, 0.9   |            0.0 |
+|         4 | F08 — Columnar store: deduplicate clients + reconstruct counters | JSON, Via IdList.load() → protobuf, Via IdList.load()                    |            -0.1 | 0.0, 1.4, -0.3, -0.5, -1.2   |            0.0 |
+|         4 | F08 — Columnar store: deduplicate clients + reconstruct counters | JSON, Direct tree construction → protobuf, Direct tree construction      |             0.7 | -2.7, 3.0, 1.9, 0.5, 0.7     |            0.0 |
+|         4 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Via IdList.load() → uint32/int32, Via IdList.load()                |            -0.4 | -0.2, -2.7, -1.8, 0.5, 2.3   |            0.0 |
+|         4 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Direct tree construction → uint32/int32, Direct tree construction  |             1.4 | 2.4, 1.2, 1.1, 0.6, 1.9      |           -0.0 |
+|         4 | F09 — Columnar store: deduplicate IDs + all counters             | JSON, Direct tree construction → bit-packed, Direct tree construction    |             1.1 | 2.8, 1.9, -0.2, -1.3, 2.5    |            0.0 |
+|         4 | F09 — Columnar store: deduplicate IDs + all counters             | uint32/int32, Via IdList.load() → uint32/int32, Direct tree construction |            -1.2 | -2.0, -2.0, -1.6, 0.7, -1.0  |           -0.0 |
+|         4 | F09 — Columnar store: deduplicate IDs + all counters             | bit-packed, Via IdList.load() → bit-packed, Direct tree construction     |            -1.0 | -1.5, -0.1, -2.3, -0.9, -0.3 |            0.0 |
 
 </details>
 
@@ -289,24 +490,24 @@ JSON rows mean ordinary BSON objects/arrays in Mongo, **not JSON strings**. Prot
 
 <details><summary>Show numeric results (16 rows)</summary>
 
-| Interchange format                                         | Mongo representation | Snappy KB/doc | Zstd KB/doc |
-| ---------------------------------------------------------- | -------------------- | ------------: | ----------: |
-| Object records: deletion flag                              | Ordinary BSON        |         180.5 |        86.2 |
-| Object records: negative count means deleted               | Ordinary BSON        |         168.2 |        86.2 |
-| Tuple records: negative count means deleted                | Ordinary BSON        |         160.0 |        86.3 |
-| Columnar store: all counters                               | Ordinary BSON        |         223.4 |       115.0 |
-| Columnar store: all counters                               | protobuf             |          73.9 |        41.1 |
-| Columnar store: reconstruct counters                       | Ordinary BSON        |         155.8 |        82.2 |
-| Columnar store: reconstruct counters                       | protobuf             |          61.7 |        32.9 |
-| Columnar store: split IDs + reconstruct counters           | Ordinary BSON        |         196.9 |        95.2 |
-| Columnar store: split IDs + reconstruct counters           | protobuf             |          45.3 |        29.0 |
-| Columnar store: deduplicate IDs + reconstruct counters     | Ordinary BSON        |         176.4 |        94.5 |
-| Columnar store: deduplicate IDs + reconstruct counters     | protobuf             |          69.9 |        49.4 |
-| Columnar store: deduplicate clients + reconstruct counters | Ordinary BSON        |         188.7 |        74.0 |
-| Columnar store: deduplicate clients + reconstruct counters | protobuf             |          35.4 |        14.6 |
-| Columnar store: deduplicate IDs + all counters             | Ordinary BSON        |         245.9 |       127.3 |
-| Columnar store: deduplicate IDs + all counters             | uint32/int32         |         123.2 |        69.9 |
-| Columnar store: deduplicate IDs + all counters             | bit-packed           |          98.6 |        69.9 |
+| Interchange format                                               | Mongo representation | Snappy KB/doc | Zstd KB/doc |
+| ---------------------------------------------------------------- | -------------------- | ------------: | ----------: |
+| F01 — Object records: deletion flag                              | Ordinary BSON        |         180.5 |        86.2 |
+| F02 — Object records: negative count means deleted               | Ordinary BSON        |         168.2 |        86.2 |
+| F03 — Tuple records: negative count means deleted                | Ordinary BSON        |         160.0 |        86.3 |
+| F04 — Columnar store: all counters                               | Ordinary BSON        |         223.4 |       115.0 |
+| F04 — Columnar store: all counters                               | protobuf             |          73.9 |        41.1 |
+| F05 — Columnar store: reconstruct counters                       | Ordinary BSON        |         155.8 |        82.2 |
+| F05 — Columnar store: reconstruct counters                       | protobuf             |          61.7 |        32.9 |
+| F06 — Columnar store: split IDs + reconstruct counters           | Ordinary BSON        |         196.9 |        95.2 |
+| F06 — Columnar store: split IDs + reconstruct counters           | protobuf             |          45.3 |        29.0 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | Ordinary BSON        |         176.4 |        94.5 |
+| F07 — Columnar store: deduplicate IDs + reconstruct counters     | protobuf             |          69.9 |        49.4 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | Ordinary BSON        |         188.7 |        74.0 |
+| F08 — Columnar store: deduplicate clients + reconstruct counters | protobuf             |          35.4 |        14.6 |
+| F09 — Columnar store: deduplicate IDs + all counters             | Ordinary BSON        |         245.9 |       127.3 |
+| F09 — Columnar store: deduplicate IDs + all counters             | uint32/int32         |         123.2 |        69.9 |
+| F09 — Columnar store: deduplicate IDs + all counters             | bit-packed           |          98.6 |        69.9 |
 
 </details>
 
@@ -315,7 +516,7 @@ JSON rows mean ordinary BSON objects/arrays in Mongo, **not JSON strings**. Prot
 Every encoding in a group round-trips to the **same** logical JSON. This is asserted for empty and example inputs in unit tests, and for the full fixture before browser measurement. The browser additionally checks all saved runs, visible paragraph text, and a successful first edit.
 
 <a id="format-objects"></a>
-<details><summary>Object records: deletion flag: JSON and actual Mongo representations</summary>
+<details><summary>F01 — Object records: deletion flag: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -353,7 +554,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-signed"></a>
-<details><summary>Object records: negative count means deleted: JSON and actual Mongo representations</summary>
+<details><summary>F02 — Object records: negative count means deleted: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -387,7 +588,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-tuples"></a>
-<details><summary>Tuple records: negative count means deleted: JSON and actual Mongo representations</summary>
+<details><summary>F03 — Tuple records: negative count means deleted: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -405,7 +606,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-columns"></a>
-<details><summary>Columnar store: all counters: JSON and actual Mongo representations</summary>
+<details><summary>F04 — Columnar store: all counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -435,7 +636,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-omit"></a>
-<details><summary>Columnar store: reconstruct counters: JSON and actual Mongo representations</summary>
+<details><summary>F05 — Columnar store: reconstruct counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -466,7 +667,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-split"></a>
-<details><summary>Columnar store: split IDs + reconstruct counters: JSON and actual Mongo representations</summary>
+<details><summary>F06 — Columnar store: split IDs + reconstruct counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -498,7 +699,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-dictionary"></a>
-<details><summary>Columnar store: deduplicate IDs + reconstruct counters: JSON and actual Mongo representations</summary>
+<details><summary>F07 — Columnar store: deduplicate IDs + reconstruct counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -530,7 +731,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-client"></a>
-<details><summary>Columnar store: deduplicate clients + reconstruct counters: JSON and actual Mongo representations</summary>
+<details><summary>F08 — Columnar store: deduplicate clients + reconstruct counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 
@@ -563,7 +764,7 @@ Every encoding in a group round-trips to the **same** logical JSON. This is asse
 </details>
 
 <a id="format-full"></a>
-<details><summary>Columnar store: deduplicate IDs + all counters: JSON and actual Mongo representations</summary>
+<details><summary>F09 — Columnar store: deduplicate IDs + all counters: JSON and actual Mongo representations</summary>
 
 ### Ordinary Mongo fields
 

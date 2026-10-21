@@ -5,7 +5,7 @@ import path from "node:path";
 import { example } from "../full_picture/fixture";
 import { candidates } from "./candidates";
 import { comparisonChart } from "./charts";
-import { formats, internalFormat, loaderName } from "./formats";
+import { formatLabel, formats, internalFormat, loaderName } from "./formats";
 import { mongoState, storageCandidates } from "./mongo";
 import type { BrowserSample } from "./page";
 import type { analyzeTrace } from "./trace";
@@ -124,7 +124,7 @@ function chart(rows: Row[], scope: string) {
       "GC pause mean (ms)",
     ],
     byP95(rows).map((r) => ({
-      label: r.shape,
+      label: formatLabel(r.shape),
       detail: `${r.encoding} · ${loaderName(r.path)}`,
       values: [
         p95(r),
@@ -154,7 +154,7 @@ function memoryChart(rows: Row[], scope: string) {
           a.id.localeCompare(b.id),
       )
       .map((r) => ({
-        label: r.shape,
+        label: formatLabel(r.shape),
         detail: `${r.encoding} · ${loaderName(r.path)}`,
         values: [
           mem(r, "retainedDelta"),
@@ -169,7 +169,7 @@ function storageChart(binary: boolean) {
   const rows = storageCandidates
     .filter((c) => binary || c.encoding === "JSON")
     .map((c) => ({
-      label: c.shape,
+      label: formatLabel(c.shape),
       detail: c.encoding === "JSON" ? "Ordinary BSON fields" : c.encoding,
       values: ["snappy", "zstd"].map((compressor) => {
         const row = mongo.rows.find(
@@ -200,14 +200,16 @@ const namingExample = [
 ];
 function namingExamples() {
   return [
-    "### What the columnar names change: one small example",
+    "### F05 versus F09: two different things to save",
     "",
-    "Two runs of the same ID: three live entries starting at 0, then two deleted entries starting at 3. These illustrative rows are not the benchmark workload. The second start can be reconstructed as 0 + 3; storing an ID once is a separate choice from reconstructing counters.",
+    "Both are columnar stores. **F05 saves predictable start counters, but repeats the ID for every run. F09 saves repeated ID strings, but stores every start counter.** Neither changes the internal IdList tree. These are independent choices: F07 combines deduplicated IDs with reconstructed counters.",
     "",
-    ...["columns", "omit", "full"].flatMap((id) => {
+    "For two runs of writer_0—three live entries starting at 0, then two deleted entries starting at 3—the same data looks like this. These tiny examples illustrate the layouts; they are not the measured workload.",
+    "",
+    ...["omit", "full"].flatMap((id) => {
       const c = candidates.find((c) => c.id === id)!;
       return [
-        `**${c.shape}**`,
+        `**${formatLabel(c.shape)}**`,
         "",
         "```json",
         JSON.stringify(c.logical(c.decode(c.encode(namingExample))), null, 2),
@@ -217,6 +219,41 @@ function namingExamples() {
     }),
   ];
 }
+function formatExpansions() {
+  return [
+    "### Expand each format: the same data in nine layouts",
+    "",
+    "All nine examples below contain the same four runs: alice_0 has three live entries, bob_0 has one live entry, alice_1 has two live entries, then alice_0 has two deleted entries starting at counter 3. Structured IDs here make F06/F08 meaningful; they do not imply changing opaque nanoids. These JSON objects/arrays are also the ordinary Mongo field values, not JSON strings.",
+    "",
+    ...Object.entries(formats).flatMap(([key, f]) => {
+      const c = candidates.find((c) => c.id === key)!;
+      const decoded = c.decode(c.encode(example));
+      assert.deepEqual(c.hydrate(decoded).save(), example);
+      return [
+        `<a id="${f.id.toLowerCase()}"></a>`,
+        `<details><summary>${formatLabel(f.name)} — expand JSON</summary>`,
+        "",
+        f.explanation,
+        "",
+        "Interchange format shown below; internal format after load: **existing IdList tree**.",
+        "",
+        "\x60\x60\x60json",
+        JSON.stringify(c.logical(decoded), null, 2),
+        "\x60\x60\x60",
+        "",
+        ...(key === "omit"
+          ? [
+              "Here startCounters and startCounterIndexes are empty because every start is predictable. If alice_0 resumed at counter 8 instead of 3, this example would store startCounterIndexes: [3] and startCounters: [8]; the 3 locates the fourth run (zero-based). The other starts are still reconstructed.",
+              "",
+            ]
+          : []),
+        "</details>",
+        "",
+      ];
+    }),
+  ];
+}
+
 const disk = (id: string) => {
   const r = mongo.rows.find((r) => r.id === id && r.compressor === "snappy");
   assert(r);
@@ -269,7 +306,7 @@ function rerunNotes(): string[] {
     "",
     `All 24 options were rerun, not just the suspicious row: ${data.rounds} fresh-context rounds × ${data.trials} loads = ${current.samples.length} samples per option/workload (previously ${prior.samples.length}). The loading implementation and timer boundaries are unchanged; only labels, metadata and sample count changed. Previous samples and all traces are [preserved](results/browser/previous/browser.json). No samples were filtered from either run. Mongo was not rerun: its unchanged measurements are separate from browser timing.`,
     "",
-    `**${formats.signed.name}, ${largest} documents:** previous complete-ready P50 / P95 / maximum: **${a.p50} / ${a.p95} / ${a.max} ms**. Rerun: **${b.p50} / ${b.p95} / ${b.max} ms**. Conversion-to-tree P95: **${a.conversion} → ${b.conversion} ms**. Loads over 200 ms: **${a.stalls}/${prior.samples.length} → ${b.stalls}/${current.samples.length}**.`,
+    `**${formatLabel(formats.signed.name)}, ${largest} documents:** previous complete-ready P50 / P95 / maximum: **${a.p50} / ${a.p95} / ${a.max} ms**. Rerun: **${b.p50} / ${b.p95} / ${b.max} ms**. Conversion-to-tree P95: **${a.conversion} → ${b.conversion} ms**. Loads over 200 ms: **${a.stalls}/${prior.samples.length} → ${b.stalls}/${current.samples.length}**.`,
     "",
     `The original P95 was the maximum of 18 samples; the new P95 is observation ${Math.ceil(current.samples.length * 0.95)} of ${current.samples.length}. These are different tail estimators in practice; a lower new P95 does not prove the original stall was invalid. Its cause remains unknown. The old result is superseded for comparison, not erased. The rerun retains ${outliers.length} loads exceeding three times their row median. Fresh-context round results and all raw samples remain available; none of this establishes a stable production ranking.`,
   ];
@@ -286,22 +323,21 @@ const lines = [
   "",
   "These names describe the **interchange** representation. A columnar store is one object containing arrays, not a different Mongo storage engine. All non-baseline options encode deletion as a negative count: -2 means two deleted IDs. That is what the old word ‘signed’ meant.",
   "",
-  ...Object.entries(formats).map(
-    ([id, f]) =>
-      `- **${f.name}:** ${f.explanation} [Stored example](#format-${id}).`,
+  "Format IDs F01–F09 are stable identifiers, not ranks. The same ID is used across charts, recommendations, JSON/binary encodings, and loader paths. Expand a format below the recommendations to see its complete JSON.",
+  "",
+  ...Object.values(formats).map(
+    (f) => `- [${formatLabel(f.name)}](#${f.id.toLowerCase()}).`,
   ),
   "",
-  "**Loader labels:** ‘Via run objects’ first reconstructs the library’s saved run objects and then loads its tree. ‘Direct to tree’ feeds the decoded fields straight into tree construction, skipping that intermediate array. Neither means a different internal representation.",
-  "",
-  ...namingExamples(),
+  "**Conversion paths:** ‘Via IdList.load()’ means wire format → the run objects that IdList.load expects → the internal tree. For F01 those run objects are already the decoded shape. ‘Direct tree construction’ feeds decoded fields straight into the same tree, skipping that intermediate array. Neither changes the internal format.",
   "",
   "## Three recommendations",
   "",
-  `1. **Mongo storage first: ${formats.omit.name}.** This is the smallest ordinary-field option with Snappy: ${disk("omit")} versus ${disk("objects")} KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.`,
+  `1. **Mongo storage first: ${formatLabel(formats.omit.name)}.** This is the smallest ordinary-field option with Snappy: ${disk("omit")} versus ${disk("objects")} KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.`,
   "",
-  `2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** ${formats.omit.name} retains ${fmt(mem(rowFor("omit"), "retainedDelta"))} MB versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.`,
+  `2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** ${formatLabel(formats.omit.name)} retains ${fmt(mem(rowFor("omit"), "retainedDelta"))} MB versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.`,
   "",
-  `3. **Browser speed first: investigate ${fastestJSON.shape}, through the existing loader.** It has the lowest observed ${largest}-document complete-ready P95 among JSON interchange options: ${fmt(p95(fastestJSON))} versus ${fmt(p95(rowFor("objects")))} ms for the baseline. Conversion-to-tree P95 is ${fmt(
+  `3. **Browser speed first: investigate ${formatLabel(fastestJSON.shape)}, through the existing loader.** It has the lowest observed ${largest}-document complete-ready P95 among JSON interchange options: ${fmt(p95(fastestJSON))} versus ${fmt(p95(rowFor("objects")))} ms for the baseline. Conversion-to-tree P95 is ${fmt(
     quantile(
       fastestJSON.samples.map((s) => s.hydrate),
       0.95,
@@ -314,6 +350,10 @@ const lines = [
   )} ms. Its Snappy storage is ${disk(fastestJSON.id)} versus ${disk("objects")} KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough, and native columnar editing remains untested.`,
   "",
   "None of these results justifies changing independent opaque 8-character nanoids into structured IDs. The split-ID/client-sharing options require Matthew’s client/sequence structure; those measurements are not evidence for opaque nanoids. Binary stays an optional later optimization.",
+  "",
+  ...namingExamples(),
+  "",
+  ...formatExpansions(),
   "",
   "## Time spent converting to the internal format",
   "",
@@ -354,7 +394,7 @@ function browserSection(n: number, rows: Row[], suffix: string, scope: string) {
   );
   for (const r of rows)
     lines.push(
-      `| ${r.shape} | ${internalFormat} | ${r.encoding} | ${loaderName(r.path)} | ${fmt(metric(r, "total"))} | ${fmt(
+      `| ${formatLabel(r.shape)} | ${internalFormat} | ${r.encoding} | ${loaderName(r.path)} | ${fmt(metric(r, "total"))} | ${fmt(
         quantile(
           r.samples.map((s) => s.total),
           0.5,
@@ -456,7 +496,7 @@ for (const n of workloads)
       ),
     );
     lines.push(
-      `| ${n} | ${x.shape} | ${x.encoding}, ${loaderName(x.path)} → ${y.encoding}, ${loaderName(y.path)} | ${fmt(metric(y, "total") - metric(x, "total"))} | ${roundDiff.join(", ")} | ${fmt(mem(y, "retainedDelta") - mem(x, "retainedDelta"))} |`,
+      `| ${n} | ${formatLabel(x.shape)} | ${x.encoding}, ${loaderName(x.path)} → ${y.encoding}, ${loaderName(y.path)} | ${fmt(metric(y, "total") - metric(x, "total"))} | ${roundDiff.join(", ")} | ${fmt(mem(y, "retainedDelta") - mem(x, "retainedDelta"))} |`,
     );
   }
 lines.push(
@@ -479,7 +519,7 @@ for (const c of storageCandidates) {
     return fmt(r.storageBytes / mongo.documents / 1000);
   };
   lines.push(
-    `| ${c.shape} | ${c.encoding === "JSON" ? "Ordinary BSON" : c.encoding} | ${size("snappy")} | ${size("zstd")} |`,
+    `| ${formatLabel(c.shape)} | ${c.encoding === "JSON" ? "Ordinary BSON" : c.encoding} | ${size("snappy")} | ${size("zstd")} |`,
   );
 }
 lines.push(
@@ -493,7 +533,7 @@ for (const shape of [...new Set(candidates.map((c) => c.shape))]) {
   const group = storageCandidates.filter((c) => c.shape === shape);
   lines.push(
     `<a id="format-${group[0].id}"></a>`,
-    `<details><summary>${shape}: JSON and actual Mongo representations</summary>`,
+    `<details><summary>${formatLabel(shape)}: JSON and actual Mongo representations</summary>`,
     "",
   );
   for (const c of group)

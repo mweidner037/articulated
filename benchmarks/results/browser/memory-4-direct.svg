@@ -49,17 +49,17 @@
 <text x="1198.6036696470587" y="347" class="small">51.9</text>
 <rect x="1005" y="411" width="197.1235643697479" height="23" fill="#8571ac"/>
 <text x="1209.1235643697478" y="429" class="small">54.8</text>
-<text x="24" y="162" >Columnar store: deduplicate clients +</text>
+<text x="24" y="162" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="182" >reconstruct counters</text>
-<text x="24" y="204" class="small">JSON · Direct to tree</text>
-<text x="24" y="244" >Columnar store: deduplicate clients +</text>
+<text x="24" y="204" class="small">JSON · Direct tree construction</text>
+<text x="24" y="244" >F08 — Columnar store: deduplicate clients +</text>
 <text x="24" y="264" >reconstruct counters</text>
-<text x="24" y="286" class="small">JSON · Via run objects</text>
-<text x="24" y="326" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="286" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="326" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="346" >counters</text>
-<text x="24" y="368" class="small">JSON · Direct to tree</text>
-<text x="24" y="408" >Columnar store: deduplicate IDs + all</text>
+<text x="24" y="368" class="small">JSON · Direct tree construction</text>
+<text x="24" y="408" >F09 — Columnar store: deduplicate IDs + all</text>
 <text x="24" y="428" >counters</text>
-<text x="24" y="450" class="small">JSON · Via run objects</text>
+<text x="24" y="450" class="small">JSON · Via IdList.load()</text>
 <text x="24" y="534" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
 </svg>

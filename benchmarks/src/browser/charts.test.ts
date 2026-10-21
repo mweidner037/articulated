@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { comparisonChart } from "./charts";
-import { formats } from "./formats";
+import { formatLabel, formats, loaderName } from "./formats";
 
 test("comparison charts preserve caller ranking, label values and escape text", () => {
   const svg = comparisonChart(
@@ -46,10 +46,38 @@ test("every interchange name fits the chart and has an explanation", () => {
       "Title",
       "Internal format: existing IdList tree",
       ["ms"],
-      [{ label: f.name, values: [1], detail: "JSON · Via run objects" }],
+      [
+        {
+          label: formatLabel(f.name),
+          values: [1],
+          detail: `JSON · ${loaderName("objects")}`,
+        },
+      ],
       "Note",
     );
     assert(svg.includes("Interchange format"));
     assert(!svg.includes("NaN"));
   }
+});
+
+test("format IDs are stable and independent of rank, encoding or loader", () => {
+  assert.deepEqual(
+    Object.entries(formats).map(([key, f]) => [key, f.id]),
+    [
+      ["objects", "F01"],
+      ["signed", "F02"],
+      ["tuples", "F03"],
+      ["columns", "F04"],
+      ["omit", "F05"],
+      ["split", "F06"],
+      ["dictionary", "F07"],
+      ["client", "F08"],
+      ["full", "F09"],
+    ],
+  );
+  assert.equal(
+    formatLabel(formats.omit.name),
+    "F05 — Columnar store: reconstruct counters",
+  );
+  assert.throws(() => formatLabel("missing format"));
 });
