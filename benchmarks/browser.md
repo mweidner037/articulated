@@ -4,12 +4,21 @@ Draft experiment. Start with the nine logical JSON formats through the same obje
 
 Measured 2026-10-20 in Chromium 151.0.7922.34 on Apple M5 Pro, CPU rate 1×. Each document has 104,852 characters, 1,173 paragraphs, and the same 12,091 ID runs. This is a **real, controlled ProseMirror editor in Chromium**, not the production application. The four-document case mounts four copies of that same document; it is a scaling test, not a production corpus.
 
-## Conclusions supported by this run
+## Three recommendations, depending on what matters most
 
-- **There is a real tradeoff, not one winner.** On the four-document JSON/object comparison, dictionary columns have the lowest observed complete-ready P95 (51.1 ms versus 58.0 ms for original objects), but use 245.9 versus 180.5 KB/doc in Snappy Mongo. Their retained JS memory is 6.9 versus 7.3 MB. This is a result for this run, not proof of a stable population ranking.
-- **Columns + omitted counters deserve a closer look for balance.** They use 155.8 KB/doc in Snappy versus 180.5 for original objects, retain 6.5 versus 7.3 MB, and have a four-document complete-ready P95 of 56.2 versus 58.0 ms. The modest speed difference is not established as significant.
+**My default: pursue ordinary columns with omitted counters, then validate them on our actual documents and IDs.** This is a logical-format choice, with ordinary Mongo arrays and JSON in the browser. Binary is optional follow-up work, not part of this recommendation. These are recommendations for what to pursue next, not approval to migrate production from a single synthetic workload.
+
+1. **Mongo storage and a balanced improvement → Columns + omit.** It has the smallest Snappy collection among the nine ordinary-field formats: 155.8 versus 180.5 KB/doc for original objects (about 14% less). Four-document retained JS memory also falls from 7.3 to 6.5 MB (about 12% less). Ready P95 is 56.2 versus 58.0 ms; do not count that small difference as a proven speedup. Tradeoff: a translation step and omitted-counter reconstruction. This recommendation targets your current Snappy setup; Zstd has a different storage ranking.
+
+2. **Temporary browser memory pressure → Client dictionary + omit, with a direct JSON loader, only if IDs actually have shared client/sequence structure.** Observed four-document high-water memory is 9.1 MB versus 16.9 MB for original objects. Retained memory is 6.5 MB—essentially the same as Columns + omit, not a further steady-state saving. Tradeoffs: a custom direct loader and 188.7 KB/doc in Snappy, more than original objects. The high-water measurement is sampled, not an exact peak or proof of fewer GC stalls. **For independent opaque 8-character nanoids, do not adopt this split-ID format based on this fixture; use recommendation 1 instead.** If retained memory alone is the priority, recommendation 1 is also the simpler choice.
+
+3. **Browser loading speed, accepting a Mongo storage penalty → Investigate dictionary columns through the existing object loader.** It has the lowest observed four-document JSON/object ready P95: 51.1 versus 58.0 ms, with ID-loading P95 19.9 versus 25.4 ms. Tradeoff: 245.9 versus 180.5 KB/doc in Snappy (about 36% more). Do not ship on this timing ranking yet: the single-document winner differs, and P95 here is the maximum of only 18 samples. Run a larger, representative timing study first. This is not a recommendation for binary or for the direct loader.
+
+**If the goal is a large reduction in retained editor memory, none of these formats establishes that.** Every loader still builds the existing mutable IdList tree. A native column-backed editing representation needs its own implementation and benchmark. The measured percentages above come from Matthew’s structured-ID trace; opaque nanoid workloads need their own run before a migration decision.
+
+## Evidence and limits behind those recommendations
+
 - **Tail ranking is fragile here.** There are only 18 primary samples per row. With nearest-rank P95, 18 samples means P95 is the maximum. 3 samples exceed three times their row median (282.5, 266.8, 273.3 ms); none were removed. A single unexplained stall can change the ranking. More repetitions and a representative corpus are needed before selecting on tail latency.
-- **Native memory is still the unresolved architectural question.** Every option builds the existing IdList editing tree. These results compare snapshot loading, not a library that edits directly in compact columns. Binary optimization cannot substitute for that implementation.
 
 ## What happened to Build IDs and Layout?
 
@@ -35,6 +44,8 @@ Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint prot
 
 ![JS memory sorted by retained bytes](results/browser/memory-4.svg)
 
+<details><summary>Show numeric results (9 rows)</summary>
+
 | Logical format           | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | --------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
 | Dictionary columns       | JSON / objects  |          44.5 |         41.8 |         51.1 |           19.9 |         56.7 |              2.3 / 1.5 |             16.1 |     6.9 |                   55.4 |              20.1 |
@@ -47,11 +58,15 @@ Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint prot
 | Signed tuples            | JSON / objects  |          47.1 |         42.9 |         58.6 |           23.9 |         59.0 |              2.3 / 1.5 |             17.2 |     7.3 |                   57.3 |              18.7 |
 | Signed objects           | JSON / objects  |          63.7 |         49.8 |        282.5 |          240.3 |         58.1 |              3.4 / 3.3 |             21.6 |     7.3 |                   55.2 |              18.7 |
 
+</details>
+
 ### 1 document(s): logical JSON formats
 
 ![Browser speed sorted by complete-ready P95](results/browser/browser-1.svg)
 
 ![JS memory sorted by retained bytes](results/browser/memory-1.svg)
+
+<details><summary>Show numeric results (9 rows)</summary>
 
 | Logical format           | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | --------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
@@ -65,6 +80,8 @@ Ordinary BSON objects and arrays, not JSON strings. Same compact/checkpoint prot
 | Client dictionary + omit | JSON / objects  |          17.6 |         16.7 |         24.2 |            7.8 |         23.5 |              0.7 / 0.5 |              3.7 |     1.6 |                   14.4 |              18.7 |
 | Original objects         | JSON / objects  |          17.0 |         16.6 |         24.4 |            9.6 |         25.4 |              0.9 / 1.2 |              6.8 |     1.7 |                   13.7 |             225.3 |
 
+</details>
+
 ## 2. Secondary optimization: direct JSON loading
 
 Same JSON structures, with and without an intermediate object-run array. This isolates the loader change from encoding. Mongo storage is unchanged. Direct loading still builds the same final editing tree.
@@ -75,6 +92,8 @@ Same JSON structures, with and without an intermediate object-run array. This is
 
 ![JS memory sorted by retained bytes](results/browser/memory-4-direct.svg)
 
+<details><summary>Show numeric results (4 rows)</summary>
+
 | Logical format           | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | --------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
 | Client dictionary + omit | JSON / direct   |          46.3 |         47.8 |         51.1 |           21.1 |         57.4 |              2.0 / 1.3 |              9.1 |     6.5 |                   54.4 |              19.7 |
@@ -82,11 +101,15 @@ Same JSON structures, with and without an intermediate object-run array. This is
 | Client dictionary + omit | JSON / objects  |          49.2 |         49.9 |         56.0 |           22.4 |         57.5 |              2.2 / 1.4 |             10.5 |     6.5 |                   57.0 |              20.1 |
 | Dictionary columns       | JSON / direct   |          56.9 |         41.8 |        266.8 |           18.2 |         55.0 |              2.1 / 1.4 |             11.2 |     6.9 |                   51.3 |              20.0 |
 
+</details>
+
 ### 1 document(s): direct JSON loading
 
 ![Browser speed sorted by complete-ready P95](results/browser/browser-1-direct.svg)
 
 ![JS memory sorted by retained bytes](results/browser/memory-1-direct.svg)
+
+<details><summary>Show numeric results (4 rows)</summary>
 
 | Logical format           | Encoding / path | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | --------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
@@ -94,6 +117,8 @@ Same JSON structures, with and without an intermediate object-run array. This is
 | Client dictionary + omit | JSON / direct   |          16.4 |         16.6 |         20.6 |            6.7 |         24.4 |              0.9 / 1.2 |              4.9 |     1.6 |                   14.0 |              20.1 |
 | Dictionary columns       | JSON / objects  |          16.4 |         16.6 |         20.6 |            6.7 |         23.7 |              0.9 / 1.1 |              5.6 |     1.6 |                   13.8 |              19.7 |
 | Client dictionary + omit | JSON / objects  |          17.6 |         16.7 |         24.2 |            7.8 |         23.5 |              0.7 / 0.5 |              3.7 |     1.6 |                   14.4 |              18.7 |
+
+</details>
 
 ## 3. Secondary optimization: binary encoding
 
@@ -106,6 +131,8 @@ Only after choosing a logical structure: compare its JSON row against its binary
 ![Browser speed sorted by complete-ready P95](results/browser/browser-4-encodings.svg)
 
 ![JS memory sorted by retained bytes](results/browser/memory-4-encodings.svg)
+
+<details><summary>Show numeric results (24 rows)</summary>
 
 | Logical format           | Encoding / path        | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | ---------------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
@@ -134,11 +161,15 @@ Only after choosing a logical structure: compare its JSON row against its binary
 | Dictionary columns       | bit-packed / objects   |          58.4 |         42.2 |        273.3 |           20.5 |         60.5 |              2.7 / 2.4 |             10.6 |     6.9 |                   58.0 |              19.7 |
 | Signed objects           | JSON / objects         |          63.7 |         49.8 |        282.5 |          240.3 |         58.1 |              3.4 / 3.3 |             21.6 |     7.3 |                   55.2 |              18.7 |
 
+</details>
+
 ### 1 document(s): encodings and JSON baselines
 
 ![Browser speed sorted by complete-ready P95](results/browser/browser-1-encodings.svg)
 
 ![JS memory sorted by retained bytes](results/browser/memory-1-encodings.svg)
+
+<details><summary>Show numeric results (24 rows)</summary>
 
 | Logical format           | Encoding / path        | Ready mean ms | Ready P50 ms | Ready P95 ms | ID-load P95 ms | Cold mean ms | GC mean / max pause ms | Observed high MB | Kept MB | Sampled allocations MB | First-edit P95 ms |
 | ------------------------ | ---------------------- | ------------: | -----------: | -----------: | -------------: | -----------: | ---------------------: | ---------------: | ------: | ---------------------: | ----------------: |
@@ -167,9 +198,13 @@ Only after choosing a logical structure: compare its JSON row against its binary
 | Client dictionary + omit | protobuf / direct      |          16.9 |         16.5 |         25.2 |            8.7 |         24.5 |              0.8 / 1.0 |              3.8 |     1.6 |                   14.6 |              19.1 |
 | Ordinary columns         | protobuf / objects     |          17.8 |         16.7 |         28.7 |           14.3 |         25.1 |              0.9 / 1.0 |              5.4 |     1.7 |                   15.3 |              19.6 |
 
+</details>
+
 ### Matched encoding and loader comparisons
 
 These are changes in measured means, not significance claims. The three round deltas show how reproducible the direction was across fresh contexts. Negative means faster.
+
+<details><summary>Show numeric results (14 rows)</summary>
 
 | Documents | Same logical structure   | Comparison                                 | Ready change ms | Per-round changes ms | Kept change MB |
 | --------: | ------------------------ | ------------------------------------------ | --------------: | -------------------- | -------------: |
@@ -188,11 +223,15 @@ These are changes in measured means, not significance claims. The three round de
 |         4 | Dictionary columns       | uint32/int32/objects → uint32/int32/direct |            -1.4 | -2.1, -0.3, -1.7     |           -0.0 |
 |         4 | Dictionary columns       | bit-packed/objects → bit-packed/direct     |           -14.9 | -41.3, -1.3, -2.2    |           -0.0 |
 
+</details>
+
 ## Physical Mongo storage: all measurements
 
 MongoDB 8.3.3; 100 documents per layout/compressor, with distinct client dictionaries. Actual allocated collection-file bytes after compact, checkpoint, another compact, and locked fsync. Indexes and shared server overhead excluded; allocated free pages may remain. No logical-BSON or wire-size proxy.
 
 JSON rows mean ordinary BSON objects/arrays in Mongo, **not JSON strings**. Protobuf rows mean one BSON Binary. Numeric-column encodings mean a dictionary plus separate BSON Binary fields. The BSON browser-response variant for objects/tuples uses the same ordinary Mongo layout; it does not imply storing a second blob. Direct/object loader paths also share storage.
+
+<details><summary>Show numeric results (16 rows)</summary>
 
 | Logical structure        | Mongo representation | Snappy KB/doc | Zstd KB/doc |
 | ------------------------ | -------------------- | ------------: | ----------: |
@@ -212,6 +251,8 @@ JSON rows mean ordinary BSON objects/arrays in Mongo, **not JSON strings**. Prot
 | Dictionary columns       | Ordinary BSON        |         245.9 |       127.3 |
 | Dictionary columns       | uint32/int32         |         123.2 |        69.9 |
 | Dictionary columns       | bit-packed           |          98.6 |        69.9 |
+
+</details>
 
 ## Exact logical structures and Mongo examples
 

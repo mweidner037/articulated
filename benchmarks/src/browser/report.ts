@@ -200,12 +200,21 @@ const lines = [
   "",
   `Measured ${data.generatedAt.slice(0, 10)} in Chromium ${data.browser} on ${data.cpu}, CPU rate ${data.cpuRate}×. Each document has ${data.documentCharacters.toLocaleString("en-US")} characters, ${data.paragraphs.toLocaleString("en-US")} paragraphs, and the same 12,091 ID runs. This is a **real, controlled ProseMirror editor in Chromium**, not the production application. The four-document case mounts four copies of that same document; it is a scaling test, not a production corpus.`,
   "",
-  "## Conclusions supported by this run",
+  "## Three recommendations, depending on what matters most",
   "",
-  `- **There is a real tradeoff, not one winner.** On the four-document JSON/object comparison, dictionary columns have the lowest observed complete-ready P95 (${fmt(p95(rowFor("full")))} ms versus ${fmt(p95(rowFor("objects")))} ms for original objects), but use ${disk("full")} versus ${disk("objects")} KB/doc in Snappy Mongo. Their retained JS memory is ${fmt(mem(rowFor("full"), "retainedDelta"))} versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB. This is a result for this run, not proof of a stable population ranking.`,
-  `- **Columns + omitted counters deserve a closer look for balance.** They use ${disk("omit")} KB/doc in Snappy versus ${disk("objects")} for original objects, retain ${fmt(mem(rowFor("omit"), "retainedDelta"))} versus ${fmt(mem(rowFor("objects"), "retainedDelta"))} MB, and have a four-document complete-ready P95 of ${fmt(p95(rowFor("omit")))} versus ${fmt(p95(rowFor("objects")))} ms. The modest speed difference is not established as significant.`,
+  "**My default: pursue ordinary columns with omitted counters, then validate them on our actual documents and IDs.** This is a logical-format choice, with ordinary Mongo arrays and JSON in the browser. Binary is optional follow-up work, not part of this recommendation. These are recommendations for what to pursue next, not approval to migrate production from a single synthetic workload.",
+  "",
+  `1. **Mongo storage and a balanced improvement → Columns + omit.** It has the smallest Snappy collection among the nine ordinary-field formats: ${disk("omit")} versus ${disk("objects")} KB/doc for original objects (about 14% less). Four-document retained JS memory also falls from ${fmt(mem(rowFor("objects"), "retainedDelta"))} to ${fmt(mem(rowFor("omit"), "retainedDelta"))} MB (about 12% less). Ready P95 is ${fmt(p95(rowFor("omit")))} versus ${fmt(p95(rowFor("objects")))} ms; do not count that small difference as a proven speedup. Tradeoff: a translation step and omitted-counter reconstruction. This recommendation targets your current Snappy setup; Zstd has a different storage ranking.`,
+  "",
+  `2. **Temporary browser memory pressure → Client dictionary + omit, with a direct JSON loader, only if IDs actually have shared client/sequence structure.** Observed four-document high-water memory is ${fmt(Math.max(...rowFor("client-direct").memory.map((m) => m.observedHighWaterDelta)) / 1e6)} MB versus ${fmt(Math.max(...rowFor("objects").memory.map((m) => m.observedHighWaterDelta)) / 1e6)} MB for original objects. Retained memory is ${fmt(mem(rowFor("client-direct"), "retainedDelta"))} MB—essentially the same as Columns + omit, not a further steady-state saving. Tradeoffs: a custom direct loader and ${disk("client")} KB/doc in Snappy, more than original objects. The high-water measurement is sampled, not an exact peak or proof of fewer GC stalls. **For independent opaque 8-character nanoids, do not adopt this split-ID format based on this fixture; use recommendation 1 instead.** If retained memory alone is the priority, recommendation 1 is also the simpler choice.`,
+  "",
+  `3. **Browser loading speed, accepting a Mongo storage penalty → Investigate dictionary columns through the existing object loader.** It has the lowest observed four-document JSON/object ready P95: ${fmt(p95(rowFor("full")))} versus ${fmt(p95(rowFor("objects")))} ms, with ID-loading P95 19.9 versus 25.4 ms. Tradeoff: ${disk("full")} versus ${disk("objects")} KB/doc in Snappy (about 36% more). Do not ship on this timing ranking yet: the single-document winner differs, and P95 here is the maximum of only 18 samples. Run a larger, representative timing study first. This is not a recommendation for binary or for the direct loader.`,
+  "",
+  "**If the goal is a large reduction in retained editor memory, none of these formats establishes that.** Every loader still builds the existing mutable IdList tree. A native column-backed editing representation needs its own implementation and benchmark. The measured percentages above come from Matthew’s structured-ID trace; opaque nanoid workloads need their own run before a migration decision.",
+  "",
+  "## Evidence and limits behind those recommendations",
+  "",
   `- **Tail ranking is fragile here.** There are only ${data.rounds * data.trials} primary samples per row. With nearest-rank P95, 18 samples means P95 is the maximum. ${outliers.length} samples exceed three times their row median (${outliers.map(fmt).join(", ")} ms); none were removed. A single unexplained stall can change the ranking. More repetitions and a representative corpus are needed before selecting on tail latency.`,
-  "- **Native memory is still the unresolved architectural question.** Every option builds the existing IdList editing tree. These results compare snapshot loading, not a library that edits directly in compact columns. Binary optimization cannot substitute for that implementation.",
   "",
   "## What happened to Build IDs and Layout?",
   "",
@@ -428,4 +437,9 @@ lines.push(
   "The Mongo runner refuses any other port/path/binding or a nonempty database and never drops data. Stop the dedicated Mongo process afterward. Results: [browser samples](results/browser/browser.json), [Mongo measurements](results/browser/mongo.json), [GC traces](results/browser/traces), [rendered editor screenshot](results/browser/rendered-editor.png). Previous Node-only measurements remain [archived separately](full_picture.md).",
   "",
 );
-fs.writeFileSync(path.resolve(__dirname, "../../browser.md"), lines.join("\n"));
+// Preserve exact numbers without forcing readers through large tables.
+const report = lines.join("\n").replace(/^(?:\|[^\n]*(?:\n|$))+/gm, (table) => {
+  const rows = table.trim().split("\n").length - 2;
+  return `<details><summary>Show numeric results (${rows} rows)</summary>\n\n${table.trimEnd()}\n\n</details>\n`;
+});
+fs.writeFileSync(path.resolve(__dirname, "../../browser.md"), report);
