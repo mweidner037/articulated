@@ -1,0 +1,85 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="792" viewBox="0 0 1315 792" role="img" aria-labelledby="title desc">
+<title id="title">Opaque IDs: sustained-editing memory</title><desc id="desc">Four editors; one edited for 2,000 operations. Sorted by distributed-workload memory. Median of 3 after-GC measurements. Initial and session IDs are 8 characters; first setup ID is not.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="792" fill="white"/>
+<text x="24" y="36" class="title">Opaque IDs: sustained-editing memory</text>
+<text x="24" y="68" >Four editors; one edited for 2,000 operations. Sorted by distributed-workload memory.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Loaded + first edit (MB)</text>
+<line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="425" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="532" y="748" class="small" text-anchor="middle">3.5</text>
+<line x1="639" x2="639" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="639" y="748" class="small" text-anchor="middle">7.0</text>
+<rect x="425" y="165" width="125.16713257142858" height="23" fill="#3266a6"/>
+<text x="557.1671325714286" y="183" class="small">4.1</text>
+<rect x="425" y="247" width="135.45551885714286" height="23" fill="#3266a6"/>
+<text x="567.4555188571428" y="265" class="small">4.4</text>
+<rect x="425" y="329" width="142.36172685714286" height="23" fill="#3266a6"/>
+<text x="574.3617268571429" y="347" class="small">4.7</text>
+<rect x="425" y="411" width="141.610648" height="23" fill="#3266a6"/>
+<text x="573.610648" y="429" class="small">4.6</text>
+<rect x="425" y="493" width="147.81600600000002" height="23" fill="#3266a6"/>
+<text x="579.816006" y="511" class="small">4.8</text>
+<rect x="425" y="575" width="158.42811314285714" height="23" fill="#3266a6"/>
+<text x="590.4281131428571" y="593" class="small">5.2</text>
+<rect x="425" y="657" width="203.39807314285713" height="23" fill="#3266a6"/>
+<text x="635.3980731428571" y="675" class="small">6.7</text>
+<text x="715" y="110" >After 2,000 edits (MB)</text>
+<line x1="715" x2="715" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="715" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="822" y="748" class="small" text-anchor="middle">4.1</text>
+<line x1="929" x2="929" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="929" y="748" class="small" text-anchor="middle">8.2</text>
+<rect x="715" y="165" width="128.82518146341465" height="23" fill="#3c8077"/>
+<text x="850.8251814634147" y="183" class="small">4.9</text>
+<rect x="715" y="247" width="139.04509073170735" height="23" fill="#3c8077"/>
+<text x="861.0450907317073" y="265" class="small">5.3</text>
+<rect x="715" y="329" width="143.60078536585368" height="23" fill="#3c8077"/>
+<text x="865.6007853658537" y="347" class="small">5.5</text>
+<rect x="715" y="411" width="151.63747707317074" height="23" fill="#3c8077"/>
+<text x="873.6374770731708" y="429" class="small">5.8</text>
+<rect x="715" y="493" width="152.0749243902439" height="23" fill="#3c8077"/>
+<text x="874.074924390244" y="511" class="small">5.8</text>
+<rect x="715" y="575" width="157.28686829268293" height="23" fill="#3c8077"/>
+<text x="879.2868682926829" y="593" class="small">6.0</text>
+<rect x="715" y="657" width="202.0621404878049" height="23" fill="#3c8077"/>
+<text x="924.0621404878049" y="675" class="small">7.7</text>
+<text x="1005" y="110" >+ 100 ID versions (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1005" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1112" y="748" class="small" text-anchor="middle">4.2</text>
+<line x1="1219" x2="1219" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="1219" y="748" class="small" text-anchor="middle">8.4</text>
+<rect x="1005" y="165" width="142.60695047619046" height="23" fill="#8571ac"/>
+<text x="1154.6069504761904" y="183" class="small">5.6</text>
+<rect x="1005" y="247" width="152.61552666666665" height="23" fill="#8571ac"/>
+<text x="1164.6155266666667" y="265" class="small">6.0</text>
+<rect x="1005" y="329" width="157.03218095238094" height="23" fill="#8571ac"/>
+<text x="1169.032180952381" y="347" class="small">6.2</text>
+<rect x="1005" y="411" width="160.87368476190477" height="23" fill="#8571ac"/>
+<text x="1172.8736847619048" y="429" class="small">6.3</text>
+<rect x="1005" y="493" width="161.24548428571427" height="23" fill="#8571ac"/>
+<text x="1173.2454842857142" y="511" class="small">6.3</text>
+<rect x="1005" y="575" width="166.36971428571428" height="23" fill="#8571ac"/>
+<text x="1178.3697142857143" y="593" class="small">6.5</text>
+<rect x="1005" y="657" width="201.60287809523808" height="23" fill="#8571ac"/>
+<text x="1213.602878095238" y="675" class="small">7.9</text>
+<text x="24" y="162" >F05 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Columns; infer counters</text>
+<text x="24" y="244" >F09 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="326" >F07 · flat columns · owned 128</text>
+<text x="24" y="368" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="408" >F02 · native rows · owned 128</text>
+<text x="24" y="450" class="small">Objects; signed counts</text>
+<text x="24" y="490" >F01 · native rows · owned 128</text>
+<text x="24" y="532" class="small">Plain SavedIdList objects</text>
+<text x="24" y="572" >F03 · native rows · owned 128</text>
+<text x="24" y="614" class="small">Tuples; signed counts</text>
+<text x="24" y="654" >F01 → existing IdList</text>
+<text x="24" y="696" class="small">Plain SavedIdList objects</text>
+<text x="24" y="780" class="small">Median of 3 after-GC measurements. Initial and session IDs are 8 characters; first setup ID is not.</text>
+</svg>

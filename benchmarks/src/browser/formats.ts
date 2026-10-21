@@ -4,7 +4,7 @@ export const formats = {
     id: "F01",
     name: "Object records: deletion flag",
     explanation:
-      "One object per run, with separate count and isDeleted fields.",
+      "Baseline: the library's plain SavedIdList format. One object per run, with bunchId, startCounter, count and isDeleted fields.",
   },
   signed: {
     id: "F02",

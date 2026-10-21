@@ -11,6 +11,7 @@ import { loadTrace } from "../internal/trace";
 import type { Candidate } from "./candidates";
 import type { EditWorkload } from "./edit-workload";
 import { internalFormat } from "./formats";
+import { opaqueFixture } from "./opaque-fixture";
 import type { BrowserSample } from "./page";
 import type { EditSample } from "./page-runtime";
 import { analyzeTrace, type TraceEvent } from "./trace";
@@ -68,7 +69,11 @@ export async function runBrowserBenchmark(
       });
   }
   fs.mkdirSync(path.join(output, "traces"), { recursive: true });
-  const saved = await fixture();
+  const original = await fixture();
+  const saved =
+    process.env.BROWSER_ID_MODEL === "opaque8"
+      ? opaqueFixture(original)
+      : original;
   const { finalText } = await loadTrace("kleppmannReal", false);
   const documentJSON = JSON.stringify({
     type: "doc",
@@ -225,6 +230,8 @@ export async function runBrowserBenchmark(
     complete: false,
     calibration: null as { before: Heap; after: Heap } | null,
     generatedAt: new Date().toISOString(),
+    idModel:
+      process.env.BROWSER_ID_MODEL === "opaque8" ? "opaque8" : "structured",
     browser: browser.version(),
     playwright: "1.62.1",
     cpu: os.cpus()[0].model,

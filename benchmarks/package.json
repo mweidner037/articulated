@@ -20,6 +20,12 @@
     "yjs": "^13.6.33"
   },
   "scripts": {
+    "explore:run": "node --import tsx src/browser/exploration-run.ts",
+    "explore:sessions": "node --import tsx src/browser/session-run.ts",
+    "explore:scale": "node --import tsx src/browser/exploration-scale.ts",
+    "explore:canonical": "node --import tsx src/browser/canonical-run.ts",
+    "explore:mongo": "node --import tsx src/browser/exploration-mongo.ts",
+    "explore:report": "node --import tsx src/browser/exploration-report.ts && prettier exploration.md --write",
     "test": "TSX_TSCONFIG_PATH=tsconfig.dev.json node --import tsx --test src/full_picture/codecs.test.ts src/browser/*.test.ts",
     "browser:run": "node --import tsx src/browser/run.ts",
     "browser:mongo": "node --import tsx src/browser/mongo.ts",

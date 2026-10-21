@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="956" viewBox="0 0 1025 956" role="img" aria-labelledby="title desc">
+<title id="title">Opaque 8-character IDs: four-document load → render</title><desc id="desc">Warm replacement loads; fastest ready p95 first. Fixed primary selection, compatible cases only. 100 loads/case. Initial whole IDs are 8 characters; the harness first edit adds a benchmark-named ID.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="956" fill="white"/>
+<text x="24" y="36" class="title">Opaque 8-character IDs: four-document load → render</text>
+<text x="24" y="68" >Warm replacement loads; fastest ready p95 first. Fixed primary selection, compatible cases only.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Ready p95 (ms)</text>
+<line x1="425" x2="425" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="425" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="532" y="912" class="small" text-anchor="middle">30.6</text>
+<line x1="639" x2="639" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="639" y="912" class="small" text-anchor="middle">61.3</text>
+<rect x="425" y="165" width="145.57585619402167" height="23" fill="#3266a6"/>
+<text x="577.5758561940216" y="183" class="small">41.7</text>
+<rect x="425" y="247" width="145.57585619402167" height="23" fill="#3266a6"/>
+<text x="577.5758561940216" y="265" class="small">41.7</text>
+<rect x="425" y="329" width="145.57585619402167" height="23" fill="#3266a6"/>
+<text x="577.5758561940216" y="347" class="small">41.7</text>
+<rect x="425" y="411" width="145.57585619402167" height="23" fill="#3266a6"/>
+<text x="577.5758561940216" y="429" class="small">41.7</text>
+<rect x="425" y="493" width="145.57585619402167" height="23" fill="#3266a6"/>
+<text x="577.5758561940216" y="511" class="small">41.7</text>
+<rect x="425" y="575" width="145.57585661018462" height="23" fill="#3266a6"/>
+<text x="577.5758566101846" y="593" class="small">41.7</text>
+<rect x="425" y="657" width="182.58075024136517" height="23" fill="#3266a6"/>
+<text x="614.5807502413652" y="675" class="small">52.3</text>
+<rect x="425" y="739" width="201.0831974731184" height="23" fill="#3266a6"/>
+<text x="633.0831974731184" y="757" class="small">57.6</text>
+<rect x="425" y="821" width="203.52691705230788" height="23" fill="#3266a6"/>
+<text x="635.5269170523079" y="839" class="small">58.3</text>
+<text x="715" y="110" >To internal list p95 (ms)</text>
+<line x1="715" x2="715" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="715" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="822" y="912" class="small" text-anchor="middle">10.2</text>
+<line x1="929" x2="929" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="929" y="912" class="small" text-anchor="middle">20.3</text>
+<rect x="715" y="165" width="62.19704534032662" height="23" fill="#3c8077"/>
+<text x="784.1970453403267" y="183" class="small">5.9</text>
+<rect x="715" y="247" width="74.84729214842096" height="23" fill="#3c8077"/>
+<text x="796.8472921484209" y="265" class="small">7.1</text>
+<rect x="715" y="329" width="79.06403940886699" height="23" fill="#3c8077"/>
+<text x="801.064039408867" y="347" class="small">7.5</text>
+<rect x="715" y="411" width="47.43842615869832" height="23" fill="#3c8077"/>
+<text x="769.4384261586983" y="429" class="small">4.5</text>
+<rect x="715" y="493" width="54.81773323613434" height="23" fill="#3c8077"/>
+<text x="776.8177332361344" y="511" class="small">5.2</text>
+<rect x="715" y="575" width="49.54679853223227" height="23" fill="#3c8077"/>
+<text x="771.5467985322323" y="593" class="small">4.7</text>
+<rect x="715" y="657" width="203.45812631945304" height="23" fill="#3c8077"/>
+<text x="925.4581263194531" y="675" class="small">19.3</text>
+<rect x="715" y="739" width="168.66995073891624" height="23" fill="#3c8077"/>
+<text x="890.6699507389162" y="757" class="small">16.0</text>
+<rect x="715" y="821" width="192.9162569116489" height="23" fill="#3c8077"/>
+<text x="914.9162569116489" y="839" class="small">18.3</text>
+<text x="24" y="162" >F05 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Columns; infer counters</text>
+<text x="24" y="244" >F07 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="326" >F09 · flat columns · owned 128</text>
+<text x="24" y="368" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="408" >F01 · native rows · owned 128</text>
+<text x="24" y="450" class="small">Plain SavedIdList objects</text>
+<text x="24" y="490" >F03 · native rows · owned 128</text>
+<text x="24" y="532" class="small">Tuples; signed counts</text>
+<text x="24" y="572" >F02 · native rows · owned 128</text>
+<text x="24" y="614" class="small">Objects; signed counts</text>
+<text x="24" y="654" >F05 → existing IdList</text>
+<text x="24" y="696" class="small">Columns; infer counters</text>
+<text x="24" y="736" >F01 → existing IdList</text>
+<text x="24" y="778" class="small">Plain SavedIdList objects</text>
+<text x="24" y="818" >F03 → existing IdList</text>
+<text x="24" y="860" class="small">Tuples; signed counts</text>
+<text x="24" y="944" class="small">100 loads/case. Initial whole IDs are 8 characters; the harness first edit adds a benchmark-named ID.</text>
+</svg>

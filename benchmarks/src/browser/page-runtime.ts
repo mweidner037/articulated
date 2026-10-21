@@ -27,11 +27,23 @@ export interface EditSample {
   stringifyMs: number;
 }
 export interface BrowserAPI {
+  session(
+    edits: SessionEdit[],
+    historyLimit: number,
+  ): Promise<{ listMs: number; totalMs: number; retainedVersions: number }>;
+  checkSession(saved: SavedIdList, text: string): void;
+  dropHistory(): void;
   exercise(workload: EditWorkload): Promise<EditSample>;
   prepare(id: string): Promise<void>;
   run(count: number, memory?: boolean): Promise<BrowserSample>;
   clear(): void;
   check(saved: SavedIdList, text: string, edited?: boolean): void;
+}
+export interface SessionEdit {
+  type: "insert" | "delete";
+  index: number;
+  before?: { bunchId: string; counter: number } | null;
+  id: { bunchId: string; counter: number };
 }
 declare global {
   interface Window {
@@ -50,12 +62,14 @@ let prepared: { id: string; bytes: Uint8Array; documentJSON: string } | null =
   null;
 let editors: { list: BenchmarkList; view: EditorView; candidate: Candidate }[] =
   [];
+let history: BenchmarkList[] = [];
 const root = document.getElementById("editors")!;
 const frame = () =>
   new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
 function clear() {
   for (const { view } of editors) view.destroy();
   editors = [];
+  history = [];
   prepared = null;
   root.replaceChildren();
 }
@@ -64,6 +78,85 @@ export function installBenchmark(
   firstEditBunchId = "browser-first-edit",
 ) {
   window.benchmark = {
+    dropHistory() {
+      history = [];
+    },
+    checkSession(saved, text) {
+      if (JSON.stringify(editors[0].list.save()) !== JSON.stringify(saved))
+        throw new Error("Session ID mismatch");
+      if (
+        editors[0].view.state.doc.textBetween(
+          0,
+          editors[0].view.state.doc.content.size,
+          "\n",
+        ) !== text
+      )
+        throw new Error("Session document mismatch");
+      if (
+        root.children.length !== editors.length ||
+        editors.some(({ view }) => !view.dom.isConnected)
+      )
+        throw new Error("Session editor mount mismatch");
+      const rendered = [...editors[0].view.dom.querySelectorAll("p")]
+        .map((p) => p.textContent ?? "")
+        .join("\n");
+      if (rendered !== text) throw new Error("Session rendered text mismatch");
+    },
+    async session(edits, historyLimit) {
+      const editor = editors[0];
+      let listMs = 0;
+      const start = performance.now();
+      for (const edit of edits) {
+        if (historyLimit) {
+          history.push(editor.list);
+          if (history.length > historyLimit) history.shift();
+        }
+        const t = performance.now();
+        const actual =
+          edit.type === "insert"
+            ? edit.index
+              ? editor.list.at(edit.index - 1)
+              : null
+            : editor.list.at(edit.index);
+        editor.list =
+          edit.type === "insert"
+            ? editor.list.insertAfter(actual, edit.id)
+            : editor.list.delete(actual!);
+        listMs += performance.now() - t;
+        const expected =
+          edit.type === "insert" ? (edit.before ?? null) : edit.id;
+        if (
+          actual?.bunchId !== expected?.bunchId ||
+          actual?.counter !== expected?.counter
+        )
+          throw new Error("Session index-to-ID mismatch");
+        // Map text offsets through paragraph separators. This is deliberately
+        // common editor work; do not attribute it to the ID container.
+        let position = 1,
+          remaining = edit.index;
+        for (let i = 0; i < editor.view.state.doc.childCount; i++) {
+          const paragraph = editor.view.state.doc.child(i);
+          if (remaining <= paragraph.content.size) {
+            position += remaining;
+            break;
+          }
+          remaining -= paragraph.content.size + 1;
+          position += paragraph.nodeSize;
+        }
+        const transaction = editor.view.state.tr;
+        if (edit.type === "insert") transaction.insertText("x", position);
+        else transaction.delete(position, position + 1);
+        editor.view.dispatch(transaction);
+      }
+      void root.getBoundingClientRect();
+      await frame();
+      await frame();
+      return {
+        listMs,
+        totalMs: performance.now() - start,
+        retainedVersions: history.length,
+      };
+    },
     async prepare(id) {
       const [bytes, documentJSON] = await Promise.all([
         fetch(`/payload/${id}`).then((r) => r.arrayBuffer()),
@@ -197,7 +290,7 @@ export function installBenchmark(
       const totalMs = performance.now() - started;
       performance.mark("bench-end");
       // Separate from editing/rendering: measure export of the edited state to
-      // the SAME F08 interchange shape, then JSON encoding. No network timing.
+      // the SAME candidate interchange shape, then JSON encoding. No network timing.
       const snapshotStart = performance.now();
       const snapshot = entry.candidate.snapshot!(list);
       const snapshotMs = performance.now() - snapshotStart;

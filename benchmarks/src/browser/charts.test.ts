@@ -37,6 +37,85 @@ test("comparison charts reject missing or invalid metrics", () => {
   assert.throws(() => comparisonChart("Title", "Subtitle", ["MB"], [], "Note"));
 });
 
+test("observed ranges include outliers in the axis and label whiskers honestly", () => {
+  const svg = comparisonChart(
+    "Observed timings",
+    "Three trials",
+    ["Time (ms)"],
+    [{ label: "Row <A>", values: [20], ranges: [{ min: 10, max: 1000 }] }],
+    "Lower is better",
+  );
+  assert(
+    svg.includes(">1050.0</text>"),
+    "Axis must include the 1000 ms outlier",
+  );
+  assert(
+    svg.includes("Whiskers: observed min–max (not confidence intervals)."),
+  );
+  assert(svg.includes("Row &lt;A&gt;: observed min 10, max 1000"));
+  const whisker =
+    /class="observed-range"[^]*?<line x1="([\d.]+)" x2="([\d.]+)"/.exec(svg)!;
+  assert(whisker);
+  assert(Number(whisker[1]) >= 425);
+  assert(Number(whisker[2]) > Number(whisker[1]));
+  assert(Number(whisker[2]) <= 425 + 214, "Outlier must fit the plot");
+});
+
+test("observed ranges reject malformed bounds and missing metrics", () => {
+  for (const ranges of [
+    [],
+    [{ min: -1, max: 20 }],
+    [{ min: NaN, max: 20 }],
+    [{ min: 0, max: Infinity }],
+    [{ min: 11, max: 20 }],
+    [{ min: 0, max: 9 }],
+    [{ min: 20, max: 0 }],
+    [{ min: 0, max: 20 }, undefined],
+  ])
+    assert.throws(() =>
+      comparisonChart(
+        "Title",
+        "Subtitle",
+        ["ms"],
+        [{ label: "Row", values: [10], ranges }],
+        "Note",
+      ),
+    );
+});
+
+test("omitted ranges leave existing charts byte-for-byte unchanged", () => {
+  const without = comparisonChart(
+    "Title",
+    "Subtitle",
+    ["ms"],
+    [{ label: "Row", values: [10] }],
+    "Note",
+  );
+  const omitted = comparisonChart(
+    "Title",
+    "Subtitle",
+    ["ms"],
+    [{ label: "Row", values: [10], ranges: [undefined] }],
+    "Note",
+  );
+  assert.equal(omitted, without);
+  assert(!without.includes("observed-range"));
+  const mixed = comparisonChart(
+    "Title",
+    "Subtitle",
+    ["ms", "MB"],
+    [
+      {
+        label: "Row",
+        values: [10, 2],
+        ranges: [{ min: 10, max: 10 }, undefined],
+      },
+    ],
+    "Note",
+  );
+  assert.equal((mixed.match(/class="observed-range"/g) ?? []).length, 1);
+});
+
 test("every interchange name fits the chart and has an explanation", () => {
   const names = Object.values(formats).map((f) => f.name);
   assert.equal(new Set(names).size, 9);

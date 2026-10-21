@@ -105,7 +105,7 @@ type Columns = {
   startCounters: number[];
   counts: number[];
 };
-function toColumns(saved: SavedIdList): Columns {
+export function toColumns(saved: SavedIdList): Columns {
   const ids = new Map<string, number>();
   const out: Columns = {
     bunchIds: [],

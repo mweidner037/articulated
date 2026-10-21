@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="792" viewBox="0 0 1025 792" role="img" aria-labelledby="title desc">
+<title id="title">Mongo storage: opaque 8-character IDs</title><desc id="desc">Physical collection file KB/document; sorted by Snappy, smallest first. 100 documents/collection. Fresh snapshots; compacted twice. Collection indexes and shared files excluded.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="792" fill="white"/>
+<text x="24" y="36" class="title">Mongo storage: opaque 8-character IDs</text>
+<text x="24" y="68" >Physical collection file KB/document; sorted by Snappy, smallest first.</text>
+<text x="24" y="110" >Stored JSON format</text>
+<text x="425" y="110" >Snappy (KB/doc)</text>
+<line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="425" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="532" y="748" class="small" text-anchor="middle">144.3</text>
+<line x1="639" x2="639" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="639" y="748" class="small" text-anchor="middle">288.5</text>
+<rect x="425" y="165" width="133.89703320623917" height="23" fill="#3266a6"/>
+<text x="565.8970332062391" y="183" class="small">180.5</text>
+<rect x="425" y="247" width="136.1757437781629" height="23" fill="#3266a6"/>
+<text x="568.1757437781629" y="265" class="small">183.6</text>
+<rect x="425" y="329" width="139.97359473136916" height="23" fill="#3266a6"/>
+<text x="571.9735947313692" y="347" class="small">188.7</text>
+<rect x="425" y="411" width="150.39489774696708" height="23" fill="#3266a6"/>
+<text x="582.3948977469671" y="429" class="small">202.8</text>
+<rect x="425" y="493" width="155.1649985441941" height="23" fill="#3266a6"/>
+<text x="587.1649985441941" y="511" class="small">209.2</text>
+<rect x="425" y="575" width="182.50952540727903" height="23" fill="#3266a6"/>
+<text x="614.509525407279" y="593" class="small">246.0</text>
+<rect x="425" y="657" width="203.77749074523396" height="23" fill="#3266a6"/>
+<text x="635.777490745234" y="675" class="small">274.7</text>
+<text x="715" y="110" >Zstd (KB/doc)</text>
+<line x1="715" x2="715" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="715" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="822" y="748" class="small" text-anchor="middle">81.9</text>
+<line x1="929" x2="929" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="929" y="748" class="small" text-anchor="middle">163.8</text>
+<rect x="715" y="165" width="139.5085597069597" height="23" fill="#3c8077"/>
+<text x="861.5085597069597" y="183" class="small">106.8</text>
+<rect x="715" y="247" width="145.98364053724055" height="23" fill="#3c8077"/>
+<text x="867.9836405372405" y="265" class="small">111.7</text>
+<rect x="715" y="329" width="150.21117264957263" height="23" fill="#3c8077"/>
+<text x="872.2111726495726" y="347" class="small">115.0</text>
+<rect x="715" y="411" width="151.70953846153844" height="23" fill="#3c8077"/>
+<text x="873.7095384615384" y="429" class="small">116.1</text>
+<rect x="715" y="493" width="160.91378559218558" height="23" fill="#3c8077"/>
+<text x="882.9137855921856" y="511" class="small">123.2</text>
+<rect x="715" y="575" width="182.3190114774115" height="23" fill="#3c8077"/>
+<text x="904.3190114774116" y="593" class="small">139.6</text>
+<rect x="715" y="657" width="203.72423736263735" height="23" fill="#3c8077"/>
+<text x="925.7242373626374" y="675" class="small">155.9</text>
+<text x="24" y="162" >F05 · Columns; infer counters</text>
+<text x="24" y="244" >F03 · Tuples; signed counts</text>
+<text x="24" y="326" >F02 · Objects; signed counts</text>
+<text x="24" y="408" >F01 · Plain SavedIdList objects</text>
+<text x="24" y="490" >F07 · Deduplicate IDs; infer counters</text>
+<text x="24" y="572" >F04 · Columns; all counters</text>
+<text x="24" y="654" >F09 · Deduplicate IDs; all counters</text>
+<text x="24" y="780" class="small">100 documents/collection. Fresh snapshots; compacted twice. Collection indexes and shared files excluded.</text>
+</svg>

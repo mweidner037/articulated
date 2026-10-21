@@ -5,6 +5,10 @@ import type { BenchmarkList } from "./list-interface";
 export type F08 = ReturnType<typeof toClientIndexOmit>;
 type Columns = Pick<F08, "clientIndices" | "seqNums" | "counts">;
 const CHUNK_SIZE = 128;
+export interface NativeF08Options {
+  ownership?: "shared" | "owned";
+  pageSize?: number;
+}
 function natural(n: number) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error("Invalid nonnegative integer");
@@ -39,12 +43,16 @@ function chunksFor(
   columns: Columns,
   starts: Float64Array,
   clients: string[],
+  options: NativeF08Options = {},
 ): Chunk[] {
+  const pageSize = options.pageSize ?? CHUNK_SIZE;
+  if (!Number.isSafeInteger(pageSize) || pageSize < 2)
+    throw new Error("Invalid page size");
   const chunks: Chunk[] = [];
   const names = new Map<number, Map<number, string>>();
   const size = Math.ceil(
     columns.counts.length /
-      Math.max(1, Math.ceil(columns.counts.length / CHUNK_SIZE)),
+      Math.max(1, Math.ceil(columns.counts.length / pageSize)),
   );
   for (let from = 0; from < columns.counts.length; from += size) {
     const to = Math.min(from + size, columns.counts.length);
@@ -63,7 +71,26 @@ function chunksFor(
       else rows.push(i);
       if (columns.counts[i] > 0) length += columns.counts[i];
     }
-    chunks.push({ columns, starts, from, to, length, byId });
+    if (options.ownership === "owned") {
+      for (const [id, rows] of byId) {
+        byId.set(
+          id,
+          typeof rows === "number" ? rows - from : rows.map((r) => r - from),
+        );
+      }
+      chunks.push({
+        columns: {
+          clientIndices: columns.clientIndices.slice(from, to),
+          seqNums: columns.seqNums.slice(from, to),
+          counts: columns.counts.slice(from, to),
+        },
+        starts: starts.slice(from, to),
+        from: 0,
+        to: to - from,
+        length,
+        byId,
+      });
+    } else chunks.push({ columns, starts, from, to, length, byId });
   }
   return chunks;
 }
@@ -100,8 +127,13 @@ class EditBuffer {
       s.counts[row],
     );
   }
-  finish(clients: string[]) {
-    return chunksFor(this.columns, Float64Array.from(this.starts), clients);
+  finish(clients: string[], options: NativeF08Options) {
+    return chunksFor(
+      this.columns,
+      Float64Array.from(this.starts),
+      clients,
+      options,
+    );
   }
 }
 
@@ -117,6 +149,7 @@ export class NativeF08 implements BenchmarkList {
     private readonly clients: string[],
     private readonly chunks: readonly Chunk[],
     private readonly original?: F08,
+    private readonly options: NativeF08Options = {},
   ) {
     this.prefix = new Float64Array(chunks.length + 1);
     for (let i = 0; i < chunks.length; i++)
@@ -124,7 +157,7 @@ export class NativeF08 implements BenchmarkList {
     this.length = this.prefix[chunks.length];
     natural(this.length);
   }
-  static load(s: F08): NativeF08 {
+  static load(s: F08, options: NativeF08Options = {}): NativeF08 {
     const {
       clientIds,
       clientIndices,
@@ -203,7 +236,12 @@ export class NativeF08 implements BenchmarkList {
           )
             throw new Error("Duplicate IDs");
       }
-    return new NativeF08(clientIds, chunksFor(s, starts, clientIds), s);
+    return new NativeF08(
+      clientIds,
+      chunksFor(s, starts, clientIds, options),
+      options.ownership === "owned" ? undefined : s,
+      options,
+    );
   }
   /** Zero-copy before edits; O(runs) flatten/re-encode after edits. Not cached. */
   get wireState(): Readonly<F08> {
@@ -369,8 +407,12 @@ export class NativeF08 implements BenchmarkList {
         } else buffer.copy(chunk, i);
       }
     const chunks = this.chunks.slice();
-    chunks.splice(target, chunk ? 1 : 0, ...buffer.finish(clients));
-    return new NativeF08(clients, chunks);
+    chunks.splice(
+      target,
+      chunk ? 1 : 0,
+      ...buffer.finish(clients, this.options),
+    );
+    return new NativeF08(clients, chunks, undefined, this.options);
   }
   delete(id: ElementId, count = 1): NativeF08 {
     natural(count);
@@ -421,9 +463,11 @@ export class NativeF08 implements BenchmarkList {
         buffer.append(s.clientIndices[i], s.seqNums[i], lo, -(hi - lo));
         buffer.append(s.clientIndices[i], s.seqNums[i], hi, start + n - hi);
       }
-      result.push(...buffer.finish(this.clients));
+      result.push(...buffer.finish(this.clients, this.options));
     }
-    return result ? new NativeF08(this.clients, result) : this;
+    return result
+      ? new NativeF08(this.clients, result, undefined, this.options)
+      : this;
   }
   save(): SavedIdList {
     const result: SavedIdList = [];

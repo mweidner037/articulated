@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="1284" viewBox="0 0 1025 1284" role="img" aria-labelledby="title desc">
+<title id="title">Four documents: complete load → render</title><desc id="desc">Warm replacement loads; sorted by ready p95, fastest first. Lower is better. 100 loads/case. Conversion is included in readiness; percentiles are not additive.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="1284" fill="white"/>
+<text x="24" y="36" class="title">Four documents: complete load → render</text>
+<text x="24" y="68" >Warm replacement loads; sorted by ready p95, fastest first. Lower is better.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Ready p95 (ms)</text>
+<line x1="425" x2="425" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="425" y="1240" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="532" y="1240" class="small" text-anchor="middle">30.8</text>
+<line x1="639" x2="639" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="639" y="1240" class="small" text-anchor="middle">61.5</text>
+<rect x="425" y="165" width="144.75447162767736" height="23" fill="#3266a6"/>
+<text x="576.7544716276774" y="183" class="small">41.6</text>
+<rect x="425" y="247" width="145.1024387755045" height="23" fill="#3266a6"/>
+<text x="577.1024387755045" y="265" class="small">41.7</text>
+<rect x="425" y="329" width="145.1024387755045" height="23" fill="#3266a6"/>
+<text x="577.1024387755045" y="347" class="small">41.7</text>
+<rect x="425" y="411" width="145.1024387755045" height="23" fill="#3266a6"/>
+<text x="577.1024387755045" y="429" class="small">41.7</text>
+<rect x="425" y="493" width="145.10243919031407" height="23" fill="#3266a6"/>
+<text x="577.102439190314" y="511" class="small">41.7</text>
+<rect x="425" y="575" width="145.79837390077793" height="23" fill="#3266a6"/>
+<text x="577.798373900778" y="593" class="small">41.9</text>
+<rect x="425" y="657" width="146.14634146341464" height="23" fill="#3266a6"/>
+<text x="578.1463414634146" y="675" class="small">42.0</text>
+<rect x="425" y="739" width="148.58211357225247" height="23" fill="#3266a6"/>
+<text x="580.5821135722524" y="757" class="small">42.7</text>
+<rect x="425" y="821" width="148.58211398706203" height="23" fill="#3266a6"/>
+<text x="580.582113987062" y="839" class="small">42.7</text>
+<rect x="425" y="903" width="202.16910577401882" height="23" fill="#3266a6"/>
+<text x="634.1691057740188" y="921" class="small">58.1</text>
+<rect x="425" y="985" width="202.86504048448268" height="23" fill="#3266a6"/>
+<text x="634.8650404844827" y="1003" class="small">58.3</text>
+<rect x="425" y="1067" width="202.86504089929224" height="23" fill="#3266a6"/>
+<text x="634.8650408992922" y="1085" class="small">58.3</text>
+<rect x="425" y="1149" width="203.5609756097561" height="23" fill="#3266a6"/>
+<text x="635.560975609756" y="1167" class="small">58.5</text>
+<text x="715" y="110" >To internal list p95 (ms)</text>
+<line x1="715" x2="715" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="715" y="1240" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="822" y="1240" class="small" text-anchor="middle">12.2</text>
+<line x1="929" x2="929" y1="138" y2="1217" stroke="#e2e6eb"/>
+<text x="929" y="1240" class="small" text-anchor="middle">24.3</text>
+<rect x="715" y="165" width="69.57201520111335" height="23" fill="#3c8077"/>
+<text x="791.5720152011133" y="183" class="small">7.9</text>
+<rect x="715" y="247" width="64.28806437386407" height="23" fill="#3c8077"/>
+<text x="786.288064373864" y="265" class="small">7.3</text>
+<rect x="715" y="329" width="72.21399323930466" height="23" fill="#3c8077"/>
+<text x="794.2139932393046" y="347" class="small">8.2</text>
+<rect x="715" y="411" width="70.45267489711934" height="23" fill="#3c8077"/>
+<text x="792.4526748971193" y="429" class="small">8.0</text>
+<rect x="715" y="493" width="56.36213865790347" height="23" fill="#3c8077"/>
+<text x="778.3621386579034" y="511" class="small">6.4</text>
+<rect x="715" y="575" width="86.30452737886718" height="23" fill="#3c8077"/>
+<text x="808.3045273788672" y="593" class="small">9.8</text>
+<rect x="715" y="657" width="51.07818888048086" height="23" fill="#3c8077"/>
+<text x="773.0781888804809" y="675" class="small">5.8</text>
+<rect x="715" y="739" width="54.600823465198154" height="23" fill="#3c8077"/>
+<text x="776.6008234651981" y="757" class="small">6.2</text>
+<rect x="715" y="821" width="97.75308872937174" height="23" fill="#3c8077"/>
+<text x="819.7530887293717" y="839" class="small">11.1</text>
+<rect x="715" y="903" width="156.7572033258132" height="23" fill="#3c8077"/>
+<text x="878.7572033258132" y="921" class="small">17.8</text>
+<rect x="715" y="985" width="180.5349794238683" height="23" fill="#3c8077"/>
+<text x="902.5349794238683" y="1003" class="small">20.5</text>
+<rect x="715" y="1067" width="203.43209897539742" height="23" fill="#3c8077"/>
+<text x="925.4320989753974" y="1085" class="small">23.1</text>
+<rect x="715" y="1149" width="193.74485701690483" height="23" fill="#3c8077"/>
+<text x="915.7448570169048" y="1167" class="small">22.0</text>
+<text x="24" y="162" >F09 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="244" >F05 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Columns; infer counters</text>
+<text x="24" y="326" >F07 · flat columns · owned 128</text>
+<text x="24" y="368" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="408" >F08 · flat columns · shared 128</text>
+<text x="24" y="450" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="490" >F03 · native rows · owned 128</text>
+<text x="24" y="532" class="small">Tuples; signed counts</text>
+<text x="24" y="572" >F08 · flat columns · owned 128</text>
+<text x="24" y="614" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="654" >F02 · native rows · owned 128</text>
+<text x="24" y="696" class="small">Objects; signed counts</text>
+<text x="24" y="736" >F01 · native rows · owned 128</text>
+<text x="24" y="778" class="small">Plain SavedIdList objects</text>
+<text x="24" y="818" >F08 · page tree · owned 128</text>
+<text x="24" y="860" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="900" >F01 → existing IdList</text>
+<text x="24" y="942" class="small">Plain SavedIdList objects</text>
+<text x="24" y="982" >F03 → existing IdList</text>
+<text x="24" y="1024" class="small">Tuples; signed counts</text>
+<text x="24" y="1064" >F08 → existing IdList</text>
+<text x="24" y="1106" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="1146" >F05 → existing IdList</text>
+<text x="24" y="1188" class="small">Columns; infer counters</text>
+<text x="24" y="1272" class="small">100 loads/case. Conversion is included in readiness; percentiles are not additive.</text>
+</svg>

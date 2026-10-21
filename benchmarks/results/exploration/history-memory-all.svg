@@ -1,0 +1,277 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="2760" viewBox="0 0 1315 2760" role="img" aria-labelledby="title desc">
+<title id="title">Editing memory with 100 prior ID versions retained</title><desc id="desc">After 2,000 operations on one of four editors. Sorted by distributed-workload memory. Different editing trajectories, each retaining 100 versions. New bunches are sequences under one client.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="2760" fill="white"/>
+<text x="24" y="36" class="title">Editing memory with 100 prior ID versions retained</text>
+<text x="24" y="68" >After 2,000 operations on one of four editors. Sorted by distributed-workload memory.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Local typing (MB)</text>
+<line x1="425" x2="425" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="425" y="2716" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="532" y="2716" class="small" text-anchor="middle">4.3</text>
+<line x1="639" x2="639" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="639" y="2716" class="small" text-anchor="middle">8.7</text>
+<rect x="425" y="165" width="124.99941701149426" height="23" fill="#3266a6"/>
+<text x="556.9994170114943" y="183" class="small">5.1</text>
+<rect x="425" y="247" width="124.63094344827589" height="23" fill="#3266a6"/>
+<text x="556.6309434482758" y="265" class="small">5.1</text>
+<rect x="425" y="329" width="126.33113655172416" height="23" fill="#3266a6"/>
+<text x="558.3311365517242" y="347" class="small">5.1</text>
+<rect x="425" y="411" width="134.16097839080462" height="23" fill="#3266a6"/>
+<text x="566.1609783908046" y="429" class="small">5.5</text>
+<rect x="425" y="493" width="127.03738574712644" height="23" fill="#3266a6"/>
+<text x="559.0373857471265" y="511" class="small">5.2</text>
+<rect x="425" y="575" width="135.1416395402299" height="23" fill="#3266a6"/>
+<text x="567.1416395402299" y="593" class="small">5.5</text>
+<rect x="425" y="657" width="123.69524689655172" height="23" fill="#3266a6"/>
+<text x="555.6952468965517" y="675" class="small">5.0</text>
+<rect x="425" y="739" width="132.57442666666665" height="23" fill="#3266a6"/>
+<text x="564.5744266666667" y="757" class="small">5.4</text>
+<rect x="425" y="821" width="138.08706666666666" height="23" fill="#3266a6"/>
+<text x="570.0870666666667" y="839" class="small">5.6</text>
+<rect x="425" y="903" width="129.96421701149424" height="23" fill="#3266a6"/>
+<text x="561.9642170114943" y="921" class="small">5.3</text>
+<rect x="425" y="985" width="132.67055448275863" height="23" fill="#3266a6"/>
+<text x="564.6705544827587" y="1003" class="small">5.4</text>
+<rect x="425" y="1067" width="133.4546308045977" height="23" fill="#3266a6"/>
+<text x="565.4546308045977" y="1085" class="small">5.4</text>
+<rect x="425" y="1149" width="138.39050390804599" height="23" fill="#3266a6"/>
+<text x="570.390503908046" y="1167" class="small">5.6</text>
+<rect x="425" y="1231" width="137.3971503448276" height="23" fill="#3266a6"/>
+<text x="569.3971503448277" y="1249" class="small">5.6</text>
+<rect x="425" y="1313" width="133.3601756321839" height="23" fill="#3266a6"/>
+<text x="565.3601756321839" y="1331" class="small">5.4</text>
+<rect x="425" y="1395" width="138.158891954023" height="23" fill="#3266a6"/>
+<text x="570.158891954023" y="1413" class="small">5.6</text>
+<rect x="425" y="1477" width="147.29526528735633" height="23" fill="#3266a6"/>
+<text x="579.2952652873563" y="1495" class="small">6.0</text>
+<rect x="425" y="1559" width="147.25394114942532" height="23" fill="#3266a6"/>
+<text x="579.2539411494254" y="1577" class="small">6.0</text>
+<rect x="425" y="1641" width="181.75703816091956" height="23" fill="#3266a6"/>
+<text x="613.7570381609196" y="1659" class="small">7.4</text>
+<rect x="425" y="1723" width="181.75674298850575" height="23" fill="#3266a6"/>
+<text x="613.7567429885057" y="1741" class="small">7.4</text>
+<rect x="425" y="1805" width="183.0936772413793" height="23" fill="#3266a6"/>
+<text x="615.0936772413793" y="1823" class="small">7.4</text>
+<rect x="425" y="1887" width="192.2700956321839" height="23" fill="#3266a6"/>
+<text x="624.2700956321839" y="1905" class="small">7.8</text>
+<rect x="425" y="1969" width="192.3040404597701" height="23" fill="#3266a6"/>
+<text x="624.3040404597701" y="1987" class="small">7.8</text>
+<rect x="425" y="2051" width="187.56475218390807" height="23" fill="#3266a6"/>
+<text x="619.564752183908" y="2069" class="small">7.6</text>
+<rect x="425" y="2133" width="190.04380689655173" height="23" fill="#3266a6"/>
+<text x="622.0438068965517" y="2151" class="small">7.7</text>
+<rect x="425" y="2215" width="196.88619862068964" height="23" fill="#3266a6"/>
+<text x="628.8861986206896" y="2233" class="small">8.0</text>
+<rect x="425" y="2297" width="186.3053498850575" height="23" fill="#3266a6"/>
+<text x="618.3053498850575" y="2315" class="small">7.6</text>
+<rect x="425" y="2379" width="203.03454160919543" height="23" fill="#3266a6"/>
+<text x="635.0345416091955" y="2397" class="small">8.3</text>
+<rect x="425" y="2461" width="203.2968514942529" height="23" fill="#3266a6"/>
+<text x="635.2968514942529" y="2479" class="small">8.3</text>
+<rect x="425" y="2543" width="203.34653885057475" height="23" fill="#3266a6"/>
+<text x="635.3465388505747" y="2561" class="small">8.3</text>
+<rect x="425" y="2625" width="203.32499126436784" height="23" fill="#3266a6"/>
+<text x="635.3249912643678" y="2643" class="small">8.3</text>
+<text x="715" y="110" >Distributed (MB)</text>
+<line x1="715" x2="715" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="715" y="2716" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="822" y="2716" class="small" text-anchor="middle">4.7</text>
+<line x1="929" x2="929" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="929" y="2716" class="small" text-anchor="middle">9.3</text>
+<rect x="715" y="165" width="129.17868387096772" height="23" fill="#3c8077"/>
+<text x="851.1786838709677" y="183" class="small">5.6</text>
+<rect x="715" y="247" width="129.8361470967742" height="23" fill="#3c8077"/>
+<text x="851.8361470967742" y="265" class="small">5.6</text>
+<rect x="715" y="329" width="133.18982623655913" height="23" fill="#3c8077"/>
+<text x="855.1898262365592" y="347" class="small">5.8</text>
+<rect x="715" y="411" width="133.91880688172043" height="23" fill="#3c8077"/>
+<text x="855.9188068817205" y="429" class="small">5.8</text>
+<rect x="715" y="493" width="133.97458494623655" height="23" fill="#3c8077"/>
+<text x="855.9745849462365" y="511" class="small">5.8</text>
+<rect x="715" y="575" width="134.52537032258064" height="23" fill="#3c8077"/>
+<text x="856.5253703225807" y="593" class="small">5.8</text>
+<rect x="715" y="657" width="136.14486709677416" height="23" fill="#3c8077"/>
+<text x="858.1448670967742" y="675" class="small">5.9</text>
+<rect x="715" y="739" width="138.44778322580643" height="23" fill="#3c8077"/>
+<text x="860.4477832258065" y="757" class="small">6.0</text>
+<rect x="715" y="821" width="142.46582881720428" height="23" fill="#3c8077"/>
+<text x="864.4658288172043" y="839" class="small">6.2</text>
+<rect x="715" y="903" width="144.14091956989245" height="23" fill="#3c8077"/>
+<text x="866.1409195698925" y="921" class="small">6.3</text>
+<rect x="715" y="985" width="144.57241720430108" height="23" fill="#3c8077"/>
+<text x="866.572417204301" y="1003" class="small">6.3</text>
+<rect x="715" y="1067" width="146.56321548387095" height="23" fill="#3c8077"/>
+<text x="868.563215483871" y="1085" class="small">6.4</text>
+<rect x="715" y="1149" width="147.08233806451614" height="23" fill="#3c8077"/>
+<text x="869.0823380645161" y="1167" class="small">6.4</text>
+<rect x="715" y="1231" width="148.96480172043007" height="23" fill="#3c8077"/>
+<text x="870.96480172043" y="1249" class="small">6.5</text>
+<rect x="715" y="1313" width="149.43210408602147" height="23" fill="#3c8077"/>
+<text x="871.4321040860215" y="1331" class="small">6.5</text>
+<rect x="715" y="1395" width="149.6901006451613" height="23" fill="#3c8077"/>
+<text x="871.6901006451612" y="1413" class="small">6.5</text>
+<rect x="715" y="1477" width="151.99964387096773" height="23" fill="#3c8077"/>
+<text x="873.9996438709677" y="1495" class="small">6.6</text>
+<rect x="715" y="1559" width="154.51609978494625" height="23" fill="#3c8077"/>
+<text x="876.5160997849463" y="1577" class="small">6.7</text>
+<rect x="715" y="1641" width="183.10355440860212" height="23" fill="#3c8077"/>
+<text x="905.1035544086021" y="1659" class="small">8.0</text>
+<rect x="715" y="1723" width="183.1041987096774" height="23" fill="#3c8077"/>
+<text x="905.1041987096773" y="1741" class="small">8.0</text>
+<rect x="715" y="1805" width="184.34898838709677" height="23" fill="#3c8077"/>
+<text x="906.3489883870968" y="1823" class="small">8.0</text>
+<rect x="715" y="1887" width="192.95252473118276" height="23" fill="#3c8077"/>
+<text x="914.9525247311827" y="1905" class="small">8.4</text>
+<rect x="715" y="1969" width="192.96872430107527" height="23" fill="#3c8077"/>
+<text x="914.9687243010753" y="1987" class="small">8.4</text>
+<rect x="715" y="2051" width="193.12179182795697" height="23" fill="#3c8077"/>
+<text x="915.1217918279569" y="2069" class="small">8.4</text>
+<rect x="715" y="2133" width="195.7486993548387" height="23" fill="#3c8077"/>
+<text x="917.7486993548387" y="2151" class="small">8.5</text>
+<rect x="715" y="2215" width="196.2395647311828" height="23" fill="#3c8077"/>
+<text x="918.2395647311828" y="2233" class="small">8.5</text>
+<rect x="715" y="2297" width="198.27960602150534" height="23" fill="#3c8077"/>
+<text x="920.2796060215053" y="2315" class="small">8.6</text>
+<rect x="715" y="2379" width="203.12815569892473" height="23" fill="#3c8077"/>
+<text x="925.1281556989247" y="2397" class="small">8.8</text>
+<rect x="715" y="2461" width="203.2548068817204" height="23" fill="#3c8077"/>
+<text x="925.2548068817205" y="2479" class="small">8.8</text>
+<rect x="715" y="2543" width="203.27818580645157" height="23" fill="#3c8077"/>
+<text x="925.2781858064516" y="2561" class="small">8.8</text>
+<rect x="715" y="2625" width="203.3466658064516" height="23" fill="#3c8077"/>
+<text x="925.3466658064516" y="2643" class="small">8.8</text>
+<text x="1005" y="110" >New bunch IDs (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="1005" y="2716" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="1112" y="2716" class="small" text-anchor="middle">7.5</text>
+<line x1="1219" x2="1219" y1="138" y2="2693" stroke="#e2e6eb"/>
+<text x="1219" y="2716" class="small" text-anchor="middle">15.0</text>
+<rect x="1005" y="165" width="80.54389333333333" height="23" fill="#8571ac"/>
+<text x="1092.5438933333332" y="183" class="small">5.6</text>
+<rect x="1005" y="247" width="80.92994933333333" height="23" fill="#8571ac"/>
+<text x="1092.9299493333333" y="265" class="small">5.7</text>
+<rect x="1005" y="329" width="82.98366453333333" height="23" fill="#8571ac"/>
+<text x="1094.9836645333332" y="347" class="small">5.8</text>
+<rect x="1005" y="411" width="83.87133653333333" height="23" fill="#8571ac"/>
+<text x="1095.8713365333333" y="429" class="small">5.9</text>
+<rect x="1005" y="493" width="83.46559253333334" height="23" fill="#8571ac"/>
+<text x="1095.4655925333334" y="511" class="small">5.9</text>
+<rect x="1005" y="575" width="84.12619626666667" height="23" fill="#8571ac"/>
+<text x="1096.1261962666667" y="593" class="small">5.9</text>
+<rect x="1005" y="657" width="84.83941546666667" height="23" fill="#8571ac"/>
+<text x="1096.8394154666667" y="675" class="small">5.9</text>
+<rect x="1005" y="739" width="197.15722986666668" height="23" fill="#8571ac"/>
+<text x="1209.1572298666667" y="757" class="small">13.8</text>
+<rect x="1005" y="821" width="199.63044213333333" height="23" fill="#8571ac"/>
+<text x="1211.6304421333334" y="839" class="small">14.0</text>
+<rect x="1005" y="903" width="89.771288" height="23" fill="#8571ac"/>
+<text x="1101.771288" y="921" class="small">6.3</text>
+<rect x="1005" y="985" width="200.92614079999998" height="23" fill="#8571ac"/>
+<text x="1212.9261408" y="1003" class="small">14.1</text>
+<rect x="1005" y="1067" width="91.26420906666667" height="23" fill="#8571ac"/>
+<text x="1103.2642090666666" y="1085" class="small">6.4</text>
+<rect x="1005" y="1149" width="91.51227786666665" height="23" fill="#8571ac"/>
+<text x="1103.5122778666666" y="1167" class="small">6.4</text>
+<rect x="1005" y="1231" width="203.66608266666668" height="23" fill="#8571ac"/>
+<text x="1215.6660826666666" y="1249" class="small">14.3</text>
+<rect x="1005" y="1313" width="92.99253013333335" height="23" fill="#8571ac"/>
+<text x="1104.9925301333333" y="1331" class="small">6.5</text>
+<rect x="1005" y="1395" width="93.20470399999999" height="23" fill="#8571ac"/>
+<text x="1105.204704" y="1413" class="small">6.5</text>
+<rect x="1005" y="1477" width="94.75092533333333" height="23" fill="#8571ac"/>
+<text x="1106.7509253333333" y="1495" class="small">6.6</text>
+<rect x="1005" y="1559" width="96.37412959999999" height="23" fill="#8571ac"/>
+<text x="1108.3741296" y="1577" class="small">6.8</text>
+<rect x="1005" y="1641" width="113.74973120000001" height="23" fill="#8571ac"/>
+<text x="1125.7497312" y="1659" class="small">8.0</text>
+<rect x="1005" y="1723" width="113.7089856" height="23" fill="#8571ac"/>
+<text x="1125.7089856" y="1741" class="small">8.0</text>
+<rect x="1005" y="1805" width="114.51967466666666" height="23" fill="#8571ac"/>
+<text x="1126.5196746666666" y="1823" class="small">8.0</text>
+<rect x="1005" y="1887" width="119.72860586666665" height="23" fill="#8571ac"/>
+<text x="1131.7286058666666" y="1905" class="small">8.4</text>
+<rect x="1005" y="1969" width="119.82385013333334" height="23" fill="#8571ac"/>
+<text x="1131.8238501333333" y="1987" class="small">8.4</text>
+<rect x="1005" y="2051" width="119.7643296" height="23" fill="#8571ac"/>
+<text x="1131.7643296" y="2069" class="small">8.4</text>
+<rect x="1005" y="2133" width="121.33212213333333" height="23" fill="#8571ac"/>
+<text x="1133.3321221333333" y="2151" class="small">8.5</text>
+<rect x="1005" y="2215" width="121.64673066666667" height="23" fill="#8571ac"/>
+<text x="1133.6467306666666" y="2233" class="small">8.5</text>
+<rect x="1005" y="2297" width="122.93426879999998" height="23" fill="#8571ac"/>
+<text x="1134.9342688" y="2315" class="small">8.6</text>
+<rect x="1005" y="2379" width="126.05513066666666" height="23" fill="#8571ac"/>
+<text x="1138.0551306666666" y="2397" class="small">8.8</text>
+<rect x="1005" y="2461" width="126.20259093333334" height="23" fill="#8571ac"/>
+<text x="1138.2025909333333" y="2479" class="small">8.8</text>
+<rect x="1005" y="2543" width="126.21674346666667" height="23" fill="#8571ac"/>
+<text x="1138.2167434666667" y="2561" class="small">8.8</text>
+<rect x="1005" y="2625" width="126.21765653333333" height="23" fill="#8571ac"/>
+<text x="1138.2176565333334" y="2643" class="small">8.8</text>
+<text x="24" y="162" >F08 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="244" >F05 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Columns; infer counters</text>
+<text x="24" y="326" >F05 · flat columns · owned 64</text>
+<text x="24" y="368" class="small">Columns; infer counters</text>
+<text x="24" y="408" >F05 · flat columns · owned 256</text>
+<text x="24" y="450" class="small">Columns; infer counters</text>
+<text x="24" y="490" >F08 · flat columns · owned 64</text>
+<text x="24" y="532" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="572" >F08 · flat columns · owned 256</text>
+<text x="24" y="614" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="654" >F05 · flat columns · shared 128</text>
+<text x="24" y="696" class="small">Columns; infer counters</text>
+<text x="24" y="736" >F09 · flat columns · owned 128</text>
+<text x="24" y="778" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="818" >F07 · flat columns · owned 128</text>
+<text x="24" y="860" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="900" >F08 · flat columns · shared 128</text>
+<text x="24" y="942" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="982" >F09 · flat columns · shared 128</text>
+<text x="24" y="1024" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="1064" >F02 · native rows · owned 128</text>
+<text x="24" y="1106" class="small">Objects; signed counts</text>
+<text x="24" y="1146" >F01 · native rows · owned 128</text>
+<text x="24" y="1188" class="small">Plain SavedIdList objects</text>
+<text x="24" y="1228" >F07 · flat columns · shared 128</text>
+<text x="24" y="1270" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="1310" >F02 · native rows · shared 128</text>
+<text x="24" y="1352" class="small">Objects; signed counts</text>
+<text x="24" y="1392" >F01 · native rows · shared 128</text>
+<text x="24" y="1434" class="small">Plain SavedIdList objects</text>
+<text x="24" y="1474" >F03 · native rows · owned 128</text>
+<text x="24" y="1516" class="small">Tuples; signed counts</text>
+<text x="24" y="1556" >F03 · native rows · shared 128</text>
+<text x="24" y="1598" class="small">Tuples; signed counts</text>
+<text x="24" y="1638" >F05 → existing IdList</text>
+<text x="24" y="1680" class="small">Columns; infer counters</text>
+<text x="24" y="1720" >F08 → existing IdList</text>
+<text x="24" y="1762" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="1802" >F06 → existing IdList</text>
+<text x="24" y="1844" class="small">Split IDs; infer counters</text>
+<text x="24" y="1884" >F07 → existing IdList</text>
+<text x="24" y="1926" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="1966" >F09 → existing IdList</text>
+<text x="24" y="2008" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="2048" >F08 · page tree · owned 128</text>
+<text x="24" y="2090" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="2130" >F08 · page tree · owned 64</text>
+<text x="24" y="2172" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="2212" >F08 · page tree · owned 256</text>
+<text x="24" y="2254" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="2294" >F08 · page tree · shared 128</text>
+<text x="24" y="2336" class="small">Deduplicate clients; infer counters</text>
+<text x="24" y="2376" >F03 → existing IdList</text>
+<text x="24" y="2418" class="small">Tuples; signed counts</text>
+<text x="24" y="2458" >F04 → existing IdList</text>
+<text x="24" y="2500" class="small">Columns; all counters</text>
+<text x="24" y="2540" >F02 → existing IdList</text>
+<text x="24" y="2582" class="small">Objects; signed counts</text>
+<text x="24" y="2622" >F01 → existing IdList</text>
+<text x="24" y="2664" class="small">Plain SavedIdList objects</text>
+<text x="24" y="2748" class="small">Different editing trajectories, each retaining 100 versions. New bunches are sequences under one client.</text>
+</svg>
