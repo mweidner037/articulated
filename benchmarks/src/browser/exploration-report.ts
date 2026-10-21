@@ -643,11 +643,11 @@ const smallestOpaque = [...canonicalOpaque.examples].sort(
   (a, b) => canonicalDisk(a.formatId) - canonicalDisk(b.formatId),
 )[0];
 const summary = (selected: string[]) => [
-  "| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo Snappy KB/doc |",
+  "| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo KB/doc: Snappy / zstd |",
   "| --- | ---: | ---: | ---: | ---: | ---: |",
   ...selected.map(
     (id) =>
-      `| ${label(id)} | ${f(ready(id))} | ${f(sessionMemory(id))} | ${f(sessionMemory(id, 100))} | ${f(q(sessionTime(id, "distributed")))} | ${f(disk(format(id).id))} |`,
+      `| ${label(id)} | ${f(ready(id))} | ${f(sessionMemory(id))} | ${f(sessionMemory(id, 100))} | ${f(q(sessionTime(id, "distributed")))} | ${f(disk(format(id).id))} / ${f(disk(format(id).id, "zstd"))} |`,
   ),
 ];
 function storedExamples(): string[] {
@@ -710,15 +710,19 @@ const lines = [
   "",
   "## Three recommendations, depending on your priority",
   "",
-  `1. **Mongo storage first: investigate ${smallestOpaque.formatId} (${shortNames[smallestOpaque.formatId]}).** With your eight-character IDs and Snappy, the canonical snapshot used **${f(canonicalDisk(smallestOpaque.formatId))} KB/document**, versus ${f(canonicalDisk("F01"))} KB for plain SavedIdList—**${pct(canonicalDisk(smallestOpaque.formatId), canonicalDisk("F01"))}% less**. Changing the stored format does not require replacing the editable IdList, but does require a migration and conversion on load.`,
+  "**Implementation status: the experiments are done.** Native F05 and native F08 were implemented and benchmarked, along with the other native containers. The recommendations below concern which measured prototype to take toward production; completing the full library API and production integration remains separate work.",
   "",
-  `2. **Browser memory first: investigate native F05 columns with owned pages.** In the four-document ${opaqueSessions ? "eight-character-ID" : "structured-ID"} test after 2,000 distributed edits, this used **${f(sessionMemory("f05-flat-owned-128", 0, "distributed", memoryEvidence))} MB**, versus ${f(sessionMemory("objects", 0, "distributed", memoryEvidence))} MB for existing IdList. The canonical one-document replay below separately tests the whole recorded history. These are incomplete API prototypes; the memory saving is not a claim of faster editing or zero initialization.`,
+  `1. **Mongo storage first: ${smallestOpaque.formatId} (${shortNames[smallestOpaque.formatId]}) is the leading measured option.** With your eight-character IDs and Snappy, the canonical snapshot used **${f(canonicalDisk(smallestOpaque.formatId))} KB/document**, versus ${f(canonicalDisk("F01"))} KB for plain SavedIdList—**${pct(canonicalDisk(smallestOpaque.formatId), canonicalDisk("F01"))}% less**. Changing the stored format does not require replacing the editable IdList, but does require a migration and conversion on load.`,
+  "",
+  `2. **Browser memory first: native F05 columns with owned pages is the leading measured prototype.** In the four-document ${opaqueSessions ? "eight-character-ID" : "structured-ID"} test after 2,000 distributed edits, this used **${f(sessionMemory("f05-flat-owned-128", 0, "distributed", memoryEvidence))} MB**, versus ${f(sessionMemory("objects", 0, "distributed", memoryEvidence))} MB for existing IdList. The canonical one-document replay below separately tests the whole recorded history. These are incomplete API prototypes; the memory saving is not a claim of faster editing or zero initialization.`,
   "",
   `3. **Avoiding a library rewrite: keep the existing IdList.** Its 2,000 distributed ID-call batch was **${f(q(sessionTime("objects", "distributed", 0, "listMs", memoryEvidence)))} ms**, versus ${f(q(sessionTime("f05-flat-owned-128", "distributed", 0, "listMs", memoryEvidence)))} ms for native F05. Native loading can still be faster; editing and loading are different tradeoffs. Use the full canonical editor totals below to judge whether an ID-call difference matters to the whole editor. Keeping F01 storage as well avoids a format migration.`,
   "",
   `**Loading and editing are different:** in the separate four-document ${opaqueBrowser ? "opaque-ID" : "structured-ID"} warm-load test, native F05 ready p95 was **${f(loadP95("f05-flat-owned-128", "total"))} ms**, versus **${f(loadP95("objects", "total"))} ms** for existing IdList; conversion p95 was ${f(loadP95("f05-flat-owned-128", "hydrate"))} versus ${f(loadP95("objects", "hydrate"))} ms. Ready time includes the editor work and two animation frames, not network/server time. The canonical full-edit replay does **not** establish a dependable editor-speed winner; its variable timings and all four diagnostic runs remain visible below.`,
   "",
   "**ID-model warning:** F06/F08 require structured `client_sequence` IDs. They cannot losslessly split arbitrary opaque 8-character nanoids. Opaque-ID Mongo measurements therefore exclude F06/F08. The primary browser comparison uses the original structured trace so every candidate can receive identical logical IDs; it must not be presented as measured opaque-ID browser performance. A separate opaque-ID browser section is included when its complete run is available.",
+  "",
+  "**Where native F08 went:** both flat-page and indexed-page native F08 implementations completed the full canonical replay, plus loading, memory and editing benchmarks. Their results are in the [structured-ID comparison](#native-f08-results), not missing or unfinished. F08 deduplicates clients and stores sequence numbers separately; using that design for your opaque IDs would require changing the identity model. F07 is the separately implemented whole-ID dictionary alternative that supports opaque IDs.",
   "",
   ...storedExamples(),
   ...canonicalSection,

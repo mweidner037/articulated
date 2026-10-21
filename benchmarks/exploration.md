@@ -8,15 +8,19 @@ Draft exploration, not a production migration. This report separates **what is s
 
 ## Three recommendations, depending on your priority
 
-1. **Mongo storage first: investigate F05 (Columns; infer counters).** With your eight-character IDs and Snappy, the canonical snapshot used **172.3 KB/document**, versus 196.9 KB for plain SavedIdList—**12.5% less**. Changing the stored format does not require replacing the editable IdList, but does require a migration and conversion on load.
+**Implementation status: the experiments are done.** Native F05 and native F08 were implemented and benchmarked, along with the other native containers. The recommendations below concern which measured prototype to take toward production; completing the full library API and production integration remains separate work.
 
-2. **Browser memory first: investigate native F05 columns with owned pages.** In the four-document eight-character-ID test after 2,000 distributed edits, this used **4.9 MB**, versus 7.7 MB for existing IdList. The canonical one-document replay below separately tests the whole recorded history. These are incomplete API prototypes; the memory saving is not a claim of faster editing or zero initialization.
+1. **Mongo storage first: F05 (Columns; infer counters) is the leading measured option.** With your eight-character IDs and Snappy, the canonical snapshot used **172.3 KB/document**, versus 196.9 KB for plain SavedIdList—**12.5% less**. Changing the stored format does not require replacing the editable IdList, but does require a migration and conversion on load.
+
+2. **Browser memory first: native F05 columns with owned pages is the leading measured prototype.** In the four-document eight-character-ID test after 2,000 distributed edits, this used **4.9 MB**, versus 7.7 MB for existing IdList. The canonical one-document replay below separately tests the whole recorded history. These are incomplete API prototypes; the memory saving is not a claim of faster editing or zero initialization.
 
 3. **Avoiding a library rewrite: keep the existing IdList.** Its 2,000 distributed ID-call batch was **19.2 ms**, versus 30.7 ms for native F05. Native loading can still be faster; editing and loading are different tradeoffs. Use the full canonical editor totals below to judge whether an ID-call difference matters to the whole editor. Keeping F01 storage as well avoids a format migration.
 
 **Loading and editing are different:** in the separate four-document opaque-ID warm-load test, native F05 ready p95 was **41.7 ms**, versus **57.6 ms** for existing IdList; conversion p95 was 5.9 versus 16.0 ms. Ready time includes the editor work and two animation frames, not network/server time. The canonical full-edit replay does **not** establish a dependable editor-speed winner; its variable timings and all four diagnostic runs remain visible below.
 
 **ID-model warning:** F06/F08 require structured `client_sequence` IDs. They cannot losslessly split arbitrary opaque 8-character nanoids. Opaque-ID Mongo measurements therefore exclude F06/F08. The primary browser comparison uses the original structured trace so every candidate can receive identical logical IDs; it must not be presented as measured opaque-ID browser performance. A separate opaque-ID browser section is included when its complete run is available.
+
+**Where native F08 went:** both flat-page and indexed-page native F08 implementations completed the full canonical replay, plus loading, memory and editing benchmarks. Their results are in the [structured-ID comparison](#native-f08-results), not missing or unfinished. F08 deduplicates clients and stores sequence numbers separately; using that design for your opaque IDs would require changing the identity model. F07 is the separately implemented whole-ID dictionary alternative that supports opaque IDs.
 
 ## Exact stored JSON, F01–F09
 
@@ -272,15 +276,19 @@ Source: [Martin Kleppmann’s editing trace](https://github.com/automerge/autome
 
 Sorted by median editor replay time, fastest first. Times are **median [minimum–maximum] of three fresh-browser-process trials**, not p95; browser launch/close is outside all clocks. ID-only time and editor time are separate passes and must not be added. Memory is final retained JS heap plus backing storage after collection; values include one editor grown from empty. This is **one document**, unlike the separate four-preloaded-document load/session suite: do not compare their raw memory totals. Storage follows the saved F-format, not the runtime data structure.
 
-| Internal representation                      | ID-only seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |
-| -------------------------------------------- | ----------------------: | ---------------------: | --------------------------------: | ----------------------: |
-| F03 · native tuples                          |           1.0 [0.7–1.1] |       48.7 [38.6–64.0] |                         2.5 / 2.9 |           176.4 / 106.8 |
-| F05 · native columns; reconstruct counters   |           1.0 [0.9–1.1] |       52.0 [50.3–63.2] |                         2.2 / 2.9 |           172.3 / 102.7 |
-| F01 · native plain objects                   |           0.9 [0.7–0.9] |       56.0 [50.6–58.4] |                         2.5 / 3.0 |           196.9 / 110.9 |
-| F01 · existing IdList                        |           0.4 [0.4–0.4] |       57.9 [51.7–64.7] |                         3.2 / 3.4 |           196.9 / 110.9 |
-| F07 · native whole-ID dictionary columns     |           1.5 [1.1–6.5] |       57.9 [50.1–60.8] |                         2.4 / 3.9 |           201.0 / 119.1 |
-| F02 · native objects; negative means deleted |           0.8 [0.8–0.8] |       58.7 [49.8–65.6] |                         2.6 / 3.1 |           180.5 / 110.9 |
-| F09 · native dictionary + all counters       |           1.7 [1.4–1.8] |     104.5 [79.2–105.8] |                         2.4 / 3.9 |           268.9 / 147.7 |
+**What ID lookup + mutation time means:** total elapsed time for all 259,778 edits against the ID container alone, not per edit. Each step locates the insertion anchor or deletion target with at(index), checks it against the prepared trace, and calls insertAfter or delete. The clock includes the replay loop, insertion-ID object allocation and any natural GC during the loop. It excludes saved-format loading/conversion, input preparation, ProseMirror updates and rendering. The separate editor pass includes document updates and checkpoint rendering; the two passes are not additive.
+
+| Internal representation                      | ID lookup + mutation, seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |
+| -------------------------------------------- | ------------------------------------: | ---------------------: | --------------------------------: | ----------------------: |
+| F03 · native tuples                          |                         1.0 [0.7–1.1] |       48.7 [38.6–64.0] |                         2.5 / 2.9 |           176.4 / 106.8 |
+| F05 · native columns; reconstruct counters   |                         1.0 [0.9–1.1] |       52.0 [50.3–63.2] |                         2.2 / 2.9 |           172.3 / 102.7 |
+| F01 · native plain objects                   |                         0.9 [0.7–0.9] |       56.0 [50.6–58.4] |                         2.5 / 3.0 |           196.9 / 110.9 |
+| F01 · existing IdList                        |                         0.4 [0.4–0.4] |       57.9 [51.7–64.7] |                         3.2 / 3.4 |           196.9 / 110.9 |
+| F07 · native whole-ID dictionary columns     |                         1.5 [1.1–6.5] |       57.9 [50.1–60.8] |                         2.4 / 3.9 |           201.0 / 119.1 |
+| F02 · native objects; negative means deleted |                         0.8 [0.8–0.8] |       58.7 [49.8–65.6] |                         2.6 / 3.1 |           180.5 / 110.9 |
+| F09 · native dictionary + all counters       |                         1.7 [1.4–1.8] |     104.5 [79.2–105.8] |                         2.4 / 3.9 |           268.9 / 147.7 |
+
+**The ID-operation result supporting the existing-IdList recommendation:** across all 259,778 operations, existing IdList took **398.0 [397.5–401.4] ms**, native F05 **1017.2 [944.8–1139.7] ms**, and native F03 **1007.1 [693.0–1080.8] ms** (median [min–max]). This pass times identity navigation and mutations without ProseMirror or rendering. It supports an ID-operation advantage in this measured workload, not a dependable full-editor speed advantage.
 
 ![Canonical opaque-ID full-stream speed](results/exploration/canonical-opaque8-speed.svg)
 
@@ -311,22 +319,26 @@ These conclusions cover one initially empty document, one canonical trace, and t
 
 </details>
 
+### Native F08 results
+
+**Native F08 is implemented and measured, not pending.** Both flat-page and indexed-page versions completed all full-stream trials with structured IDs. In that same structured-ID workload, median ID-only times were 456.0 ms for existing IdList, 1126.6 ms for native F05, 2263.7 ms for native F08 flat pages, and 2252.7 ms for native F08 indexed pages. Expand the table for ranges, editor timing, memory and both Mongo compressors; these are not opaque-ID results.
+
 <details>
 <summary>Structured client_sequence IDs — separate comparison, including F08</summary>
 
 F08 can split these IDs into clients and sequence numbers. It cannot losslessly apply that assumption to arbitrary opaque eight-character IDs. Do not transfer this model’s F08 result to the opaque-ID recommendation.
 
-| Internal representation                       | ID-only seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |
-| --------------------------------------------- | ----------------------: | ---------------------: | --------------------------------: | ----------------------: |
-| F05 · native columns; reconstruct counters    |           1.1 [0.9–1.1] |       49.5 [38.2–57.4] |                         2.3 / 2.9 |            149.0 / 78.0 |
-| F03 · native tuples                           |           0.8 [0.6–1.0] |       52.1 [51.5–60.6] |                         2.5 / 3.0 |            143.6 / 82.2 |
-| F08 · native client dictionary; indexed pages |           2.3 [1.9–2.6] |       53.6 [41.5–66.6] |                         3.3 / 3.9 |            184.6 / 82.2 |
-| F09 · native dictionary + all counters        |           1.5 [1.5–2.3] |       56.8 [40.0–59.4] |                         2.4 / 3.9 |           237.9 / 119.1 |
-| F02 · native objects; negative means deleted  |           0.8 [0.8–3.8] |       59.0 [49.7–61.2] |                         2.6 / 3.1 |            151.8 / 82.2 |
-| F01 · native plain objects                    |           0.9 [0.7–1.3] |       59.0 [47.3–59.6] |                         2.6 / 3.0 |            164.1 / 82.2 |
-| F07 · native whole-ID dictionary columns      |           1.6 [1.5–2.6] |       59.5 [58.3–70.7] |                         2.4 / 3.9 |            172.3 / 90.4 |
-| F08 · native client dictionary; flat pages    |           2.3 [2.3–2.4] |       60.6 [57.7–67.4] |                         2.3 / 3.0 |            184.6 / 82.2 |
-| F01 · existing IdList                         |           0.5 [0.4–1.4] |      80.4 [48.4–119.2] |                         3.3 / 3.4 |            164.1 / 82.2 |
+| Internal representation                       | ID lookup + mutation, seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |
+| --------------------------------------------- | ------------------------------------: | ---------------------: | --------------------------------: | ----------------------: |
+| F05 · native columns; reconstruct counters    |                         1.1 [0.9–1.1] |       49.5 [38.2–57.4] |                         2.3 / 2.9 |            149.0 / 78.0 |
+| F03 · native tuples                           |                         0.8 [0.6–1.0] |       52.1 [51.5–60.6] |                         2.5 / 3.0 |            143.6 / 82.2 |
+| F08 · native client dictionary; indexed pages |                         2.3 [1.9–2.6] |       53.6 [41.5–66.6] |                         3.3 / 3.9 |            184.6 / 82.2 |
+| F09 · native dictionary + all counters        |                         1.5 [1.5–2.3] |       56.8 [40.0–59.4] |                         2.4 / 3.9 |           237.9 / 119.1 |
+| F02 · native objects; negative means deleted  |                         0.8 [0.8–3.8] |       59.0 [49.7–61.2] |                         2.6 / 3.1 |            151.8 / 82.2 |
+| F01 · native plain objects                    |                         0.9 [0.7–1.3] |       59.0 [47.3–59.6] |                         2.6 / 3.0 |            164.1 / 82.2 |
+| F07 · native whole-ID dictionary columns      |                         1.6 [1.5–2.6] |       59.5 [58.3–70.7] |                         2.4 / 3.9 |            172.3 / 90.4 |
+| F08 · native client dictionary; flat pages    |                         2.3 [2.3–2.4] |       60.6 [57.7–67.4] |                         2.3 / 3.0 |            184.6 / 82.2 |
+| F01 · existing IdList                         |                         0.5 [0.4–1.4] |      80.4 [48.4–119.2] |                         3.3 / 3.4 |            164.1 / 82.2 |
 
 ![Canonical structured-ID full-stream speed](results/exploration/canonical-structured-speed.svg)
 
@@ -400,21 +412,21 @@ Thus the question measured here is **column-/row-native storage plus its require
 
 <details><summary>Exact primary results: 13 fixed cases, sorted by ready p95</summary>
 
-| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo Snappy KB/doc |
-| -------------------------------- | -----------: | -------------------: | ----------------------: | --------------------------: | ------------------: |
-| F09 · flat columns · owned 128   |         41.6 |                  5.4 |                     6.0 |                        30.0 |               246.0 |
-| F05 · flat columns · owned 128   |         41.7 |                  5.0 |                     5.6 |                        29.4 |               155.9 |
-| F07 · flat columns · owned 128   |         41.7 |                  5.5 |                     6.2 |                        31.9 |               176.4 |
-| F08 · flat columns · shared 128  |         41.7 |                  5.5 |                     6.3 |                        38.9 |               188.7 |
-| F03 · native rows · owned 128    |         41.7 |                  6.1 |                     6.6 |                        27.7 |               161.4 |
-| F08 · flat columns · owned 128   |         41.9 |                  5.0 |                     5.6 |                        63.7 |               188.7 |
-| F02 · native rows · owned 128    |         42.0 |                  5.9 |                     6.4 |                        27.7 |               168.2 |
-| F01 · native rows · owned 128    |         42.7 |                  5.9 |                     6.4 |                        30.0 |               182.1 |
-| F08 · page tree · owned 128      |         42.7 |                  7.9 |                     8.4 |                        40.6 |               188.7 |
-| F01 → existing IdList            |         58.1 |                  8.7 |                     8.8 |                        18.6 |               182.1 |
-| F03 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.2 |               161.4 |
-| F08 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        18.6 |               188.7 |
-| F05 → existing IdList            |         58.5 |                  7.8 |                     8.0 |                        21.9 |               155.9 |
+| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo KB/doc: Snappy / zstd |
+| -------------------------------- | -----------: | -------------------: | ----------------------: | --------------------------: | --------------------------: |
+| F09 · flat columns · owned 128   |         41.6 |                  5.4 |                     6.0 |                        30.0 |               246.0 / 127.3 |
+| F05 · flat columns · owned 128   |         41.7 |                  5.0 |                     5.6 |                        29.4 |                155.9 / 82.1 |
+| F07 · flat columns · owned 128   |         41.7 |                  5.5 |                     6.2 |                        31.9 |                176.4 / 94.4 |
+| F08 · flat columns · shared 128  |         41.7 |                  5.5 |                     6.3 |                        38.9 |                188.7 / 74.5 |
+| F03 · native rows · owned 128    |         41.7 |                  6.1 |                     6.6 |                        27.7 |                161.4 / 86.3 |
+| F08 · flat columns · owned 128   |         41.9 |                  5.0 |                     5.6 |                        63.7 |                188.7 / 74.5 |
+| F02 · native rows · owned 128    |         42.0 |                  5.9 |                     6.4 |                        27.7 |                168.2 / 86.3 |
+| F01 · native rows · owned 128    |         42.7 |                  5.9 |                     6.4 |                        30.0 |                182.1 / 86.3 |
+| F08 · page tree · owned 128      |         42.7 |                  7.9 |                     8.4 |                        40.6 |                188.7 / 74.5 |
+| F01 → existing IdList            |         58.1 |                  8.7 |                     8.8 |                        18.6 |                182.1 / 86.3 |
+| F03 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.2 |                161.4 / 86.3 |
+| F08 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        18.6 |                188.7 / 74.5 |
+| F05 → existing IdList            |         58.5 |                  7.8 |                     8.0 |                        21.9 |                155.9 / 82.1 |
 
 Fastest ready p95 is first. Editing columns are medians after 2,000 distributed operations on one editor; three other editors stay open. Mongo is the **initial structured-ID snapshot**, per document, and is identical for different internal implementations of the same F-format. MB and KB are decimal. Memory includes the editor/model, not only IDs. No single score combines unlike units.
 
@@ -584,39 +596,39 @@ These measurements are not lower bounds for each representation. One concrete re
 
 ![All configurations, navigation and editing](results/exploration/editing-all.svg)
 
-| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo Snappy KB/doc |
-| -------------------------------- | -----------: | -------------------: | ----------------------: | --------------------------: | ------------------: |
-| F05 · flat columns · shared 128  |         41.6 |                  5.2 |                     5.9 |                        26.6 |               155.9 |
-| F07 · flat columns · shared 128  |         41.6 |                  5.8 |                     6.5 |                        26.9 |               176.4 |
-| F09 · flat columns · owned 128   |         41.6 |                  5.4 |                     6.0 |                        30.0 |               246.0 |
-| F09 · flat columns · shared 128  |         41.6 |                  5.6 |                     6.3 |                        27.6 |               246.0 |
-| F03 · native rows · shared 128   |         41.7 |                  6.2 |                     6.7 |                        29.7 |               161.4 |
-| F05 · flat columns · owned 128   |         41.7 |                  5.0 |                     5.6 |                        29.4 |               155.9 |
-| F05 · flat columns · owned 256   |         41.7 |                  4.9 |                     5.8 |                        39.1 |               155.9 |
-| F07 · flat columns · owned 128   |         41.7 |                  5.5 |                     6.2 |                        31.9 |               176.4 |
-| F08 · flat columns · shared 128  |         41.7 |                  5.5 |                     6.3 |                        38.9 |               188.7 |
-| F03 · native rows · owned 128    |         41.7 |                  6.1 |                     6.6 |                        27.7 |               161.4 |
-| F05 · flat columns · owned 64    |         41.7 |                  5.1 |                     5.8 |                        30.4 |               155.9 |
-| F02 · native rows · shared 128   |         41.8 |                  6.0 |                     6.5 |                        25.6 |               168.2 |
-| F08 · flat columns · owned 128   |         41.9 |                  5.0 |                     5.6 |                        63.7 |               188.7 |
-| F02 · native rows · owned 128    |         42.0 |                  5.9 |                     6.4 |                        27.7 |               168.2 |
-| F01 · native rows · shared 128   |         42.1 |                  6.0 |                     6.5 |                        28.5 |               182.1 |
-| F08 · flat columns · owned 64    |         42.2 |                  5.1 |                     5.8 |                        51.8 |               188.7 |
-| F08 · page tree · owned 256      |         42.2 |                  7.6 |                     8.5 |                        47.9 |               188.7 |
-| F08 · page tree · shared 128     |         42.5 |                  8.1 |                     8.6 |                        33.5 |               188.7 |
-| F01 · native rows · owned 128    |         42.7 |                  5.9 |                     6.4 |                        30.0 |               182.1 |
-| F08 · page tree · owned 128      |         42.7 |                  7.9 |                     8.4 |                        40.6 |               188.7 |
-| F08 · flat columns · owned 256   |         43.2 |                  4.9 |                     5.8 |                        62.9 |               188.7 |
-| F08 · page tree · owned 64       |         49.9 |                  8.2 |                     8.5 |                        27.3 |               188.7 |
-| F09 → existing IdList            |         50.9 |                  8.2 |                     8.4 |                        17.6 |               246.0 |
-| F01 → existing IdList            |         58.1 |                  8.7 |                     8.8 |                        18.6 |               182.1 |
-| F04 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        22.4 |               223.4 |
-| F06 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        17.4 |               196.9 |
-| F03 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.2 |               161.4 |
-| F08 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        18.6 |               188.7 |
-| F02 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.4 |               168.2 |
-| F07 → existing IdList            |         58.4 |                  8.2 |                     8.4 |                        20.6 |               176.4 |
-| F05 → existing IdList            |         58.5 |                  7.8 |                     8.0 |                        21.9 |               155.9 |
+| Interchange → internal container | Ready p95 ms | After 2,000 edits MB | With 100 ID versions MB | 2,000 distributed ID ops ms | Mongo KB/doc: Snappy / zstd |
+| -------------------------------- | -----------: | -------------------: | ----------------------: | --------------------------: | --------------------------: |
+| F05 · flat columns · shared 128  |         41.6 |                  5.2 |                     5.9 |                        26.6 |                155.9 / 82.1 |
+| F07 · flat columns · shared 128  |         41.6 |                  5.8 |                     6.5 |                        26.9 |                176.4 / 94.4 |
+| F09 · flat columns · owned 128   |         41.6 |                  5.4 |                     6.0 |                        30.0 |               246.0 / 127.3 |
+| F09 · flat columns · shared 128  |         41.6 |                  5.6 |                     6.3 |                        27.6 |               246.0 / 127.3 |
+| F03 · native rows · shared 128   |         41.7 |                  6.2 |                     6.7 |                        29.7 |                161.4 / 86.3 |
+| F05 · flat columns · owned 128   |         41.7 |                  5.0 |                     5.6 |                        29.4 |                155.9 / 82.1 |
+| F05 · flat columns · owned 256   |         41.7 |                  4.9 |                     5.8 |                        39.1 |                155.9 / 82.1 |
+| F07 · flat columns · owned 128   |         41.7 |                  5.5 |                     6.2 |                        31.9 |                176.4 / 94.4 |
+| F08 · flat columns · shared 128  |         41.7 |                  5.5 |                     6.3 |                        38.9 |                188.7 / 74.5 |
+| F03 · native rows · owned 128    |         41.7 |                  6.1 |                     6.6 |                        27.7 |                161.4 / 86.3 |
+| F05 · flat columns · owned 64    |         41.7 |                  5.1 |                     5.8 |                        30.4 |                155.9 / 82.1 |
+| F02 · native rows · shared 128   |         41.8 |                  6.0 |                     6.5 |                        25.6 |                168.2 / 86.3 |
+| F08 · flat columns · owned 128   |         41.9 |                  5.0 |                     5.6 |                        63.7 |                188.7 / 74.5 |
+| F02 · native rows · owned 128    |         42.0 |                  5.9 |                     6.4 |                        27.7 |                168.2 / 86.3 |
+| F01 · native rows · shared 128   |         42.1 |                  6.0 |                     6.5 |                        28.5 |                182.1 / 86.3 |
+| F08 · flat columns · owned 64    |         42.2 |                  5.1 |                     5.8 |                        51.8 |                188.7 / 74.5 |
+| F08 · page tree · owned 256      |         42.2 |                  7.6 |                     8.5 |                        47.9 |                188.7 / 74.5 |
+| F08 · page tree · shared 128     |         42.5 |                  8.1 |                     8.6 |                        33.5 |                188.7 / 74.5 |
+| F01 · native rows · owned 128    |         42.7 |                  5.9 |                     6.4 |                        30.0 |                182.1 / 86.3 |
+| F08 · page tree · owned 128      |         42.7 |                  7.9 |                     8.4 |                        40.6 |                188.7 / 74.5 |
+| F08 · flat columns · owned 256   |         43.2 |                  4.9 |                     5.8 |                        62.9 |                188.7 / 74.5 |
+| F08 · page tree · owned 64       |         49.9 |                  8.2 |                     8.5 |                        27.3 |                188.7 / 74.5 |
+| F09 → existing IdList            |         50.9 |                  8.2 |                     8.4 |                        17.6 |               246.0 / 127.3 |
+| F01 → existing IdList            |         58.1 |                  8.7 |                     8.8 |                        18.6 |                182.1 / 86.3 |
+| F04 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        22.4 |               223.4 / 114.9 |
+| F06 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        17.4 |                196.9 / 94.5 |
+| F03 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.2 |                161.4 / 86.3 |
+| F08 → existing IdList            |         58.3 |                  7.8 |                     8.0 |                        18.6 |                188.7 / 74.5 |
+| F02 → existing IdList            |         58.3 |                  8.7 |                     8.8 |                        18.4 |                168.2 / 86.3 |
+| F07 → existing IdList            |         58.4 |                  8.2 |                     8.4 |                        20.6 |                176.4 / 94.4 |
+| F05 → existing IdList            |         58.5 |                  7.8 |                     8.0 |                        21.9 |                155.9 / 82.1 |
 
 </details>
 

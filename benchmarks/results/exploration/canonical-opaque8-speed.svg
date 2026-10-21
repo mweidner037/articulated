@@ -1,11 +1,11 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1025" height="792" viewBox="0 0 1025 792" role="img" aria-labelledby="title desc">
-<title id="title">Opaque 8-character IDs: full-stream timings</title><desc id="desc">259,778 operations; observed medians of 3. No dependable editor-speed winner. Separate passes, not additive: uninterrupted ID-only vs checkpointed editor. No p95 claim.. Exact values are labeled on every bar. Whiskers: observed min–max (not confidence intervals).</desc>
+<title id="title">Opaque 8-character IDs: full-stream timings</title><desc id="desc">259,778 operations; observed medians of 3. No dependable editor-speed winner. Lookup + mutation excludes document updates/rendering. Separate passes, not additive; no p95 claim.. Exact values are labeled on every bar. Whiskers: observed min–max (not confidence intervals).</desc>
 <style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="792" fill="white"/>
 <text x="24" y="36" class="title">Opaque 8-character IDs: full-stream timings</text>
 <text x="24" y="68" >259,778 operations; observed medians of 3. No dependable editor-speed winner.</text>
 <text x="24" y="110" >Internal representation</text>
 <text x="24" y="89" class="small">Whiskers: observed min–max (not confidence intervals).</text>
-<text x="425" y="110" >ID-only seconds</text>
+<text x="425" y="110" >ID lookup + mutation (s)</text>
 <line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
 <text x="425" y="748" class="small" text-anchor="middle">0.0</text>
 <line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
@@ -76,5 +76,5 @@
 <text x="24" y="614" class="small">Ranges: ID 0.8–0.8 s; editor 49.8–65.6 s</text>
 <text x="24" y="654" >F09 · native dictionary + all counters</text>
 <text x="24" y="696" class="small">Ranges: ID 1.4–1.8 s; editor 79.2–105.8 s</text>
-<text x="24" y="780" class="small">Separate passes, not additive: uninterrupted ID-only vs checkpointed editor. No p95 claim.</text>
+<text x="24" y="780" class="small">Lookup + mutation excludes document updates/rendering. Separate passes, not additive; no p95 claim.</text>
 </svg>

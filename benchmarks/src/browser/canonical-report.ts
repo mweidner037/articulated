@@ -393,7 +393,7 @@ export function canonicalReport(outputDirectory: string): string[] {
         a.localeCompare(b),
     );
   const table = (model: Model) => [
-    "| Internal representation | ID-only seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |",
+    "| Internal representation | ID lookup + mutation, seconds [range] | Editor seconds [range] | JS MB: no history / +100 versions | Mongo KB: Snappy / zstd |",
     "|---|---:|---:|---:|---:|",
     ...speedOrder(model).map(
       (id) =>
@@ -420,7 +420,7 @@ export function canonicalReport(outputDirectory: string): string[] {
       speed: comparisonChart(
         `${modelLabel}: full-stream timings`,
         "259,778 operations; observed medians of 3. No dependable editor-speed winner.",
-        ["ID-only seconds", "Editor seconds"],
+        ["ID lookup + mutation (s)", "Editor seconds"],
         speedOrder(model).map((id) => ({
           label: labels[id],
           detail: `Ranges: ID ${n(Math.min(...times(model, id, "id-only")) / 1000)}–${n(Math.max(...times(model, id, "id-only")) / 1000)} s; editor ${n(Math.min(...times(model, id, "editor")) / 1000)}–${n(Math.max(...times(model, id, "editor")) / 1000)} s`,
@@ -433,7 +433,7 @@ export function canonicalReport(outputDirectory: string): string[] {
             max: Math.max(...times(model, id, pass)) / 1000,
           })),
         })),
-        "Separate passes, not additive: uninterrupted ID-only vs checkpointed editor. No p95 claim.",
+        "Lookup + mutation excludes document updates/rendering. Separate passes, not additive; no p95 claim.",
         "Internal representation",
       ),
       memory: comparisonChart(
@@ -497,7 +497,11 @@ export function canonicalReport(outputDirectory: string): string[] {
     "",
     "Sorted by median editor replay time, fastest first. Times are **median [minimum–maximum] of three fresh-browser-process trials**, not p95; browser launch/close is outside all clocks. ID-only time and editor time are separate passes and must not be added. Memory is final retained JS heap plus backing storage after collection; values include one editor grown from empty. This is **one document**, unlike the separate four-preloaded-document load/session suite: do not compare their raw memory totals. Storage follows the saved F-format, not the runtime data structure.",
     "",
+    "**What ID lookup + mutation time means:** total elapsed time for all 259,778 edits against the ID container alone, not per edit. Each step locates the insertion anchor or deletion target with at(index), checks it against the prepared trace, and calls insertAfter or delete. The clock includes the replay loop, insertion-ID object allocation and any natural GC during the loop. It excludes saved-format loading/conversion, input preparation, ProseMirror updates and rendering. The separate editor pass includes document updates and checkpoint rendering; the two passes are not additive.",
+    "",
     ...table("opaque8"),
+    "",
+    `**The ID-operation result supporting the existing-IdList recommendation:** across all 259,778 operations, existing IdList took **${range(times("opaque8", "objects", "id-only"))} ms**, native F05 **${range(times("opaque8", "f05-flat-owned-128", "id-only"))} ms**, and native F03 **${range(times("opaque8", "f03-rows-owned-128", "id-only"))} ms** (median [min–max]). This pass times identity navigation and mutations without ProseMirror or rendering. It supports an ID-operation advantage in this measured workload, not a dependable full-editor speed advantage.`,
     "",
     `![Canonical opaque-ID full-stream speed](${relative}/canonical-opaque8-speed.svg)`,
     "",
@@ -519,6 +523,10 @@ export function canonicalReport(outputDirectory: string): string[] {
     ...detailTable("opaque8"),
     "",
     "</details>",
+    "",
+    "### Native F08 results",
+    "",
+    `**Native F08 is implemented and measured, not pending.** Both flat-page and indexed-page versions completed all full-stream trials with structured IDs. In that same structured-ID workload, median ID-only times were ${n(median(times("structured", "objects", "id-only")))} ms for existing IdList, ${n(median(times("structured", "f05-flat-owned-128", "id-only")))} ms for native F05, ${n(median(times("structured", "f08-flat-owned-128", "id-only")))} ms for native F08 flat pages, and ${n(median(times("structured", "f08-tree-owned-128", "id-only")))} ms for native F08 indexed pages. Expand the table for ranges, editor timing, memory and both Mongo compressors; these are not opaque-ID results.`,
     "",
     "<details>",
     "<summary>Structured client_sequence IDs — separate comparison, including F08</summary>",
