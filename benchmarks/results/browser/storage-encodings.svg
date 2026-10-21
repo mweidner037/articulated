@@ -1,0 +1,129 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="1530" viewBox="0 0 1025 1530" role="img" aria-labelledby="title desc">
+<title id="title">Secondary optimization: Mongo encodings</title><desc id="desc">Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately. Actual collection files after compact + checkpoint. Indexes and shared server overhead excluded.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="1530" fill="white"/>
+<text x="24" y="36" class="title">Secondary optimization: Mongo encodings</text>
+<text x="24" y="68" >Sorted by Snappy collection bytes per document, smallest first. Zstd shown separately.</text>
+<text x="24" y="110" >Interchange format</text>
+<text x="425" y="110" >Snappy (KB / document)</text>
+<line x1="425" x2="425" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="425" y="1486" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="532" y="1486" class="small" text-anchor="middle">129.2</text>
+<line x1="639" x2="639" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="639" y="1486" class="small" text-anchor="middle">258.3</text>
+<rect x="425" y="165" width="29.35387379016647" height="23" fill="#3266a6"/>
+<text x="461.35387379016646" y="183" class="small">35.4</text>
+<rect x="425" y="247" width="37.56617142857143" height="23" fill="#3266a6"/>
+<text x="469.5661714285714" y="265" class="small">45.3</text>
+<rect x="425" y="329" width="51.140217111885406" height="23" fill="#3266a6"/>
+<text x="483.1402171118854" y="347" class="small">61.7</text>
+<rect x="425" y="411" width="57.9272399535424" height="23" fill="#3266a6"/>
+<text x="489.9272399535424" y="429" class="small">69.9</text>
+<rect x="425" y="493" width="61.21894603174603" height="23" fill="#3266a6"/>
+<text x="493.21894603174604" y="511" class="small">73.9</text>
+<rect x="425" y="575" width="81.68181989934186" height="23" fill="#3266a6"/>
+<text x="513.6818198993419" y="593" class="small">98.6</text>
+<rect x="425" y="657" width="102.0428884243128" height="23" fill="#3266a6"/>
+<text x="534.0428884243128" y="675" class="small">123.2</text>
+<rect x="425" y="739" width="129.0891744483159" height="23" fill="#3266a6"/>
+<text x="561.0891744483159" y="757" class="small">155.8</text>
+<rect x="425" y="821" width="132.58449121176926" height="23" fill="#3266a6"/>
+<text x="564.5844912117693" y="839" class="small">160.0</text>
+<rect x="425" y="903" width="139.37151405342624" height="23" fill="#3266a6"/>
+<text x="571.3715140534263" y="921" class="small">168.2</text>
+<rect x="425" y="985" width="146.15853689508322" height="23" fill="#3266a6"/>
+<text x="578.1585368950832" y="1003" class="small">176.4</text>
+<rect x="425" y="1067" width="149.55204831591172" height="23" fill="#3266a6"/>
+<text x="581.5520483159117" y="1085" class="small">180.5</text>
+<rect x="425" y="1149" width="156.33907115756872" height="23" fill="#3266a6"/>
+<text x="588.3390711575687" y="1167" class="small">188.7</text>
+<rect x="425" y="1231" width="163.1260939992257" height="23" fill="#3266a6"/>
+<text x="595.1260939992258" y="1249" class="small">196.9</text>
+<rect x="425" y="1313" width="185.11604800619432" height="23" fill="#3266a6"/>
+<text x="617.1160480061943" y="1331" class="small">223.4</text>
+<rect x="425" y="1395" width="203.74642570654277" height="23" fill="#3266a6"/>
+<text x="635.7464257065428" y="1413" class="small">245.9</text>
+<text x="715" y="110" >Zstd (KB / document)</text>
+<line x1="715" x2="715" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="715" y="1486" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="822" y="1486" class="small" text-anchor="middle">66.8</text>
+<line x1="929" x2="929" y1="138" y2="1463" stroke="#e2e6eb"/>
+<text x="929" y="1486" class="small" text-anchor="middle">133.7</text>
+<rect x="715" y="165" width="23.40510157068063" height="23" fill="#3c8077"/>
+<text x="745.4051015706806" y="183" class="small">14.6</text>
+<rect x="715" y="247" width="46.351279581151836" height="23" fill="#3c8077"/>
+<text x="768.3512795811519" y="265" class="small">29.0</text>
+<rect x="715" y="329" width="52.710648915482416" height="23" fill="#3c8077"/>
+<text x="774.7106489154825" y="347" class="small">32.9</text>
+<rect x="715" y="411" width="79.13153388182499" height="23" fill="#3c8077"/>
+<text x="801.131533881825" y="429" class="small">49.4</text>
+<rect x="715" y="493" width="65.82275063575167" height="23" fill="#3c8077"/>
+<text x="787.8227506357516" y="511" class="small">41.1</text>
+<rect x="715" y="575" width="111.91178818249814" height="23" fill="#3c8077"/>
+<text x="833.9117881824982" y="593" class="small">69.9</text>
+<rect x="715" y="657" width="111.91178818249814" height="23" fill="#3c8077"/>
+<text x="833.9117881824982" y="675" class="small">69.9</text>
+<rect x="715" y="739" width="131.57994076290203" height="23" fill="#3c8077"/>
+<text x="853.579940762902" y="757" class="small">82.2</text>
+<rect x="715" y="821" width="138.13599162303666" height="23" fill="#3c8077"/>
+<text x="860.1359916230367" y="839" class="small">86.3</text>
+<rect x="715" y="903" width="137.93931009723264" height="23" fill="#3c8077"/>
+<text x="859.9393100972327" y="921" class="small">86.2</text>
+<rect x="715" y="985" width="151.24809334330592" height="23" fill="#3c8077"/>
+<text x="873.248093343306" y="1003" class="small">94.5</text>
+<rect x="715" y="1067" width="137.93931009723264" height="23" fill="#3c8077"/>
+<text x="859.9393100972327" y="1085" class="small">86.2</text>
+<rect x="715" y="1149" width="118.46783904263276" height="23" fill="#3c8077"/>
+<text x="840.4678390426327" y="1167" class="small">74.0</text>
+<rect x="715" y="1231" width="152.36262198952878" height="23" fill="#3c8077"/>
+<text x="874.3626219895287" y="1249" class="small">95.2</text>
+<rect x="715" y="1313" width="184.0283476439791" height="23" fill="#3c8077"/>
+<text x="906.028347643979" y="1331" class="small">115.0</text>
+<rect x="715" y="1395" width="203.69650022438296" height="23" fill="#3c8077"/>
+<text x="925.6965002243829" y="1413" class="small">127.3</text>
+<text x="24" y="162" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="182" >reconstruct counters</text>
+<text x="24" y="204" class="small">protobuf</text>
+<text x="24" y="244" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="264" >reconstruct counters</text>
+<text x="24" y="286" class="small">protobuf</text>
+<text x="24" y="326" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="368" class="small">protobuf</text>
+<text x="24" y="408" >F07 — Columnar store: deduplicate IDs +</text>
+<text x="24" y="428" >reconstruct counters</text>
+<text x="24" y="450" class="small">protobuf</text>
+<text x="24" y="490" >F04 — Columnar store: all counters</text>
+<text x="24" y="532" class="small">protobuf</text>
+<text x="24" y="572" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="592" >counters</text>
+<text x="24" y="614" class="small">bit-packed</text>
+<text x="24" y="654" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="674" >counters</text>
+<text x="24" y="696" class="small">uint32/int32</text>
+<text x="24" y="736" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="778" class="small">Ordinary BSON fields</text>
+<text x="24" y="818" >F03 — Tuple records: negative count means</text>
+<text x="24" y="838" >deleted</text>
+<text x="24" y="860" class="small">Ordinary BSON fields</text>
+<text x="24" y="900" >F02 — Object records: negative count means</text>
+<text x="24" y="920" >deleted</text>
+<text x="24" y="942" class="small">Ordinary BSON fields</text>
+<text x="24" y="982" >F07 — Columnar store: deduplicate IDs +</text>
+<text x="24" y="1002" >reconstruct counters</text>
+<text x="24" y="1024" class="small">Ordinary BSON fields</text>
+<text x="24" y="1064" >F01 — Object records: deletion flag</text>
+<text x="24" y="1106" class="small">Ordinary BSON fields</text>
+<text x="24" y="1146" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="1166" >reconstruct counters</text>
+<text x="24" y="1188" class="small">Ordinary BSON fields</text>
+<text x="24" y="1228" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="1248" >reconstruct counters</text>
+<text x="24" y="1270" class="small">Ordinary BSON fields</text>
+<text x="24" y="1310" >F04 — Columnar store: all counters</text>
+<text x="24" y="1352" class="small">Ordinary BSON fields</text>
+<text x="24" y="1392" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1412" >counters</text>
+<text x="24" y="1434" class="small">Ordinary BSON fields</text>
+<text x="24" y="1518" class="small">Actual collection files after compact + checkpoint. Indexes and shared server overhead excluded.</text>
+</svg>

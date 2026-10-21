@@ -1,0 +1,99 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="853" viewBox="0 0 1100 853" role="img" aria-labelledby="title desc">
+<title id="title">Retained JS memory: every format and load path</title>
+<desc id="desc">Same scale in both panels · alternative retention choices, not additive · Node/V8, not browser Lower is better. Retained snapshot: Original objects:  1.16 MB; Signed objects:  1.06 MB; Signed tuples:  1.35 MB; Ordinary columns:  0.68 MB; Columns + omit:  0.58 MB; Split + omit / JSON:  0.68 MB; Dictionary + omit / JSON:  0.43 MB; Dictionary / protobuf:  0.51 MB; Split / protobuf:  0.37 MB; Split / protobuf · direct:  0.37 MB; Binary columns · adapter:  0.57 MB; Binary columns · direct:  0.57 MB; Bit-packed · adapter:  0.43 MB; Bit-packed · direct:  0.43 MB. Retained editable IdList: Original objects:  2.60 MB; Signed objects:  2.60 MB; Signed tuples:  2.60 MB; Ordinary columns:  2.60 MB; Columns + omit:  2.60 MB; Split + omit / JSON:  2.64 MB; Dictionary + omit / JSON:  2.45 MB; Dictionary / protobuf:  2.47 MB; Split / protobuf:  2.64 MB; Split / protobuf · direct:  2.62 MB; Binary columns · adapter:  2.45 MB; Binary columns · direct:  2.45 MB; Bit-packed · adapter:  2.45 MB; Bit-packed · direct:  2.45 MB</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;font-size:17px;fill:#243248} .secondary{fill:#526175} .title{font-size:24px;font-weight:500} .panel{font-weight:500} .tick{font-size:16px}</style>
+<rect width="1100" height="853" fill="#ffffff"/>
+<text x="24" y="34" class="title">Retained JS memory: every format and load path</text>
+<text x="24" y="64" class="secondary">Same scale in both panels · alternative retention choices, not additive · Node/V8, not browser</text>
+<text x="24" y="97" class="panel">Format / path</text>
+<text x="24" y="144.5">Original objects</text>
+<text x="24" y="191.5">Signed objects</text>
+<text x="24" y="238.5">Signed tuples</text>
+<text x="24" y="285.5">Ordinary columns</text>
+<text x="24" y="332.5">Columns + omit</text>
+<text x="24" y="379.5">Split + omit / JSON</text>
+<text x="24" y="426.5">Dictionary + omit / JSON</text>
+<text x="24" y="473.5">Dictionary / protobuf</text>
+<text x="24" y="520.5">Split / protobuf</text>
+<text x="24" y="567.5">Split / protobuf · direct</text>
+<text x="24" y="614.5">Binary columns · adapter</text>
+<text x="24" y="661.5">Binary columns · direct</text>
+<text x="24" y="708.5">Bit-packed · adapter</text>
+<text x="24" y="755.5">Bit-packed · direct</text>
+<text x="310" y="97" class="panel">Retained snapshot</text>
+<line x1="310" x2="310" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="310" y="799" text-anchor="middle" class="tick secondary">0.00</text>
+<line x1="400" x2="400" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="400" y="799" text-anchor="middle" class="tick secondary">0.98</text>
+<line x1="490" x2="490" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="490" y="799" text-anchor="middle" class="tick secondary">1.97</text>
+<line x1="580" x2="580" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="580" y="799" text-anchor="middle" class="tick secondary">2.95</text>
+<text x="445" y="830" text-anchor="middle">MB · lower is better</text>
+<rect x="310" y="128.5" width="106.12042534289611" height="20" fill="#3266a6"/>
+<text x="594" y="144.5">1.16</text>
+<rect x="310" y="175.5" width="97.27833633074039" height="20" fill="#3266a6"/>
+<text x="594" y="191.5">1.06</text>
+<rect x="310" y="222.5" width="123.80460336720762" height="20" fill="#3266a6"/>
+<text x="594" y="238.5">1.35</text>
+<rect x="310" y="269.5" width="61.923143593854945" height="20" fill="#3266a6"/>
+<text x="594" y="285.5">0.68</text>
+<rect x="310" y="316.5" width="53.12054451691188" height="20" fill="#3266a6"/>
+<text x="594" y="332.5">0.58</text>
+<rect x="310" y="363.5" width="61.97652813590173" height="20" fill="#3266a6"/>
+<text x="594" y="379.5">0.68</text>
+<rect x="310" y="410.5" width="38.901973955060555" height="20" fill="#3266a6"/>
+<text x="594" y="426.5">0.43</text>
+<rect x="310" y="457.5" width="46.33485731620118" height="20" fill="#3266a6"/>
+<text x="594" y="473.5">0.51</text>
+<rect x="310" y="504.5" width="34.073963727763214" height="20" fill="#3266a6"/>
+<text x="594" y="520.5">0.37</text>
+<rect x="310" y="551.5" width="34.073963727763214" height="20" fill="#3266a6"/>
+<text x="594" y="567.5">0.37</text>
+<rect x="310" y="598.5" width="51.78839908669369" height="20" fill="#3266a6"/>
+<text x="594" y="614.5">0.57</text>
+<rect x="310" y="645.5" width="51.78839908669369" height="20" fill="#3266a6"/>
+<text x="594" y="661.5">0.57</text>
+<rect x="310" y="692.5" width="39.069257708392" height="20" fill="#3266a6"/>
+<text x="594" y="708.5">0.43</text>
+<rect x="310" y="739.5" width="39.069257708392" height="20" fill="#3266a6"/>
+<text x="594" y="755.5">0.43</text>
+<text x="675" y="97" class="panel">Retained editable IdList</text>
+<line x1="675" x2="675" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="675" y="799" text-anchor="middle" class="tick secondary">0.00</text>
+<line x1="765" x2="765" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="765" y="799" text-anchor="middle" class="tick secondary">0.98</text>
+<line x1="855" x2="855" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="855" y="799" text-anchor="middle" class="tick secondary">1.97</text>
+<line x1="945" x2="945" y1="115" y2="773" stroke="#e2e6eb"/>
+<text x="945" y="799" text-anchor="middle" class="tick secondary">2.95</text>
+<text x="810" y="830" text-anchor="middle">MB · lower is better</text>
+<rect x="675" y="128.5" width="237.49466425429569" height="20" fill="#3266a6"/>
+<text x="959" y="144.5">2.60</text>
+<rect x="675" y="175.5" width="237.52318476306039" height="20" fill="#3266a6"/>
+<text x="959" y="191.5">2.60</text>
+<rect x="675" y="222.5" width="237.5341541895084" height="20" fill="#3266a6"/>
+<text x="959" y="238.5">2.60</text>
+<rect x="675" y="269.5" width="237.49466425429569" height="20" fill="#3266a6"/>
+<text x="959" y="285.5">2.60</text>
+<rect x="675" y="316.5" width="237.49466425429569" height="20" fill="#3266a6"/>
+<text x="959" y="332.5">2.60</text>
+<rect x="675" y="363.5" width="241.07142857142856" height="20" fill="#3266a6"/>
+<text x="959" y="379.5">2.64</text>
+<rect x="675" y="410.5" width="224.00373231349272" height="20" fill="#3266a6"/>
+<text x="959" y="426.5">2.45</text>
+<rect x="675" y="457.5" width="226.07476002686826" height="20" fill="#3266a6"/>
+<text x="959" y="473.5">2.47</text>
+<rect x="675" y="504.5" width="241.07142857142856" height="20" fill="#3266a6"/>
+<text x="959" y="520.5">2.64</text>
+<rect x="675" y="551.5" width="239.16859873025498" height="20" fill="#3266a6"/>
+<text x="959" y="567.5">2.62</text>
+<rect x="675" y="598.5" width="224.00373231349272" height="20" fill="#3266a6"/>
+<text x="959" y="614.5">2.45</text>
+<rect x="675" y="645.5" width="224.0212833958094" height="20" fill="#3266a6"/>
+<text x="959" y="661.5">2.45</text>
+<rect x="675" y="692.5" width="224.00373231349272" height="20" fill="#3266a6"/>
+<text x="959" y="708.5">2.45</text>
+<rect x="675" y="739.5" width="224.0212833958094" height="20" fill="#3266a6"/>
+<text x="959" y="755.5">2.45</text>
+</svg>

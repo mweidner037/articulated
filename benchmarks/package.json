@@ -6,17 +6,31 @@
     "@stdlib/stats-base-dists-t-quantile": "^0.2.3",
     "@types/seedrandom": "^3.0.8",
     "articulated": "workspace:*",
+    "bson": "7.3.2",
     "fflate": "^0.8.2",
     "maybe-random-string": "^1.0.0",
+    "mongodb": "7.1.0",
     "prosemirror-model": "^1.25.11",
     "prosemirror-state": "^1.4.4",
     "prosemirror-transform": "^1.12.1",
+    "prosemirror-view": "1.41.6",
     "protobufjs": "^8.8.1",
     "rope-sequence": "^1.3.4",
     "seedrandom": "^3.0.5",
     "yjs": "^13.6.33"
   },
   "scripts": {
+    "test": "TSX_TSCONFIG_PATH=tsconfig.dev.json node --import tsx --test src/full_picture/codecs.test.ts src/browser/*.test.ts",
+    "browser:run": "node --import tsx src/browser/run.ts",
+    "browser:mongo": "node --import tsx src/browser/mongo.ts",
+    "browser:report": "node --import tsx src/browser/report.ts && prettier browser.md --write",
+    "native:run": "node --import tsx src/browser/native-run.ts",
+    "native:audit": "node --import tsx src/browser/edit-audit.mjs",
+    "native:report": "node --import tsx src/browser/native-report.ts && prettier native.md --write",
+    "full-picture:js": "node --expose-gc --import tsx src/full_picture/js.ts",
+    "full-picture:mongo": "node --import tsx src/full_picture/mongo.ts",
+    "full-picture:report": "node --import tsx src/full_picture/report.ts && prettier full_picture.md --write",
+    "full-picture:test": "node --import tsx --test src/full_picture/codecs.test.ts",
     "start": "tsx src/main.ts",
     "worker": "tsx src/worker.ts",
     "results": "tsx src/results.ts",
@@ -30,6 +44,8 @@
     "clean": "rm -rf build docs coverage .nyc_output"
   },
   "devDependencies": {
+    "esbuild": "0.25.12",
+    "playwright": "1.62.1",
     "protobufjs-cli": "^2.7.1"
   }
 }
