@@ -15,6 +15,7 @@ export function comparisonChart(
   headings: string[],
   rows: ChartRow[],
   note: string,
+  rowHeading = "Interchange format",
 ) {
   assert(rows.length > 0 && headings.length > 0);
   for (const row of rows) {
@@ -35,7 +36,7 @@ export function comparisonChart(
     `<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="${width}" height="${height}" fill="white"/>`,
     text(24, 36, title, 'class="title"'),
     text(24, 68, subtitle),
-    text(24, 110, "Interchange format"),
+    text(24, 110, rowHeading),
   ];
   headings.forEach((heading, j) => {
     const x = left + j * column;

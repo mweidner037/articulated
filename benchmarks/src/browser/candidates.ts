@@ -28,15 +28,17 @@ import {
   TransposedSavedIdListMessage,
 } from "../generated/id_list_saved_state";
 import { formats } from "./formats";
+import type { BenchmarkList } from "./list-interface";
 
 export interface Candidate {
   id: string;
   shape: string;
   encoding: string;
-  path: "objects" | "direct";
+  path: "objects" | "direct" | "native";
+  internalFormat?: string;
   encode(saved: SavedIdList): Uint8Array;
   decode(bytes: Uint8Array): unknown;
-  hydrate(state: unknown): IdList;
+  hydrate(state: unknown): BenchmarkList;
   // Canonical logical JSON, used only in correctness tests, outside timers.
   logical(state: unknown): unknown;
 }

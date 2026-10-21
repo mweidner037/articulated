@@ -24,6 +24,8 @@
     "browser:run": "node --import tsx src/browser/run.ts",
     "browser:mongo": "node --import tsx src/browser/mongo.ts",
     "browser:report": "node --import tsx src/browser/report.ts && prettier browser.md --write",
+    "native:run": "node --import tsx src/browser/native-run.ts",
+    "native:report": "node --import tsx src/browser/native-report.ts && prettier native.md --write",
     "full-picture:js": "node --expose-gc --import tsx src/full_picture/js.ts",
     "full-picture:mongo": "node --import tsx src/full_picture/mongo.ts",
     "full-picture:report": "node --import tsx src/full_picture/report.ts && prettier full_picture.md --write",

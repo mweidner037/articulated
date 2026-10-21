@@ -1,6 +1,8 @@
 # Interchange formats → the existing internal IdList tree
 
-Draft exploration. **Interchange format** means the saved objects, tuples, or columnar store. **Internal format** means the live structure used for lookup and editing. Every measured row still ends in the existing IdList tree. No native columnar internal implementation is measured here. JSON versus binary is only an encoding choice, covered separately.
+Draft exploration. **Interchange format** means the saved objects, tuples, or columnar store. **Internal format** means the live structure used for lookup and editing. Every row in this interchange-format matrix ends in the existing IdList tree. JSON versus binary is only an encoding choice, covered separately.
+
+**New: [same F08 JSON, current IdList tree versus native columnar internals](native.md).** That matched experiment implements native lookup/editing and measures loading, conversion, memory, GC and mutation costs. It keeps the wire format fixed so we can isolate the internal design. This report below keeps the internal tree fixed so we can compare interchange formats.
 
 Measured 2026-10-20 (America/New_York) in Chromium 151.0.7922.34 on Apple M5 Pro, CPU rate 1×. Each document has 104,852 characters, 1,173 paragraphs, and the same 12,091 ID runs. This is a controlled ProseMirror editor, not the production application. Four documents means four copies of this trace, not four production documents.
 
@@ -26,9 +28,9 @@ Format IDs F01–F09 are stable identifiers, not ranks. The same ID is used acro
 
 1. **Mongo storage first: F05 — Columnar store: reconstruct counters.** This is the smallest ordinary-field option with Snappy: 155.8 versus 180.5 KB/document for the baseline. Its start counters are reconstructed from previous runs; exceptions are stored, so this is lossless. It is my default candidate for the current Snappy setup, subject to validation on actual documents.
 
-2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** F05 — Columnar store: reconstruct counters retains 6.5 MB versus 7.3 MB for the baseline in this four-document run, but every option still constructs the same editing-tree design. Use this simpler candidate for an incremental change; for a larger gain, implement and test native columnar editing, including lookup and mutation costs. Direct loaders only remove temporary conversion allocations.
+2. **Retained browser memory first: do not choose an interchange format as a substitute for an internal redesign.** F05 — Columnar store: reconstruct counters retains 6.5 MB versus 7.3 MB for the baseline in this four-document run, but every option here still constructs the same editing-tree design. The [new native F08 experiment](native.md) measures a larger retained-memory reduction, with substantially slower edits in its unindexed implementation. Direct loaders only remove temporary conversion allocations.
 
-3. **Browser speed first: investigate F09 — Columnar store: deduplicate IDs + all counters, through the existing loader.** It has the lowest observed 4-document complete-ready P95 among JSON interchange options: 53.6 versus 58.3 ms for the baseline. Conversion-to-tree P95 is 19.0 versus 18.2 ms. Its Snappy storage is 245.9 versus 180.5 KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough, and native columnar editing remains untested.
+3. **Browser speed first: investigate F09 — Columnar store: deduplicate IDs + all counters, through the existing loader.** It has the lowest observed 4-document complete-ready P95 among JSON interchange options: 53.6 versus 58.3 ms for the baseline. Conversion-to-tree P95 is 19.0 versus 18.2 ms. Its Snappy storage is 245.9 versus 180.5 KB/document. Treat it as a candidate for a representative-corpus test, not a stable production winner. A lower interchange parse time alone is not enough; see the [separate internal-format experiment](native.md) for native columnar editing.
 
 None of these results justifies changing independent opaque 8-character nanoids into structured IDs. The split-ID/client-sharing options require Matthew’s client/sequence structure; those measurements are not evidence for opaque nanoids. Binary stays an optional later optimization.
 
