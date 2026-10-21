@@ -11,34 +11,34 @@
 <text x="532" y="338" class="small" text-anchor="middle">3.4</text>
 <line x1="639" x2="639" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="639" y="338" class="small" text-anchor="middle">6.8</text>
-<rect x="425" y="165" width="75.16602088235295" height="23" fill="#3266a6"/>
-<text x="507.16602088235294" y="183" class="small">2.4</text>
-<rect x="425" y="247" width="203.48470088235294" height="23" fill="#3266a6"/>
-<text x="635.484700882353" y="265" class="small">6.5</text>
+<rect x="425" y="165" width="128.15884088235296" height="23" fill="#3266a6"/>
+<text x="560.1588408823529" y="183" class="small">4.1</text>
+<rect x="425" y="247" width="203.48230911764705" height="23" fill="#3266a6"/>
+<text x="635.482309117647" y="265" class="small">6.5</text>
 <text x="715" y="110" >Observed high-water (MB)</text>
 <line x1="715" x2="715" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="715" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="822" x2="822" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="822" y="338" class="small" text-anchor="middle">5.5</text>
+<text x="822" y="338" class="small" text-anchor="middle">7.8</text>
 <line x1="929" x2="929" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="929" y="338" class="small" text-anchor="middle">11.1</text>
-<rect x="715" y="165" width="144.38055603603604" height="23" fill="#3c8077"/>
-<text x="866.3805560360361" y="183" class="small">7.5</text>
-<rect x="715" y="247" width="202.724821981982" height="23" fill="#3c8077"/>
-<text x="924.724821981982" y="265" class="small">10.5</text>
+<text x="929" y="338" class="small" text-anchor="middle">15.5</text>
+<rect x="715" y="165" width="107.94107535483872" height="23" fill="#3c8077"/>
+<text x="829.9410753548387" y="183" class="small">7.8</text>
+<rect x="715" y="247" width="202.9364209032258" height="23" fill="#3c8077"/>
+<text x="924.9364209032258" y="265" class="small">14.7</text>
 <text x="1005" y="110" >Sampled allocations (MB)</text>
 <line x1="1005" x2="1005" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="1005" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="1112" x2="1112" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1112" y="338" class="small" text-anchor="middle">29.8</text>
+<text x="1112" y="338" class="small" text-anchor="middle">30.2</text>
 <line x1="1219" x2="1219" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1219" y="338" class="small" text-anchor="middle">59.5</text>
-<rect x="1005" y="165" width="58.37563213445378" height="23" fill="#8571ac"/>
-<text x="1070.3756321344538" y="183" class="small">16.2</text>
-<rect x="1005" y="247" width="203.54524759663863" height="23" fill="#8571ac"/>
-<text x="1215.5452475966385" y="265" class="small">56.6</text>
+<text x="1219" y="338" class="small" text-anchor="middle">60.4</text>
+<rect x="1005" y="165" width="60.099618278145705" height="23" fill="#8571ac"/>
+<text x="1072.0996182781457" y="183" class="small">17.0</text>
+<rect x="1005" y="247" width="203.6429527152318" height="23" fill="#8571ac"/>
+<text x="1215.6429527152318" y="265" class="small">57.5</text>
 <text x="24" y="162" >I2 — Native F08 columns</text>
-<text x="24" y="204" class="small">Adopt decoded arrays; validate</text>
+<text x="24" y="204" class="small">Adopt arrays; build chunk indexes</text>
 <text x="24" y="244" >I1 — F08 → IdList.load()</text>
 <text x="24" y="286" class="small">Convert to SavedIdList; use IdList</text>
 <text x="24" y="370" class="small">Three separate memory runs per row, including first edit. High-water is sampled, not an exact peak. Not renderer RSS.</text>

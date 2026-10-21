@@ -52,22 +52,24 @@ async function bundle(instrument = false) {
               setup(b) {
                 b.onLoad({ filter: /\/browser\/native\.ts$/ }, ({ path }) => {
                   let text = fs.readFileSync(path, "utf8");
-                  text = text.replace(
-                    "function scan(s: F08, visit: Visit) {",
-                    "function scan(s: F08, visit: Visit) { globalThis.work.scans++; globalThis.work.maps += s.clientIds.length;",
-                  );
-                  text = text.replace(
-                    "for (let i = 0; i < s.counts.length; i++) {",
-                    "for (let i = 0; i < s.counts.length; i++) { globalThis.work.runs++;",
-                  );
-                  text = text.replace(
-                    "this.pending = [c, seq, start, count];",
-                    "{ globalThis.work.tuples++; this.pending = [c, seq, start, count]; }",
-                  );
-                  text = text.replace(
-                    "this.next = clients.map(() => new Map());",
-                    "globalThis.work.maps += clients.length; this.next = clients.map(() => new Map());",
-                  );
+                  for (const [marker, addition] of [
+                    [
+                      "copy(chunk: Chunk, row: number) {",
+                      "globalThis.work.copiedRuns++;",
+                    ],
+                    [
+                      "const chunks: Chunk[] = [];",
+                      "globalThis.work.indexedRuns += columns.counts.length;",
+                    ],
+                    [
+                      "this.prefix = new Float64Array(chunks.length + 1);",
+                      "globalThis.work.prefixEntries += chunks.length + 1;",
+                    ],
+                  ]) {
+                    if (!text.includes(marker))
+                      throw Error("Missing instrumentation marker: " + marker);
+                    text = text.replace(marker, marker + addition);
+                  }
                   return { contents: text, loader: "ts" };
                 });
               },
@@ -113,7 +115,7 @@ try {
   const context = await browser.newContext(),
     page = await context.newPage();
   await page.evaluate(() => {
-    globalThis.work = { scans: 0, runs: 0, tuples: 0, maps: 0 };
+    globalThis.work = { copiedRuns: 0, indexedRuns: 0, prefixEntries: 0 };
   });
   await page.addScriptTag({ content: await bundle(true) });
   await page.evaluate(
@@ -122,7 +124,7 @@ try {
     { saved, workload },
   );
   const work = await page.evaluate(() => {
-    globalThis.work = { scans: 0, runs: 0, tuples: 0, maps: 0 };
+    globalThis.work = { copiedRuns: 0, indexedRuns: 0, prefixEntries: 0 };
     globalThis.audit.run();
     return globalThis.timedWork;
   });

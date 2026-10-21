@@ -8,38 +8,38 @@
 <line x1="425" x2="425" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="425" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="532" x2="532" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="532" y="338" class="small" text-anchor="middle">18.1</text>
+<text x="532" y="338" class="small" text-anchor="middle">0.5</text>
 <line x1="639" x2="639" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="639" y="338" class="small" text-anchor="middle">36.2</text>
-<rect x="425" y="165" width="4.138121124130586" height="23" fill="#3266a6"/>
-<text x="436.1381211241306" y="183" class="small">0.7</text>
-<rect x="425" y="247" width="203.35911588115584" height="23" fill="#3266a6"/>
-<text x="635.3591158811558" y="265" class="small">34.4</text>
+<text x="639" y="338" class="small" text-anchor="middle">0.9</text>
+<rect x="425" y="165" width="190.22221088409424" height="23" fill="#3266a6"/>
+<text x="622.2222108840942" y="183" class="small">0.8</text>
+<rect x="425" y="247" width="142.66667233573065" height="23" fill="#3266a6"/>
+<text x="574.6666723357307" y="265" class="small">0.6</text>
 <text x="715" y="110" >Edit batch median (ms)</text>
 <line x1="715" x2="715" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="715" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="822" x2="822" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="822" y="338" class="small" text-anchor="middle">63.0</text>
+<text x="822" y="338" class="small" text-anchor="middle">2.1</text>
 <line x1="929" x2="929" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="929" y="338" class="small" text-anchor="middle">125.9</text>
-<rect x="715" y="165" width="3.5694996433848893" height="23" fill="#3c8077"/>
-<text x="725.5694996433849" y="183" class="small">2.1</text>
-<rect x="715" y="247" width="203.8014296655905" height="23" fill="#3c8077"/>
-<text x="925.8014296655905" y="265" class="small">119.9</text>
+<text x="929" y="338" class="small" text-anchor="middle">4.2</text>
+<rect x="715" y="165" width="112.09524052483695" height="23" fill="#3c8077"/>
+<text x="834.095240524837" y="183" class="small">2.2</text>
+<rect x="715" y="247" width="203.8095238095238" height="23" fill="#3c8077"/>
+<text x="925.8095238095239" y="265" class="small">4.0</text>
 <text x="1005" y="110" >Batch + render median (ms)</text>
 <line x1="1005" x2="1005" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="1005" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="1112" x2="1112" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1112" y="338" class="small" text-anchor="middle">85.8</text>
+<text x="1112" y="338" class="small" text-anchor="middle">8.8</text>
 <line x1="1219" x2="1219" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1219" y="338" class="small" text-anchor="middle">171.6</text>
-<rect x="1005" y="165" width="15.588578088578089" height="23" fill="#8571ac"/>
-<text x="1027.588578088578" y="183" class="small">12.5</text>
-<rect x="1005" y="247" width="203.77389274415992" height="23" fill="#8571ac"/>
-<text x="1215.7738927441599" y="265" class="small">163.4</text>
+<text x="1219" y="338" class="small" text-anchor="middle">17.5</text>
+<rect x="1005" y="165" width="150.41142798832485" height="23" fill="#8571ac"/>
+<text x="1162.411427988325" y="183" class="small">12.3</text>
+<rect x="1005" y="247" width="202.99428600583758" height="23" fill="#8571ac"/>
+<text x="1214.9942860058377" y="265" class="small">16.6</text>
 <text x="24" y="162" >I1 — F08 → IdList.load()</text>
 <text x="24" y="204" class="small">Convert to SavedIdList; use IdList</text>
 <text x="24" y="244" >I2 — Native F08 columns</text>
-<text x="24" y="286" class="small">Adopt decoded arrays; validate</text>
+<text x="24" y="286" class="small">Adopt arrays; build chunk indexes</text>
 <text x="24" y="370" class="small">Total includes both operation batches and ONE final render. This is not 200 keystrokes or per-keystroke latency.</text>
 </svg>

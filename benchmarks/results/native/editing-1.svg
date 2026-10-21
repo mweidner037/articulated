@@ -8,38 +8,38 @@
 <line x1="425" x2="425" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="425" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="532" x2="532" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="532" y="338" class="small" text-anchor="middle">18.0</text>
+<text x="532" y="338" class="small" text-anchor="middle">0.5</text>
 <line x1="639" x2="639" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="639" y="338" class="small" text-anchor="middle">36.0</text>
-<rect x="425" y="165" width="4.161110685931312" height="23" fill="#3266a6"/>
-<text x="436.1611106859313" y="183" class="small">0.7</text>
-<rect x="425" y="247" width="203.3000002834532" height="23" fill="#3266a6"/>
-<text x="635.3000002834532" y="265" class="small">34.2</text>
+<text x="639" y="338" class="small" text-anchor="middle">0.9</text>
+<rect x="425" y="165" width="166.44445578257242" height="23" fill="#3266a6"/>
+<text x="598.4444557825724" y="183" class="small">0.7</text>
+<rect x="425" y="247" width="190.22221088409424" height="23" fill="#3266a6"/>
+<text x="622.2222108840942" y="265" class="small">0.8</text>
 <text x="715" y="110" >Edit batch median (ms)</text>
 <line x1="715" x2="715" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="715" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="822" x2="822" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="822" y="338" class="small" text-anchor="middle">62.6</text>
+<text x="822" y="338" class="small" text-anchor="middle">2.4</text>
 <line x1="929" x2="929" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="929" y="338" class="small" text-anchor="middle">125.3</text>
-<rect x="715" y="165" width="3.415802075019952" height="23" fill="#3c8077"/>
-<text x="725.41580207502" y="183" class="small">2.0</text>
-<rect x="715" y="247" width="203.75259389709876" height="23" fill="#3c8077"/>
-<text x="925.7525938970988" y="265" class="small">119.3</text>
+<text x="929" y="338" class="small" text-anchor="middle">4.7</text>
+<rect x="715" y="165" width="200.34042444634943" height="23" fill="#3c8077"/>
+<text x="922.3404244463494" y="183" class="small">4.4</text>
+<rect x="715" y="247" width="100.17021493708833" height="23" fill="#3c8077"/>
+<text x="822.1702149370883" y="265" class="small">2.2</text>
 <text x="1005" y="110" >Batch + render median (ms)</text>
 <line x1="1005" x2="1005" y1="138" y2="315" stroke="#e2e6eb"/>
 <text x="1005" y="338" class="small" text-anchor="middle">0.0</text>
 <line x1="1112" x2="1112" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1112" y="338" class="small" text-anchor="middle">85.0</text>
+<text x="1112" y="338" class="small" text-anchor="middle">7.5</text>
 <line x1="1219" x2="1219" y1="138" y2="315" stroke="#e2e6eb"/>
-<text x="1219" y="338" class="small" text-anchor="middle">169.9</text>
-<rect x="1005" y="165" width="15.240729871113347" height="23" fill="#8571ac"/>
-<text x="1027.2407298711132" y="183" class="small">12.1</text>
-<rect x="1005" y="247" width="203.79752789756142" height="23" fill="#8571ac"/>
-<text x="1215.7975278975614" y="265" class="small">161.8</text>
-<text x="24" y="162" >I1 — F08 → IdList.load()</text>
-<text x="24" y="204" class="small">Convert to SavedIdList; use IdList</text>
-<text x="24" y="244" >I2 — Native F08 columns</text>
-<text x="24" y="286" class="small">Adopt decoded arrays; validate</text>
+<text x="1219" y="338" class="small" text-anchor="middle">14.9</text>
+<rect x="1005" y="165" width="189.583893302303" height="23" fill="#8571ac"/>
+<text x="1201.583893302303" y="183" class="small">13.2</text>
+<rect x="1005" y="247" width="202.51006574438722" height="23" fill="#8571ac"/>
+<text x="1214.5100657443872" y="265" class="small">14.1</text>
+<text x="24" y="162" >I2 — Native F08 columns</text>
+<text x="24" y="204" class="small">Adopt arrays; build chunk indexes</text>
+<text x="24" y="244" >I1 — F08 → IdList.load()</text>
+<text x="24" y="286" class="small">Convert to SavedIdList; use IdList</text>
 <text x="24" y="370" class="small">Total includes both operation batches and ONE final render. This is not 200 keystrokes or per-keystroke latency.</text>
 </svg>

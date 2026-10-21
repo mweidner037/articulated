@@ -23,6 +23,8 @@ export interface EditSample {
   lookupMs: number;
   editMs: number;
   totalMs: number;
+  snapshotMs: number;
+  stringifyMs: number;
 }
 export interface BrowserAPI {
   exercise(workload: EditWorkload): Promise<EditSample>;
@@ -46,7 +48,8 @@ const schema = new Schema({
 });
 let prepared: { id: string; bytes: Uint8Array; documentJSON: string } | null =
   null;
-let editors: { list: BenchmarkList; view: EditorView }[] = [];
+let editors: { list: BenchmarkList; view: EditorView; candidate: Candidate }[] =
+  [];
 const root = document.getElementById("editors")!;
 const frame = () =>
   new Promise<void>((resolve) => requestAnimationFrame(() => resolve()));
@@ -109,7 +112,7 @@ export function installBenchmark(
         const view = new EditorView(host, {
           state: EditorState.create({ schema, doc }),
         });
-        editors.push({ list, view });
+        editors.push({ list, view, candidate: c });
         result.editor += performance.now() - t;
         await probe("editor");
       }
@@ -193,6 +196,20 @@ export function installBenchmark(
       await frame();
       const totalMs = performance.now() - started;
       performance.mark("bench-end");
+      // Separate from editing/rendering: measure export of the edited state to
+      // the SAME F08 interchange shape, then JSON encoding. No network timing.
+      const snapshotStart = performance.now();
+      const snapshot = entry.candidate.snapshot!(list);
+      const snapshotMs = performance.now() - snapshotStart;
+      const stringifyStart = performance.now();
+      const serialized = JSON.stringify(snapshot);
+      const stringifyMs = performance.now() - stringifyStart;
+      if (
+        JSON.stringify(
+          entry.candidate.hydrate(JSON.parse(serialized)).save(),
+        ) !== JSON.stringify(workload.expected)
+      )
+        throw new Error("Exported snapshot mismatch");
       if (checksum !== workload.lookups.reduce((sum, q) => sum + q.index, 0))
         throw new Error("Index mismatch");
       if (JSON.stringify(list.save()) !== JSON.stringify(workload.expected))
@@ -203,7 +220,7 @@ export function installBenchmark(
       ).join("\n");
       if (text !== workload.expectedText)
         throw new Error("Edited DOM mismatch");
-      return { lookupMs, editMs, totalMs };
+      return { lookupMs, editMs, totalMs, snapshotMs, stringifyMs };
     },
     clear,
     check(saved, text, edited = true) {

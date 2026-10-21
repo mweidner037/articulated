@@ -39,6 +39,7 @@ export interface Candidate {
   encode(saved: SavedIdList): Uint8Array;
   decode(bytes: Uint8Array): unknown;
   hydrate(state: unknown): BenchmarkList;
+  snapshot?(list: BenchmarkList): unknown;
   // Canonical logical JSON, used only in correctness tests, outside timers.
   logical(state: unknown): unknown;
 }

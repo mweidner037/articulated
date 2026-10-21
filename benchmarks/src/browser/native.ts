@@ -3,19 +3,15 @@ import type { toClientIndexOmit } from "../algorithms/id_list_saved_states";
 import type { BenchmarkList } from "./list-interface";
 
 export type F08 = ReturnType<typeof toClientIndexOmit>;
-type Visit = (
-  client: number,
-  seq: number,
-  start: number,
-  count: number,
-) => boolean | void;
+type Columns = Pick<F08, "clientIndices" | "seqNums" | "counts">;
+const CHUNK_SIZE = 128;
 function natural(n: number) {
   if (!Number.isSafeInteger(n) || n < 0)
     throw new Error("Invalid nonnegative integer");
 }
 function split(id: string): [string, number] {
-  const p = id.lastIndexOf("_");
-  const suffix = id.slice(p + 1),
+  const p = id.lastIndexOf("_"),
+    suffix = id.slice(p + 1),
     seq = parseInt(suffix, 36);
   if (
     p < 1 ||
@@ -26,99 +22,108 @@ function split(id: string): [string, number] {
     throw new Error("F08 requires canonical client_sequence IDs");
   return [id.slice(0, p), seq];
 }
-const join = (state: F08, client: number, seq: number) =>
-  `${state.clientIds[client]}_${seq.toString(36)}`;
+const join = (clients: readonly string[], c: number, seq: number) =>
+  `${clients[c]}_${seq.toString(36)}`;
 
-/** Traverse the actual F08 columns, reconstructing counters as needed.
- * No expanded starts, run objects, editing tree or lookup index is retained. */
-function scan(s: F08, visit: Visit) {
-  const next = s.clientIds.map(() => new Map<number, number>());
-  let exception = 0,
-    exceptionRow = s.startCounterIndexes[0] ?? -1;
-  for (let i = 0; i < s.counts.length; i++) {
-    const c = s.clientIndices[i],
-      seq = s.seqNums[i],
-      count = s.counts[i];
-    let start = next[c].get(seq) ?? 0;
-    if (i === exceptionRow) {
-      start = s.startCounters[exception++];
-      exceptionRow =
-        exception === s.startCounterIndexes.length
-          ? -1
-          : exceptionRow + s.startCounterIndexes[exception];
+/** Loaded chunks share wire arrays and a derived counter index. Edited chunks
+ * own small arrays. Chunk-local indexes are immutable and shared across versions. */
+interface Chunk {
+  columns: Columns;
+  starts: Float64Array;
+  from: number;
+  to: number;
+  length: number;
+  byId: Map<string, number | number[]>;
+}
+function chunksFor(
+  columns: Columns,
+  starts: Float64Array,
+  clients: string[],
+): Chunk[] {
+  const chunks: Chunk[] = [];
+  const names = new Map<number, Map<number, string>>();
+  const size = Math.ceil(
+    columns.counts.length /
+      Math.max(1, Math.ceil(columns.counts.length / CHUNK_SIZE)),
+  );
+  for (let from = 0; from < columns.counts.length; from += size) {
+    const to = Math.min(from + size, columns.counts.length);
+    const byId = new Map<string, number | number[]>();
+    let length = 0;
+    for (let i = from; i < to; i++) {
+      const c = columns.clientIndices[i],
+        seq = columns.seqNums[i];
+      let client = names.get(c);
+      if (!client) names.set(c, (client = new Map()));
+      let id = client.get(seq);
+      if (id === undefined) client.set(seq, (id = join(clients, c, seq)));
+      const rows = byId.get(id);
+      if (rows === undefined) byId.set(id, i);
+      else if (typeof rows === "number") byId.set(id, [rows, i]);
+      else rows.push(i);
+      if (columns.counts[i] > 0) length += columns.counts[i];
     }
-    next[c].set(seq, start + Math.abs(count));
-    if (visit(c, seq, start, count) === false) break;
+    chunks.push({ columns, starts, from, to, length, byId });
   }
+  return chunks;
 }
 
-/** Streaming column writer; canonicalizes adjacent runs without an object-run adapter. */
-class Writer {
-  readonly state: F08;
-  length = 0;
-  private next: Map<number, number>[];
-  private lastException = 0;
-  private pending: [number, number, number, number] | null = null;
-  constructor(clients: string[]) {
-    this.state = {
-      clientIds: [...clients],
-      clientIndices: [],
-      seqNums: [],
-      startCounterIndexes: [],
-      startCounters: [],
-      counts: [],
-    };
-    this.next = clients.map(() => new Map());
-  }
+/** Small copy-on-write buffer, without a temporary tuple per run. */
+class EditBuffer {
+  readonly columns: Columns = { clientIndices: [], seqNums: [], counts: [] };
+  readonly starts: number[] = [];
   append(c: number, seq: number, start: number, count: number) {
-    if (count === 0) return;
-    const p = this.pending;
+    if (!count) return;
+    const s = this.columns,
+      last = s.counts.length - 1;
     if (
-      p &&
-      p[0] === c &&
-      p[1] === seq &&
-      p[2] + Math.abs(p[3]) === start &&
-      Math.sign(p[3]) === Math.sign(count)
+      last >= 0 &&
+      s.clientIndices[last] === c &&
+      s.seqNums[last] === seq &&
+      this.starts[last] + Math.abs(s.counts[last]) === start &&
+      Math.sign(s.counts[last]) === Math.sign(count)
     )
-      p[3] += count;
+      s.counts[last] += count;
     else {
-      this.flush();
-      this.pending = [c, seq, start, count];
+      s.clientIndices.push(c);
+      s.seqNums.push(seq);
+      s.counts.push(count);
+      this.starts.push(start);
     }
   }
-  private flush() {
-    const p = this.pending;
-    if (!p) return;
-    const [c, seq, start, count] = p,
-      s = this.state;
-    if (start !== (this.next[c].get(seq) ?? 0)) {
-      s.startCounterIndexes.push(s.counts.length - this.lastException);
-      s.startCounters.push(start);
-      this.lastException = s.counts.length;
-    }
-    s.clientIndices.push(c);
-    s.seqNums.push(seq);
-    s.counts.push(count);
-    this.next[c].set(seq, start + Math.abs(count));
-    if (count > 0) this.length += count;
-    this.pending = null;
+  copy(chunk: Chunk, row: number) {
+    const s = chunk.columns;
+    this.append(
+      s.clientIndices[row],
+      s.seqNums[row],
+      chunk.starts[row],
+      s.counts[row],
+    );
   }
-  finish() {
-    this.flush();
-    return this.state;
+  finish(clients: string[]) {
+    return chunksFor(this.columns, Float64Array.from(this.starts), clients);
   }
 }
 
-/** Experimental immutable list backed directly by the F08 wire columns.
- * Takes ownership of decoded input: callers must not mutate its arrays afterward.
- * load validates; lookups scan; edits stream a new set of columns (O(runs)).
- * This intentionally tests EXACT wire-layout adoption, not an indexed/chunked design.
+/** Experimental immutable F08-backed list with sidecar indexes and chunked edits.
+ * Input arrays are adopted, not converted to IdList. Callers transfer ownership.
+ * Index construction/validation are eager and included in load/memory metrics.
+ * wireState is zero-copy before edits; after edits it explicitly flattens chunks.
  */
 export class NativeF08 implements BenchmarkList {
+  readonly length: number;
+  private readonly prefix: Float64Array;
   private constructor(
-    private readonly state: F08,
-    readonly length: number,
-  ) {}
+    private readonly clients: string[],
+    private readonly chunks: readonly Chunk[],
+    private readonly original?: F08,
+  ) {
+    this.prefix = new Float64Array(chunks.length + 1);
+    for (let i = 0; i < chunks.length; i++)
+      this.prefix[i + 1] = this.prefix[i] + chunks[i].length;
+    this.length = this.prefix[chunks.length];
+    natural(this.length);
+  }
   static load(s: F08): NativeF08 {
     const {
       clientIds,
@@ -150,174 +155,295 @@ export class NativeF08 implements BenchmarkList {
       clientIds.some((c) => typeof c !== "string" || !c.length)
     )
       throw new Error("Invalid client dictionary");
-    let row = 0;
+    let exceptionRow = 0;
     startCounterIndexes.forEach((delta, i) => {
       natural(delta);
       natural(startCounters[i]);
-      row += delta;
-      if ((i > 0 && delta === 0) || row >= counts.length)
+      exceptionRow += delta;
+      if ((i > 0 && delta === 0) || exceptionRow >= counts.length)
         throw new Error("Invalid counter exceptions");
     });
-    counts.forEach((count, i) => {
-      natural(clientIndices[i]);
-      natural(seqNums[i]);
-      if (
-        clientIndices[i] >= clientIds.length ||
-        !Number.isSafeInteger(count) ||
-        count === 0
-      )
+    // Float64 preserves safe integer counters; this is a derived index, not a wire encoding.
+    const starts = new Float64Array(counts.length);
+    const next = clientIds.map(() => new Map<number, number>());
+    const intervals = clientIds.map(() => new Map<number, number[]>());
+    let exception = 0;
+    exceptionRow = startCounterIndexes[0] ?? -1;
+    for (let i = 0; i < counts.length; i++) {
+      const c = clientIndices[i],
+        seq = seqNums[i],
+        count = counts[i];
+      natural(c);
+      natural(seq);
+      if (c >= clientIds.length || !Number.isSafeInteger(count) || count === 0)
         throw new Error("Invalid run");
-    });
-    // Temporary interval validation is included in load timing, then discarded.
-    const intervals = clientIds.map(
-      () => new Map<number, [number, number][]>(),
-    );
-    let length = 0;
-    scan(s, (c, seq, start, count) => {
+      let start = next[c].get(seq) ?? 0;
+      if (i === exceptionRow) {
+        start = startCounters[exception++];
+        exceptionRow =
+          exception === startCounterIndexes.length
+            ? -1
+            : exceptionRow + startCounterIndexes[exception];
+      }
       const end = start + Math.abs(count);
       natural(end);
-      const ranges = intervals[c].get(seq) ?? [];
-      ranges.push([start, end]);
-      intervals[c].set(seq, ranges);
-      if (count > 0) length += count;
-    });
-    natural(length);
+      starts[i] = start;
+      next[c].set(seq, end);
+      let rows = intervals[c].get(seq);
+      if (!rows) intervals[c].set(seq, (rows = []));
+      rows.push(i);
+    }
     for (const client of intervals)
-      for (const ranges of client.values()) {
-        ranges.sort((a, b) => a[0] - b[0]);
-        for (let i = 1; i < ranges.length; i++)
-          if (ranges[i][0] < ranges[i - 1][1]) throw new Error("Duplicate IDs");
+      for (const rows of client.values()) {
+        rows.sort((a, b) => starts[a] - starts[b]);
+        for (let i = 1; i < rows.length; i++)
+          if (
+            starts[rows[i]] <
+            starts[rows[i - 1]] + Math.abs(counts[rows[i - 1]])
+          )
+            throw new Error("Duplicate IDs");
       }
-    return new NativeF08(s, length);
+    return new NativeF08(clientIds, chunksFor(s, starts, clientIds), s);
   }
-  /** Borrowed read-only-by-contract reference; used to prove zero-copy adoption. */
+  /** Zero-copy before edits; O(runs) flatten/re-encode after edits. Not cached. */
   get wireState(): Readonly<F08> {
-    return this.state;
+    if (this.original) return this.original;
+    const out: F08 = {
+      clientIds: this.clients,
+      clientIndices: [],
+      seqNums: [],
+      startCounterIndexes: [],
+      startCounters: [],
+      counts: [],
+    };
+    const next = this.clients.map(() => new Map<number, number>());
+    let pendingC = -1,
+      pendingSeq = 0,
+      pendingStart = 0,
+      pendingCount = 0,
+      lastException = 0;
+    const flush = () => {
+      if (pendingC < 0) return;
+      if (pendingStart !== (next[pendingC].get(pendingSeq) ?? 0)) {
+        out.startCounterIndexes.push(out.counts.length - lastException);
+        out.startCounters.push(pendingStart);
+        lastException = out.counts.length;
+      }
+      out.clientIndices.push(pendingC);
+      out.seqNums.push(pendingSeq);
+      out.counts.push(pendingCount);
+      next[pendingC].set(pendingSeq, pendingStart + Math.abs(pendingCount));
+    };
+    for (const chunk of this.chunks)
+      for (let i = chunk.from; i < chunk.to; i++) {
+        const s = chunk.columns,
+          c = s.clientIndices[i],
+          seq = s.seqNums[i],
+          start = chunk.starts[i],
+          count = s.counts[i];
+        if (
+          c === pendingC &&
+          seq === pendingSeq &&
+          start === pendingStart + Math.abs(pendingCount) &&
+          Math.sign(count) === Math.sign(pendingCount)
+        )
+          pendingCount += count;
+        else {
+          flush();
+          pendingC = c;
+          pendingSeq = seq;
+          pendingStart = start;
+          pendingCount = count;
+        }
+      }
+    flush();
+    return out;
+  }
+  private find(id: ElementId): { chunk: number; row: number } {
+    for (let c = 0; c < this.chunks.length; c++) {
+      const chunk = this.chunks[c],
+        rows = chunk.byId.get(id.bunchId);
+      if (rows !== undefined)
+        for (
+          let j = 0, size = typeof rows === "number" ? 1 : rows.length;
+          j < size;
+          j++
+        ) {
+          const row = typeof rows === "number" ? rows : rows[j];
+          if (
+            chunk.starts[row] <= id.counter &&
+            id.counter < chunk.starts[row] + Math.abs(chunk.columns.counts[row])
+          )
+            return { chunk: c, row };
+        }
+    }
+    throw new Error("Unknown ID");
   }
   at(index: number): ElementId {
     natural(index);
     if (index >= this.length) throw new Error("Index out of bounds");
-    let result!: ElementId;
-    scan(this.state, (c, seq, start, count) => {
-      if (count <= 0) return;
-      if (index < count) {
-        result = { bunchId: join(this.state, c, seq), counter: start + index };
-        return false;
-      }
+    let lo = 0,
+      hi = this.chunks.length;
+    while (lo < hi) {
+      const mid = (lo + hi) >>> 1;
+      if (this.prefix[mid + 1] <= index) lo = mid + 1;
+      else hi = mid;
+    }
+    const chunk = this.chunks[lo];
+    index -= this.prefix[lo];
+    for (let i = chunk.from; i < chunk.to; i++) {
+      const s = chunk.columns,
+        count = s.counts[i];
+      if (count <= 0) continue;
+      if (index < count)
+        return {
+          bunchId: join(this.clients, s.clientIndices[i], s.seqNums[i]),
+          counter: chunk.starts[i] + index,
+        };
       index -= count;
-    });
-    return result;
+    }
+    throw new Error("Invalid prefix index");
   }
   indexOf(id: ElementId, bias: "none" | "left" | "right" = "none"): number {
-    const [client, sequence] = split(id.bunchId),
-      clientIndex = this.state.clientIds.indexOf(client);
-    let seen = 0,
-      result: number | undefined;
-    scan(this.state, (c, seq, start, count) => {
-      if (
-        c === clientIndex &&
-        seq === sequence &&
-        start <= id.counter &&
-        id.counter < start + Math.abs(count)
-      ) {
-        result =
-          count > 0
-            ? seen + id.counter - start
-            : bias === "none"
-              ? -1
-              : seen - (bias === "left" ? 1 : 0);
-        return false;
-      }
-      if (count > 0) seen += count;
-    });
-    if (result === undefined) throw new Error("Unknown ID");
-    return result;
+    const found = this.find(id),
+      chunk = this.chunks[found.chunk];
+    let seen = this.prefix[found.chunk];
+    for (let i = chunk.from; i < found.row; i++)
+      if (chunk.columns.counts[i] > 0) seen += chunk.columns.counts[i];
+    return chunk.columns.counts[found.row] > 0
+      ? seen + id.counter - chunk.starts[found.row]
+      : bias === "none"
+        ? -1
+        : seen - (bias === "left" ? 1 : 0);
   }
   insertAfter(before: ElementId | null, id: ElementId, count = 1): NativeF08 {
     natural(count);
     natural(id.counter);
     natural(id.counter + count);
-    const [client, sequence] = split(id.bunchId);
-    const clients = [...this.state.clientIds];
-    let ci = clients.indexOf(client);
+    const [client, seq] = split(id.bunchId);
+    const anchor = before === null ? null : this.find(before);
+    if (count === 0) return this;
+    natural(this.length + count);
+    for (const chunk of this.chunks) {
+      const rows = chunk.byId.get(id.bunchId);
+      if (rows !== undefined)
+        for (
+          let j = 0, size = typeof rows === "number" ? 1 : rows.length;
+          j < size;
+          j++
+        ) {
+          const row = typeof rows === "number" ? rows : rows[j];
+          if (
+            chunk.starts[row] < id.counter + count &&
+            id.counter < chunk.starts[row] + Math.abs(chunk.columns.counts[row])
+          )
+            throw new Error("Duplicate IDs");
+        }
+    }
+    let ci = this.clients.indexOf(client),
+      clients = this.clients;
     if (ci < 0) {
       ci = clients.length;
-      clients.push(client);
+      clients = [...clients, client];
     }
-    const anchor = before ? split(before.bunchId) : null;
-    const ac = anchor ? clients.indexOf(anchor[0]) : -1;
-    const writer = new Writer(clients);
-    let found = before === null;
-    if (found) writer.append(ci, sequence, id.counter, count);
-    scan(this.state, (c, seq, start, n) => {
-      const end = start + Math.abs(n);
-      if (
-        count > 0 &&
-        c === ci &&
-        seq === sequence &&
-        start < id.counter + count &&
-        id.counter < end
-      )
-        throw new Error("Duplicate IDs");
-      if (
-        before &&
-        c === ac &&
-        seq === anchor![1] &&
-        start <= before.counter &&
-        before.counter < end
-      ) {
-        const left = before.counter - start + 1,
-          sign = Math.sign(n);
-        writer.append(c, seq, start, sign * left);
-        writer.append(ci, sequence, id.counter, count);
-        writer.append(c, seq, start + left, sign * (Math.abs(n) - left));
-        found = true;
-      } else writer.append(c, seq, start, n);
-    });
-    if (!found) throw new Error("Unknown anchor");
-    if (count === 0) return this;
-    return new NativeF08(writer.finish(), this.length + count);
+    const target = anchor?.chunk ?? 0,
+      chunk = this.chunks[target],
+      buffer = new EditBuffer();
+    if (!anchor) buffer.append(ci, seq, id.counter, count);
+    if (chunk)
+      for (let i = chunk.from; i < chunk.to; i++) {
+        if (anchor && i === anchor.row) {
+          const s = chunk.columns,
+            start = chunk.starts[i],
+            n = s.counts[i],
+            left = before!.counter - start + 1,
+            sign = Math.sign(n);
+          buffer.append(s.clientIndices[i], s.seqNums[i], start, sign * left);
+          buffer.append(ci, seq, id.counter, count);
+          buffer.append(
+            s.clientIndices[i],
+            s.seqNums[i],
+            start + left,
+            sign * (Math.abs(n) - left),
+          );
+        } else buffer.copy(chunk, i);
+      }
+    const chunks = this.chunks.slice();
+    chunks.splice(target, chunk ? 1 : 0, ...buffer.finish(clients));
+    return new NativeF08(clients, chunks);
   }
   delete(id: ElementId, count = 1): NativeF08 {
     natural(count);
     natural(id.counter);
     natural(id.counter + count);
     if (!count) return this;
-    const [client, sequence] = split(id.bunchId),
-      ci = this.state.clientIds.indexOf(client);
-    if (ci < 0) return this;
-    const writer = new Writer(this.state.clientIds);
-    let removed = 0;
-    scan(this.state, (c, seq, start, n) => {
-      const lo = Math.max(start, id.counter),
-        hi = Math.min(start + n, id.counter + count);
-      if (c === ci && seq === sequence && n > 0 && lo < hi) {
-        writer.append(c, seq, start, lo - start);
-        writer.append(c, seq, lo, -(hi - lo));
-        writer.append(c, seq, hi, start + n - hi);
-        removed += hi - lo;
-      } else writer.append(c, seq, start, n);
-    });
-    return removed
-      ? new NativeF08(writer.finish(), this.length - removed)
-      : this;
+    split(id.bunchId);
+    let result: Chunk[] | undefined;
+    for (let c = 0; c < this.chunks.length; c++) {
+      const chunk = this.chunks[c],
+        rows = chunk.byId.get(id.bunchId);
+      let hits: number[] | undefined;
+      if (rows !== undefined)
+        for (
+          let j = 0, size = typeof rows === "number" ? 1 : rows.length;
+          j < size;
+          j++
+        ) {
+          const row = typeof rows === "number" ? rows : rows[j];
+          if (
+            chunk.columns.counts[row] > 0 &&
+            chunk.starts[row] < id.counter + count &&
+            id.counter < chunk.starts[row] + chunk.columns.counts[row]
+          ) {
+            if (!hits) hits = [];
+            hits.push(row);
+          }
+        }
+      if (!hits?.length) {
+        if (result) result.push(chunk);
+        continue;
+      }
+      if (!result) result = this.chunks.slice(0, c);
+      const buffer = new EditBuffer();
+      let hit = 0;
+      for (let i = chunk.from; i < chunk.to; i++) {
+        if (i !== hits[hit]) {
+          buffer.copy(chunk, i);
+          continue;
+        }
+        hit++;
+        const s = chunk.columns,
+          start = chunk.starts[i],
+          n = s.counts[i],
+          lo = Math.max(start, id.counter),
+          hi = Math.min(start + n, id.counter + count);
+        buffer.append(s.clientIndices[i], s.seqNums[i], start, lo - start);
+        buffer.append(s.clientIndices[i], s.seqNums[i], lo, -(hi - lo));
+        buffer.append(s.clientIndices[i], s.seqNums[i], hi, start + n - hi);
+      }
+      result.push(...buffer.finish(this.clients));
+    }
+    return result ? new NativeF08(this.clients, result) : this;
   }
   save(): SavedIdList {
     const result: SavedIdList = [];
-    scan(this.state, (c, seq, startCounter, count) => {
-      const bunchId = join(this.state, c, seq),
-        isDeleted = count < 0,
-        size = Math.abs(count),
-        last = result.at(-1);
-      if (
-        last &&
-        last.bunchId === bunchId &&
-        last.isDeleted === isDeleted &&
-        last.startCounter + last.count === startCounter
-      )
-        result[result.length - 1] = { ...last, count: last.count + size };
-      else result.push({ bunchId, startCounter, count: size, isDeleted });
-    });
+    for (const chunk of this.chunks)
+      for (let i = chunk.from; i < chunk.to; i++) {
+        const s = chunk.columns,
+          bunchId = join(this.clients, s.clientIndices[i], s.seqNums[i]),
+          startCounter = chunk.starts[i],
+          count = Math.abs(s.counts[i]),
+          isDeleted = s.counts[i] < 0,
+          last = result.at(-1);
+        if (
+          last &&
+          last.bunchId === bunchId &&
+          last.isDeleted === isDeleted &&
+          last.startCounter + last.count === startCounter
+        )
+          result[result.length - 1] = { ...last, count: last.count + count };
+        else result.push({ bunchId, startCounter, count, isDeleted });
+      }
     return result;
   }
 }
