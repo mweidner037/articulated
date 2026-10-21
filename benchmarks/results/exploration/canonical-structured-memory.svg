@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="956" viewBox="0 0 1025 956" role="img" aria-labelledby="title desc">
+<title id="title">Structured client_sequence IDs: retained JS memory</title><desc id="desc">One document grown from empty; final memory; median of 3; lower is better. ID-list history only, not editor undo; decimal MB. Final retained memory, not peak or total allocation.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="956" fill="white"/>
+<text x="24" y="36" class="title">Structured client_sequence IDs: retained JS memory</text>
+<text x="24" y="68" >One document grown from empty; final memory; median of 3; lower is better.</text>
+<text x="24" y="110" >Internal representation</text>
+<text x="425" y="110" >No history, MB</text>
+<line x1="425" x2="425" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="425" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="532" y="912" class="small" text-anchor="middle">1.8</text>
+<line x1="639" x2="639" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="639" y="912" class="small" text-anchor="middle">3.5</text>
+<rect x="425" y="165" width="139.4823262857143" height="23" fill="#3266a6"/>
+<text x="571.4823262857143" y="183" class="small">2.3</text>
+<rect x="425" y="247" width="153.21397257142857" height="23" fill="#3266a6"/>
+<text x="585.2139725714286" y="265" class="small">2.5</text>
+<rect x="425" y="329" width="143.15566685714285" height="23" fill="#3266a6"/>
+<text x="575.1556668571428" y="347" class="small">2.3</text>
+<rect x="425" y="411" width="155.99719542857144" height="23" fill="#3266a6"/>
+<text x="587.9971954285714" y="429" class="small">2.6</text>
+<rect x="425" y="493" width="161.77537885714287" height="23" fill="#3266a6"/>
+<text x="593.7753788571429" y="511" class="small">2.6</text>
+<rect x="425" y="575" width="201.20316685714286" height="23" fill="#3266a6"/>
+<text x="633.2031668571428" y="593" class="small">3.3</text>
+<rect x="425" y="657" width="200.55700914285714" height="23" fill="#3266a6"/>
+<text x="632.5570091428572" y="675" class="small">3.3</text>
+<rect x="425" y="739" width="148.83002971428573" height="23" fill="#3266a6"/>
+<text x="580.8300297142857" y="757" class="small">2.4</text>
+<rect x="425" y="821" width="148.83149714285713" height="23" fill="#3266a6"/>
+<text x="580.8314971428572" y="839" class="small">2.4</text>
+<text x="715" y="110" >+100 ID versions, MB</text>
+<line x1="715" x2="715" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="715" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="822" y="912" class="small" text-anchor="middle">2.1</text>
+<line x1="929" x2="929" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="929" y="912" class="small" text-anchor="middle">4.2</text>
+<rect x="715" y="165" width="148.1006361904762" height="23" fill="#3c8077"/>
+<text x="870.1006361904762" y="183" class="small">2.9</text>
+<rect x="715" y="247" width="151.57283714285714" height="23" fill="#3c8077"/>
+<text x="873.5728371428571" y="265" class="small">3.0</text>
+<rect x="715" y="329" width="152.0446561904762" height="23" fill="#3c8077"/>
+<text x="874.0446561904762" y="347" class="small">3.0</text>
+<rect x="715" y="411" width="153.87185952380952" height="23" fill="#3c8077"/>
+<text x="875.8718595238095" y="429" class="small">3.0</text>
+<rect x="715" y="493" width="158.78387285714285" height="23" fill="#3c8077"/>
+<text x="880.7838728571428" y="511" class="small">3.1</text>
+<rect x="715" y="575" width="174.00329809523808" height="23" fill="#3c8077"/>
+<text x="896.003298095238" y="593" class="small">3.4</text>
+<rect x="715" y="657" width="196.65907047619046" height="23" fill="#3c8077"/>
+<text x="918.6590704761904" y="675" class="small">3.9</text>
+<rect x="715" y="739" width="200.91558142857141" height="23" fill="#3c8077"/>
+<text x="922.9155814285714" y="757" class="small">3.9</text>
+<rect x="715" y="821" width="200.9214919047619" height="23" fill="#3c8077"/>
+<text x="922.9214919047619" y="839" class="small">3.9</text>
+<text x="24" y="162" >F05 · native columns; reconstruct counters</text>
+<text x="24" y="204" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="244" >F03 · native tuples</text>
+<text x="24" y="286" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="326" >F08 · native client dictionary; flat pages</text>
+<text x="24" y="368" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="408" >F01 · native plain objects</text>
+<text x="24" y="450" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="490" >F02 · native objects; negative means</text>
+<text x="24" y="510" >deleted</text>
+<text x="24" y="532" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="572" >F01 · existing IdList</text>
+<text x="24" y="614" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="654" >F08 · native client dictionary; indexed</text>
+<text x="24" y="674" >pages</text>
+<text x="24" y="696" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="736" >F07 · native whole-ID dictionary columns</text>
+<text x="24" y="778" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="818" >F09 · native dictionary + all counters</text>
+<text x="24" y="860" class="small">Editor + ID list; forced GC; includes backing storage</text>
+<text x="24" y="944" class="small">ID-list history only, not editor undo; decimal MB. Final retained memory, not peak or total allocation.</text>
+</svg>

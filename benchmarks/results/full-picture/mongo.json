@@ -1,0 +1,1015 @@
+{
+  "generatedAt": "2026-10-20T20:55:21.539Z",
+  "version": "8.3.3",
+  "documents": 100,
+  "rows": [
+    {
+      "name": "snappy_objects_native",
+      "codec": "objects",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 18051072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_objects_gzip",
+      "codec": "objects",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7450624,
+      "freeBytes": 61440,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_signed_native",
+      "codec": "signed",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 16965632,
+      "freeBytes": 155648,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_signed_gzip",
+      "codec": "signed",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_tuples_native",
+      "codec": "tuples",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 16003072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_tuples_gzip",
+      "codec": "tuples",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6172672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_columns_native",
+      "codec": "columns",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 22147072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_columns_gzip",
+      "codec": "columns",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 5152768,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_omit_native",
+      "codec": "omit",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 15593472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_omit_gzip",
+      "codec": "omit",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 4124672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_omit_native",
+      "codec": "split-omit",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 19689472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_omit_gzip",
+      "codec": "split-omit",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 3305472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary_omit_native",
+      "codec": "dictionary-omit",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 17641472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary_omit_gzip",
+      "codec": "dictionary-omit",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 5148672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary_proto_native",
+      "codec": "dictionary-proto",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7036928,
+      "freeBytes": 57344,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_dictionary_proto_gzip",
+      "codec": "dictionary-proto",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 4743168,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_proto_native",
+      "codec": "split-proto",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 3543040,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_proto_gzip",
+      "codec": "split-proto",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 2772992,
+      "freeBytes": 94208,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_proto_direct_native",
+      "codec": "split-proto-direct",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 3543040,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_split_proto_direct_gzip",
+      "codec": "split-proto-direct",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 2691072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_adapter_native",
+      "codec": "binary-adapter",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 12316672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_adapter_gzip",
+      "codec": "binary-adapter",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_direct_native",
+      "codec": "binary-direct",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 12414976,
+      "freeBytes": 110592,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_binary_direct_gzip",
+      "codec": "binary-direct",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7864320,
+      "freeBytes": 65536,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_adapter_native",
+      "codec": "bit-adapter",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 9859072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_adapter_gzip",
+      "codec": "bit-adapter",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_direct_native",
+      "codec": "bit-direct",
+      "compressor": "snappy",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 9859072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "snappy_bit_direct_gzip",
+      "codec": "bit-direct",
+      "compressor": "snappy",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_objects_native",
+      "codec": "objects",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 8630272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_objects_gzip",
+      "codec": "objects",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7401472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_signed_native",
+      "codec": "signed",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 9134080,
+      "freeBytes": 516096,
+      "indexBytes": 36864
+    },
+    {
+      "name": "zstd_signed_gzip",
+      "codec": "signed",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7036928,
+      "freeBytes": 57344,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_tuples_native",
+      "codec": "tuples",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 8630272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_tuples_gzip",
+      "codec": "tuples",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6270976,
+      "freeBytes": 110592,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_columns_native",
+      "codec": "columns",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 11497472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_columns_gzip",
+      "codec": "columns",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 5107712,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_omit_native",
+      "codec": "omit",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 8220672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_omit_gzip",
+      "codec": "omit",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 4124672,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_omit_native",
+      "codec": "split-omit",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 9519104,
+      "freeBytes": 81920,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_omit_gzip",
+      "codec": "split-omit",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 3117056,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary_omit_native",
+      "codec": "dictionary-omit",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 9449472,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary_omit_gzip",
+      "codec": "dictionary-omit",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 5103616,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary_proto_native",
+      "codec": "dictionary-proto",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 4968448,
+      "freeBytes": 36864,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_dictionary_proto_gzip",
+      "codec": "dictionary-proto",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 4734976,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_proto_native",
+      "codec": "split-proto",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 1462272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_proto_gzip",
+      "codec": "split-proto",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 2695168,
+      "freeBytes": 106496,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_proto_direct_native",
+      "codec": "split-proto-direct",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 1462272,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_split_proto_direct_gzip",
+      "codec": "split-proto-direct",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 2568192,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_adapter_native",
+      "codec": "binary-adapter",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_adapter_gzip",
+      "codec": "binary-adapter",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_direct_native",
+      "codec": "binary-direct",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_binary_direct_gzip",
+      "codec": "binary-direct",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7864320,
+      "freeBytes": 65536,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_adapter_native",
+      "codec": "bit-adapter",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_adapter_gzip",
+      "codec": "bit-adapter",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_direct_native",
+      "codec": "bit-direct",
+      "compressor": "zstd",
+      "gzip": false,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 6991872,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    },
+    {
+      "name": "zstd_bit_direct_gzip",
+      "codec": "bit-direct",
+      "compressor": "zstd",
+      "gzip": true,
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "count": 100,
+      "storageBytes": 7811072,
+      "freeBytes": 12288,
+      "indexBytes": 20480
+    }
+  ]
+}
