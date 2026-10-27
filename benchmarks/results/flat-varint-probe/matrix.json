@@ -1,0 +1,320 @@
+{
+  "generatedAt": "2026-10-27T22:40:00.080Z",
+  "runs": 11757,
+  "distinctBunches": 5382,
+  "measurement": "{_id, state} BSON; raw = BSON bytes; zstd level 6 and snappy compress each document on its own (proxy for WiredTiger block compression, not a Mongo measurement).",
+  "arrangements": [
+    {
+      "id": "id-per-run",
+      "label": "Full ID on every run"
+    },
+    {
+      "id": "id-once",
+      "label": "Each distinct ID once + back-reference per run"
+    },
+    {
+      "id": "client-counter-numbers",
+      "label": "Client IDs once + per-run client index and counter change"
+    }
+  ],
+  "encodings": [
+    {
+      "id": "plain",
+      "label": "Plain BSON arrays"
+    },
+    {
+      "id": "float64",
+      "label": "Float64 Binary per number field"
+    },
+    {
+      "id": "varint",
+      "label": "Varint Binary per number field"
+    },
+    {
+      "id": "protobuf",
+      "label": "One protobuf blob"
+    }
+  ],
+  "rows": [
+    {
+      "dataset": "random",
+      "arrangement": "objects",
+      "encoding": "plain",
+      "rawBytes": 870691,
+      "zstdBytes": 110315,
+      "snappyBytes": 193369
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-per-run",
+      "encoding": "plain",
+      "rawBytes": 342347,
+      "zstdBytes": 98195,
+      "snappyBytes": 173856
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-per-run",
+      "encoding": "float64",
+      "rawBytes": 318186,
+      "zstdBytes": 75791,
+      "snappyBytes": 131701
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-per-run",
+      "encoding": "varint",
+      "rawBytes": 236548,
+      "zstdBytes": 71753,
+      "snappyBytes": 119120
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-per-run",
+      "encoding": "protobuf",
+      "rawBytes": 130017,
+      "zstdBytes": 58661,
+      "snappyBytes": 78179
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-once",
+      "encoding": "plain",
+      "rawBytes": 337696,
+      "zstdBytes": 112124,
+      "snappyBytes": 199734
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-once",
+      "encoding": "float64",
+      "rawBytes": 289374,
+      "zstdBytes": 70628,
+      "snappyBytes": 116072
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-once",
+      "encoding": "varint",
+      "rawBytes": 125729,
+      "zstdBytes": 64964,
+      "snappyBytes": 91777
+    },
+    {
+      "dataset": "random",
+      "arrangement": "id-once",
+      "encoding": "protobuf",
+      "rawBytes": 78319,
+      "zstdBytes": 56843,
+      "snappyBytes": 72830
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "objects",
+      "encoding": "plain",
+      "rawBytes": 938065,
+      "zstdBytes": 80169,
+      "snappyBytes": 164107
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-per-run",
+      "encoding": "plain",
+      "rawBytes": 409721,
+      "zstdBytes": 74325,
+      "snappyBytes": 147281
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-per-run",
+      "encoding": "float64",
+      "rawBytes": 385560,
+      "zstdBytes": 52891,
+      "snappyBytes": 105126
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-per-run",
+      "encoding": "varint",
+      "rawBytes": 303922,
+      "zstdBytes": 46021,
+      "snappyBytes": 92521
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-per-run",
+      "encoding": "protobuf",
+      "rawBytes": 197391,
+      "zstdBytes": 26862,
+      "snappyBytes": 53810
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-once",
+      "encoding": "plain",
+      "rawBytes": 368656,
+      "zstdBytes": 85621,
+      "snappyBytes": 173151
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-once",
+      "encoding": "float64",
+      "rawBytes": 320334,
+      "zstdBytes": 45694,
+      "snappyBytes": 89823
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-once",
+      "encoding": "varint",
+      "rawBytes": 156689,
+      "zstdBytes": 34943,
+      "snappyBytes": 65713
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "id-once",
+      "encoding": "protobuf",
+      "rawBytes": 109279,
+      "zstdBytes": 28500,
+      "snappyBytes": 45093
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "client-counter-numbers",
+      "encoding": "plain",
+      "rawBytes": 354811,
+      "zstdBytes": 76567,
+      "snappyBytes": 184751
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "client-counter-numbers",
+      "encoding": "float64",
+      "rawBytes": 282328,
+      "zstdBytes": 31609,
+      "snappyBytes": 55618
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "client-counter-numbers",
+      "encoding": "varint",
+      "rawBytes": 39148,
+      "zstdBytes": 19690,
+      "snappyBytes": 25680
+    },
+    {
+      "dataset": "client-counter",
+      "arrangement": "client-counter-numbers",
+      "encoding": "protobuf",
+      "rawBytes": 39035,
+      "zstdBytes": 19616,
+      "snappyBytes": 25582
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "objects",
+      "encoding": "plain",
+      "rawBytes": 929582,
+      "zstdBytes": 80418,
+      "snappyBytes": 169820
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-per-run",
+      "encoding": "plain",
+      "rawBytes": 401238,
+      "zstdBytes": 74530,
+      "snappyBytes": 151356
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-per-run",
+      "encoding": "float64",
+      "rawBytes": 377077,
+      "zstdBytes": 52729,
+      "snappyBytes": 109465
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-per-run",
+      "encoding": "varint",
+      "rawBytes": 295439,
+      "zstdBytes": 45962,
+      "snappyBytes": 96881
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-per-run",
+      "encoding": "protobuf",
+      "rawBytes": 188908,
+      "zstdBytes": 26273,
+      "snappyBytes": 53216
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-once",
+      "encoding": "plain",
+      "rawBytes": 364752,
+      "zstdBytes": 86251,
+      "snappyBytes": 173427
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-once",
+      "encoding": "float64",
+      "rawBytes": 316430,
+      "zstdBytes": 46120,
+      "snappyBytes": 90194
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-once",
+      "encoding": "varint",
+      "rawBytes": 152785,
+      "zstdBytes": 35732,
+      "snappyBytes": 66239
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "id-once",
+      "encoding": "protobuf",
+      "rawBytes": 105375,
+      "zstdBytes": 26749,
+      "snappyBytes": 43668
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "client-counter-numbers",
+      "encoding": "plain",
+      "rawBytes": 354865,
+      "zstdBytes": 81538,
+      "snappyBytes": 181629
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "client-counter-numbers",
+      "encoding": "float64",
+      "rawBytes": 282382,
+      "zstdBytes": 31769,
+      "snappyBytes": 56076
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "client-counter-numbers",
+      "encoding": "varint",
+      "rawBytes": 37251,
+      "zstdBytes": 18919,
+      "snappyBytes": 25789
+    },
+    {
+      "dataset": "client-counter-4-clients",
+      "arrangement": "client-counter-numbers",
+      "encoding": "protobuf",
+      "rawBytes": 37120,
+      "zstdBytes": 18838,
+      "snappyBytes": 25685
+    }
+  ]
+}

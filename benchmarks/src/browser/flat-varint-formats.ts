@@ -329,3 +329,134 @@ export const flatFloat64IdsFormat: SweepFormat = {
     });
   },
 };
+
+/** "<clientId>_<counter in canonical base36>", or null for any other ID. */
+export function parseClientCounterId(id: string): [string, number] | null {
+  const at = id.lastIndexOf("_");
+  if (at <= 0) return null;
+  const text = id.slice(at + 1);
+  if (!/^(0|[1-9a-z][0-9a-z]*)$/.test(text)) return null;
+  const counter = parseInt(text, 36);
+  if (!Number.isSafeInteger(counter) || counter.toString(36) !== text)
+    return null;
+  return [id.slice(0, at), counter];
+}
+
+/** Whole state as one CompactIdSavedIdListMessage (see id_list_saved_state.proto). */
+export function encodeCompactIdProto(columns: VarintColumns): Uint8Array {
+  const clients = new Map<string, number>(),
+    last: number[] = [];
+  const clientIndexes: number[] = [],
+    counterChanges: number[] = [],
+    raw: string[] = [];
+  for (const id of columns.bunchIds) {
+    const parsed = parseClientCounterId(id);
+    if (!parsed) {
+      raw.push(id);
+      clientIndexes.push(0);
+      counterChanges.push(0);
+      continue;
+    }
+    const [client, counter] = parsed;
+    let c = clients.get(client);
+    if (c === undefined) {
+      c = clients.size;
+      clients.set(client, c);
+      last.push(0);
+    }
+    clientIndexes.push(c + 1);
+    counterChanges.push(counter - last[c]);
+    last[c] = counter;
+  }
+  const writer = new VarintWriter();
+  const encoder = new TextEncoder();
+  for (const client of clients.keys()) writer.string(1, encoder.encode(client));
+  writer.field(2, packUintVarints(clientIndexes));
+  writer.field(3, packSintVarints(counterChanges));
+  for (const id of raw) writer.string(4, encoder.encode(id));
+  writer.field(5, packUintVarints(columns.startCounterIndexes));
+  writer.field(6, packUintVarints(columns.startCounters));
+  writer.field(7, packSintVarints(columns.counts));
+  return writer.finish();
+}
+export function decodeCompactIdProto(bytes: Uint8Array): VarintColumns {
+  const clients: string[] = [],
+    raw: string[] = [];
+  const clientIndexes: number[] = [],
+    counterChanges: number[] = [];
+  const out: VarintColumns = {
+    bunchIds: [],
+    startCounterIndexes: [],
+    startCounters: [],
+    counts: [],
+  };
+  const decoder = new TextDecoder("utf-8", { fatal: true });
+  const reader = new VarintReader(bytes);
+  while (reader.pos < bytes.length) {
+    const tag = reader.uint();
+    assert.equal(tag & 7, 2, "Expected length-delimited field");
+    const length = reader.uint();
+    const start = reader.pos,
+      end = start + length;
+    assert(end <= bytes.length, "Truncated field");
+    switch (tag >>> 3) {
+      case 1:
+        clients.push(decodeString(decoder, bytes, start, end));
+        break;
+      case 2:
+        clientIndexes.push(...readUintVarints(bytes, start, end));
+        break;
+      case 3:
+        counterChanges.push(...readSintVarints(bytes, start, end));
+        break;
+      case 4:
+        raw.push(decodeString(decoder, bytes, start, end));
+        break;
+      case 5:
+        out.startCounterIndexes.push(...readUintVarints(bytes, start, end));
+        break;
+      case 6:
+        out.startCounters.push(...readUintVarints(bytes, start, end));
+        break;
+      case 7:
+        out.counts.push(...readSintVarints(bytes, start, end));
+        break;
+      default:
+      // Unknown field: skip, as protobuf does.
+    }
+    reader.pos = end;
+  }
+  assert.equal(clientIndexes.length, counterChanges.length);
+  const last = clients.map(() => 0);
+  let r = 0;
+  for (let i = 0; i < clientIndexes.length; i++) {
+    const k = clientIndexes[i];
+    if (k === 0) {
+      assert(r < raw.length, "Missing raw bunchId");
+      out.bunchIds.push(raw[r++]);
+      continue;
+    }
+    assert(k <= clients.length, "Invalid client index");
+    const counter = (last[k - 1] += counterChanges[i]);
+    assert(Number.isSafeInteger(counter) && counter >= 0, "Invalid counter");
+    out.bunchIds.push(`${clients[k - 1]}_${counter.toString(36)}`);
+  }
+  assert.equal(r, raw.length, "Unused raw bunchIds");
+  return out;
+}
+
+export const compactIdProtoFormat: SweepFormat = {
+  id: "Compact-ID",
+  label: "One protobuf blob; client_counter IDs stored as numbers",
+  readiness:
+    "No pages; CompactIdSavedIdListMessage with raw-ID fallback; unchanged IdList.load",
+  pageSize: 0,
+  idEncoding: "dictionary",
+  binary: true,
+  encode(saved) {
+    return new Binary(encodeCompactIdProto(toTransposedOmit(saved)));
+  },
+  decode(state) {
+    return decodeVarintColumns(decodeCompactIdProto(binaryBytes(state)));
+  },
+};

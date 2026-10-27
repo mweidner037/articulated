@@ -13,13 +13,18 @@ Code.require_file("saved_id_list_types.ex", __DIR__)
 [dir] = System.argv()
 read = &File.read!(Path.join(dir, &1))
 
-for name <- ["example", "canonical", "edge"] do
+for name <- ["example", "canonical", "structured", "mixed", "edge"] do
   {expected, _} = Code.eval_string(read.("#{name}.exs"))
   proto = read.("#{name}.proto.bin")
 
   # Option B: whole message.
   {:ok, ^expected} = SavedIdListProto.load(proto)
   {:ok, ^proto} = SavedIdListProto.dump(expected)
+
+  # Compact-ID blob.
+  compact = read.("#{name}.compact.bin")
+  {:ok, ^expected} = SavedIdListCompactProto.load(compact)
+  {:ok, ^compact} = SavedIdListCompactProto.dump(expected)
 
   # Option A: one varint binary per column.
   for {field, type} <- [
@@ -44,4 +49,16 @@ true = min == -max
 :error = UintVarintArray.cast([-1])
 :error = SintVarintArray.load(<<128>>)
 :error = SavedIdListProto.load(<<10, 5, "ab">>)
+
+{["Qm3xT9vKpa", "7hLw2ZcRne"], [1, 1, 2, 1], [0, 0, 0, 1], []} =
+  SavedIdListCompactProto.split_ids([
+    "Qm3xT9vKpa_0",
+    "Qm3xT9vKpa_0",
+    "7hLw2ZcRne_0",
+    "Qm3xT9vKpa_1"
+  ])
+
+# Client index 2 with only one client, and a raw-ID run with no raw ID.
+:error = SavedIdListCompactProto.load(<<10, 1, "a", 18, 1, 2, 26, 1, 0>>)
+:error = SavedIdListCompactProto.load(<<18, 1, 0, 26, 1, 0>>)
 IO.puts("edge cases: ok")

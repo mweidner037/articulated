@@ -3,16 +3,23 @@ import { Binary, deserialize, serialize } from "bson";
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { toTransposedOmit } from "../algorithms/id_list_saved_states";
-import { FlatSavedIdListMessage } from "../generated/id_list_saved_state";
+import {
+  CompactIdSavedIdListMessage,
+  FlatSavedIdListMessage,
+} from "../generated/id_list_saved_state";
 import { directStorageExample } from "./direct-storage-formats";
 import {
+  compactIdProtoFormat,
+  decodeCompactIdProto,
   decodeFlatProto,
+  encodeCompactIdProto,
   encodeFlatProto,
   flatFloat64IdsFormat,
   flatProtoFormat,
   flatVarintFormat,
   packSintVarints,
   packUintVarints,
+  parseClientCounterId,
   readSintVarints,
   readUintVarints,
 } from "./flat-varint-formats";
@@ -94,7 +101,12 @@ const mixedIds: SavedIdList = [
   { bunchId: "a", startCounter: 2, count: 1, isDeleted: false },
 ];
 
-for (const format of [flatVarintFormat, flatProtoFormat, flatFloat64IdsFormat])
+for (const format of [
+  flatVarintFormat,
+  flatProtoFormat,
+  flatFloat64IdsFormat,
+  compactIdProtoFormat,
+])
   test(`${format.id}: exact roundtrips through BSON bytes and IdList.load`, () => {
     for (const saved of [[], directStorageExample, large, many, mixedIds]) {
       const state = deserialize(serialize({ state: format.encode(saved) }))
@@ -146,5 +158,68 @@ test("Flat-Proto rejects truncated fields; Flat-Varint rejects non-default Binar
       ...state,
       counts: new Binary(state.counts.value(), Binary.SUBTYPE_BYTE_ARRAY),
     }),
+  );
+});
+
+const clientCounterIds: SavedIdList = [
+  { bunchId: "Qm3xT9vKpa_0", startCounter: 0, count: 3, isDeleted: false },
+  { bunchId: "Qm3xT9vKpa_0", startCounter: 3, count: 2, isDeleted: true },
+  { bunchId: "7hLw2ZcRne_0", startCounter: 20, count: 1, isDeleted: false },
+  { bunchId: "Qm3xT9vKpa_1", startCounter: 8, count: 2, isDeleted: false },
+  { bunchId: "a_b_24e", startCounter: 0, count: 1, isDeleted: false },
+  { bunchId: "Qm3xT9vKpa_0", startCounter: 10, count: 1, isDeleted: false },
+];
+
+test("Compact-ID stores client_counter IDs as numbers and keeps other IDs as text", () => {
+  assert.deepEqual(parseClientCounterId("Qm3xT9vKpa_24e"), [
+    "Qm3xT9vKpa",
+    2750,
+  ]);
+  assert.deepEqual(parseClientCounterId("a_b_0"), ["a_b", 0]);
+  for (const id of ["aB3dE5fG", "_1", "x_", "x_01", "x_A", "x_-1", "x_1.5"])
+    assert.equal(parseClientCounterId(id), null, id);
+  for (const saved of [
+    clientCounterIds,
+    mixedIds,
+    directStorageExample,
+    many,
+  ]) {
+    const json = toTransposedOmit(saved);
+    const ours = encodeCompactIdProto(json);
+    assert.deepEqual(decodeCompactIdProto(ours), json);
+    // Same bytes as protobufjs for the equivalent message.
+    const decoded = CompactIdSavedIdListMessage.decode(ours);
+    assert.deepEqual(
+      [...ours],
+      [...CompactIdSavedIdListMessage.encode(decoded).finish()],
+    );
+  }
+  // The README example: clients once, then small numbers per run.
+  const decoded = CompactIdSavedIdListMessage.decode(
+    encodeCompactIdProto(toTransposedOmit(clientCounterIds.slice(0, 4))),
+  );
+  assert.deepEqual(decoded.clientIds, ["Qm3xT9vKpa", "7hLw2ZcRne"]);
+  assert.deepEqual((decoded.clientIndexes ?? []).map(Number), [1, 1, 2, 1]);
+  assert.deepEqual((decoded.counterChanges ?? []).map(Number), [0, 0, 0, 1]);
+  assert.equal(decoded.rawBunchIds?.length ?? 0, 0);
+});
+
+test("Compact-ID rejects inconsistent client indexes and raw IDs", () => {
+  const bad = (
+    fields: Parameters<typeof CompactIdSavedIdListMessage.encode>[0],
+  ) => CompactIdSavedIdListMessage.encode(fields).finish();
+  assert.throws(() =>
+    decodeCompactIdProto(
+      bad({ clientIds: ["a"], clientIndexes: [2], counterChanges: [0] }),
+    ),
+  );
+  assert.throws(() =>
+    decodeCompactIdProto(bad({ clientIndexes: [0], counterChanges: [0] })),
+  );
+  assert.throws(() => decodeCompactIdProto(bad({ rawBunchIds: ["x"] })));
+  assert.throws(() =>
+    decodeCompactIdProto(
+      bad({ clientIds: ["a"], clientIndexes: [1], counterChanges: [-1] }),
+    ),
   );
 });

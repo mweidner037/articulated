@@ -2,19 +2,14 @@
 import $protobuf from "protobufjs/minimal.js";
 
 // Common aliases
-const $Reader = $protobuf.Reader,
-  $Writer = $protobuf.Writer,
-  $util = $protobuf.util;
-const $Object = $util.global.Object,
-  $undefined = $util.global.undefined,
-  $Error = $util.global.Error,
-  $RangeError = $util.global.RangeError;
+const $Reader = $protobuf.Reader, $Writer = $protobuf.Writer, $util = $protobuf.util;
+const $Object = $util.global.Object, $undefined = $util.global.undefined, $Error = $util.global.Error, $RangeError = $util.global.RangeError;
 
 // Exported root namespace
 const $root = $protobuf.roots["default"] || ($protobuf.roots["default"] = {});
 
-export const TransposedSavedIdListMessage =
-  ($root.TransposedSavedIdListMessage = (() => {
+export const TransposedSavedIdListMessage = $root.TransposedSavedIdListMessage = (() => {
+
     /**
      * Properties of a TransposedSavedIdListMessage.
      * @typedef {Object} TransposedSavedIdListMessage.$Properties
@@ -46,13 +41,13 @@ export const TransposedSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const TransposedSavedIdListMessage = function (properties) {
-      this.bunchIds = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.bunchIds = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -91,8 +86,8 @@ export const TransposedSavedIdListMessage =
      *   (properties?: TransposedSavedIdListMessage.$Properties): TransposedSavedIdListMessage;
      * }}
      */
-    TransposedSavedIdListMessage.create = function (properties) {
-      return new TransposedSavedIdListMessage(properties);
+    TransposedSavedIdListMessage.create = function(properties) {
+        return new TransposedSavedIdListMessage(properties);
     };
 
     /**
@@ -105,25 +100,23 @@ export const TransposedSavedIdListMessage =
      * @returns {$protobuf.Writer} Writer
      */
     TransposedSavedIdListMessage.encode = function (message, writer, _depth) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.bunchIds != null && message.bunchIds.length)
-        for (let i = 0; i < message.bunchIds.length; ++i)
-          writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.bunchIds[i]);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 2, wireType 2 =*/ 18)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 3, wireType 2 =*/ 26).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -137,88 +130,91 @@ export const TransposedSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TransposedSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.TransposedSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    TransposedSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.bunchIds && message.bunchIds.length))
-              message.bunchIds = [];
-            message.bunchIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+        message = _target || new $root.TransposedSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return TransposedSavedIdListMessage;
-  })());
+})();
 
-export const SplitTransposedSavedIdListMessage =
-  ($root.SplitTransposedSavedIdListMessage = (() => {
+export const SplitTransposedSavedIdListMessage = $root.SplitTransposedSavedIdListMessage = (() => {
+
     /**
      * Properties of a SplitTransposedSavedIdListMessage.
      * @typedef {Object} SplitTransposedSavedIdListMessage.$Properties
@@ -251,14 +247,14 @@ export const SplitTransposedSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const SplitTransposedSavedIdListMessage = function (properties) {
-      this.clientIds = [];
-      this.seqNums = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.clientIds = [];
+        this.seqNums = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -283,8 +279,7 @@ export const SplitTransposedSavedIdListMessage =
      * @memberof SplitTransposedSavedIdListMessage
      * @instance
      */
-    SplitTransposedSavedIdListMessage.prototype.startCounters =
-      $util.emptyArray;
+    SplitTransposedSavedIdListMessage.prototype.startCounters = $util.emptyArray;
 
     /**
      * SplitTransposedSavedIdListMessage counts.
@@ -306,8 +301,8 @@ export const SplitTransposedSavedIdListMessage =
      *   (properties?: SplitTransposedSavedIdListMessage.$Properties): SplitTransposedSavedIdListMessage;
      * }}
      */
-    SplitTransposedSavedIdListMessage.create = function (properties) {
-      return new SplitTransposedSavedIdListMessage(properties);
+    SplitTransposedSavedIdListMessage.create = function(properties) {
+        return new SplitTransposedSavedIdListMessage(properties);
     };
 
     /**
@@ -319,34 +314,26 @@ export const SplitTransposedSavedIdListMessage =
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    SplitTransposedSavedIdListMessage.encode = function (
-      message,
-      writer,
-      _depth,
-    ) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.clientIds != null && message.clientIds.length)
-        for (let i = 0; i < message.clientIds.length; ++i)
-          writer
-            .uint32(/* id 1, wireType 2 =*/ 10)
-            .string(message.clientIds[i]);
-      if (message.seqNums != null && message.seqNums.length)
-        writer.uint32(/* id 2, wireType 2 =*/ 18).uint32s(message.seqNums);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 3, wireType 2 =*/ 26)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 4, wireType 2 =*/ 34).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+    SplitTransposedSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.seqNums);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -360,101 +347,105 @@ export const SplitTransposedSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    SplitTransposedSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.SplitTransposedSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    SplitTransposedSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.clientIds && message.clientIds.length))
-              message.clientIds = [];
-            message.clientIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.seqNums && message.seqNums.length))
-                message.seqNums = [];
-              reader.uint32s(message.seqNums);
-              continue;
+        message = _target || new $root.SplitTransposedSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.seqNums && message.seqNums.length))
-              message.seqNums = [];
-            message.seqNums.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return SplitTransposedSavedIdListMessage;
-  })());
+})();
 
-export const BunchIndexSavedIdListMessage =
-  ($root.BunchIndexSavedIdListMessage = (() => {
+export const BunchIndexSavedIdListMessage = $root.BunchIndexSavedIdListMessage = (() => {
+
     /**
      * Properties of a BunchIndexSavedIdListMessage.
      * @typedef {Object} BunchIndexSavedIdListMessage.$Properties
@@ -487,14 +478,14 @@ export const BunchIndexSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const BunchIndexSavedIdListMessage = function (properties) {
-      this.bunchIds = [];
-      this.bunchIndices = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.bunchIds = [];
+        this.bunchIndices = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -541,8 +532,8 @@ export const BunchIndexSavedIdListMessage =
      *   (properties?: BunchIndexSavedIdListMessage.$Properties): BunchIndexSavedIdListMessage;
      * }}
      */
-    BunchIndexSavedIdListMessage.create = function (properties) {
-      return new BunchIndexSavedIdListMessage(properties);
+    BunchIndexSavedIdListMessage.create = function(properties) {
+        return new BunchIndexSavedIdListMessage(properties);
     };
 
     /**
@@ -555,27 +546,25 @@ export const BunchIndexSavedIdListMessage =
      * @returns {$protobuf.Writer} Writer
      */
     BunchIndexSavedIdListMessage.encode = function (message, writer, _depth) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.bunchIds != null && message.bunchIds.length)
-        for (let i = 0; i < message.bunchIds.length; ++i)
-          writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.bunchIds[i]);
-      if (message.bunchIndices != null && message.bunchIndices.length)
-        writer.uint32(/* id 2, wireType 2 =*/ 18).uint32s(message.bunchIndices);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 3, wireType 2 =*/ 26)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 4, wireType 2 =*/ 34).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.bunchIndices != null && message.bunchIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.bunchIndices);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -589,101 +578,105 @@ export const BunchIndexSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    BunchIndexSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.BunchIndexSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    BunchIndexSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.bunchIds && message.bunchIds.length))
-              message.bunchIds = [];
-            message.bunchIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.bunchIndices && message.bunchIndices.length))
-                message.bunchIndices = [];
-              reader.uint32s(message.bunchIndices);
-              continue;
+        message = _target || new $root.BunchIndexSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.bunchIndices && message.bunchIndices.length))
-              message.bunchIndices = [];
-            message.bunchIndices.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.bunchIndices && message.bunchIndices.length))
+                            message.bunchIndices = [];
+                        reader.uint32s(message.bunchIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.bunchIndices && message.bunchIndices.length))
+                        message.bunchIndices = [];
+                    message.bunchIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return BunchIndexSavedIdListMessage;
-  })());
+})();
 
-export const ClientIndexSavedIdListMessage =
-  ($root.ClientIndexSavedIdListMessage = (() => {
+export const ClientIndexSavedIdListMessage = $root.ClientIndexSavedIdListMessage = (() => {
+
     /**
      * Properties of a ClientIndexSavedIdListMessage.
      * @typedef {Object} ClientIndexSavedIdListMessage.$Properties
@@ -717,15 +710,15 @@ export const ClientIndexSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const ClientIndexSavedIdListMessage = function (properties) {
-      this.clientIds = [];
-      this.clientIndices = [];
-      this.seqNums = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.clientIds = [];
+        this.clientIndices = [];
+        this.seqNums = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -780,8 +773,8 @@ export const ClientIndexSavedIdListMessage =
      *   (properties?: ClientIndexSavedIdListMessage.$Properties): ClientIndexSavedIdListMessage;
      * }}
      */
-    ClientIndexSavedIdListMessage.create = function (properties) {
-      return new ClientIndexSavedIdListMessage(properties);
+    ClientIndexSavedIdListMessage.create = function(properties) {
+        return new ClientIndexSavedIdListMessage(properties);
     };
 
     /**
@@ -794,33 +787,27 @@ export const ClientIndexSavedIdListMessage =
      * @returns {$protobuf.Writer} Writer
      */
     ClientIndexSavedIdListMessage.encode = function (message, writer, _depth) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.clientIds != null && message.clientIds.length)
-        for (let i = 0; i < message.clientIds.length; ++i)
-          writer
-            .uint32(/* id 1, wireType 2 =*/ 10)
-            .string(message.clientIds[i]);
-      if (message.clientIndices != null && message.clientIndices.length)
-        writer
-          .uint32(/* id 2, wireType 2 =*/ 18)
-          .uint32s(message.clientIndices);
-      if (message.seqNums != null && message.seqNums.length)
-        writer.uint32(/* id 3, wireType 2 =*/ 26).uint32s(message.seqNums);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 4, wireType 2 =*/ 34)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 5, wireType 2 =*/ 42).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.clientIndices != null && message.clientIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.clientIndices);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.seqNums);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -834,114 +821,119 @@ export const ClientIndexSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    ClientIndexSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.ClientIndexSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    ClientIndexSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.clientIds && message.clientIds.length))
-              message.clientIds = [];
-            message.clientIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.clientIndices && message.clientIndices.length))
-                message.clientIndices = [];
-              reader.uint32s(message.clientIndices);
-              continue;
+        message = _target || new $root.ClientIndexSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.clientIndices && message.clientIndices.length))
-              message.clientIndices = [];
-            message.clientIndices.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.seqNums && message.seqNums.length))
-                message.seqNums = [];
-              reader.uint32s(message.seqNums);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.clientIndices && message.clientIndices.length))
+                            message.clientIndices = [];
+                        reader.uint32s(message.clientIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.clientIndices && message.clientIndices.length))
+                        message.clientIndices = [];
+                    message.clientIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.seqNums && message.seqNums.length))
-              message.seqNums = [];
-            message.seqNums.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 5: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
-            }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return ClientIndexSavedIdListMessage;
-  })());
+})();
 
-export const BunchIndexOmitSavedIdListMessage =
-  ($root.BunchIndexOmitSavedIdListMessage = (() => {
+export const BunchIndexOmitSavedIdListMessage = $root.BunchIndexOmitSavedIdListMessage = (() => {
+
     /**
      * Properties of a BunchIndexOmitSavedIdListMessage.
      * @typedef {Object} BunchIndexOmitSavedIdListMessage.$Properties
@@ -975,15 +967,15 @@ export const BunchIndexOmitSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const BunchIndexOmitSavedIdListMessage = function (properties) {
-      this.bunchIds = [];
-      this.bunchIndices = [];
-      this.startCounterIndexes = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.bunchIds = [];
+        this.bunchIndices = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -1008,8 +1000,7 @@ export const BunchIndexOmitSavedIdListMessage =
      * @memberof BunchIndexOmitSavedIdListMessage
      * @instance
      */
-    BunchIndexOmitSavedIdListMessage.prototype.startCounterIndexes =
-      $util.emptyArray;
+    BunchIndexOmitSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
 
     /**
      * BunchIndexOmitSavedIdListMessage startCounters.
@@ -1039,8 +1030,8 @@ export const BunchIndexOmitSavedIdListMessage =
      *   (properties?: BunchIndexOmitSavedIdListMessage.$Properties): BunchIndexOmitSavedIdListMessage;
      * }}
      */
-    BunchIndexOmitSavedIdListMessage.create = function (properties) {
-      return new BunchIndexOmitSavedIdListMessage(properties);
+    BunchIndexOmitSavedIdListMessage.create = function(properties) {
+        return new BunchIndexOmitSavedIdListMessage(properties);
     };
 
     /**
@@ -1052,39 +1043,28 @@ export const BunchIndexOmitSavedIdListMessage =
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    BunchIndexOmitSavedIdListMessage.encode = function (
-      message,
-      writer,
-      _depth,
-    ) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.bunchIds != null && message.bunchIds.length)
-        for (let i = 0; i < message.bunchIds.length; ++i)
-          writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.bunchIds[i]);
-      if (message.bunchIndices != null && message.bunchIndices.length)
-        writer.uint32(/* id 2, wireType 2 =*/ 18).uint32s(message.bunchIndices);
-      if (
-        message.startCounterIndexes != null &&
-        message.startCounterIndexes.length
-      )
-        writer
-          .uint32(/* id 3, wireType 2 =*/ 26)
-          .uint32s(message.startCounterIndexes);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 4, wireType 2 =*/ 34)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 5, wireType 2 =*/ 42).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+    BunchIndexOmitSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.bunchIndices != null && message.bunchIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.bunchIndices);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -1098,119 +1078,119 @@ export const BunchIndexOmitSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    BunchIndexOmitSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.BunchIndexOmitSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    BunchIndexOmitSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.bunchIds && message.bunchIds.length))
-              message.bunchIds = [];
-            message.bunchIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.bunchIndices && message.bunchIndices.length))
-                message.bunchIndices = [];
-              reader.uint32s(message.bunchIndices);
-              continue;
+        message = _target || new $root.BunchIndexOmitSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.bunchIndices && message.bunchIndices.length))
-              message.bunchIndices = [];
-            message.bunchIndices.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(
-                message.startCounterIndexes &&
-                message.startCounterIndexes.length
-              ))
-                message.startCounterIndexes = [];
-              reader.uint32s(message.startCounterIndexes);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.bunchIndices && message.bunchIndices.length))
+                            message.bunchIndices = [];
+                        reader.uint32s(message.bunchIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.bunchIndices && message.bunchIndices.length))
+                        message.bunchIndices = [];
+                    message.bunchIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(
-              message.startCounterIndexes && message.startCounterIndexes.length
-            ))
-              message.startCounterIndexes = [];
-            message.startCounterIndexes.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 5: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
-            }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return BunchIndexOmitSavedIdListMessage;
-  })());
+})();
 
-export const ClientIndexOmitSavedIdListMessage =
-  ($root.ClientIndexOmitSavedIdListMessage = (() => {
+export const ClientIndexOmitSavedIdListMessage = $root.ClientIndexOmitSavedIdListMessage = (() => {
+
     /**
      * Properties of a ClientIndexOmitSavedIdListMessage.
      * @typedef {Object} ClientIndexOmitSavedIdListMessage.$Properties
@@ -1245,16 +1225,16 @@ export const ClientIndexOmitSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const ClientIndexOmitSavedIdListMessage = function (properties) {
-      this.clientIds = [];
-      this.clientIndices = [];
-      this.seqNums = [];
-      this.startCounterIndexes = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.clientIds = [];
+        this.clientIndices = [];
+        this.seqNums = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -1271,8 +1251,7 @@ export const ClientIndexOmitSavedIdListMessage =
      * @memberof ClientIndexOmitSavedIdListMessage
      * @instance
      */
-    ClientIndexOmitSavedIdListMessage.prototype.clientIndices =
-      $util.emptyArray;
+    ClientIndexOmitSavedIdListMessage.prototype.clientIndices = $util.emptyArray;
 
     /**
      * ClientIndexOmitSavedIdListMessage seqNums.
@@ -1288,8 +1267,7 @@ export const ClientIndexOmitSavedIdListMessage =
      * @memberof ClientIndexOmitSavedIdListMessage
      * @instance
      */
-    ClientIndexOmitSavedIdListMessage.prototype.startCounterIndexes =
-      $util.emptyArray;
+    ClientIndexOmitSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
 
     /**
      * ClientIndexOmitSavedIdListMessage startCounters.
@@ -1297,8 +1275,7 @@ export const ClientIndexOmitSavedIdListMessage =
      * @memberof ClientIndexOmitSavedIdListMessage
      * @instance
      */
-    ClientIndexOmitSavedIdListMessage.prototype.startCounters =
-      $util.emptyArray;
+    ClientIndexOmitSavedIdListMessage.prototype.startCounters = $util.emptyArray;
 
     /**
      * ClientIndexOmitSavedIdListMessage counts.
@@ -1320,8 +1297,8 @@ export const ClientIndexOmitSavedIdListMessage =
      *   (properties?: ClientIndexOmitSavedIdListMessage.$Properties): ClientIndexOmitSavedIdListMessage;
      * }}
      */
-    ClientIndexOmitSavedIdListMessage.create = function (properties) {
-      return new ClientIndexOmitSavedIdListMessage(properties);
+    ClientIndexOmitSavedIdListMessage.create = function(properties) {
+        return new ClientIndexOmitSavedIdListMessage(properties);
     };
 
     /**
@@ -1333,45 +1310,30 @@ export const ClientIndexOmitSavedIdListMessage =
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    ClientIndexOmitSavedIdListMessage.encode = function (
-      message,
-      writer,
-      _depth,
-    ) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.clientIds != null && message.clientIds.length)
-        for (let i = 0; i < message.clientIds.length; ++i)
-          writer
-            .uint32(/* id 1, wireType 2 =*/ 10)
-            .string(message.clientIds[i]);
-      if (message.clientIndices != null && message.clientIndices.length)
-        writer
-          .uint32(/* id 2, wireType 2 =*/ 18)
-          .uint32s(message.clientIndices);
-      if (message.seqNums != null && message.seqNums.length)
-        writer.uint32(/* id 3, wireType 2 =*/ 26).uint32s(message.seqNums);
-      if (
-        message.startCounterIndexes != null &&
-        message.startCounterIndexes.length
-      )
-        writer
-          .uint32(/* id 4, wireType 2 =*/ 34)
-          .uint32s(message.startCounterIndexes);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 5, wireType 2 =*/ 42)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 6, wireType 2 =*/ 50).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+    ClientIndexOmitSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.clientIndices != null && message.clientIndices.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.clientIndices);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.seqNums);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 6, wireType 2 =*/50).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -1385,132 +1347,133 @@ export const ClientIndexOmitSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    ClientIndexOmitSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.ClientIndexOmitSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    ClientIndexOmitSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.clientIds && message.clientIds.length))
-              message.clientIds = [];
-            message.clientIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.clientIndices && message.clientIndices.length))
-                message.clientIndices = [];
-              reader.uint32s(message.clientIndices);
-              continue;
+        message = _target || new $root.ClientIndexOmitSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.clientIndices && message.clientIndices.length))
-              message.clientIndices = [];
-            message.clientIndices.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.seqNums && message.seqNums.length))
-                message.seqNums = [];
-              reader.uint32s(message.seqNums);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.clientIndices && message.clientIndices.length))
+                            message.clientIndices = [];
+                        reader.uint32s(message.clientIndices);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.clientIndices && message.clientIndices.length))
+                        message.clientIndices = [];
+                    message.clientIndices.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 6: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.seqNums && message.seqNums.length))
-              message.seqNums = [];
-            message.seqNums.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(
-                message.startCounterIndexes &&
-                message.startCounterIndexes.length
-              ))
-                message.startCounterIndexes = [];
-              reader.uint32s(message.startCounterIndexes);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(
-              message.startCounterIndexes && message.startCounterIndexes.length
-            ))
-              message.startCounterIndexes = [];
-            message.startCounterIndexes.push(reader.uint32());
-            continue;
-          }
-          case 5: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
-            }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 6: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
-            }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return ClientIndexOmitSavedIdListMessage;
-  })());
+})();
 
-export const TransposedOmitSavedIdListMessage =
-  ($root.TransposedOmitSavedIdListMessage = (() => {
+export const TransposedOmitSavedIdListMessage = $root.TransposedOmitSavedIdListMessage = (() => {
+
     /**
      * Properties of a TransposedOmitSavedIdListMessage.
      * @typedef {Object} TransposedOmitSavedIdListMessage.$Properties
@@ -1543,14 +1506,14 @@ export const TransposedOmitSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const TransposedOmitSavedIdListMessage = function (properties) {
-      this.bunchIds = [];
-      this.startCounterIndexes = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.bunchIds = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -1567,8 +1530,7 @@ export const TransposedOmitSavedIdListMessage =
      * @memberof TransposedOmitSavedIdListMessage
      * @instance
      */
-    TransposedOmitSavedIdListMessage.prototype.startCounterIndexes =
-      $util.emptyArray;
+    TransposedOmitSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
 
     /**
      * TransposedOmitSavedIdListMessage startCounters.
@@ -1598,8 +1560,8 @@ export const TransposedOmitSavedIdListMessage =
      *   (properties?: TransposedOmitSavedIdListMessage.$Properties): TransposedOmitSavedIdListMessage;
      * }}
      */
-    TransposedOmitSavedIdListMessage.create = function (properties) {
-      return new TransposedOmitSavedIdListMessage(properties);
+    TransposedOmitSavedIdListMessage.create = function(properties) {
+        return new TransposedOmitSavedIdListMessage(properties);
     };
 
     /**
@@ -1611,37 +1573,26 @@ export const TransposedOmitSavedIdListMessage =
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    TransposedOmitSavedIdListMessage.encode = function (
-      message,
-      writer,
-      _depth,
-    ) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.bunchIds != null && message.bunchIds.length)
-        for (let i = 0; i < message.bunchIds.length; ++i)
-          writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.bunchIds[i]);
-      if (
-        message.startCounterIndexes != null &&
-        message.startCounterIndexes.length
-      )
-        writer
-          .uint32(/* id 2, wireType 2 =*/ 18)
-          .uint32s(message.startCounterIndexes);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 3, wireType 2 =*/ 26)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 4, wireType 2 =*/ 34).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+    TransposedOmitSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -1655,106 +1606,105 @@ export const TransposedOmitSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    TransposedOmitSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.TransposedOmitSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    TransposedOmitSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.bunchIds && message.bunchIds.length))
-              message.bunchIds = [];
-            message.bunchIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(
-                message.startCounterIndexes &&
-                message.startCounterIndexes.length
-              ))
-                message.startCounterIndexes = [];
-              reader.uint32s(message.startCounterIndexes);
-              continue;
+        message = _target || new $root.TransposedOmitSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(
-              message.startCounterIndexes && message.startCounterIndexes.length
-            ))
-              message.startCounterIndexes = [];
-            message.startCounterIndexes.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return TransposedOmitSavedIdListMessage;
-  })());
+})();
 
-export const SplitTransposedOmitSavedIdListMessage =
-  ($root.SplitTransposedOmitSavedIdListMessage = (() => {
+export const SplitTransposedOmitSavedIdListMessage = $root.SplitTransposedOmitSavedIdListMessage = (() => {
+
     /**
      * Properties of a SplitTransposedOmitSavedIdListMessage.
      * @typedef {Object} SplitTransposedOmitSavedIdListMessage.$Properties
@@ -1788,15 +1738,15 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
      */
     const SplitTransposedOmitSavedIdListMessage = function (properties) {
-      this.clientIds = [];
-      this.seqNums = [];
-      this.startCounterIndexes = [];
-      this.startCounters = [];
-      this.counts = [];
-      if (properties)
-        for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-          if (properties[keys[i]] != null && keys[i] !== "__proto__")
-            this[keys[i]] = properties[keys[i]];
+        this.clientIds = [];
+        this.seqNums = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
     };
 
     /**
@@ -1805,8 +1755,7 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @memberof SplitTransposedOmitSavedIdListMessage
      * @instance
      */
-    SplitTransposedOmitSavedIdListMessage.prototype.clientIds =
-      $util.emptyArray;
+    SplitTransposedOmitSavedIdListMessage.prototype.clientIds = $util.emptyArray;
 
     /**
      * SplitTransposedOmitSavedIdListMessage seqNums.
@@ -1822,8 +1771,7 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @memberof SplitTransposedOmitSavedIdListMessage
      * @instance
      */
-    SplitTransposedOmitSavedIdListMessage.prototype.startCounterIndexes =
-      $util.emptyArray;
+    SplitTransposedOmitSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
 
     /**
      * SplitTransposedOmitSavedIdListMessage startCounters.
@@ -1831,8 +1779,7 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @memberof SplitTransposedOmitSavedIdListMessage
      * @instance
      */
-    SplitTransposedOmitSavedIdListMessage.prototype.startCounters =
-      $util.emptyArray;
+    SplitTransposedOmitSavedIdListMessage.prototype.startCounters = $util.emptyArray;
 
     /**
      * SplitTransposedOmitSavedIdListMessage counts.
@@ -1854,8 +1801,8 @@ export const SplitTransposedOmitSavedIdListMessage =
      *   (properties?: SplitTransposedOmitSavedIdListMessage.$Properties): SplitTransposedOmitSavedIdListMessage;
      * }}
      */
-    SplitTransposedOmitSavedIdListMessage.create = function (properties) {
-      return new SplitTransposedOmitSavedIdListMessage(properties);
+    SplitTransposedOmitSavedIdListMessage.create = function(properties) {
+        return new SplitTransposedOmitSavedIdListMessage(properties);
     };
 
     /**
@@ -1867,41 +1814,28 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @param {$protobuf.Writer} [writer] Writer to encode to
      * @returns {$protobuf.Writer} Writer
      */
-    SplitTransposedOmitSavedIdListMessage.encode = function (
-      message,
-      writer,
-      _depth,
-    ) {
-      if (!writer) writer = $Writer.create();
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-      if (message.clientIds != null && message.clientIds.length)
-        for (let i = 0; i < message.clientIds.length; ++i)
-          writer
-            .uint32(/* id 1, wireType 2 =*/ 10)
-            .string(message.clientIds[i]);
-      if (message.seqNums != null && message.seqNums.length)
-        writer.uint32(/* id 2, wireType 2 =*/ 18).uint32s(message.seqNums);
-      if (
-        message.startCounterIndexes != null &&
-        message.startCounterIndexes.length
-      )
-        writer
-          .uint32(/* id 3, wireType 2 =*/ 26)
-          .uint32s(message.startCounterIndexes);
-      if (message.startCounters != null && message.startCounters.length)
-        writer
-          .uint32(/* id 4, wireType 2 =*/ 34)
-          .uint32s(message.startCounters);
-      if (message.counts != null && message.counts.length)
-        writer.uint32(/* id 5, wireType 2 =*/ 42).sint32s(message.counts);
-      if (
-        message.$unknowns != null &&
-        $Object.hasOwnProperty.call(message, "$unknowns")
-      )
-        for (let i = 0; i < message.$unknowns.length; ++i)
-          writer.raw(message.$unknowns[i]);
-      return writer;
+    SplitTransposedOmitSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.seqNums != null && message.seqNums.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint32s(message.seqNums);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint32s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).uint32s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).sint32s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
     };
 
     /**
@@ -1915,349 +1849,652 @@ export const SplitTransposedOmitSavedIdListMessage =
      * @throws {Error} If the payload is not a reader or valid buffer
      * @throws {$protobuf.util.ProtocolError} If required fields are missing
      */
-    SplitTransposedOmitSavedIdListMessage.decode = function (
-      reader,
-      length,
-      _end,
-      _depth,
-      _target,
-    ) {
-      if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-      if (_depth === $undefined) _depth = 0;
-      if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-      let end, message;
-      if (length === $undefined) end = reader.len;
-      else {
-        end = reader.pos + length;
-        if (end > reader.len) throw $RangeError("index out of range");
-        length = reader.len;
-        reader.len = end;
-      }
-      message = _target || new $root.SplitTransposedOmitSavedIdListMessage();
-      while (reader.pos < end) {
-        let start = reader.pos;
-        let tag = reader.tag();
-        if (tag === _end) {
-          _end = $undefined;
-          break;
+    SplitTransposedOmitSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        let wireType = tag & 7;
-        switch ((tag >>>= 3)) {
-          case 1: {
-            if (wireType !== 2) break;
-            if (!(message.clientIds && message.clientIds.length))
-              message.clientIds = [];
-            message.clientIds.push(reader.stringVerify());
-            continue;
-          }
-          case 2: {
-            if (wireType === 2) {
-              if (!(message.seqNums && message.seqNums.length))
-                message.seqNums = [];
-              reader.uint32s(message.seqNums);
-              continue;
+        message = _target || new $root.SplitTransposedOmitSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
             }
-            if (wireType !== 0) break;
-            if (!(message.seqNums && message.seqNums.length))
-              message.seqNums = [];
-            message.seqNums.push(reader.uint32());
-            continue;
-          }
-          case 3: {
-            if (wireType === 2) {
-              if (!(
-                message.startCounterIndexes &&
-                message.startCounterIndexes.length
-              ))
-                message.startCounterIndexes = [];
-              reader.uint32s(message.startCounterIndexes);
-              continue;
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.seqNums && message.seqNums.length))
+                            message.seqNums = [];
+                        reader.uint32s(message.seqNums);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.seqNums && message.seqNums.length))
+                        message.seqNums = [];
+                    message.seqNums.push(reader.uint32());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint32s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint32());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint32s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint32());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint32s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint32());
+                    continue;
+                }
             }
-            if (wireType !== 0) break;
-            if (!(
-              message.startCounterIndexes && message.startCounterIndexes.length
-            ))
-              message.startCounterIndexes = [];
-            message.startCounterIndexes.push(reader.uint32());
-            continue;
-          }
-          case 4: {
-            if (wireType === 2) {
-              if (!(message.startCounters && message.startCounters.length))
-                message.startCounters = [];
-              reader.uint32s(message.startCounters);
-              continue;
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
             }
-            if (wireType !== 0) break;
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            message.startCounters.push(reader.uint32());
-            continue;
-          }
-          case 5: {
-            if (wireType === 2) {
-              if (!(message.counts && message.counts.length))
-                message.counts = [];
-              reader.sint32s(message.counts);
-              continue;
-            }
-            if (wireType !== 0) break;
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            message.counts.push(reader.sint32());
-            continue;
-          }
         }
-        reader.skipType(wireType, _depth, tag);
-        if (!reader.discardUnknown) {
-          $util.makeProp(message, "$unknowns", false);
-          (message.$unknowns || (message.$unknowns = [])).push(
-            reader.raw(start, reader.pos),
-          );
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-      }
-      if (length !== $undefined) {
-        if (reader.pos !== end) throw $RangeError("index out of range");
-        reader.len = length;
-      }
-      if (_end !== $undefined) throw $Error("missing end group");
-      return message;
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
     };
 
     return SplitTransposedOmitSavedIdListMessage;
-  })());
+})();
 
-export const FlatSavedIdListMessage = ($root.FlatSavedIdListMessage = (() => {
-  /**
-   * Properties of a FlatSavedIdListMessage.
-   * @typedef {Object} FlatSavedIdListMessage.$Properties
-   * @property {Array.<string>|null} [bunchIds] FlatSavedIdListMessage bunchIds
-   * @property {Array.<number>|null} [startCounterIndexes] FlatSavedIdListMessage startCounterIndexes
-   * @property {Array.<number>|null} [startCounters] FlatSavedIdListMessage startCounters
-   * @property {Array.<number>|null} [counts] FlatSavedIdListMessage counts
-   * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
-   */
+export const FlatSavedIdListMessage = $root.FlatSavedIdListMessage = (() => {
 
-  /**
-   * Properties of a FlatSavedIdListMessage.
-   * @exports IFlatSavedIdListMessage
-   * @interface IFlatSavedIdListMessage
-   * @augments FlatSavedIdListMessage.$Properties
-   * @deprecated Use FlatSavedIdListMessage.$Properties instead.
-   */
+    /**
+     * Properties of a FlatSavedIdListMessage.
+     * @typedef {Object} FlatSavedIdListMessage.$Properties
+     * @property {Array.<string>|null} [bunchIds] FlatSavedIdListMessage bunchIds
+     * @property {Array.<number>|null} [startCounterIndexes] FlatSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] FlatSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] FlatSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
 
-  /**
-   * Shape of a FlatSavedIdListMessage.
-   * @typedef {FlatSavedIdListMessage.$Properties} FlatSavedIdListMessage.$Shape
-   */
+    /**
+     * Properties of a FlatSavedIdListMessage.
+     * @exports IFlatSavedIdListMessage
+     * @interface IFlatSavedIdListMessage
+     * @augments FlatSavedIdListMessage.$Properties
+     * @deprecated Use FlatSavedIdListMessage.$Properties instead.
+     */
 
-  /**
-   * Constructs a new FlatSavedIdListMessage.
-   * @exports FlatSavedIdListMessage
-   * @classdesc Represents a FlatSavedIdListMessage.
-   * @constructor
-   * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
-   * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
-   */
-  const FlatSavedIdListMessage = function (properties) {
-    this.bunchIds = [];
-    this.startCounterIndexes = [];
-    this.startCounters = [];
-    this.counts = [];
-    if (properties)
-      for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
-        if (properties[keys[i]] != null && keys[i] !== "__proto__")
-          this[keys[i]] = properties[keys[i]];
-  };
+    /**
+     * Shape of a FlatSavedIdListMessage.
+     * @typedef {FlatSavedIdListMessage.$Properties} FlatSavedIdListMessage.$Shape
+     */
 
-  /**
-   * FlatSavedIdListMessage bunchIds.
-   * @member {Array.<string>} bunchIds
-   * @memberof FlatSavedIdListMessage
-   * @instance
-   */
-  FlatSavedIdListMessage.prototype.bunchIds = $util.emptyArray;
+    /**
+     * Constructs a new FlatSavedIdListMessage.
+     * @exports FlatSavedIdListMessage
+     * @classdesc Represents a FlatSavedIdListMessage.
+     * @constructor
+     * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const FlatSavedIdListMessage = function (properties) {
+        this.bunchIds = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
 
-  /**
-   * FlatSavedIdListMessage startCounterIndexes.
-   * @member {Array.<number>} startCounterIndexes
-   * @memberof FlatSavedIdListMessage
-   * @instance
-   */
-  FlatSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+    /**
+     * FlatSavedIdListMessage bunchIds.
+     * @member {Array.<string>} bunchIds
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.bunchIds = $util.emptyArray;
 
-  /**
-   * FlatSavedIdListMessage startCounters.
-   * @member {Array.<number>} startCounters
-   * @memberof FlatSavedIdListMessage
-   * @instance
-   */
-  FlatSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+    /**
+     * FlatSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
 
-  /**
-   * FlatSavedIdListMessage counts.
-   * @member {Array.<number>} counts
-   * @memberof FlatSavedIdListMessage
-   * @instance
-   */
-  FlatSavedIdListMessage.prototype.counts = $util.emptyArray;
+    /**
+     * FlatSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.startCounters = $util.emptyArray;
 
-  /**
-   * Creates a new FlatSavedIdListMessage instance using the specified properties.
-   * @function create
-   * @memberof FlatSavedIdListMessage
-   * @static
-   * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
-   * @returns {FlatSavedIdListMessage} FlatSavedIdListMessage instance
-   * @type {{
-   *   (properties: FlatSavedIdListMessage.$Shape): FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape;
-   *   (properties?: FlatSavedIdListMessage.$Properties): FlatSavedIdListMessage;
-   * }}
-   */
-  FlatSavedIdListMessage.create = function (properties) {
-    return new FlatSavedIdListMessage(properties);
-  };
+    /**
+     * FlatSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.counts = $util.emptyArray;
 
-  /**
-   * Encodes the specified FlatSavedIdListMessage message. Does not implicitly {@link FlatSavedIdListMessage.verify|verify} messages.
-   * @function encode
-   * @memberof FlatSavedIdListMessage
-   * @static
-   * @param {FlatSavedIdListMessage.$Properties} message FlatSavedIdListMessage message or plain object to encode
-   * @param {$protobuf.Writer} [writer] Writer to encode to
-   * @returns {$protobuf.Writer} Writer
-   */
-  FlatSavedIdListMessage.encode = function (message, writer, _depth) {
-    if (!writer) writer = $Writer.create();
-    if (_depth === $undefined) _depth = 0;
-    if (_depth > $util.recursionLimit) throw $Error("max depth exceeded");
-    if (message.bunchIds != null && message.bunchIds.length)
-      for (let i = 0; i < message.bunchIds.length; ++i)
-        writer.uint32(/* id 1, wireType 2 =*/ 10).string(message.bunchIds[i]);
-    if (
-      message.startCounterIndexes != null &&
-      message.startCounterIndexes.length
-    )
-      writer
-        .uint32(/* id 2, wireType 2 =*/ 18)
-        .uint64s(message.startCounterIndexes);
-    if (message.startCounters != null && message.startCounters.length)
-      writer.uint32(/* id 3, wireType 2 =*/ 26).uint64s(message.startCounters);
-    if (message.counts != null && message.counts.length)
-      writer.uint32(/* id 4, wireType 2 =*/ 34).sint64s(message.counts);
-    if (
-      message.$unknowns != null &&
-      $Object.hasOwnProperty.call(message, "$unknowns")
-    )
-      for (let i = 0; i < message.$unknowns.length; ++i)
-        writer.raw(message.$unknowns[i]);
-    return writer;
-  };
+    /**
+     * Creates a new FlatSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {FlatSavedIdListMessage} FlatSavedIdListMessage instance
+     * @type {{
+     *   (properties: FlatSavedIdListMessage.$Shape): FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape;
+     *   (properties?: FlatSavedIdListMessage.$Properties): FlatSavedIdListMessage;
+     * }}
+     */
+    FlatSavedIdListMessage.create = function(properties) {
+        return new FlatSavedIdListMessage(properties);
+    };
 
-  /**
-   * Decodes a FlatSavedIdListMessage message from the specified reader or buffer.
-   * @function decode
-   * @memberof FlatSavedIdListMessage
-   * @static
-   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
-   * @param {number} [length] Message length if known beforehand
-   * @returns {FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape} FlatSavedIdListMessage
-   * @throws {Error} If the payload is not a reader or valid buffer
-   * @throws {$protobuf.util.ProtocolError} If required fields are missing
-   */
-  FlatSavedIdListMessage.decode = function (
-    reader,
-    length,
-    _end,
-    _depth,
-    _target,
-  ) {
-    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
-    if (_depth === $undefined) _depth = 0;
-    if (_depth > $Reader.recursionLimit) throw $Error("max depth exceeded");
-    let end, message;
-    if (length === $undefined) end = reader.len;
-    else {
-      end = reader.pos + length;
-      if (end > reader.len) throw $RangeError("index out of range");
-      length = reader.len;
-      reader.len = end;
-    }
-    message = _target || new $root.FlatSavedIdListMessage();
-    while (reader.pos < end) {
-      let start = reader.pos;
-      let tag = reader.tag();
-      if (tag === _end) {
-        _end = $undefined;
-        break;
-      }
-      let wireType = tag & 7;
-      switch ((tag >>>= 3)) {
-        case 1: {
-          if (wireType !== 2) break;
-          if (!(message.bunchIds && message.bunchIds.length))
-            message.bunchIds = [];
-          message.bunchIds.push(reader.stringVerify());
-          continue;
+    /**
+     * Encodes the specified FlatSavedIdListMessage message. Does not implicitly {@link FlatSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {FlatSavedIdListMessage.$Properties} message FlatSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    FlatSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && message.bunchIds.length)
+            for (let i = 0; i < message.bunchIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds[i]);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint64s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint64s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).sint64s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a FlatSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape} FlatSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    FlatSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
         }
-        case 2: {
-          if (wireType === 2) {
-            if (!(
-              message.startCounterIndexes && message.startCounterIndexes.length
-            ))
-              message.startCounterIndexes = [];
-            reader.uint64s(message.startCounterIndexes);
-            continue;
-          }
-          if (wireType !== 0) break;
-          if (!(
-            message.startCounterIndexes && message.startCounterIndexes.length
-          ))
-            message.startCounterIndexes = [];
-          message.startCounterIndexes.push(reader.uint64());
-          continue;
+        message = _target || new $root.FlatSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.bunchIds && message.bunchIds.length))
+                        message.bunchIds = [];
+                    message.bunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint64s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint64());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint64s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint64());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint64s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint64());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
         }
-        case 3: {
-          if (wireType === 2) {
-            if (!(message.startCounters && message.startCounters.length))
-              message.startCounters = [];
-            reader.uint64s(message.startCounters);
-            continue;
-          }
-          if (wireType !== 0) break;
-          if (!(message.startCounters && message.startCounters.length))
-            message.startCounters = [];
-          message.startCounters.push(reader.uint64());
-          continue;
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
         }
-        case 4: {
-          if (wireType === 2) {
-            if (!(message.counts && message.counts.length)) message.counts = [];
-            reader.sint64s(message.counts);
-            continue;
-          }
-          if (wireType !== 0) break;
-          if (!(message.counts && message.counts.length)) message.counts = [];
-          message.counts.push(reader.sint64());
-          continue;
-        }
-      }
-      reader.skipType(wireType, _depth, tag);
-      if (!reader.discardUnknown) {
-        $util.makeProp(message, "$unknowns", false);
-        (message.$unknowns || (message.$unknowns = [])).push(
-          reader.raw(start, reader.pos),
-        );
-      }
-    }
-    if (length !== $undefined) {
-      if (reader.pos !== end) throw $RangeError("index out of range");
-      reader.len = length;
-    }
-    if (_end !== $undefined) throw $Error("missing end group");
-    return message;
-  };
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
 
-  return FlatSavedIdListMessage;
-})());
+    return FlatSavedIdListMessage;
+})();
 
-export { $root as default };
+export const CompactIdSavedIdListMessage = $root.CompactIdSavedIdListMessage = (() => {
+
+    /**
+     * Properties of a CompactIdSavedIdListMessage.
+     * @typedef {Object} CompactIdSavedIdListMessage.$Properties
+     * @property {Array.<string>|null} [clientIds] CompactIdSavedIdListMessage clientIds
+     * @property {Array.<number>|null} [clientIndexes] CompactIdSavedIdListMessage clientIndexes
+     * @property {Array.<number>|null} [counterChanges] CompactIdSavedIdListMessage counterChanges
+     * @property {Array.<string>|null} [rawBunchIds] CompactIdSavedIdListMessage rawBunchIds
+     * @property {Array.<number>|null} [startCounterIndexes] CompactIdSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] CompactIdSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] CompactIdSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+
+    /**
+     * Properties of a CompactIdSavedIdListMessage.
+     * @exports ICompactIdSavedIdListMessage
+     * @interface ICompactIdSavedIdListMessage
+     * @augments CompactIdSavedIdListMessage.$Properties
+     * @deprecated Use CompactIdSavedIdListMessage.$Properties instead.
+     */
+
+    /**
+     * Shape of a CompactIdSavedIdListMessage.
+     * @typedef {CompactIdSavedIdListMessage.$Properties} CompactIdSavedIdListMessage.$Shape
+     */
+
+    /**
+     * Constructs a new CompactIdSavedIdListMessage.
+     * @exports CompactIdSavedIdListMessage
+     * @classdesc Represents a CompactIdSavedIdListMessage.
+     * @constructor
+     * @param {CompactIdSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const CompactIdSavedIdListMessage = function (properties) {
+        this.clientIds = [];
+        this.clientIndexes = [];
+        this.counterChanges = [];
+        this.rawBunchIds = [];
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
+
+    /**
+     * CompactIdSavedIdListMessage clientIds.
+     * @member {Array.<string>} clientIds
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.clientIds = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage clientIndexes.
+     * @member {Array.<number>} clientIndexes
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.clientIndexes = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage counterChanges.
+     * @member {Array.<number>} counterChanges
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.counterChanges = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage rawBunchIds.
+     * @member {Array.<string>} rawBunchIds
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.rawBunchIds = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+
+    /**
+     * CompactIdSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof CompactIdSavedIdListMessage
+     * @instance
+     */
+    CompactIdSavedIdListMessage.prototype.counts = $util.emptyArray;
+
+    /**
+     * Creates a new CompactIdSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof CompactIdSavedIdListMessage
+     * @static
+     * @param {CompactIdSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {CompactIdSavedIdListMessage} CompactIdSavedIdListMessage instance
+     * @type {{
+     *   (properties: CompactIdSavedIdListMessage.$Shape): CompactIdSavedIdListMessage & CompactIdSavedIdListMessage.$Shape;
+     *   (properties?: CompactIdSavedIdListMessage.$Properties): CompactIdSavedIdListMessage;
+     * }}
+     */
+    CompactIdSavedIdListMessage.create = function(properties) {
+        return new CompactIdSavedIdListMessage(properties);
+    };
+
+    /**
+     * Encodes the specified CompactIdSavedIdListMessage message. Does not implicitly {@link CompactIdSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof CompactIdSavedIdListMessage
+     * @static
+     * @param {CompactIdSavedIdListMessage.$Properties} message CompactIdSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    CompactIdSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.clientIds != null && message.clientIds.length)
+            for (let i = 0; i < message.clientIds.length; ++i)
+                writer.uint32(/* id 1, wireType 2 =*/10).string(message.clientIds[i]);
+        if (message.clientIndexes != null && message.clientIndexes.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint64s(message.clientIndexes);
+        if (message.counterChanges != null && message.counterChanges.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).sint64s(message.counterChanges);
+        if (message.rawBunchIds != null && message.rawBunchIds.length)
+            for (let i = 0; i < message.rawBunchIds.length; ++i)
+                writer.uint32(/* id 4, wireType 2 =*/34).string(message.rawBunchIds[i]);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 5, wireType 2 =*/42).uint64s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 6, wireType 2 =*/50).uint64s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 7, wireType 2 =*/58).sint64s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a CompactIdSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof CompactIdSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {CompactIdSavedIdListMessage & CompactIdSavedIdListMessage.$Shape} CompactIdSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    CompactIdSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
+        }
+        message = _target || new $root.CompactIdSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.clientIds && message.clientIds.length))
+                        message.clientIds = [];
+                    message.clientIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.clientIndexes && message.clientIndexes.length))
+                            message.clientIndexes = [];
+                        reader.uint64s(message.clientIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.clientIndexes && message.clientIndexes.length))
+                        message.clientIndexes = [];
+                    message.clientIndexes.push(reader.uint64());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.counterChanges && message.counterChanges.length))
+                            message.counterChanges = [];
+                        reader.sint64s(message.counterChanges);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counterChanges && message.counterChanges.length))
+                        message.counterChanges = [];
+                    message.counterChanges.push(reader.sint64());
+                    continue;
+                }
+            case 4: {
+                    if (wireType !== 2)
+                        break;
+                    if (!(message.rawBunchIds && message.rawBunchIds.length))
+                        message.rawBunchIds = [];
+                    message.rawBunchIds.push(reader.stringVerify());
+                    continue;
+                }
+            case 5: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint64s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint64());
+                    continue;
+                }
+            case 6: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint64s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint64());
+                    continue;
+                }
+            case 7: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint64s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint64());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
+        }
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
+        }
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
+
+    return CompactIdSavedIdListMessage;
+})();
+
+export {
+  $root as default
+};

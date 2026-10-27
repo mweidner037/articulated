@@ -94,3 +94,19 @@ message FlatSavedIdListMessage {
   // Negative count means deleted.
   repeated sint64 counts = 4;
 }
+
+// CompactId: FlatSavedIdListMessage, but bunchIds of the form
+// "<clientId>_<base36 counter>" are stored as numbers. Each run has a client
+// index: k >= 1 means clientIds[k - 1] with its counter given as the change
+// from that client's previous run; 0 means the next entry of rawBunchIds
+// (any ID that doesn't have that form).
+message CompactIdSavedIdListMessage {
+  repeated string clientIds = 1;
+  repeated uint64 clientIndexes = 2;
+  repeated sint64 counterChanges = 3;
+  repeated string rawBunchIds = 4;
+  repeated uint64 startCounterIndexes = 5;
+  repeated uint64 startCounters = 6;
+  // Negative count means deleted.
+  repeated sint64 counts = 7;
+}
