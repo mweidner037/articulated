@@ -25,7 +25,11 @@ import {
 } from "../algorithms/id_list_saved_states";
 import { TransposedOmitSavedIdListMessage } from "../generated/id_list_saved_state";
 import { flatFloat64Formats } from "./flat-f64-formats";
-import { flatProtoFormat, flatVarintFormat } from "./flat-varint-formats";
+import {
+  flatFloat64IdsFormat,
+  flatProtoFormat,
+  flatVarintFormat,
+} from "./flat-varint-formats";
 import type { SweepFormat } from "./storage-sweep-formats";
 
 /** PR #30's TransposedOmit message as-is: repeated string bunchIds. */
@@ -80,6 +84,7 @@ function main() {
     : null;
   const formats = [
     ...flatFloat64Formats,
+    flatFloat64IdsFormat,
     flatVarintFormat,
     flatProtoFormat,
     transposedOmitProto,

@@ -2,12 +2,13 @@ import { IdList, type SavedIdList } from "articulated";
 import { Binary, deserialize, serialize } from "bson";
 import assert from "node:assert/strict";
 import { test } from "node:test";
+import { toTransposedOmit } from "../algorithms/id_list_saved_states";
 import { FlatSavedIdListMessage } from "../generated/id_list_saved_state";
 import { directStorageExample } from "./direct-storage-formats";
-import type { FlatColumns } from "./flat-f64-formats";
 import {
   decodeFlatProto,
   encodeFlatProto,
+  flatFloat64IdsFormat,
   flatProtoFormat,
   flatVarintFormat,
   packSintVarints,
@@ -15,7 +16,6 @@ import {
   readSintVarints,
   readUintVarints,
 } from "./flat-varint-formats";
-import { storageSweepFormats } from "./storage-sweep-formats";
 
 const signed = [
   0,
@@ -39,7 +39,7 @@ test("Varints roundtrip the full safe-integer range and match protobuf uint64/si
   assert.deepEqual(readUintVarints(packUintVarints(unsigned)), unsigned);
   assert.deepEqual(readSintVarints(packSintVarints(signed)), signed);
   const msg = {
-    bunchIds: "",
+    bunchIds: [],
     startCounterIndexes: unsigned,
     startCounters: [],
     counts: signed,
@@ -85,9 +85,18 @@ const many: SavedIdList = Array.from({ length: 1100 }, (_, i) => ({
   isDeleted: i % 3 === 0,
 }));
 
-for (const format of [flatVarintFormat, flatProtoFormat])
+// Matthew's concern on PR #34: IDs must not be assumed fixed-width.
+const mixedIds: SavedIdList = [
+  { bunchId: "a", startCounter: 0, count: 2, isDeleted: false },
+  { bunchId: "client_42_17", startCounter: 0, count: 1, isDeleted: true },
+  { bunchId: "", startCounter: 5, count: 1, isDeleted: false },
+  { bunchId: "é漢字", startCounter: 0, count: 3, isDeleted: false },
+  { bunchId: "a", startCounter: 2, count: 1, isDeleted: false },
+];
+
+for (const format of [flatVarintFormat, flatProtoFormat, flatFloat64IdsFormat])
   test(`${format.id}: exact roundtrips through BSON bytes and IdList.load`, () => {
-    for (const saved of [[], directStorageExample, large, many]) {
+    for (const saved of [[], directStorageExample, large, many, mixedIds]) {
       const state = deserialize(serialize({ state: format.encode(saved) }))
         .state as unknown;
       assert.deepEqual(format.decode(state), saved);
@@ -99,13 +108,8 @@ for (const format of [flatVarintFormat, flatProtoFormat])
   });
 
 test("Flat-Proto bytes are a valid FlatSavedIdListMessage for protobufjs and vice versa", () => {
-  const flat = storageSweepFormats.find((f) => f.id === "Sflat-joined")!;
-  for (const saved of [directStorageExample, large, many]) {
-    const json = flat.encode(saved) as FlatColumns & {
-      startCounterIndexes: number[];
-      startCounters: number[];
-      counts: number[];
-    };
+  for (const saved of [directStorageExample, large, many, mixedIds]) {
+    const json = toTransposedOmit(saved);
     const ours = encodeFlatProto(json);
     assert.deepEqual(
       [...ours],
@@ -117,18 +121,13 @@ test("Flat-Proto bytes are a valid FlatSavedIdListMessage for protobufjs and vic
       (xs ?? []).map((x) =>
         typeof x === "number" ? x : (x as { toNumber(): number }).toNumber(),
       );
-    assert.equal(decoded.bunchIds, json.bunchIds);
+    assert.deepEqual(decoded.bunchIds, json.bunchIds);
     assert.deepEqual(toNumbers(decoded.startCounterIndexes), [
       ...json.startCounterIndexes,
     ]);
     assert.deepEqual(toNumbers(decoded.startCounters), [...json.startCounters]);
     assert.deepEqual(toNumbers(decoded.counts), [...json.counts]);
-    assert.deepEqual(decodeFlatProto(ours), {
-      ...json,
-      startCounterIndexes: [...json.startCounterIndexes],
-      startCounters: [...json.startCounters],
-      counts: [...json.counts],
-    });
+    assert.deepEqual(decodeFlatProto(ours), json);
   }
 });
 

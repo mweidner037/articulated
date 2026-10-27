@@ -1,7 +1,12 @@
+import type { SavedIdList } from "articulated";
 import { Binary } from "bson";
 import assert from "node:assert/strict";
-import { decodeFlatColumns, type FlatColumns } from "./flat-f64-formats";
-import { storageSweepFormats, type SweepFormat } from "./storage-sweep-formats";
+import {
+  fromTransposedOmit,
+  toTransposedOmit,
+} from "../algorithms/id_list_saved_states";
+import { packFloat64, readFloat64 } from "./flat-f64-formats";
+import type { SweepFormat } from "./storage-sweep-formats";
 
 /**
  * Protobuf-compatible varints for the full JavaScript safe-integer range.
@@ -53,6 +58,15 @@ export class VarintWriter {
   /** Length-delimited field header + raw bytes (protobuf wire type 2). */
   field(fieldNumber: number, payload: Uint8Array) {
     if (payload.length === 0) return;
+    this.uint(fieldNumber * 8 + 2);
+    this.uint(payload.length);
+    this.reserve(payload.length);
+    this.bytes.set(payload, this.length);
+    this.length += payload.length;
+  }
+
+  /** Length-delimited entry that is written even when empty (repeated string). */
+  string(fieldNumber: number, payload: Uint8Array) {
     this.uint(fieldNumber * 8 + 2);
     this.uint(payload.length);
     this.reserve(payload.length);
@@ -139,40 +153,47 @@ function binaryBytes(value: unknown): Uint8Array {
   return value.value();
 }
 
+/**
+ * Transposed saved state with one entry per bunchId (no concatenation), so
+ * IDs of any length round-trip without a fixed-width assumption.
+ */
+export interface VarintColumns {
+  bunchIds: string[];
+  startCounterIndexes: number[];
+  startCounters: number[];
+  counts: number[];
+}
+
 export interface FlatVarintBinary {
-  bunchIds: string;
+  bunchIds: string[];
   startCounterIndexes: Binary;
   startCounters: Binary;
   counts: Binary;
 }
 
-const joined = storageSweepFormats.find(
-  (format) => format.id === "Sflat-joined",
-)!;
-
-/** Same Mongo shape as Flat-F64, but each numeric Binary is packed varints. */
+/** Same Mongo shape as F05's columns, but each numeric field is a Binary of packed varints. */
 export const flatVarintFormat: SweepFormat = {
   id: "Flat-Varint",
-  label: "Flat concatenated IDs; protobuf-style packed varint numeric columns",
+  label: "Flat ID array; protobuf-style packed varint numeric columns",
   readiness:
     "No pages; uint64/sint64 varints (full safe-integer range); unchanged IdList.load",
   pageSize: 0,
-  idEncoding: "joined",
+  idEncoding: "array",
   binary: true,
   encode(saved): FlatVarintBinary {
-    const json = joined.encode(saved) as FlatColumns;
+    const columns: VarintColumns = toTransposedOmit(saved);
     return {
-      bunchIds: json.bunchIds,
+      bunchIds: columns.bunchIds,
       startCounterIndexes: new Binary(
-        packUintVarints(json.startCounterIndexes),
+        packUintVarints(columns.startCounterIndexes),
       ),
-      startCounters: new Binary(packUintVarints(json.startCounters)),
-      counts: new Binary(packSintVarints(json.counts)),
+      startCounters: new Binary(packUintVarints(columns.startCounters)),
+      counts: new Binary(packSintVarints(columns.counts)),
     };
   },
   decode(state) {
     const binary = state as FlatVarintBinary;
-    return decodeFlatColumns({
+    return decodeVarintColumns({
       bunchIds: binary.bunchIds,
       startCounterIndexes: readUintVarints(
         binaryBytes(binary.startCounterIndexes),
@@ -183,26 +204,59 @@ export const flatVarintFormat: SweepFormat = {
   },
 };
 
+export function decodeVarintColumns(columns: VarintColumns): SavedIdList {
+  const { bunchIds, startCounterIndexes, startCounters, counts } = columns;
+  assert(Array.isArray(bunchIds));
+  assert(bunchIds.every((id) => typeof id === "string"));
+  assert.equal(bunchIds.length, counts.length);
+  assert.equal(startCounterIndexes.length, startCounters.length);
+  let position = 0;
+  for (let i = 0; i < startCounterIndexes.length; i++) {
+    position += startCounterIndexes[i];
+    assert(i === 0 || startCounterIndexes[i] > 0);
+    assert(position < counts.length, "Invalid startCounterIndexes");
+  }
+  return fromTransposedOmit(columns);
+}
+
 /**
  * Whole saved state as one FlatSavedIdListMessage (see id_list_saved_state.proto),
  * stored as a single BSON Binary. Wire-compatible with protobufjs; hand-written
  * here so decoding produces plain numbers rather than Long objects.
  */
-export function encodeFlatProto(json: FlatColumns): Uint8Array {
+export function encodeFlatProto(columns: VarintColumns): Uint8Array {
   const writer = new VarintWriter();
-  writer.field(1, new TextEncoder().encode(json.bunchIds));
-  writer.field(2, packUintVarints(json.startCounterIndexes));
-  writer.field(3, packUintVarints(json.startCounters));
-  writer.field(4, packSintVarints(json.counts));
+  const encoder = new TextEncoder();
+  // repeated string: one length-prefixed entry per ID, even if empty.
+  for (const id of columns.bunchIds) writer.string(1, encoder.encode(id));
+  writer.field(2, packUintVarints(columns.startCounterIndexes));
+  writer.field(3, packUintVarints(columns.startCounters));
+  writer.field(4, packSintVarints(columns.counts));
   return writer.finish();
 }
-export function decodeFlatProto(bytes: Uint8Array): FlatColumns {
-  const out: FlatColumns = {
-    bunchIds: "",
+/** ASCII fast path (typical IDs); falls back to strict UTF-8 otherwise. */
+function decodeString(
+  decoder: TextDecoder,
+  bytes: Uint8Array,
+  start: number,
+  end: number,
+): string {
+  let out = "";
+  for (let i = start; i < end; i++) {
+    const byte = bytes[i];
+    if (byte >= 128) return decoder.decode(bytes.subarray(start, end));
+    out += String.fromCharCode(byte);
+  }
+  return out;
+}
+export function decodeFlatProto(bytes: Uint8Array): VarintColumns {
+  const out: VarintColumns = {
+    bunchIds: [],
     startCounterIndexes: [],
     startCounters: [],
     counts: [],
   };
+  const decoder = new TextDecoder("utf-8", { fatal: true });
   const reader = new VarintReader(bytes);
   while (reader.pos < bytes.length) {
     const tag = reader.uint();
@@ -213,16 +267,16 @@ export function decodeFlatProto(bytes: Uint8Array): FlatColumns {
     assert(end <= bytes.length, "Truncated field");
     switch (tag >>> 3) {
       case 1:
-        out.bunchIds = new TextDecoder().decode(bytes.subarray(start, end));
+        out.bunchIds.push(decodeString(decoder, bytes, start, end));
         break;
       case 2:
-        out.startCounterIndexes = readUintVarints(bytes, start, end);
+        out.startCounterIndexes.push(...readUintVarints(bytes, start, end));
         break;
       case 3:
-        out.startCounters = readUintVarints(bytes, start, end);
+        out.startCounters.push(...readUintVarints(bytes, start, end));
         break;
       case 4:
-        out.counts = readSintVarints(bytes, start, end);
+        out.counts.push(...readSintVarints(bytes, start, end));
         break;
       default:
       // Unknown field: skip, as protobuf does.
@@ -236,14 +290,42 @@ export const flatProtoFormat: SweepFormat = {
   id: "Flat-Proto",
   label: "Whole flat state as one protobuf message in a BSON Binary",
   readiness:
-    "No pages; FlatSavedIdListMessage (uint64/sint64 packed); unchanged IdList.load",
+    "No pages; FlatSavedIdListMessage (repeated string IDs, uint64/sint64 packed); unchanged IdList.load",
   pageSize: 0,
-  idEncoding: "joined",
+  idEncoding: "array",
   binary: true,
   encode(saved) {
-    return new Binary(encodeFlatProto(joined.encode(saved) as FlatColumns));
+    return new Binary(encodeFlatProto(toTransposedOmit(saved)));
   },
   decode(state) {
-    return decodeFlatColumns(decodeFlatProto(binaryBytes(state)));
+    return decodeVarintColumns(decodeFlatProto(binaryBytes(state)));
+  },
+};
+
+/** Flat-F64 with an ID array instead of concatenated IDs: isolates the varint effect. */
+export const flatFloat64IdsFormat: SweepFormat = {
+  id: "Flat-F64-ids",
+  label: "Flat ID array; fixed Float64 binary numeric columns",
+  readiness: "No pages; little-endian Float64; unchanged IdList.load",
+  pageSize: 0,
+  idEncoding: "array",
+  binary: true,
+  encode(saved) {
+    const columns = toTransposedOmit(saved);
+    return {
+      bunchIds: columns.bunchIds,
+      startCounterIndexes: packFloat64(columns.startCounterIndexes),
+      startCounters: packFloat64(columns.startCounters),
+      counts: packFloat64(columns.counts),
+    };
+  },
+  decode(state) {
+    const binary = state as FlatVarintBinary;
+    return decodeVarintColumns({
+      bunchIds: binary.bunchIds,
+      startCounterIndexes: [...readFloat64(binary.startCounterIndexes)],
+      startCounters: [...readFloat64(binary.startCounters)],
+      counts: [...readFloat64(binary.counts)],
+    });
   },
 };

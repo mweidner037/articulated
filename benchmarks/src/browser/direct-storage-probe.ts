@@ -16,7 +16,11 @@ import {
   type DirectStorageFormat,
 } from "./direct-storage-formats";
 import { flatFloat64Formats } from "./flat-f64-formats";
-import { flatProtoFormat, flatVarintFormat } from "./flat-varint-formats";
+import {
+  flatFloat64IdsFormat,
+  flatProtoFormat,
+  flatVarintFormat,
+} from "./flat-varint-formats";
 import { storageSweepFormats } from "./storage-sweep-formats";
 
 const sha256 = (value: unknown) =>
@@ -48,7 +52,12 @@ async function main() {
   const varint = process.env.DIRECT_STORAGE_VARINT === "1";
   const f64 = varint || process.env.DIRECT_STORAGE_F64 === "1";
   const formats: DirectStorageFormat[] = varint
-    ? [...flatFloat64Formats, flatVarintFormat, flatProtoFormat]
+    ? [
+        ...flatFloat64Formats,
+        flatFloat64IdsFormat,
+        flatVarintFormat,
+        flatProtoFormat,
+      ]
     : f64
       ? flatFloat64Formats
       : sweep
