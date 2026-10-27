@@ -15,27 +15,63 @@ There are two separate choices, so the results are a matrix:
 
 ## Results
 
-Each cell is **raw BSON KB / zstd KB / snappy KB** for the canonical document (11,757 runs, 5,382 distinct IDs). Raw is the uncompressed BSON document; zstd (Mongo's default level) and snappy are that document compressed on its own.
+Every proposal has a code made of its three choices, **arrangement-IDs-encoding**:
 
-| IDs                 | Arrangement          |          Plain BSON |  Float64 per field |   Varint per field | One protobuf blob |
-| ------------------- | -------------------- | ------------------: | -----------------: | -----------------: | ----------------: |
-| Random 8 characters | Objects (today)      | 871 / 110.3 / 193.4 |                  — |                  — |                 — |
-| Random 8 characters | Columns              |  342 / 98.2 / 173.9 | 318 / 75.8 / 131.7 | 237 / 71.8 / 119.1 | 130 / 58.7 / 78.2 |
-| Random 8 characters | Deduplicated columns | 338 / 112.1 / 199.7 | 289 / 70.6 / 116.1 |  126 / 65.0 / 91.8 |  78 / 56.8 / 72.8 |
-| `client_counter`    | Objects              |  938 / 80.2 / 164.1 |                  — |                  — |                 — |
-| `client_counter`    | Columns              |  410 / 74.3 / 147.3 | 386 / 52.9 / 105.1 |  304 / 46.0 / 92.5 | 197 / 26.9 / 53.8 |
-| `client_counter`    | Deduplicated columns |  369 / 85.6 / 173.2 |  320 / 45.7 / 89.8 |  157 / 34.9 / 65.7 | 109 / 28.5 / 45.1 |
-| `client_counter`    | Split IDs            |  355 / 76.6 / 184.8 |  282 / 31.6 / 55.6 |   39 / 19.7 / 25.7 |  39 / 19.6 / 25.6 |
+- **Arrangement:** `OBJ` Objects, `COL` Columns, `DEDUP` Deduplicated columns, `SPLIT` Split IDs, `JOIN` IDs joined into one string (the PR #34 pick, for reference only).
+- **IDs:** `R` random 8 characters, `CC` `clientId_counter`.
+- **Encoding:** `BSON` plain BSON arrays, `F64` Float64 Binary per number field, `VAR` varint Binary per number field, `PB` one protobuf blob.
 
-For reference, the PR #34 pick (Float64 per field, random IDs **joined into one string**) is 188 / 56.5 / 83.0.
+For example, `SPLIT-CC-VAR` is Split IDs, with `client_counter` IDs, encoded as varint per field.
+
+Each cell shows its code, then **raw BSON KB / zstd KB / snappy KB** for the canonical document (11,757 runs, 5,382 distinct IDs). Raw is the uncompressed BSON document; zstd (Mongo's default level) and snappy are that document compressed on its own.
+
+| IDs                 | Arrangement          |                            Plain BSON |                   Float64 per field |                    Varint per field |                  One protobuf blob |
+| ------------------- | -------------------- | ------------------------------------: | ----------------------------------: | ----------------------------------: | ---------------------------------: |
+| Random 8 characters | Objects              |   `OBJ-R-BSON`<br>871 / 110.3 / 193.4 |                                   — |                                   — |                                  — |
+| Random 8 characters | Columns              |    `COL-R-BSON`<br>342 / 98.2 / 173.9 |   `COL-R-F64`<br>318 / 75.8 / 131.7 |   `COL-R-VAR`<br>237 / 71.8 / 119.1 |    `COL-R-PB`<br>130 / 58.7 / 78.2 |
+| Random 8 characters | Deduplicated columns | `DEDUP-R-BSON`<br>338 / 112.1 / 199.7 | `DEDUP-R-F64`<br>289 / 70.6 / 116.1 |  `DEDUP-R-VAR`<br>126 / 65.0 / 91.8 |   `DEDUP-R-PB`<br>78 / 56.8 / 72.8 |
+| `client_counter`    | Objects              |   `OBJ-CC-BSON`<br>938 / 80.2 / 164.1 |                                   — |                                   — |                                  — |
+| `client_counter`    | Columns              |   `COL-CC-BSON`<br>410 / 74.3 / 147.3 |  `COL-CC-F64`<br>386 / 52.9 / 105.1 |   `COL-CC-VAR`<br>304 / 46.0 / 92.5 |   `COL-CC-PB`<br>197 / 26.9 / 53.8 |
+| `client_counter`    | Deduplicated columns | `DEDUP-CC-BSON`<br>369 / 85.6 / 173.2 | `DEDUP-CC-F64`<br>320 / 45.7 / 89.8 | `DEDUP-CC-VAR`<br>157 / 34.9 / 65.7 | `DEDUP-CC-PB`<br>109 / 28.5 / 45.1 |
+| `client_counter`    | Split IDs            | `SPLIT-CC-BSON`<br>355 / 76.6 / 184.8 | `SPLIT-CC-F64`<br>282 / 31.6 / 55.6 |  `SPLIT-CC-VAR`<br>39 / 19.7 / 25.7 |  `SPLIT-CC-PB`<br>39 / 19.6 / 25.6 |
+
+For reference, the PR #34 pick, `JOIN-R-F64` (Float64 per field, random IDs **joined into one string**), is 188 / 56.5 / 83.0.
+
+The same proposals as one list, smallest zstd first:
+
+| Code            | IDs                 | Arrangement                              | Encoding          |    Raw |     zstd |   snappy |
+| --------------- | ------------------- | ---------------------------------------- | ----------------- | -----: | -------: | -------: |
+| `SPLIT-CC-PB`   | `client_counter`    | Split IDs                                | One protobuf blob |  39 KB |  19.6 KB |  25.6 KB |
+| `SPLIT-CC-VAR`  | `client_counter`    | Split IDs                                | Varint per field  |  39 KB |  19.7 KB |  25.7 KB |
+| `COL-CC-PB`     | `client_counter`    | Columns                                  | One protobuf blob | 197 KB |  26.9 KB |  53.8 KB |
+| `DEDUP-CC-PB`   | `client_counter`    | Deduplicated columns                     | One protobuf blob | 109 KB |  28.5 KB |  45.1 KB |
+| `SPLIT-CC-F64`  | `client_counter`    | Split IDs                                | Float64 per field | 282 KB |  31.6 KB |  55.6 KB |
+| `DEDUP-CC-VAR`  | `client_counter`    | Deduplicated columns                     | Varint per field  | 157 KB |  34.9 KB |  65.7 KB |
+| `DEDUP-CC-F64`  | `client_counter`    | Deduplicated columns                     | Float64 per field | 320 KB |  45.7 KB |  89.8 KB |
+| `COL-CC-VAR`    | `client_counter`    | Columns                                  | Varint per field  | 304 KB |  46.0 KB |  92.5 KB |
+| `COL-CC-F64`    | `client_counter`    | Columns                                  | Float64 per field | 386 KB |  52.9 KB | 105.1 KB |
+| `JOIN-R-F64`    | Random 8 characters | IDs joined into one string (PR #34 pick) | Float64 per field | 188 KB |  56.5 KB |  83.0 KB |
+| `DEDUP-R-PB`    | Random 8 characters | Deduplicated columns                     | One protobuf blob |  78 KB |  56.8 KB |  72.8 KB |
+| `COL-R-PB`      | Random 8 characters | Columns                                  | One protobuf blob | 130 KB |  58.7 KB |  78.2 KB |
+| `DEDUP-R-VAR`   | Random 8 characters | Deduplicated columns                     | Varint per field  | 126 KB |  65.0 KB |  91.8 KB |
+| `DEDUP-R-F64`   | Random 8 characters | Deduplicated columns                     | Float64 per field | 289 KB |  70.6 KB | 116.1 KB |
+| `COL-R-VAR`     | Random 8 characters | Columns                                  | Varint per field  | 237 KB |  71.8 KB | 119.1 KB |
+| `COL-CC-BSON`   | `client_counter`    | Columns                                  | Plain BSON        | 410 KB |  74.3 KB | 147.3 KB |
+| `COL-R-F64`     | Random 8 characters | Columns                                  | Float64 per field | 318 KB |  75.8 KB | 131.7 KB |
+| `SPLIT-CC-BSON` | `client_counter`    | Split IDs                                | Plain BSON        | 355 KB |  76.6 KB | 184.8 KB |
+| `OBJ-CC-BSON`   | `client_counter`    | Objects                                  | Plain BSON        | 938 KB |  80.2 KB | 164.1 KB |
+| `DEDUP-CC-BSON` | `client_counter`    | Deduplicated columns                     | Plain BSON        | 369 KB |  85.6 KB | 173.2 KB |
+| `COL-R-BSON`    | Random 8 characters | Columns                                  | Plain BSON        | 342 KB |  98.2 KB | 173.9 KB |
+| `OBJ-R-BSON`    | Random 8 characters | Objects                                  | Plain BSON        | 871 KB | 110.3 KB | 193.4 KB |
+| `DEDUP-R-BSON`  | Random 8 characters | Deduplicated columns                     | Plain BSON        | 338 KB | 112.1 KB | 199.7 KB |
 
 **What the matrix says:**
 
-- **How IDs are generated matters most.** Switching from random IDs to `client_counter` IDs shrinks every arrangement and every encoding. Even today's Objects format drops from 110 to 80 KB with zstd, with no other change.
-- **Split IDs is the smallest by far: about 39 / 20 / 26 KB.** That's about a third of the PR #34 pick and a sixth of today's format. Its IDs are stored as numbers, so there are almost no strings left to store.
-- **With Split IDs, varint per field and one protobuf blob are the same size.** The protobuf blob only wins when there are many strings, because a BSON array spends about 16 to 20 bytes per string (see the appendix). Split IDs has almost no strings, so varint per field can keep readable, separate fields in Mongo at no cost.
-- **Float64 is never the best encoding.** Varint is always smaller, and much smaller once IDs are numbers (31.6 vs 19.7 KB with zstd for Split IDs).
-- **Deduplicated columns helps only a little,** which matches what Matthew saw. Splitting IDs into a client and a counter is what makes the difference.
+- **How IDs are generated matters most.** Switching from random IDs to `client_counter` IDs shrinks every arrangement and every encoding. Even today's format drops from 110 to 80 KB with zstd with no other change (`OBJ-R-BSON` → `OBJ-CC-BSON`).
+- **`SPLIT-CC-VAR` and `SPLIT-CC-PB` are the smallest by far: about 39 / 20 / 26 KB.** That's about a third of `JOIN-R-F64` and a sixth of today's `OBJ-R-BSON`. Split IDs stores IDs as numbers, so there are almost no strings left to store.
+- **`SPLIT-CC-VAR` and `SPLIT-CC-PB` are the same size.** The protobuf blob only wins when there are many strings, because a BSON array spends about 16 to 20 bytes per string (see the appendix). Split IDs has almost no strings, so `SPLIT-CC-VAR` keeps readable, separate fields in Mongo at no cost.
+- **Float64 is never the best encoding.** Varint is always smaller, and much smaller once IDs are numbers (`SPLIT-CC-F64` 31.6 vs `SPLIT-CC-VAR` 19.7 KB with zstd).
+- **Deduplicating helps only a little** (`COL-R-PB` 58.7 → `DEDUP-R-PB` 56.8 KB with zstd), which matches what Matthew saw. Splitting IDs into a client and a counter is what makes the difference.
 - **Read speed** is about the same everywhere, because `IdList.load` dominates.
 
 **Caveats.** These sizes are estimates. On earlier formats they came within 1–4% of physical Mongo measurements, but real Mongo runs for these cells are still to do. The trace was written by one editor. A simulated 4-client split gives nearly the same numbers (see the appendix), but that is not real collaboration. Split IDs needs every ID to have the `client_counter` form; the protobuf version below falls back to storing the full text for any ID that doesn't, so existing documents with random IDs still load.
@@ -163,7 +199,7 @@ end
 
 Mongo shows `counts: Binary.createFromBase64("BgMCBA==", 0)`, which is 4 bytes.
 
-For **Split IDs with varint per field**, the schema stores the split IDs, and two helpers convert to and from `bunch_ids`:
+For **`SPLIT-CC-VAR`**, the schema stores the split IDs, and two helpers convert to and from `bunch_ids`:
 
 ```elixir
 embedded_schema do
@@ -194,7 +230,7 @@ state: {
 }
 ```
 
-**One protobuf blob.** `state` is a single field, and the Ecto type converts the whole map. For Columns that's `SavedIdListProto` (`FlatSavedIdListMessage`, which is PR #30's layout with 64-bit numbers). For Split IDs it's `SavedIdListCompactProto` (`CompactIdSavedIdListMessage`), which also keeps any ID that isn't `client_counter` as text.
+**One protobuf blob.** `state` is a single field, and the Ecto type converts the whole map. For `COL-*-PB` that's `SavedIdListProto` (`FlatSavedIdListMessage`, which is PR #30's layout with 64-bit numbers). For `SPLIT-CC-PB` it's `SavedIdListCompactProto` (`CompactIdSavedIdListMessage`), which also keeps any ID that isn't `client_counter` as text.
 
 ```elixir
 # Inside the existing Document schema; the app reads and writes the Columns map:
@@ -231,15 +267,15 @@ All the Ecto types are in [ecto/saved_id_list_types.ex](ecto/saved_id_list_types
 
 **4 clients (simulated).** The same document with its bunches reassigned to 4 clients in blocks of 250. Cells are raw / zstd / snappy KB:
 
-| IDs                 | Arrangement          |          Plain BSON |  Float64 per field |   Varint per field | One protobuf blob |
-| ------------------- | -------------------- | ------------------: | -----------------: | -----------------: | ----------------: |
-| Random 8 characters | Objects (today)      | 871 / 110.3 / 193.4 |                  — |                  — |                 — |
-| Random 8 characters | Columns              |  342 / 98.2 / 173.9 | 318 / 75.8 / 131.7 | 237 / 71.8 / 119.1 | 130 / 58.7 / 78.2 |
-| Random 8 characters | Deduplicated columns | 338 / 112.1 / 199.7 | 289 / 70.6 / 116.1 |  126 / 65.0 / 91.8 |  78 / 56.8 / 72.8 |
-| `client_counter`    | Objects              |  930 / 80.4 / 169.8 |                  — |                  — |                 — |
-| `client_counter`    | Columns              |  401 / 74.5 / 151.4 | 377 / 52.7 / 109.5 |  295 / 46.0 / 96.9 | 189 / 26.3 / 53.2 |
-| `client_counter`    | Deduplicated columns |  365 / 86.3 / 173.4 |  316 / 46.1 / 90.2 |  153 / 35.7 / 66.2 | 105 / 26.7 / 43.7 |
-| `client_counter`    | Split IDs            |  355 / 81.5 / 181.6 |  282 / 31.8 / 56.1 |   37 / 18.9 / 25.8 |  37 / 18.8 / 25.7 |
+| IDs                 | Arrangement          |                            Plain BSON |                   Float64 per field |                    Varint per field |                  One protobuf blob |
+| ------------------- | -------------------- | ------------------------------------: | ----------------------------------: | ----------------------------------: | ---------------------------------: |
+| Random 8 characters | Objects              |   `OBJ-R-BSON`<br>871 / 110.3 / 193.4 |                                   — |                                   — |                                  — |
+| Random 8 characters | Columns              |    `COL-R-BSON`<br>342 / 98.2 / 173.9 |   `COL-R-F64`<br>318 / 75.8 / 131.7 |   `COL-R-VAR`<br>237 / 71.8 / 119.1 |    `COL-R-PB`<br>130 / 58.7 / 78.2 |
+| Random 8 characters | Deduplicated columns | `DEDUP-R-BSON`<br>338 / 112.1 / 199.7 | `DEDUP-R-F64`<br>289 / 70.6 / 116.1 |  `DEDUP-R-VAR`<br>126 / 65.0 / 91.8 |   `DEDUP-R-PB`<br>78 / 56.8 / 72.8 |
+| `client_counter`    | Objects              |   `OBJ-CC-BSON`<br>930 / 80.4 / 169.8 |                                   — |                                   — |                                  — |
+| `client_counter`    | Columns              |   `COL-CC-BSON`<br>401 / 74.5 / 151.4 |  `COL-CC-F64`<br>377 / 52.7 / 109.5 |   `COL-CC-VAR`<br>295 / 46.0 / 96.9 |   `COL-CC-PB`<br>189 / 26.3 / 53.2 |
+| `client_counter`    | Deduplicated columns | `DEDUP-CC-BSON`<br>365 / 86.3 / 173.4 | `DEDUP-CC-F64`<br>316 / 46.1 / 90.2 | `DEDUP-CC-VAR`<br>153 / 35.7 / 66.2 | `DEDUP-CC-PB`<br>105 / 26.7 / 43.7 |
+| `client_counter`    | Split IDs            | `SPLIT-CC-BSON`<br>355 / 81.5 / 181.6 | `SPLIT-CC-F64`<br>282 / 31.8 / 56.1 |  `SPLIT-CC-VAR`<br>37 / 18.9 / 25.8 |  `SPLIT-CC-PB`<br>37 / 18.8 / 25.7 |
 
 **Float64 vs varint.** Float64 spends 8 bytes on every number, mostly zeros:
 
@@ -267,7 +303,7 @@ A varint spends 1 byte on a small number. Negatives are folded in first (3→6, 
 61 42 33 64 45 35 66 47   "aB3dE5fG"
 ```
 
-**The Split IDs protobuf blob** for the example:
+**The `SPLIT-CC-PB` blob** for the example:
 
 ```
 0a 0a 51 6d 33 78 54 39 76 4b 70 61   client "Qm3xT9vKpa"
