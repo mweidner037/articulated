@@ -21,3 +21,131 @@ export type SavedIdList = Array<{
   readonly count: number;
   readonly isDeleted: boolean;
 }>;
+
+/**
+ * Compact JSON saved state for an IdList, returned by `IdList.saveCompact()`.
+ *
+ * A CompactSavedIdList is equivalent to a {@link SavedIdList},
+ * but with several tricks to make it more compact (both before and after GZIP compression)
+ * at the expense of simplicity and legibility.
+ *
+ * In one text-editing benchmark, it is TODO (size before + after GZIP, and GZIP times).
+ */
+export type CompactSavedIdList = {
+  /** The bunchIds from each object in SavedIdList, as a single array. */
+  readonly bunchIds: string[];
+  /** For each object in SavedIdList, its count, multiplied by -1 iff isDeleted. */
+  readonly signedCounts: number[];
+  /**
+   * In typical usage, a bunch's known ElementIds have counter values 0, 1, ...,
+   * increasing contiguously from left to right.
+   * The corresponding startCounters in SavedIdList can all be inferred from previous counts.
+   *
+   * This array records the SavedIdList array indexes of startCounters that **can't** be inferred, delta-encoded.
+   * The actual startCounters appear in startCounterValues.
+   *
+   * Note that this array may be shorter than bunchIds and signedCounts.
+   * In typical usage, it is always empty.
+   */
+  startCounterDeltas: number[];
+  /**
+   * The startCounter values corresponding to startCounterDeltas.
+   */
+  startCounterValues: number[];
+};
+
+/**
+ * Converts a {@link SavedIdList} to a {@link CompactSavedIdList}.
+ *
+ * Invert with {@link uncompactSavedIdList}.
+ */
+export function compactSavedIdList(
+  savedState: SavedIdList,
+): CompactSavedIdList {
+  // Check that it's not a CompactSavedIdList cast to SavedIdList.
+  if (!Array.isArray(savedState)) {
+    throw new Error("Not a SavedIdList");
+  }
+
+  const bunchIds: string[] = [];
+  const signedCounts: number[] = [];
+  const startCounterDeltas: number[] = [];
+  const startCounterValues: number[] = [];
+
+  let lastExcStartCounterIndex = 0;
+  /** The next counter for each bunchId. */
+  const inferredStartCounters = new Map<string, number>();
+
+  for (let i = 0; i < savedState.length; i++) {
+    const { bunchId, startCounter, count, isDeleted } = savedState[i];
+
+    bunchIds.push(bunchId);
+    signedCounts.push(isDeleted ? -count : count);
+
+    const inferredStartCounter = inferredStartCounters.get(bunchId) ?? 0;
+    if (inferredStartCounter !== startCounter) {
+      startCounterDeltas.push(i - lastExcStartCounterIndex);
+      lastExcStartCounterIndex = i;
+      startCounterValues.push(startCounter);
+    }
+    inferredStartCounters.set(bunchId, startCounter + count);
+  }
+
+  return { bunchIds, signedCounts, startCounterDeltas, startCounterValues };
+}
+
+/**
+ * Converts a {@link CompactSavedIdList} to a {@link SavedIdList}.
+ *
+ * Inverse of {@link compactSavedState}.
+ */
+export function uncompactSavedIdList(
+  compactSavedState: CompactSavedIdList,
+): SavedIdList {
+  // Check that it's not a SavedIdList cast to CompactSavedIdList.
+  if (!compactSavedState.bunchIds) {
+    throw new Error("Not a CompactSavedIdList");
+  }
+
+  const { bunchIds, signedCounts, startCounterDeltas, startCounterValues } =
+    compactSavedState;
+
+  const result: SavedIdList = [];
+
+  /** The next exceptional startCounter, as an index into startCounterDeltas & startCounterValues. */
+  let excStartCounterI = 0;
+  /** The next exceptional startCounter's index in result. */
+  let nextExcStartCounterIndex =
+    startCounterDeltas.length === 0 ? -1 : startCounterDeltas[0];
+  const inferredStartCounters = new Map<string, number>();
+
+  for (let i = 0; i < bunchIds.length; i++) {
+    const bunchId = bunchIds[i];
+    const count = Math.abs(signedCounts[i]);
+
+    let startCounter: number;
+    if (i === nextExcStartCounterIndex) {
+      startCounter = startCounterValues[excStartCounterI];
+
+      excStartCounterI++;
+      if (excStartCounterI === startCounterDeltas.length) {
+        // Done with exceptions.
+        nextExcStartCounterIndex = -1;
+      } else {
+        nextExcStartCounterIndex += startCounterDeltas[excStartCounterI];
+      }
+    } else {
+      startCounter = inferredStartCounters.get(bunchId) ?? 0;
+    }
+    inferredStartCounters.set(bunchId, startCounter + count);
+
+    result.push({
+      bunchId,
+      startCounter,
+      count,
+      isDeleted: signedCounts[i] < 0,
+    });
+  }
+
+  return result;
+}

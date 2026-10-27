@@ -5,7 +5,12 @@ import { LeafMap } from "./internal/leaf_map";
 import { checkCount } from "./internal/misc";
 import type { MutableSeqMap } from "./internal/seq_map";
 import { SeqMap, getAndBumpNextSeq } from "./internal/seq_map";
-import type { SavedIdList } from "./saved_id_list";
+import {
+  compactSavedIdList,
+  uncompactSavedIdList,
+  type CompactSavedIdList,
+  type SavedIdList,
+} from "./saved_id_list";
 
 // Most exports are only for tests. See index.ts for public exports.
 
@@ -1036,12 +1041,29 @@ export class IdList {
   }
 
   /**
+   * Returns a compact JSON representation of this list's internal state.
+   * Load with {@link loadCompact}.
+   *
+   * The save format is equivalent to that returned by {@link save},
+   * but with several tricks to make it more compact (both before and after GZIP compression)
+   * at the expense of simplicity and legibility.
+   */
+  saveCompact(): CompactSavedIdList {
+    return compactSavedIdList(this.save());
+  }
+
+  /**
    * Loads a saved state returned by {@link save}.
    *
    * @throws If the saved state is not valid according to the {@link SavedIdList}
    * docs (e.g., it contains duplicate ids).
    */
   static load(savedState: SavedIdList) {
+    // Check that it's not a CompactSavedIdList cast to SavedIdList.
+    if (!Array.isArray(savedState)) {
+      throw new Error("Not a SavedIdList");
+    }
+
     // 1. Determine the leaves in list order.
 
     const leaves: LeafNode[] = [];
@@ -1117,6 +1139,16 @@ export class IdList {
     }
 
     return list;
+  }
+
+  /**
+   * Loads a compact saved state returned by {@link saveCompact}.
+   *
+   * @throws If the uncompacted saved state is not valid according to the {@link SavedIdList}
+   * docs (e.g., it contains duplicate ids).
+   */
+  static loadCompact(compactSavedState: CompactSavedIdList) {
+    return this.load(uncompactSavedIdList(compactSavedState));
   }
 }
 
