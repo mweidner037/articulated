@@ -25,6 +25,8 @@ So every option below keeps **each ID as its own entry**, and nothing assumes ID
 
 The sizes are estimates for the real canonical document (11,757 runs): each document's BSON is compressed on its own, with zstd at Mongo's default level. On earlier formats this estimate came within 1–4% of physical Mongo measurements. Real Mongo runs for A and B are still to do.
 
+**Bigger win: change how IDs are generated.** Most of option B is now IDs. Switching to `clientId_counter` IDs and storing them as numbers brings the same document to about 19 KB with zstd and 26 KB with snappy. See [Making the IDs smaller](#making-the-ids-smaller).
+
 Merging `startCounterIndexes` and `startCounters` into `counts` (for example, 0 as a marker) was also considered. It is dropped: this document has no start counters, so those fields are already empty and merging saves nothing.
 
 ## The example
@@ -108,6 +110,59 @@ What the Mongo shell shows (only bytes):
   state: Binary.createFromBase64("CghhQjNkRTVmRwoIYUIzZEU1ZkcKCGhKN2tMOW1OCghhQjNkRTVmRxICAgEaAhQIIgQGAwIE", 0)
 }
 ```
+
+## Making the IDs smaller
+
+In option B, most of what's left is IDs. Random 8-character IDs barely compress, because every character is new information. IDs built as a client ID plus a counter that counts up compress far better, and the benchmarks already generate them that way:
+
+```js
+// One random client ID per editor session; the counter goes 0, 1, 2, … (base 36).
+const clientId = maybeRandomString({ length: 10 });
+let seq = 0;
+const generator = new ElementIdGenerator(
+  () => `${clientId}_${(seq++).toString(36)}`,
+);
+// IDs: "Qm3xT9vKpa_0", "Qm3xT9vKpa_1", … "Qm3xT9vKpa_24e"
+```
+
+The app still sees normal string IDs:
+
+```json
+{
+  "bunchIds": ["Qm3xT9vKpa_0", "Qm3xT9vKpa_0", "7hLw2ZcRne_0", "Qm3xT9vKpa_1"],
+  "startCounterIndexes": [2, 1],
+  "startCounters": [20, 8],
+  "counts": [3, -2, 1, 2]
+}
+```
+
+With IDs in that form, the Ecto type can store them as numbers instead of text. Each client ID is stored once, and each run stores which client it belongs to and how far its counter moved since that client's previous run:
+
+```js
+// What option B would store for the IDs above (shown as JSON for readability):
+{
+  clientIds: ["Qm3xT9vKpa", "7hLw2ZcRne"],
+  clientIndexes: [0, 0, 1, 0],  // 1 byte each
+  counterChanges: [0, 0, 0, 1], // usually 1 byte each
+  // startCounterIndexes, startCounters, counts as before
+}
+```
+
+Results for the same canonical document (11,757 runs, 5,382 distinct IDs), all as option B:
+
+| IDs                                     | How they're stored                         |        zstd |      snappy |
+| --------------------------------------- | ------------------------------------------ | ----------: | ----------: |
+| Random 8 characters (today)             | Full ID on every run                       |     58.7 KB |     78.2 KB |
+| Random 8 characters                     | Each distinct ID once, then references     |     56.9 KB |     72.8 KB |
+| `client_counter`, 1 client              | Full ID on every run                       |     26.9 KB |     53.8 KB |
+| `client_counter`, 1 client              | Client once, client index + counter change | **19.6 KB** | **25.6 KB** |
+| `client_counter`, 4 clients (simulated) | Full ID on every run                       |     26.3 KB |     53.2 KB |
+| `client_counter`, 4 clients (simulated) | Client once, client index + counter change | **18.8 KB** | **25.7 KB** |
+
+- **Switching to `client_counter` IDs alone halves the zstd size** (58.7 → 26.9 KB), with no storage change. Snappy gains less (78 → 54 KB), because it is a weaker compressor.
+- **Storing them as numbers** brings it to about 19 KB with zstd and 26 KB with snappy. That's about a third of the PR #34 pick (56.5 / 83.0 KB) and a sixth of today's objects (110 / 193 KB).
+- **Deduplicating random IDs** (each once, then references) saves only 2 to 5 KB, which matches what Matthew saw.
+- **Caveats.** The trace was written by one editor. The 4-client rows reassign its IDs to 4 clients in blocks of 250, which is not real collaboration, so real multi-client documents could differ. The numeric encoding also needs every ID to follow the `client_counter` form. Existing documents with random IDs would need a fallback, such as storing the full string when an ID doesn't parse. The Ecto type for this version hasn't been written yet. The measurement is [src/browser/id-scheme-probe.ts](src/browser/id-scheme-probe.ts), with results in [results/flat-varint-probe/id-schemes.json](results/flat-varint-probe/id-schemes.json).
 
 ## Verification
 
