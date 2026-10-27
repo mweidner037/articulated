@@ -1,0 +1,782 @@
+{
+  "complete": true,
+  "dataset": "opaque8",
+  "fixtureMode": "canonical",
+  "canonicalSource": {
+    "trace": "kleppmannReal",
+    "traceSha256": "3af48f64f4ff18a09ec2cc21570accccfa912cffa702b45181ab383502bfe176",
+    "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+    "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+    "counts": {
+      "operations": 259778,
+      "insertions": 182315,
+      "deletions": 77463,
+      "newlineInsertions": 1767,
+      "newlineDeletions": 595,
+      "finalCharacters": 104852
+    },
+    "seed": "42",
+    "startState": "empty",
+    "refreshInterval": null,
+    "checkpoints": [
+      10000,
+      50000,
+      100000,
+      200000,
+      259778
+    ],
+    "idPolicy": "Harness-assigned opaque 8-character IDs: collision-checked deterministic SHA256/base64url prefixes map EACH WHOLE generated structured bunch ID bijectively. Counters, run grouping, operation order, anchors and characters are identical to the structured replay. Not recorded collaborator identities; no refresh or regrouping.",
+    "bunchCount": 5382,
+    "source": {
+      "upstreamCommit": "da212e984c777d31ee7d888f82637288aa4c61d3",
+      "traceUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "readmeUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/README.md",
+      "rawUrl": "https://raw.githubusercontent.com/automerge/automerge-perf/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "license": "CC-BY-4.0",
+      "attribution": "Editing trace by Martin Kleppmann and the paper's authors, from automerge/automerge-perf. The upstream README states CC-BY-4.0 for the trace. Its concurrent history was flattened to index-based single-character edits; cursor moves are omitted.",
+      "upstreamVerification": {
+        "verified": true,
+        "upstreamSha256": "23116070719243e2950c310006dd50b3d80744be7542a86c62e7d5c2ed7326d0",
+        "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+        "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+        "operations": 259778,
+        "method": "JSON-literal extraction; upstream JavaScript never executed"
+      }
+    }
+  },
+  "idModel": "Each distinct whole bunchId is replaced with an independent collision-checked 8-character base64url SHA-256 prefix for each document; no client/sequence structure is retained",
+  "excludedFormats": [
+    {
+      "formatId": "F06",
+      "reason": "Requires structured client_sequence IDs; cannot losslessly split arbitrary opaque 8-character IDs"
+    },
+    {
+      "formatId": "F08",
+      "reason": "Requires structured client_sequence IDs; client deduplication does not apply to opaque IDs"
+    }
+  ],
+  "generatedAt": "2026-10-21T04:06:22.279Z",
+  "version": "8.3.3",
+  "mongoGitVersion": "3ef86ea0d67623e3f8299275cd6bd93e5f9454e6",
+  "nodeVersion": "v24.19.0",
+  "platform": "darwin",
+  "arch": "arm64",
+  "cpu": "Apple M5 Pro",
+  "dbPath": "/private/tmp/articulated-exploration-mongo-4jXtvF",
+  "port": 27186,
+  "documents": 100,
+  "procedure": [
+    "Fresh local standalone bound to 127.0.0.1:27186; dbPath and bind options verified before writes",
+    "100 independently renamed whole-ID dictionaries per layout and snapshot; every ID, including post-edit IDs, is exactly 8 base64url characters; collisions checked; same document IDs in every collection",
+    "Insert in batches of five; validate full SavedIdList round trip for documents 0 and 99",
+    "compact every collection; fsync checkpoint; compact every collection again; fsync with lock",
+    "Read actual collection .wt file length while locked and verify equality with storageSize; verify configured compressor",
+    "Unlock; preserve database files for audit; no existing database or result overwritten"
+  ],
+  "measurement": "Physical collection file bytes, including collection allocation/free space; excludes _id indexes and shared database files. No logical BSON size is used.",
+  "caveats": [
+    "One trace with whole IDs remapped to opaque 8-character strings; not actual production data or a new trace generated using nanoid",
+    "Independent whole-ID strings are 8-character hashes; run shapes and counters repeat across 100 documents; F06/F08 excluded because their structural assumption does not hold",
+    "Each snapshot is freshly inserted, not an in-place Mongo update history; these results isolate snapshot representation",
+    "Whole-collection file allocation is amortized over 100 documents; one storage build per layout, not statistical repeats",
+    "Native runtime representations do not change stored bytes when exporting the same logical F-format"
+  ],
+  "fixtures": [
+    {
+      "id": "canonical-final",
+      "description": "Final snapshot of the complete original Kleppmann edit stream replayed from empty with no save/load refresh; original operation indices and characters; ElementIds assigned by the benchmark harness",
+      "sha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+      "document0Sha256": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "document0DistinctIds": 5382,
+      "document0IdLengths": [
+        8
+      ],
+      "runs": 11757,
+      "visibleIds": 104852
+    }
+  ],
+  "examples": [
+    {
+      "id": "objects",
+      "formatId": "F01",
+      "shape": "Object records: deletion flag",
+      "storedDocument": {
+        "_id": 0,
+        "state": [
+          {
+            "bunchId": "dZcBjAme",
+            "startCounter": 0,
+            "count": 3,
+            "isDeleted": false
+          },
+          {
+            "bunchId": "4njgH7g1",
+            "startCounter": 0,
+            "count": 1,
+            "isDeleted": false
+          },
+          {
+            "bunchId": "2T-9mmZK",
+            "startCounter": 0,
+            "count": 2,
+            "isDeleted": false
+          },
+          {
+            "bunchId": "dZcBjAme",
+            "startCounter": 3,
+            "count": 2,
+            "isDeleted": true
+          }
+        ]
+      }
+    },
+    {
+      "id": "signed",
+      "formatId": "F02",
+      "shape": "Object records: negative count means deleted",
+      "storedDocument": {
+        "_id": 0,
+        "state": [
+          {
+            "bunchId": "dZcBjAme",
+            "startCounter": 0,
+            "count": 3
+          },
+          {
+            "bunchId": "4njgH7g1",
+            "startCounter": 0,
+            "count": 1
+          },
+          {
+            "bunchId": "2T-9mmZK",
+            "startCounter": 0,
+            "count": 2
+          },
+          {
+            "bunchId": "dZcBjAme",
+            "startCounter": 3,
+            "count": -2
+          }
+        ]
+      }
+    },
+    {
+      "id": "tuples",
+      "formatId": "F03",
+      "shape": "Tuple records: negative count means deleted",
+      "storedDocument": {
+        "_id": 0,
+        "state": [
+          [
+            "dZcBjAme",
+            0,
+            3
+          ],
+          [
+            "4njgH7g1",
+            0,
+            1
+          ],
+          [
+            "2T-9mmZK",
+            0,
+            2
+          ],
+          [
+            "dZcBjAme",
+            3,
+            -2
+          ]
+        ]
+      }
+    },
+    {
+      "id": "columns",
+      "formatId": "F04",
+      "shape": "Columnar store: all counters",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "dZcBjAme",
+            "4njgH7g1",
+            "2T-9mmZK",
+            "dZcBjAme"
+          ],
+          "startCounters": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "counts": [
+            3,
+            1,
+            2,
+            -2
+          ]
+        }
+      }
+    },
+    {
+      "id": "omit",
+      "formatId": "F05",
+      "shape": "Columnar store: reconstruct counters",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "dZcBjAme",
+            "4njgH7g1",
+            "2T-9mmZK",
+            "dZcBjAme"
+          ],
+          "startCounterIndexes": [],
+          "startCounters": [],
+          "counts": [
+            3,
+            1,
+            2,
+            -2
+          ]
+        }
+      }
+    },
+    {
+      "id": "dictionary",
+      "formatId": "F07",
+      "shape": "Columnar store: deduplicate IDs + reconstruct counters",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "dZcBjAme",
+            "4njgH7g1",
+            "2T-9mmZK"
+          ],
+          "bunchIndices": [
+            0,
+            1,
+            2,
+            0
+          ],
+          "startCounterIndexes": [],
+          "startCounters": [],
+          "counts": [
+            3,
+            1,
+            2,
+            -2
+          ]
+        }
+      }
+    },
+    {
+      "id": "full",
+      "formatId": "F09",
+      "shape": "Columnar store: deduplicate IDs + all counters",
+      "storedDocument": {
+        "_id": 0,
+        "state": {
+          "bunchIds": [
+            "dZcBjAme",
+            "4njgH7g1",
+            "2T-9mmZK"
+          ],
+          "bunchIndices": [
+            0,
+            1,
+            2,
+            0
+          ],
+          "startCounters": [
+            0,
+            0,
+            0,
+            3
+          ],
+          "counts": [
+            3,
+            1,
+            2,
+            -2
+          ]
+        }
+      }
+    }
+  ],
+  "rows": [
+    {
+      "collection": "canonical_final_snappy_f01",
+      "id": "objects",
+      "formatId": "F01",
+      "shape": "Object records: deletion flag",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "fields": [
+        "bunchId",
+        "startCounter",
+        "count",
+        "isDeleted"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 19689472,
+      "storageBytesPerDocument": 196894.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-c5eb75f3-4536-4ffb-b952-d86b8c53b4d3.wt",
+      "filesystemAllocatedBytes": 19992576,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f02",
+      "id": "signed",
+      "formatId": "F02",
+      "shape": "Object records: negative count means deleted",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "ae515d2ae5e414dc0eeb709cf3891ae66fa3dfa66e5fe78f84535217c2b23c77",
+      "fields": [
+        "bunchId",
+        "startCounter",
+        "count"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 18051072,
+      "storageBytesPerDocument": 180510.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-051802aa-dcca-453b-aa3d-f79c47204786.wt",
+      "filesystemAllocatedBytes": 18124800,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f03",
+      "id": "tuples",
+      "formatId": "F03",
+      "shape": "Tuple records: negative count means deleted",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "942710dba7457a5eabdcaca432ab5f7cb589d7657f5e0fa11bad9988fc26ef4e",
+      "fields": [
+        "0",
+        "1",
+        "2"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 17641472,
+      "storageBytesPerDocument": 176414.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-4fbc4d80-3424-4e57-afa2-93768bb58a89.wt",
+      "filesystemAllocatedBytes": 18575360,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f04",
+      "id": "columns",
+      "formatId": "F04",
+      "shape": "Columnar store: all counters",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "dcb39e93116a6fde1ff6f2fc609e4b5d21e6bda21b3dc1f5a1795cb08847b9c1",
+      "fields": [
+        "bunchIds",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 23785472,
+      "storageBytesPerDocument": 237854.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-c87d4930-73fe-49b6-b64d-7e14df16d1d7.wt",
+      "filesystemAllocatedBytes": 24825856,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f05",
+      "id": "omit",
+      "formatId": "F05",
+      "shape": "Columnar store: reconstruct counters",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "fields": [
+        "bunchIds",
+        "startCounterIndexes",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 17231872,
+      "storageBytesPerDocument": 172318.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-0d4c95f8-98c2-4016-9040-6ea297d033ab.wt",
+      "filesystemAllocatedBytes": 18268160,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f07",
+      "id": "dictionary",
+      "formatId": "F07",
+      "shape": "Columnar store: deduplicate IDs + reconstruct counters",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "092041d0e1fb436042fbc1bd5596431ec8f3173438c608909b92c6cc3636632a",
+      "fields": [
+        "bunchIds",
+        "bunchIndices",
+        "startCounterIndexes",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 20099072,
+      "storageBytesPerDocument": 200990.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-376ebb8a-b977-4bab-97fd-e4992d0a8813.wt",
+      "filesystemAllocatedBytes": 21135360,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_snappy_f09",
+      "id": "full",
+      "formatId": "F09",
+      "shape": "Columnar store: deduplicate IDs + all counters",
+      "snapshot": "canonical-final",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "8e9df03c3536baeb9d44cc772eb5bc46a65661d1dd4899016cfcffda8fe938a3",
+      "fields": [
+        "bunchIds",
+        "bunchIndices",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 26894336,
+      "storageBytesPerDocument": 268943.36,
+      "freeBytes": 253952,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-f8d92699-c0b5-4ea2-b050-0dcb5b4ad535.wt",
+      "filesystemAllocatedBytes": 26894336,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=snappy,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f01",
+      "id": "objects",
+      "formatId": "F01",
+      "shape": "Object records: deletion flag",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "fields": [
+        "bunchId",
+        "startCounter",
+        "count",
+        "isDeleted"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11091968,
+      "storageBytesPerDocument": 110919.68,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-4a34b079-9870-46e0-9ae2-e8c1efa28380.wt",
+      "filesystemAllocatedBytes": 12132352,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f02",
+      "id": "signed",
+      "formatId": "F02",
+      "shape": "Object records: negative count means deleted",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "ae515d2ae5e414dc0eeb709cf3891ae66fa3dfa66e5fe78f84535217c2b23c77",
+      "fields": [
+        "bunchId",
+        "startCounter",
+        "count"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11087872,
+      "storageBytesPerDocument": 110878.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-71441111-e990-47a5-aeaf-24cf08158bc2.wt",
+      "filesystemAllocatedBytes": 12128256,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f03",
+      "id": "tuples",
+      "formatId": "F03",
+      "shape": "Tuple records: negative count means deleted",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "942710dba7457a5eabdcaca432ab5f7cb589d7657f5e0fa11bad9988fc26ef4e",
+      "fields": [
+        "0",
+        "1",
+        "2"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 10678272,
+      "storageBytesPerDocument": 106782.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-7b7d4d07-4feb-4ad9-a3c7-426a3241b6ca.wt",
+      "filesystemAllocatedBytes": 11718656,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f04",
+      "id": "columns",
+      "formatId": "F04",
+      "shape": "Columnar store: all counters",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "dcb39e93116a6fde1ff6f2fc609e4b5d21e6bda21b3dc1f5a1795cb08847b9c1",
+      "fields": [
+        "bunchIds",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 13545472,
+      "storageBytesPerDocument": 135454.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-d09187aa-0b1f-4bc8-b91c-c12b6ba16e8e.wt",
+      "filesystemAllocatedBytes": 14585856,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f05",
+      "id": "omit",
+      "formatId": "F05",
+      "shape": "Columnar store: reconstruct counters",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "fields": [
+        "bunchIds",
+        "startCounterIndexes",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 10268672,
+      "storageBytesPerDocument": 102686.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-a9de1a5a-e264-4e42-b55b-58a4d4fb9504.wt",
+      "filesystemAllocatedBytes": 11304960,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f07",
+      "id": "dictionary",
+      "formatId": "F07",
+      "shape": "Columnar store: deduplicate IDs + reconstruct counters",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "092041d0e1fb436042fbc1bd5596431ec8f3173438c608909b92c6cc3636632a",
+      "fields": [
+        "bunchIds",
+        "bunchIndices",
+        "startCounterIndexes",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 11907072,
+      "storageBytesPerDocument": 119070.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-da55f971-c8e6-44f1-bc59-799902808ac5.wt",
+      "filesystemAllocatedBytes": 12943360,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    },
+    {
+      "collection": "canonical_final_zstd_f09",
+      "id": "full",
+      "formatId": "F09",
+      "shape": "Columnar store: deduplicate IDs + all counters",
+      "snapshot": "canonical-final",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "8e9df03c3536baeb9d44cc772eb5bc46a65661d1dd4899016cfcffda8fe938a3",
+      "fields": [
+        "bunchIds",
+        "bunchIndices",
+        "startCounters",
+        "counts"
+      ],
+      "compactAfterCheckpoint": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "storageBytes": 14774272,
+      "storageBytesPerDocument": 147742.72,
+      "freeBytes": 12288,
+      "indexBytes": 20480,
+      "collectionFile": "/private/tmp/articulated-exploration-mongo-4jXtvF/collection-0ec9e3b0-1efd-4919-b7c5-9edc27f556ef.wt",
+      "filesystemAllocatedBytes": 14774272,
+      "compressorCreationString": "access_pattern_hint=none,allocation_size=4KB,app_metadata=(formatVersion=1),assert=(commit_timestamp=none,durable_timestamp=none,read_timestamp=none,write_timestamp=off),block_allocation=best,block_compressor=zstd,block_manager=default,cache_resident=false,checksum=on,colgroups=,collator=,columns=,dictionary=0,disaggregated=(page_log=,storage_tier=none),encryption=(keyid=,name=),exclusive=false,extractor=,format=btree,huffman_key=,huffman_value=,ignore_in_memory_cache_size=false,immutable=false,import=(compare_timestamp=oldest_timestamp,enabled=false,file_metadata=,metadata_file=,panic_corrupt=true,repair=false),in_memory=false,ingest=,internal_item_max=0,internal_key_max=0,internal_key_truncate=true,internal_page_max=4KB,key_format=q,key_gap=10,leaf_item_max=0,leaf_key_max=0,leaf_page_max=32KB,leaf_value_max=64MB,log=(enabled=true),lsm=(auto_throttle=,bloom=,bloom_bit_count=,bloom_config=,bloom_hash_count=,bloom_oldest=,chunk_count_limit=,chunk_max=,chunk_size=,merge_custom=(prefix=,start_generation=,suffix=),merge_max=,merge_min=),memory_page_image_max=0,memory_page_max=10M,os_cache_dirty_max=0,os_cache_max=0,prefix_compression=false,prefix_compression_min=4,source=,split_deepen_min_child=0,split_deepen_per_child=0,split_pct=90,stable=,tiered_storage=(auth_token=,bucket=,bucket_prefix=,cache_directory=,local_retention=300,name=,object_target_size=0),type=file,value_format=u,verbose=[],write_timestamp_usage=none"
+    }
+  ]
+}

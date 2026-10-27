@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1025" height="792" viewBox="0 0 1025 792" role="img" aria-labelledby="title desc">
+<title id="title">Opaque 8-character IDs: physical Mongo storage</title><desc id="desc">Final unrefreshed snapshot; 100 independently renamed documents per layout. Actual compacted collection-file bytes / 100; excludes indexes and shared files; one build per layout.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1025" height="792" fill="white"/>
+<text x="24" y="36" class="title">Opaque 8-character IDs: physical Mongo storage</text>
+<text x="24" y="68" >Final unrefreshed snapshot; 100 independently renamed documents per layout.</text>
+<text x="24" y="110" >Stored JSON format</text>
+<text x="425" y="110" >Snappy KB/document</text>
+<line x1="425" x2="425" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="425" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="532" y="748" class="small" text-anchor="middle">141.2</text>
+<line x1="639" x2="639" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="639" y="748" class="small" text-anchor="middle">282.4</text>
+<rect x="425" y="165" width="130.58146628895187" height="23" fill="#3266a6"/>
+<text x="562.5814662889519" y="183" class="small">172.3</text>
+<rect x="425" y="247" width="133.68537563739375" height="23" fill="#3266a6"/>
+<text x="565.6853756373937" y="265" class="small">176.4</text>
+<rect x="425" y="329" width="136.78928498583568" height="23" fill="#3266a6"/>
+<text x="568.7892849858357" y="347" class="small">180.5</text>
+<rect x="425" y="411" width="149.20492237960343" height="23" fill="#3266a6"/>
+<text x="581.2049223796034" y="429" class="small">196.9</text>
+<rect x="425" y="493" width="152.30883172804536" height="23" fill="#3266a6"/>
+<text x="584.3088317280453" y="511" class="small">201.0</text>
+<rect x="425" y="575" width="180.24401586402269" height="23" fill="#3266a6"/>
+<text x="612.2440158640227" y="593" class="small">237.9</text>
+<rect x="425" y="657" width="203.80268781869688" height="23" fill="#3266a6"/>
+<text x="635.8026878186969" y="675" class="small">268.9</text>
+<text x="715" y="110" >zstd KB/document</text>
+<line x1="715" x2="715" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="715" y="748" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="822" y="748" class="small" text-anchor="middle">77.6</text>
+<line x1="929" x2="929" y1="138" y2="725" stroke="#e2e6eb"/>
+<text x="929" y="748" class="small" text-anchor="middle">155.2</text>
+<rect x="715" y="165" width="141.59122474226805" height="23" fill="#3c8077"/>
+<text x="863.5912247422681" y="183" class="small">102.7</text>
+<rect x="715" y="247" width="147.23905979381445" height="23" fill="#3c8077"/>
+<text x="869.2390597938145" y="265" class="small">106.8</text>
+<rect x="715" y="329" width="152.88689484536084" height="23" fill="#3c8077"/>
+<text x="874.8868948453609" y="347" class="small">110.9</text>
+<rect x="715" y="411" width="152.9433731958763" height="23" fill="#3c8077"/>
+<text x="874.9433731958763" y="429" class="small">110.9</text>
+<rect x="715" y="493" width="164.18256494845363" height="23" fill="#3c8077"/>
+<text x="886.1825649484537" y="511" class="small">119.1</text>
+<rect x="715" y="575" width="186.77390515463918" height="23" fill="#3c8077"/>
+<text x="908.7739051546391" y="593" class="small">135.5</text>
+<rect x="715" y="657" width="203.71741030927834" height="23" fill="#3c8077"/>
+<text x="925.7174103092783" y="675" class="small">147.7</text>
+<text x="24" y="162" >F05 · columns; reconstruct counters</text>
+<text x="24" y="244" >F03 · three-element tuples</text>
+<text x="24" y="326" >F02 · objects; negative means deleted</text>
+<text x="24" y="408" >F01 · plain SavedIdList objects</text>
+<text x="24" y="490" >F07 · whole-ID dictionary columns</text>
+<text x="24" y="572" >F04 · columns; all counters</text>
+<text x="24" y="654" >F09 · whole-ID dictionary + all counters</text>
+<text x="24" y="780" class="small">Actual compacted collection-file bytes / 100; excludes indexes and shared files; one build per layout.</text>
+</svg>

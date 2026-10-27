@@ -1,0 +1,72 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="459" viewBox="0 0 1100 459" role="img" aria-labelledby="title desc">
+<title id="title">Removing the intermediate objects helps some loads, but costs more to save</title>
+<desc id="desc">Identical saved bytes within each pair · mean ± within-process 95% interval · no database I/O Lower is better. Tree → saved value: Binary columns: Via objects 2.79 ± 0.03 ms, Direct 3.47 ± 0.12 ms; Bit-packed columns: Via objects 2.39 ± 0.05 ms, Direct 3.07 ± 0.13 ms; Split / protobuf: Via objects 2.12 ± 0.23 ms, Direct 3.13 ± 0.12 ms. Saved value → editable IdList: Binary columns: Via objects 4.88 ± 0.12 ms, Direct 3.56 ± 0.06 ms; Bit-packed columns: Via objects 4.74 ± 0.05 ms, Direct 3.68 ± 0.03 ms; Split / protobuf: Via objects 6.62 ± 0.13 ms, Direct 6.66 ± 0.08 ms</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;font-size:17px;fill:#243248} .secondary{fill:#526175} .title{font-size:24px;font-weight:500} .panel{font-weight:500} .tick{font-size:16px}</style>
+<rect width="1100" height="459" fill="#ffffff"/>
+<text x="24" y="34" class="title">Removing the intermediate objects helps some loads, but costs more to save</text>
+<text x="24" y="64" class="secondary">Identical saved bytes within each pair · mean ± within-process 95% interval · no database I/O</text>
+<text x="24" y="127" class="panel">Format / path</text>
+<rect x="310" y="84" width="16" height="16" fill="#3266a6"/>
+<text x="334" y="98">Via objects</text>
+<rect x="500" y="84" width="16" height="16" fill="#b45b21"/>
+<text x="524" y="98">Direct</text>
+<text x="24" y="190">Binary columns</text>
+<text x="24" y="268">Bit-packed columns</text>
+<text x="24" y="346">Split / protobuf</text>
+<text x="310" y="127" class="panel">Tree → saved value</text>
+<line x1="310" x2="310" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="310" y="405" text-anchor="middle" class="tick secondary">0.00</text>
+<line x1="400" x2="400" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="400" y="405" text-anchor="middle" class="tick secondary">1.34</text>
+<line x1="490" x2="490" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="490" y="405" text-anchor="middle" class="tick secondary">2.68</text>
+<line x1="580" x2="580" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="580" y="405" text-anchor="middle" class="tick secondary">4.02</text>
+<text x="445" y="436" text-anchor="middle">ms · lower is better</text>
+<rect x="310" y="158" width="187.42417609907267" height="20" fill="#3266a6"/>
+<path d="M495.325843629482 168H499.52250856866334 M495.325843629482 163V173 M499.52250856866334 163V173" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="174">2.79</text>
+<rect x="310" y="190" width="232.96924344381455" height="20" fill="#b45b21"/>
+<path d="M534.8670583162005 200H551.0714285714286 M534.8670583162005 195V205 M551.0714285714286 195V205" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="206">3.47</text>
+<rect x="310" y="236" width="160.135998288434" height="20" fill="#3266a6"/>
+<path d="M466.5243771942979 246H473.74761938257006 M466.5243771942979 241V251 M473.74761938257006 241V251" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="252">2.39</text>
+<rect x="310" y="268" width="205.8670559968018" height="20" fill="#b45b21"/>
+<path d="M506.95833426949065 278H524.7757777241129 M506.95833426949065 273V283 M524.7757777241129 273V283" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="284">3.07</text>
+<rect x="310" y="314" width="142.0678509511314" height="20" fill="#3266a6"/>
+<path d="M436.7495665731454 324H467.3861353291174 M436.7495665731454 319V329 M467.3861353291174 319V329" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="330">2.12</text>
+<rect x="310" y="346" width="210.0582791392104" height="20" fill="#b45b21"/>
+<path d="M511.958726438359 356H528.1578318400618 M511.958726438359 351V361 M528.1578318400618 351V361" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="594" y="362">3.13</text>
+<text x="675" y="127" class="panel">Saved value → editable IdList</text>
+<line x1="675" x2="675" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="675" y="405" text-anchor="middle" class="tick secondary">0.00</text>
+<line x1="765" x2="765" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="765" y="405" text-anchor="middle" class="tick secondary">2.52</text>
+<line x1="855" x2="855" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="855" y="405" text-anchor="middle" class="tick secondary">5.04</text>
+<line x1="945" x2="945" y1="145" y2="379" stroke="#e2e6eb"/>
+<text x="945" y="405" text-anchor="middle" class="tick secondary">7.56</text>
+<text x="810" y="436" text-anchor="middle">ms · lower is better</text>
+<rect x="675" y="158" width="174.1022093649292" height="20" fill="#3266a6"/>
+<path d="M844.964683386235 168H853.2397353436234 M844.964683386235 163V173 M853.2397353436234 163V173" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="174">4.88</text>
+<rect x="675" y="190" width="127.06225619034205" height="20" fill="#b45b21"/>
+<path d="M799.9587544869142 200H804.1657578937699 M799.9587544869142 195V205 M804.1657578937699 195V205" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="206">3.56</text>
+<rect x="675" y="236" width="169.07948376355546" height="20" fill="#3266a6"/>
+<path d="M842.4530849701351 246H845.7058825569758 M842.4530849701351 241V251 M845.7058825569758 241V251" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="252">4.74</text>
+<rect x="675" y="268" width="131.48813796682566" height="20" fill="#b45b21"/>
+<path d="M805.5253011890264 278H807.4509747446249 M805.5253011890264 273V283 M807.4509747446249 273V283" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="284">3.68</text>
+<rect x="675" y="314" width="236.36656802241396" height="20" fill="#3266a6"/>
+<path d="M906.6617074733994 324H916.0714285714286 M906.6617074733994 319V329 M916.0714285714286 319V329" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="330">6.62</text>
+<rect x="675" y="346" width="237.91748649240503" height="20" fill="#b45b21"/>
+<path d="M910.0593591193987 356H915.7756138654114 M910.0593591193987 351V361 M915.7756138654114 351V361" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="362">6.66</text>
+</svg>

@@ -1,0 +1,59 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1100" height="430" viewBox="0 0 1100 430" role="img" aria-labelledby="title desc">
+<title id="title">The smallest storage and fastest load are different choices</title>
+<desc id="desc">Selected comparisons · one shared fixture · time whiskers: within-process 95% intervals Lower is better. Mongo storage · Snappy: Original objects:  180.5 KB / document; Ordinary columns:  221.5 KB / document; Split / protobuf:  35.4 KB / document; Binary columns · direct:  123.2 KB / document; Bit-packed · direct:  98.6 KB / document. BSON → editable IdList: Original objects:  10.39 ± 0.62 ms; Ordinary columns:  5.98 ± 0.15 ms; Split / protobuf:  6.72 ± 0.11 ms; Binary columns · direct:  3.81 ± 0.08 ms; Bit-packed · direct:  4.51 ± 0.51 ms</desc>
+<style>text{font-family:Arial,Helvetica,sans-serif;font-size:17px;fill:#243248} .secondary{fill:#526175} .title{font-size:24px;font-weight:500} .panel{font-weight:500} .tick{font-size:16px}</style>
+<rect width="1100" height="430" fill="#ffffff"/>
+<text x="24" y="34" class="title">The smallest storage and fastest load are different choices</text>
+<text x="24" y="64" class="secondary">Selected comparisons · one shared fixture · time whiskers: within-process 95% intervals</text>
+<text x="24" y="97" class="panel">Format / path</text>
+<text x="24" y="144.5">Original objects</text>
+<text x="24" y="191.5">Ordinary columns</text>
+<text x="24" y="238.5">Split / protobuf</text>
+<text x="24" y="285.5">Binary columns · direct</text>
+<text x="24" y="332.5">Bit-packed · direct</text>
+<text x="310" y="97" class="panel">Mongo storage · Snappy</text>
+<line x1="310" x2="310" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="310" y="376" text-anchor="middle" class="tick secondary">0.0</text>
+<line x1="400" x2="400" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="400" y="376" text-anchor="middle" class="tick secondary">82.7</text>
+<line x1="490" x2="490" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="490" y="376" text-anchor="middle" class="tick secondary">165.4</text>
+<line x1="580" x2="580" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="580" y="376" text-anchor="middle" class="tick secondary">248.0</text>
+<text x="445" y="407" text-anchor="middle">KB / document · lower is better</text>
+<rect x="310" y="128.5" width="196.4863668789136" height="20" fill="#3266a6"/>
+<text x="594" y="144.5">180.5</text>
+<rect x="310" y="175.5" width="241.07142857142856" height="20" fill="#3266a6"/>
+<text x="594" y="191.5">221.5</text>
+<rect x="310" y="222.5" width="38.566078364025486" height="20" fill="#3266a6"/>
+<text x="594" y="238.5">35.4</text>
+<rect x="310" y="269.5" width="134.06728050939262" height="20" fill="#3266a6"/>
+<text x="594" y="285.5">123.2</text>
+<rect x="310" y="316.5" width="107.31624349388358" height="20" fill="#3266a6"/>
+<text x="594" y="332.5">98.6</text>
+<text x="675" y="97" class="panel">BSON → editable IdList</text>
+<line x1="675" x2="675" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="675" y="376" text-anchor="middle" class="tick secondary">0.00</text>
+<line x1="765" x2="765" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="765" y="376" text-anchor="middle" class="tick secondary">4.11</text>
+<line x1="855" x2="855" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="855" y="376" text-anchor="middle" class="tick secondary">8.22</text>
+<line x1="945" x2="945" y1="115" y2="350" stroke="#e2e6eb"/>
+<text x="945" y="376" text-anchor="middle" class="tick secondary">12.33</text>
+<text x="810" y="407" text-anchor="middle">ms · lower is better</text>
+<rect x="675" y="128.5" width="227.4539632335343" height="20" fill="#3266a6"/>
+<path d="M888.83649789564 138.5H916.0714285714286 M888.83649789564 133.5V143.5 M916.0714285714286 133.5V143.5" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="144.5">10.39</text>
+<rect x="675" y="175.5" width="130.85839190308366" height="20" fill="#3266a6"/>
+<path d="M802.595475201946 185.5H809.1213086042213 M802.595475201946 180.5V190.5 M809.1213086042213 180.5V190.5" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="191.5">5.98</text>
+<rect x="675" y="222.5" width="147.22067763829477" height="20" fill="#3266a6"/>
+<path d="M819.8512511230186 232.5H824.5901041535709 M819.8512511230186 227.5V237.5 M824.5901041535709 227.5V237.5" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="238.5">6.72</text>
+<rect x="675" y="269.5" width="83.4630774908693" height="20" fill="#3266a6"/>
+<path d="M756.672795211945 279.5H760.2533597697936 M756.672795211945 274.5V284.5 M760.2533597697936 274.5V284.5" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="285.5">3.81</text>
+<rect x="675" y="316.5" width="98.72212030880792" height="20" fill="#3266a6"/>
+<path d="M762.4457980510867 326.5H784.9984425665291 M762.4457980510867 321.5V331.5 M784.9984425665291 321.5V331.5" fill="none" stroke="#243248" stroke-width="1.5"/>
+<text x="959" y="332.5">4.51</text>
+</svg>

@@ -19,6 +19,15 @@ export class SeqMap {
     );
   }
 
+  /** Initialization only; explicitly sort the actual sequence keys. */
+  static fromEntries(entries: [number, number][], nextSeq: number): SeqMap {
+    entries.sort((a, b) => a[0] - b[0]);
+    return new SeqMap(
+      RedBlackTree.fromSorted((a, b) => a - b, entries),
+      nextSeq,
+    );
+  }
+
   bumpNextSeq(): SeqMap {
     return new SeqMap(this.tree, this.nextSeq + 1);
   }

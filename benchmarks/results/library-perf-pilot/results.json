@@ -1,0 +1,911 @@
+{
+  "complete": true,
+  "generatedAt": "2026-10-21T11:54:31.003Z",
+  "cpu": "Apple M5 Pro",
+  "platform": "darwin/arm64",
+  "node": "v24.19.0",
+  "browser": "151.0.7922.34",
+  "cases": [
+    "existing",
+    "bulk-index-build",
+    "native-128",
+    "native-filter-128"
+  ],
+  "repetitions": 1,
+  "sourceSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "bundleSha256": "e195049ca9d133cddb34dfbe7355a12efa552f44ed9ba7914b2c577f05f93460",
+  "canonical": {
+    "trace": "kleppmannReal",
+    "traceSha256": "3af48f64f4ff18a09ec2cc21570accccfa912cffa702b45181ab383502bfe176",
+    "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+    "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+    "finalSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+    "counts": {
+      "operations": 259778,
+      "insertions": 182315,
+      "deletions": 77463,
+      "newlineInsertions": 1767,
+      "newlineDeletions": 595,
+      "finalCharacters": 104852
+    },
+    "seed": "42",
+    "startState": "empty",
+    "refreshInterval": null,
+    "checkpoints": [
+      10000,
+      50000,
+      100000,
+      200000,
+      259778
+    ],
+    "idPolicy": "Harness-assigned opaque 8-character IDs: collision-checked deterministic SHA256/base64url prefixes map EACH WHOLE generated structured bunch ID bijectively. Counters, run grouping, operation order, anchors and characters are identical to the structured replay. Not recorded collaborator identities; no refresh or regrouping.",
+    "bunchCount": 5382,
+    "source": {
+      "upstreamCommit": "da212e984c777d31ee7d888f82637288aa4c61d3",
+      "traceUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "readmeUrl": "https://github.com/automerge/automerge-perf/blob/da212e984c777d31ee7d888f82637288aa4c61d3/README.md",
+      "rawUrl": "https://raw.githubusercontent.com/automerge/automerge-perf/da212e984c777d31ee7d888f82637288aa4c61d3/edit-by-index/editing-trace.js",
+      "license": "CC-BY-4.0",
+      "attribution": "Editing trace by Martin Kleppmann and the paper's authors, from automerge/automerge-perf. The upstream README states CC-BY-4.0 for the trace. Its concurrent history was flattened to index-based single-character edits; cursor moves are omitted.",
+      "upstreamVerification": {
+        "verified": true,
+        "upstreamSha256": "23116070719243e2950c310006dd50b3d80744be7542a86c62e7d5c2ed7326d0",
+        "editsSha256": "1fc4e3f3a44299a7cf11d63abef214a45df9b4dc96765f5cc001f16c121deebc",
+        "finalTextSha256": "a489e9022976c14e46627aea174d07797edcb3fd17df42605956d4cf01bf9039",
+        "operations": 259778,
+        "method": "Local operation/text digests match pinned upstream JSON-literal comparison"
+      }
+    }
+  },
+  "calibration": {
+    "before": {
+      "usedSize": 4379692,
+      "totalSize": 8912896,
+      "embedderHeapUsedSize": 1506352,
+      "backingStorageSize": 1204836
+    },
+    "after": {
+      "usedSize": 4382272,
+      "totalSize": 8912896,
+      "embedderHeapUsedSize": 1506352,
+      "backingStorageSize": 9593455
+    }
+  },
+  "rows": [
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "load-lookups",
+      "samples": [
+        10.700000047683716,
+        5.399999976158142,
+        4.299999952316284,
+        4,
+        3.600000023841858,
+        4.200000047683716,
+        3.5,
+        4,
+        4.200000047683716,
+        3.100000023841858,
+        3.399999976158142,
+        3.5,
+        3.100000023841858,
+        3.299999952316284,
+        3.5,
+        3.3000000715255737,
+        3.5,
+        3,
+        3.799999952316284,
+        4.100000023841858
+      ],
+      "loadedBytes": 1286224,
+      "lookup": [
+        {
+          "kind": "local",
+          "ms": 10.900000095367432,
+          "operations": 20000,
+          "checksum": 199990000
+        },
+        {
+          "kind": "random",
+          "ms": 16.299999952316284,
+          "operations": 20000,
+          "checksum": 1046579896
+        }
+      ],
+      "stress": {
+        "fragmentedLookups": {
+          "ms": 46.89999997615814,
+          "operations": 5000,
+          "checksum": 2555660
+        },
+        "tombstoneDeleteMs": 18.699999928474426,
+        "gapDeleteMs": 6.600000023841858,
+        "verified": true
+      }
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 0,
+      "ms": 313,
+      "operations": 259778,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1697038,
+      "releasedHistoryBytes": 1705850
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 100,
+      "ms": 374.7999999523163,
+      "operations": 259778,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1812210,
+      "releasedHistoryBytes": 1688110
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 0,
+      "ms": 6.600000023841858,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1465608,
+      "releasedHistoryBytes": 1474420
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 100,
+      "ms": 8.100000023841858,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1577276,
+      "releasedHistoryBytes": 1453024
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 0,
+      "ms": 14.300000071525574,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1819688,
+      "releasedHistoryBytes": 1828500
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 100,
+      "ms": 15.599999904632568,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1991732,
+      "releasedHistoryBytes": 1823964
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 0,
+      "ms": 13.700000047683716,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1805800,
+      "releasedHistoryBytes": 1814612
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 100,
+      "ms": 15.299999952316284,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1969136,
+      "releasedHistoryBytes": 1809952
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 0,
+      "ms": 13.5,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1781876,
+      "releasedHistoryBytes": 1790688
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 100,
+      "ms": 13.5,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1976560,
+      "releasedHistoryBytes": 1808792
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 0,
+      "ms": 12.100000023841858,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1767916,
+      "releasedHistoryBytes": 1776728
+    },
+    {
+      "id": "existing",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 100,
+      "ms": 13.799999952316284,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1954096,
+      "releasedHistoryBytes": 1794912
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "load-lookups",
+      "samples": [
+        8.199999928474426,
+        5.399999976158142,
+        4.5,
+        3.399999976158142,
+        3.700000047683716,
+        3.899999976158142,
+        3.600000023841858,
+        2.600000023841858,
+        3.100000023841858,
+        2.6999999284744263,
+        2.6999999284744263,
+        2.9000000953674316,
+        2.5,
+        2.5,
+        2.700000047683716,
+        2.5999999046325684,
+        2.5,
+        2.399999976158142,
+        2.399999976158142,
+        2.399999976158142
+      ],
+      "loadedBytes": 1308712,
+      "lookup": [
+        {
+          "kind": "local",
+          "ms": 9.399999976158142,
+          "operations": 20000,
+          "checksum": 199990000
+        },
+        {
+          "kind": "random",
+          "ms": 14.100000023841858,
+          "operations": 20000,
+          "checksum": 1046579896
+        }
+      ],
+      "stress": {
+        "fragmentedLookups": {
+          "ms": 46.10000002384186,
+          "operations": 5000,
+          "checksum": 2555660
+        },
+        "tombstoneDeleteMs": 17.899999976158142,
+        "gapDeleteMs": 6.5,
+        "verified": true
+      }
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 0,
+      "ms": 295.2999999523163,
+      "operations": 259778,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1739174,
+      "releasedHistoryBytes": 1732382
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 100,
+      "ms": 355.89999997615814,
+      "operations": 259778,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1854626,
+      "releasedHistoryBytes": 1730526
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 0,
+      "ms": 7.399999976158142,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1498836,
+      "releasedHistoryBytes": 1507648
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 100,
+      "ms": 8.199999928474426,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1625052,
+      "releasedHistoryBytes": 1497536
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 0,
+      "ms": 14.899999976158142,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1851480,
+      "releasedHistoryBytes": 1860292
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 100,
+      "ms": 15.5,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 2023140,
+      "releasedHistoryBytes": 1855660
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 0,
+      "ms": 13.599999904632568,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1852120,
+      "releasedHistoryBytes": 1841544
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 100,
+      "ms": 14.5,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 2012024,
+      "releasedHistoryBytes": 1856680
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 0,
+      "ms": 13.100000023841858,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1813692,
+      "releasedHistoryBytes": 1822504
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 100,
+      "ms": 14.700000047683716,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 2008628,
+      "releasedHistoryBytes": 1841148
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 0,
+      "ms": 13.899999976158142,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 1814368,
+      "releasedHistoryBytes": 1803792
+    },
+    {
+      "id": "bulk-index-build",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 100,
+      "ms": 14.5,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1997644,
+      "releasedHistoryBytes": 1842300
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "load-lookups",
+      "samples": [
+        2.799999952316284,
+        1.7000000476837158,
+        1.399999976158142,
+        1.5,
+        1.1999999284744263,
+        1.5,
+        1.2999999523162842,
+        1.5,
+        1.2000000476837158,
+        1.2000000476837158,
+        1.2000000476837158,
+        0.6999999284744263,
+        1.2000000476837158,
+        0.7999999523162842,
+        0.9000000953674316,
+        1.2999999523162842,
+        1,
+        1.100000023841858,
+        0.8999999761581421,
+        0.9000000953674316
+      ],
+      "loadedBytes": 621728,
+      "lookup": [
+        {
+          "kind": "local",
+          "ms": 4.799999952316284,
+          "operations": 20000,
+          "checksum": 199990000
+        },
+        {
+          "kind": "random",
+          "ms": 8.700000047683716,
+          "operations": 20000,
+          "checksum": 1046579896
+        }
+      ],
+      "stress": {
+        "fragmentedLookups": {
+          "ms": 9.299999952316284,
+          "operations": 5000,
+          "checksum": 2555660
+        },
+        "tombstoneDeleteMs": 6,
+        "gapDeleteMs": 0.5,
+        "verified": true
+      }
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 0,
+      "ms": 828.8999999761581,
+      "operations": 259778,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 743750,
+      "releasedHistoryBytes": 752562
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 100,
+      "ms": 924.1999999284744,
+      "operations": 259778,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1371254,
+      "releasedHistoryBytes": 752690
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 0,
+      "ms": 11.5,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 681560,
+      "releasedHistoryBytes": 690372
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 100,
+      "ms": 12.899999976158142,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1046088,
+      "releasedHistoryBytes": 692572
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 0,
+      "ms": 21.100000023841858,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 882136,
+      "releasedHistoryBytes": 890948
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 100,
+      "ms": 21.700000047683716,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1525888,
+      "releasedHistoryBytes": 891828
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 0,
+      "ms": 19.800000071525574,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 904220,
+      "releasedHistoryBytes": 913032
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 100,
+      "ms": 20.299999952316284,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1548104,
+      "releasedHistoryBytes": 913204
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 0,
+      "ms": 18.799999952316284,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 862136,
+      "releasedHistoryBytes": 870948
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 100,
+      "ms": 20,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1526636,
+      "releasedHistoryBytes": 892576
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 0,
+      "ms": 18.5,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 884492,
+      "releasedHistoryBytes": 893304
+    },
+    {
+      "id": "native-128",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 100,
+      "ms": 19.300000071525574,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1549376,
+      "releasedHistoryBytes": 914476
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "load-lookups",
+      "samples": [
+        3.700000047683716,
+        1.8000000715255737,
+        1.600000023841858,
+        1.5,
+        1.1999999284744263,
+        1.3000000715255737,
+        1.5,
+        1.5,
+        1.7000000476837158,
+        1.1999999284744263,
+        1.2999999523162842,
+        1,
+        1,
+        1.2000000476837158,
+        0.8999999761581421,
+        1.2000000476837158,
+        0.8999999761581421,
+        1,
+        1.399999976158142,
+        0.8999999761581421
+      ],
+      "loadedBytes": 641904,
+      "lookup": [
+        {
+          "kind": "local",
+          "ms": 4.700000047683716,
+          "operations": 20000,
+          "checksum": 199990000
+        },
+        {
+          "kind": "random",
+          "ms": 8.799999952316284,
+          "operations": 20000,
+          "checksum": 1046579896
+        }
+      ],
+      "stress": {
+        "fragmentedLookups": {
+          "ms": 9.399999976158142,
+          "operations": 5000,
+          "checksum": 2555660
+        },
+        "tombstoneDeleteMs": 6.399999976158142,
+        "gapDeleteMs": 0.10000002384185791,
+        "verified": true
+      }
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 0,
+      "ms": 998.5,
+      "operations": 259778,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 783446,
+      "releasedHistoryBytes": 792258
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "canonical",
+      "historyLimit": 100,
+      "ms": 1083.3999999761581,
+      "operations": 259778,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1431170,
+      "releasedHistoryBytes": 792206
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 0,
+      "ms": 12.099999904632568,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 707524,
+      "releasedHistoryBytes": 716336
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "local",
+      "historyLimit": 100,
+      "ms": 13.700000047683716,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1090772,
+      "releasedHistoryBytes": 716856
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 0,
+      "ms": 20.899999976158142,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 924792,
+      "releasedHistoryBytes": 933604
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "distributed",
+      "historyLimit": 100,
+      "ms": 21.40000009536743,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1599024,
+      "releasedHistoryBytes": 944564
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 0,
+      "ms": 18.09999990463257,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 946156,
+      "releasedHistoryBytes": 954968
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "new-bunches",
+      "historyLimit": 100,
+      "ms": 19.199999928474426,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1610704,
+      "releasedHistoryBytes": 955404
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 0,
+      "ms": 19.299999952316284,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 902236,
+      "releasedHistoryBytes": 911048
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "remote-distributed",
+      "historyLimit": 100,
+      "ms": 20.700000047683716,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1587696,
+      "releasedHistoryBytes": 933236
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 0,
+      "ms": 17.600000023841858,
+      "operations": 2000,
+      "retainedVersions": 0,
+      "verified": true,
+      "retainedBytes": 925624,
+      "releasedHistoryBytes": 934436
+    },
+    {
+      "id": "native-filter-128",
+      "repetition": 0,
+      "kind": "remote-new-bunches",
+      "historyLimit": 100,
+      "ms": 18.600000023841858,
+      "operations": 2000,
+      "retainedVersions": 100,
+      "verified": true,
+      "retainedBytes": 1611348,
+      "releasedHistoryBytes": 956048
+    }
+  ],
+  "profiles": [
+    {
+      "id": "existing",
+      "kind": "load",
+      "filename": "existing-load.cpuprofile",
+      "samples": 649
+    },
+    {
+      "id": "existing",
+      "kind": "canonical",
+      "filename": "existing-canonical.cpuprofile",
+      "samples": 476
+    },
+    {
+      "id": "bulk-index-build",
+      "kind": "load",
+      "filename": "bulk-index-build-load.cpuprofile",
+      "samples": 629
+    },
+    {
+      "id": "bulk-index-build",
+      "kind": "canonical",
+      "filename": "bulk-index-build-canonical.cpuprofile",
+      "samples": 485
+    },
+    {
+      "id": "native-128",
+      "kind": "load",
+      "filename": "native-128-load.cpuprofile",
+      "samples": 283
+    },
+    {
+      "id": "native-128",
+      "kind": "canonical",
+      "filename": "native-128-canonical.cpuprofile",
+      "samples": 1377
+    },
+    {
+      "id": "native-filter-128",
+      "kind": "load",
+      "filename": "native-filter-128-load.cpuprofile",
+      "samples": 304
+    },
+    {
+      "id": "native-filter-128",
+      "kind": "canonical",
+      "filename": "native-filter-128-canonical.cpuprofile",
+      "samples": 1648
+    }
+  ],
+  "methodology": "Library-only Chromium. Same decoded F01 input; native conversion charged in load. 20 warm loads after one warmup per fresh context. Replay clock includes anchor validation and optional last-100 ID-version retention, not final full-state/history verification. Full canonical stream is uninterrupted, 259778 operations; loaded sessions are2000. Lookup pairs=at+indexOf, not separate operations. Forced GC before/after tests, never inside timed replay. Memory=heap+backing relative to empty warmed context; input JSON text retained in baseline, decoded run objects released. CPU profiles are separate diagnostic runs, never mixed into unprofiled timing. No editor/rendering, network or Mongo metrics."
+}

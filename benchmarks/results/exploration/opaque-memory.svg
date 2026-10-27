@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="735" height="956" viewBox="0 0 735 956" role="img" aria-labelledby="title desc">
+<title id="title">Opaque 8-character IDs: loaded JS memory</title><desc id="desc">Separate measured pass; four open editors, first edit completed. Lower is better. Three memory trials. After-GC heap + backing storage, not RSS or sustained-session memory.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="735" height="956" fill="white"/>
+<text x="24" y="36" class="title">Opaque 8-character IDs: loaded JS memory</text>
+<text x="24" y="68" >Separate measured pass; four open editors, first edit completed. Lower is better.</text>
+<text x="24" y="110" >Interchange → internal representation</text>
+<text x="425" y="110" >Retained JS median (MB)</text>
+<line x1="425" x2="425" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="425" y="912" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="532" y="912" class="small" text-anchor="middle">3.4</text>
+<line x1="639" x2="639" y1="138" y2="889" stroke="#e2e6eb"/>
+<text x="639" y="912" class="small" text-anchor="middle">6.8</text>
+<rect x="425" y="165" width="122.21027029411765" height="23" fill="#3266a6"/>
+<text x="554.2102702941177" y="183" class="small">3.9</text>
+<rect x="425" y="247" width="132.81334088235295" height="23" fill="#3266a6"/>
+<text x="564.8133408823529" y="265" class="small">4.2</text>
+<rect x="425" y="329" width="139.38867970588234" height="23" fill="#3266a6"/>
+<text x="571.3886797058824" y="347" class="small">4.4</text>
+<rect x="425" y="411" width="139.92670088235295" height="23" fill="#3266a6"/>
+<text x="571.926700882353" y="429" class="small">4.4</text>
+<rect x="425" y="493" width="145.55389382352942" height="23" fill="#3266a6"/>
+<text x="577.5538938235294" y="511" class="small">4.6</text>
+<rect x="425" y="575" width="156.9725561764706" height="23" fill="#3266a6"/>
+<text x="588.9725561764706" y="593" class="small">5.0</text>
+<rect x="425" y="657" width="202.41256088235295" height="23" fill="#3266a6"/>
+<text x="634.412560882353" y="675" class="small">6.4</text>
+<rect x="425" y="739" width="202.64040794117645" height="23" fill="#3266a6"/>
+<text x="634.6404079411765" y="757" class="small">6.4</text>
+<rect x="425" y="821" width="202.69050911764705" height="23" fill="#3266a6"/>
+<text x="634.690509117647" y="839" class="small">6.4</text>
+<text x="24" y="162" >F05 · flat columns · owned 128</text>
+<text x="24" y="204" class="small">Columns; infer counters</text>
+<text x="24" y="244" >F09 · flat columns · owned 128</text>
+<text x="24" y="286" class="small">Deduplicate IDs; all counters</text>
+<text x="24" y="326" >F02 · native rows · owned 128</text>
+<text x="24" y="368" class="small">Objects; signed counts</text>
+<text x="24" y="408" >F07 · flat columns · owned 128</text>
+<text x="24" y="450" class="small">Deduplicate IDs; infer counters</text>
+<text x="24" y="490" >F01 · native rows · owned 128</text>
+<text x="24" y="532" class="small">Plain SavedIdList objects</text>
+<text x="24" y="572" >F03 · native rows · owned 128</text>
+<text x="24" y="614" class="small">Tuples; signed counts</text>
+<text x="24" y="654" >F03 → existing IdList</text>
+<text x="24" y="696" class="small">Tuples; signed counts</text>
+<text x="24" y="736" >F01 → existing IdList</text>
+<text x="24" y="778" class="small">Plain SavedIdList objects</text>
+<text x="24" y="818" >F05 → existing IdList</text>
+<text x="24" y="860" class="small">Columns; infer counters</text>
+<text x="24" y="944" class="small">Three memory trials. After-GC heap + backing storage, not RSS or sustained-session memory.</text>
+</svg>

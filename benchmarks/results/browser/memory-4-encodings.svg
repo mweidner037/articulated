@@ -1,0 +1,239 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="2186" viewBox="0 0 1315 2186" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: encodings and JSON baselines — JS memory</title><desc id="desc">Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="2186" fill="white"/>
+<text x="24" y="36" class="title">4 documents: encodings and JSON baselines — JS memory</text>
+<text x="24" y="68" >Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first.</text>
+<text x="24" y="110" >Interchange format</text>
+<text x="425" y="110" >Retained median (MB)</text>
+<line x1="425" x2="425" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="425" y="2142" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="532" y="2142" class="small" text-anchor="middle">3.9</text>
+<line x1="639" x2="639" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="639" y="2142" class="small" text-anchor="middle">7.8</text>
+<rect x="425" y="165" width="177.1411064102564" height="23" fill="#3266a6"/>
+<text x="609.1411064102564" y="183" class="small">6.5</text>
+<rect x="425" y="247" width="177.21858538461538" height="23" fill="#3266a6"/>
+<text x="609.2185853846154" y="265" class="small">6.5</text>
+<rect x="425" y="329" width="177.39340692307695" height="23" fill="#3266a6"/>
+<text x="609.393406923077" y="347" class="small">6.5</text>
+<rect x="425" y="411" width="177.3943946153846" height="23" fill="#3266a6"/>
+<text x="609.3943946153846" y="429" class="small">6.5</text>
+<rect x="425" y="493" width="177.41206333333335" height="23" fill="#3266a6"/>
+<text x="609.4120633333333" y="511" class="small">6.5</text>
+<rect x="425" y="575" width="177.4275371794872" height="23" fill="#3266a6"/>
+<text x="609.4275371794872" y="593" class="small">6.5</text>
+<rect x="425" y="657" width="178.98139666666668" height="23" fill="#3266a6"/>
+<text x="610.9813966666667" y="675" class="small">6.5</text>
+<rect x="425" y="739" width="179.13295256410257" height="23" fill="#3266a6"/>
+<text x="611.1329525641025" y="757" class="small">6.5</text>
+<rect x="425" y="821" width="188.90463153846156" height="23" fill="#3266a6"/>
+<text x="620.9046315384616" y="839" class="small">6.9</text>
+<rect x="425" y="903" width="188.94062743589743" height="23" fill="#3266a6"/>
+<text x="620.9406274358975" y="921" class="small">6.9</text>
+<rect x="425" y="985" width="189.08625717948718" height="23" fill="#3266a6"/>
+<text x="621.0862571794871" y="1003" class="small">6.9</text>
+<rect x="425" y="1067" width="189.11863153846153" height="23" fill="#3266a6"/>
+<text x="621.1186315384615" y="1085" class="small">6.9</text>
+<rect x="425" y="1149" width="189.12225307692307" height="23" fill="#3266a6"/>
+<text x="621.122253076923" y="1167" class="small">6.9</text>
+<rect x="425" y="1231" width="189.13081307692306" height="23" fill="#3266a6"/>
+<text x="621.130813076923" y="1249" class="small">6.9</text>
+<rect x="425" y="1313" width="189.14486025641025" height="23" fill="#3266a6"/>
+<text x="621.1448602564103" y="1331" class="small">6.9</text>
+<rect x="425" y="1395" width="189.81045512820515" height="23" fill="#3266a6"/>
+<text x="621.8104551282051" y="1413" class="small">6.9</text>
+<rect x="425" y="1477" width="201.20535153846154" height="23" fill="#3266a6"/>
+<text x="633.2053515384615" y="1495" class="small">7.3</text>
+<rect x="425" y="1559" width="201.42352179487182" height="23" fill="#3266a6"/>
+<text x="633.4235217948718" y="1577" class="small">7.3</text>
+<rect x="425" y="1641" width="201.42593615384615" height="23" fill="#3266a6"/>
+<text x="633.4259361538461" y="1659" class="small">7.3</text>
+<rect x="425" y="1723" width="201.42802128205128" height="23" fill="#3266a6"/>
+<text x="633.4280212820513" y="1741" class="small">7.3</text>
+<rect x="425" y="1805" width="201.45029923076922" height="23" fill="#3266a6"/>
+<text x="633.4502992307692" y="1823" class="small">7.3</text>
+<rect x="425" y="1887" width="201.45655461538462" height="23" fill="#3266a6"/>
+<text x="633.4565546153847" y="1905" class="small">7.3</text>
+<rect x="425" y="1969" width="201.47905205128205" height="23" fill="#3266a6"/>
+<text x="633.479052051282" y="1987" class="small">7.3</text>
+<rect x="425" y="2051" width="202.38586333333333" height="23" fill="#3266a6"/>
+<text x="634.3858633333333" y="2069" class="small">7.4</text>
+<text x="715" y="110" >Observed high-water (MB)</text>
+<line x1="715" x2="715" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="715" y="2142" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="822" y="2142" class="small" text-anchor="middle">11.4</text>
+<line x1="929" x2="929" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="929" y="2142" class="small" text-anchor="middle">22.8</text>
+<rect x="715" y="165" width="85.92837736842104" height="23" fill="#3c8077"/>
+<text x="807.928377368421" y="183" class="small">9.2</text>
+<rect x="715" y="247" width="129.58944578947367" height="23" fill="#3c8077"/>
+<text x="851.5894457894736" y="265" class="small">13.8</text>
+<rect x="715" y="329" width="146.08817" height="23" fill="#3c8077"/>
+<text x="868.08817" y="347" class="small">15.6</text>
+<rect x="715" y="411" width="98.5113896491228" height="23" fill="#3c8077"/>
+<text x="820.5113896491227" y="429" class="small">10.5</text>
+<rect x="715" y="493" width="141.64000166666665" height="23" fill="#3c8077"/>
+<text x="863.6400016666666" y="511" class="small">15.1</text>
+<rect x="715" y="575" width="136.73395780701753" height="23" fill="#3c8077"/>
+<text x="858.7339578070175" y="593" class="small">14.6</text>
+<rect x="715" y="657" width="120.60920798245613" height="23" fill="#3c8077"/>
+<text x="842.6092079824562" y="675" class="small">12.8</text>
+<rect x="715" y="739" width="143.93484192982456" height="23" fill="#3c8077"/>
+<text x="865.9348419298245" y="757" class="small">15.3</text>
+<rect x="715" y="821" width="134.45217342105263" height="23" fill="#3c8077"/>
+<text x="856.4521734210526" y="839" class="small">14.3</text>
+<rect x="715" y="903" width="105.21454543859649" height="23" fill="#3c8077"/>
+<text x="827.2145454385965" y="921" class="small">11.2</text>
+<rect x="715" y="985" width="126.91547824561403" height="23" fill="#3c8077"/>
+<text x="848.915478245614" y="1003" class="small">13.5</text>
+<rect x="715" y="1067" width="135.72784807017544" height="23" fill="#3c8077"/>
+<text x="857.7278480701755" y="1085" class="small">14.5</text>
+<rect x="715" y="1149" width="151.90010964912278" height="23" fill="#3c8077"/>
+<text x="873.9001096491228" y="1167" class="small">16.2</text>
+<rect x="715" y="1231" width="131.87201859649122" height="23" fill="#3c8077"/>
+<text x="853.8720185964912" y="1249" class="small">14.0</text>
+<rect x="715" y="1313" width="138.41657973684212" height="23" fill="#3c8077"/>
+<text x="860.4165797368421" y="1331" class="small">14.7</text>
+<rect x="715" y="1395" width="143.59409385964912" height="23" fill="#3c8077"/>
+<text x="865.5940938596491" y="1413" class="small">15.3</text>
+<rect x="715" y="1477" width="166.6070813157895" height="23" fill="#3c8077"/>
+<text x="888.6070813157895" y="1495" class="small">17.8</text>
+<rect x="715" y="1559" width="160.1237354385965" height="23" fill="#3c8077"/>
+<text x="882.1237354385964" y="1577" class="small">17.1</text>
+<rect x="715" y="1641" width="142.6294043859649" height="23" fill="#3c8077"/>
+<text x="864.6294043859649" y="1659" class="small">15.2</text>
+<rect x="715" y="1723" width="156.65366912280703" height="23" fill="#3c8077"/>
+<text x="878.6536691228071" y="1741" class="small">16.7</text>
+<rect x="715" y="1805" width="203.36065210526314" height="23" fill="#3c8077"/>
+<text x="925.3606521052632" y="1823" class="small">21.7</text>
+<rect x="715" y="1887" width="121.07342842105261" height="23" fill="#3c8077"/>
+<text x="843.0734284210527" y="1905" class="small">12.9</text>
+<rect x="715" y="1969" width="198.85724736842104" height="23" fill="#3c8077"/>
+<text x="920.857247368421" y="1987" class="small">21.2</text>
+<rect x="715" y="2051" width="136.8598892982456" height="23" fill="#3c8077"/>
+<text x="858.8598892982457" y="2069" class="small">14.6</text>
+<text x="1005" y="110" >Sampled allocations (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="1005" y="2142" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="1112" y="2142" class="small" text-anchor="middle">44.8</text>
+<line x1="1219" x2="1219" y1="138" y2="2119" stroke="#e2e6eb"/>
+<text x="1219" y="2142" class="small" text-anchor="middle">89.5</text>
+<rect x="1005" y="165" width="127.90663794413408" height="23" fill="#8571ac"/>
+<text x="1139.906637944134" y="183" class="small">53.5</text>
+<rect x="1005" y="247" width="148.63671034636872" height="23" fill="#8571ac"/>
+<text x="1160.6367103463688" y="265" class="small">62.2</text>
+<rect x="1005" y="329" width="132.827232" height="23" fill="#8571ac"/>
+<text x="1144.827232" y="347" class="small">55.6</text>
+<rect x="1005" y="411" width="135.464113698324" height="23" fill="#8571ac"/>
+<text x="1147.4641136983241" y="429" class="small">56.7</text>
+<rect x="1005" y="493" width="139.90553903910615" height="23" fill="#8571ac"/>
+<text x="1151.905539039106" y="511" class="small">58.5</text>
+<rect x="1005" y="575" width="136.59947575418994" height="23" fill="#8571ac"/>
+<text x="1148.5994757541898" y="593" class="small">57.1</text>
+<rect x="1005" y="657" width="145.8927473519553" height="23" fill="#8571ac"/>
+<text x="1157.8927473519552" y="675" class="small">61.0</text>
+<rect x="1005" y="739" width="137.32709488268156" height="23" fill="#8571ac"/>
+<text x="1149.3270948826816" y="757" class="small">57.4</text>
+<rect x="1005" y="821" width="127.13883941899441" height="23" fill="#8571ac"/>
+<text x="1139.1388394189944" y="839" class="small">53.2</text>
+<rect x="1005" y="903" width="124.0549535642458" height="23" fill="#8571ac"/>
+<text x="1136.0549535642458" y="921" class="small">51.9</text>
+<rect x="1005" y="985" width="128.0748347709497" height="23" fill="#8571ac"/>
+<text x="1140.0748347709498" y="1003" class="small">53.6</text>
+<rect x="1005" y="1067" width="137.3070673519553" height="23" fill="#8571ac"/>
+<text x="1149.3070673519553" y="1085" class="small">57.4</text>
+<rect x="1005" y="1149" width="131.04862659217878" height="23" fill="#8571ac"/>
+<text x="1143.0486265921788" y="1167" class="small">54.8</text>
+<rect x="1005" y="1231" width="124.69722136312849" height="23" fill="#8571ac"/>
+<text x="1136.6972213631284" y="1249" class="small">52.2</text>
+<rect x="1005" y="1313" width="134.33943490502793" height="23" fill="#8571ac"/>
+<text x="1146.339434905028" y="1331" class="small">56.2</text>
+<rect x="1005" y="1395" width="139.66018744134078" height="23" fill="#8571ac"/>
+<text x="1151.660187441341" y="1413" class="small">58.4</text>
+<rect x="1005" y="1477" width="164.75204370949717" height="23" fill="#8571ac"/>
+<text x="1176.7520437094972" y="1495" class="small">68.9</text>
+<rect x="1005" y="1559" width="203.74361841340783" height="23" fill="#8571ac"/>
+<text x="1215.7436184134078" y="1577" class="small">85.2</text>
+<rect x="1005" y="1641" width="129.25423061452514" height="23" fill="#8571ac"/>
+<text x="1141.254230614525" y="1659" class="small">54.1</text>
+<rect x="1005" y="1723" width="128.60528697206703" height="23" fill="#8571ac"/>
+<text x="1140.605286972067" y="1741" class="small">53.8</text>
+<rect x="1005" y="1805" width="137.89175839106144" height="23" fill="#8571ac"/>
+<text x="1149.8917583910616" y="1823" class="small">57.7</text>
+<rect x="1005" y="1887" width="139.80072446927375" height="23" fill="#8571ac"/>
+<text x="1151.8007244692737" y="1905" class="small">58.5</text>
+<rect x="1005" y="1969" width="190.65796075977653" height="23" fill="#8571ac"/>
+<text x="1202.6579607597764" y="1987" class="small">79.7</text>
+<rect x="1005" y="2051" width="145.58233018994414" height="23" fill="#8571ac"/>
+<text x="1157.582330189944" y="2069" class="small">60.9</text>
+<text x="24" y="162" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="182" >reconstruct counters</text>
+<text x="24" y="204" class="small">JSON · Direct tree construction</text>
+<text x="24" y="244" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="264" >reconstruct counters</text>
+<text x="24" y="286" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="326" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="368" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="408" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="428" >reconstruct counters</text>
+<text x="24" y="450" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="490" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="510" >reconstruct counters</text>
+<text x="24" y="532" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="572" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="592" >reconstruct counters</text>
+<text x="24" y="614" class="small">protobuf · Direct tree construction</text>
+<text x="24" y="654" >F05 — Columnar store: reconstruct counters</text>
+<text x="24" y="696" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="736" >F06 — Columnar store: split IDs +</text>
+<text x="24" y="756" >reconstruct counters</text>
+<text x="24" y="778" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="818" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="838" >counters</text>
+<text x="24" y="860" class="small">uint32/int32 · Direct tree construction</text>
+<text x="24" y="900" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="920" >counters</text>
+<text x="24" y="942" class="small">JSON · Direct tree construction</text>
+<text x="24" y="982" >F07 — Columnar store: deduplicate IDs +</text>
+<text x="24" y="1002" >reconstruct counters</text>
+<text x="24" y="1024" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1064" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1084" >counters</text>
+<text x="24" y="1106" class="small">bit-packed · Via IdList.load()</text>
+<text x="24" y="1146" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1166" >counters</text>
+<text x="24" y="1188" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1228" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1248" >counters</text>
+<text x="24" y="1270" class="small">bit-packed · Direct tree construction</text>
+<text x="24" y="1310" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="1330" >counters</text>
+<text x="24" y="1352" class="small">uint32/int32 · Via IdList.load()</text>
+<text x="24" y="1392" >F07 — Columnar store: deduplicate IDs +</text>
+<text x="24" y="1412" >reconstruct counters</text>
+<text x="24" y="1434" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="1474" >F03 — Tuple records: negative count means</text>
+<text x="24" y="1494" >deleted</text>
+<text x="24" y="1516" class="small">BSON · Via IdList.load()</text>
+<text x="24" y="1556" >F01 — Object records: deletion flag</text>
+<text x="24" y="1598" class="small">BSON · Via IdList.load()</text>
+<text x="24" y="1638" >F01 — Object records: deletion flag</text>
+<text x="24" y="1680" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1720" >F04 — Columnar store: all counters</text>
+<text x="24" y="1762" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1802" >F02 — Object records: negative count means</text>
+<text x="24" y="1822" >deleted</text>
+<text x="24" y="1844" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1884" >F03 — Tuple records: negative count means</text>
+<text x="24" y="1904" >deleted</text>
+<text x="24" y="1926" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="1966" >F02 — Object records: negative count means</text>
+<text x="24" y="1986" >deleted</text>
+<text x="24" y="2008" class="small">BSON · Via IdList.load()</text>
+<text x="24" y="2048" >F04 — Columnar store: all counters</text>
+<text x="24" y="2090" class="small">protobuf · Via IdList.load()</text>
+<text x="24" y="2174" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+</svg>

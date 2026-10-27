@@ -1,0 +1,142 @@
+{
+  "complete": false,
+  "sourceSavedSha256": "b3cc04d6e0a3261d25b13f139d4fdde5c9bd44f956eb6797b79f74fc7583299b",
+  "entries": [
+    {
+      "collection": "zstd_f01",
+      "id": "F01",
+      "label": "Original saved objects",
+      "readiness": "Unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_f05",
+      "id": "F05",
+      "label": "Whole-document columns; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_sflat-joined",
+      "id": "Sflat-joined",
+      "label": "Whole-document columns; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d04aa99b19e0f5904bfd9d4beac9836dae364978abb40460b89e171b41dc785",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "zstd_flat-f64",
+      "id": "Flat-F64",
+      "label": "Flat concatenated IDs; fixed Float64 binary numeric columns",
+      "readiness": "No pages; schema-fixed little-endian Float64; unchanged IdList.load",
+      "compressor": "zstd",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d10f2a7b6b4f4cb1eb6b3ac0d149eb7a7ca5c90d3634c5f62f6f5e5ea66662e9",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_f01",
+      "id": "F01",
+      "label": "Original saved objects",
+      "readiness": "Unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_f05",
+      "id": "F05",
+      "label": "Whole-document columns; array IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "c7d596e9084865e36db9da448769577dcfd99c46759577ea45a6cad359d9b0db",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_sflat-joined",
+      "id": "Sflat-joined",
+      "label": "Whole-document columns; joined IDs",
+      "readiness": "Storage encoding only; decoded to runs then unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "3d04aa99b19e0f5904bfd9d4beac9836dae364978abb40460b89e171b41dc785",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    },
+    {
+      "collection": "snappy_flat-f64",
+      "id": "Flat-F64",
+      "label": "Flat concatenated IDs; fixed Float64 binary numeric columns",
+      "readiness": "No pages; schema-fixed little-endian Float64; unchanged IdList.load",
+      "compressor": "snappy",
+      "compact": {
+        "bytesFreed": 0,
+        "ok": 1
+      },
+      "checkedDocuments": [
+        0,
+        99
+      ],
+      "storedStateHashDocument0": "d10f2a7b6b4f4cb1eb6b3ac0d149eb7a7ca5c90d3634c5f62f6f5e5ea66662e9",
+      "sourceHashDocument0": "03b8a65280ab9ff04a8b6b6f9975d10a8ff1b8d4370b9ecb967ef91ce78d1006"
+    }
+  ]
+}

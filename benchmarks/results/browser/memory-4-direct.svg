@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1315" height="546" viewBox="0 0 1315 546" role="img" aria-labelledby="title desc">
+<title id="title">4 documents: direct JSON loading — JS memory</title><desc id="desc">Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first. Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.. Exact values are labeled on every bar.</desc>
+<style>text{font:17px Arial,Helvetica,sans-serif;fill:#243248}.small{font-size:15px}.title{font-size:25px;font-weight:500}</style><rect width="1315" height="546" fill="white"/>
+<text x="24" y="36" class="title">4 documents: direct JSON loading — JS memory</text>
+<text x="24" y="68" >Internal format: Existing IdList tree. Sorted by retained JS + backing bytes, smallest first.</text>
+<text x="24" y="110" >Interchange format</text>
+<text x="425" y="110" >Retained median (MB)</text>
+<line x1="425" x2="425" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="425" y="502" class="small" text-anchor="middle">0.0</text>
+<line x1="532" x2="532" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="532" y="502" class="small" text-anchor="middle">3.6</text>
+<line x1="639" x2="639" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="639" y="502" class="small" text-anchor="middle">7.3</text>
+<rect x="425" y="165" width="189.27405890410958" height="23" fill="#3266a6"/>
+<text x="621.2740589041096" y="183" class="small">6.5</text>
+<rect x="425" y="247" width="189.5446956164384" height="23" fill="#3266a6"/>
+<text x="621.5446956164384" y="265" class="small">6.5</text>
+<rect x="425" y="329" width="201.88176630136988" height="23" fill="#3266a6"/>
+<text x="633.8817663013699" y="347" class="small">6.9</text>
+<rect x="425" y="411" width="202.07583205479452" height="23" fill="#3266a6"/>
+<text x="634.0758320547945" y="429" class="small">6.9</text>
+<text x="715" y="110" >Observed high-water (MB)</text>
+<line x1="715" x2="715" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="715" y="502" class="small" text-anchor="middle">0.0</text>
+<line x1="822" x2="822" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="822" y="502" class="small" text-anchor="middle">8.5</text>
+<line x1="929" x2="929" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="929" y="502" class="small" text-anchor="middle">17.0</text>
+<rect x="715" y="165" width="115.24511788235293" height="23" fill="#3c8077"/>
+<text x="837.2451178823529" y="183" class="small">9.2</text>
+<rect x="715" y="247" width="132.12115788235295" height="23" fill="#3c8077"/>
+<text x="854.1211578823529" y="265" class="small">10.5</text>
+<rect x="715" y="329" width="141.11127270588236" height="23" fill="#3c8077"/>
+<text x="863.1112727058824" y="347" class="small">11.2</text>
+<rect x="715" y="411" width="203.72485294117647" height="23" fill="#3c8077"/>
+<text x="925.7248529411764" y="429" class="small">16.2</text>
+<text x="1005" y="110" >Sampled allocations (MB)</text>
+<line x1="1005" x2="1005" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="1005" y="502" class="small" text-anchor="middle">0.0</text>
+<line x1="1112" x2="1112" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="1112" y="502" class="small" text-anchor="middle">29.8</text>
+<line x1="1219" x2="1219" y1="138" y2="479" stroke="#e2e6eb"/>
+<text x="1219" y="502" class="small" text-anchor="middle">59.5</text>
+<rect x="1005" y="165" width="192.39737976470587" height="23" fill="#8571ac"/>
+<text x="1204.3973797647059" y="183" class="small">53.5</text>
+<rect x="1005" y="247" width="203.76534749579832" height="23" fill="#8571ac"/>
+<text x="1215.7653474957983" y="265" class="small">56.7</text>
+<rect x="1005" y="329" width="186.6036696470588" height="23" fill="#8571ac"/>
+<text x="1198.6036696470587" y="347" class="small">51.9</text>
+<rect x="1005" y="411" width="197.1235643697479" height="23" fill="#8571ac"/>
+<text x="1209.1235643697478" y="429" class="small">54.8</text>
+<text x="24" y="162" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="182" >reconstruct counters</text>
+<text x="24" y="204" class="small">JSON · Direct tree construction</text>
+<text x="24" y="244" >F08 — Columnar store: deduplicate clients +</text>
+<text x="24" y="264" >reconstruct counters</text>
+<text x="24" y="286" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="326" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="346" >counters</text>
+<text x="24" y="368" class="small">JSON · Direct tree construction</text>
+<text x="24" y="408" >F09 — Columnar store: deduplicate IDs + all</text>
+<text x="24" y="428" >counters</text>
+<text x="24" y="450" class="small">JSON · Via IdList.load()</text>
+<text x="24" y="534" class="small">Separate scales; do not add these values. High-water is sampled, not an exact peak. Small differences may be noise.</text>
+</svg>

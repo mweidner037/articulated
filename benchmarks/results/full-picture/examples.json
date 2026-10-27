@@ -1,0 +1,675 @@
+[
+  {
+    "name": "objects",
+    "mongo": {
+      "state": [
+        {
+          "bunchId": "alice_0",
+          "startCounter": 0,
+          "count": 3,
+          "isDeleted": false
+        },
+        {
+          "bunchId": "bob_0",
+          "startCounter": 0,
+          "count": 1,
+          "isDeleted": false
+        },
+        {
+          "bunchId": "alice_1",
+          "startCounter": 0,
+          "count": 2,
+          "isDeleted": false
+        },
+        {
+          "bunchId": "alice_0",
+          "startCounter": 3,
+          "count": 2,
+          "isDeleted": true
+        }
+      ]
+    },
+    "decoded": [
+      {
+        "bunchId": "alice_0",
+        "startCounter": 0,
+        "count": 3,
+        "isDeleted": false
+      },
+      {
+        "bunchId": "bob_0",
+        "startCounter": 0,
+        "count": 1,
+        "isDeleted": false
+      },
+      {
+        "bunchId": "alice_1",
+        "startCounter": 0,
+        "count": 2,
+        "isDeleted": false
+      },
+      {
+        "bunchId": "alice_0",
+        "startCounter": 3,
+        "count": 2,
+        "isDeleted": true
+      }
+    ]
+  },
+  {
+    "name": "signed",
+    "mongo": {
+      "state": [
+        {
+          "bunchId": "alice_0",
+          "startCounter": 0,
+          "count": 3
+        },
+        {
+          "bunchId": "bob_0",
+          "startCounter": 0,
+          "count": 1
+        },
+        {
+          "bunchId": "alice_1",
+          "startCounter": 0,
+          "count": 2
+        },
+        {
+          "bunchId": "alice_0",
+          "startCounter": 3,
+          "count": -2
+        }
+      ]
+    },
+    "decoded": [
+      {
+        "bunchId": "alice_0",
+        "startCounter": 0,
+        "count": 3
+      },
+      {
+        "bunchId": "bob_0",
+        "startCounter": 0,
+        "count": 1
+      },
+      {
+        "bunchId": "alice_1",
+        "startCounter": 0,
+        "count": 2
+      },
+      {
+        "bunchId": "alice_0",
+        "startCounter": 3,
+        "count": -2
+      }
+    ]
+  },
+  {
+    "name": "tuples",
+    "mongo": {
+      "state": [
+        [
+          "alice_0",
+          0,
+          3
+        ],
+        [
+          "bob_0",
+          0,
+          1
+        ],
+        [
+          "alice_1",
+          0,
+          2
+        ],
+        [
+          "alice_0",
+          3,
+          -2
+        ]
+      ]
+    },
+    "decoded": [
+      [
+        "alice_0",
+        0,
+        3
+      ],
+      [
+        "bob_0",
+        0,
+        1
+      ],
+      [
+        "alice_1",
+        0,
+        2
+      ],
+      [
+        "alice_0",
+        3,
+        -2
+      ]
+    ]
+  },
+  {
+    "name": "columns",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1",
+          "alice_0"
+        ],
+        "startCounters": [
+          0,
+          0,
+          0,
+          3
+        ],
+        "counts": [
+          3,
+          1,
+          2,
+          -2
+        ]
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1",
+        "alice_0"
+      ],
+      "startCounters": [
+        0,
+        0,
+        0,
+        3
+      ],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "omit",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1",
+          "alice_0"
+        ],
+        "startCounterIndexes": [],
+        "startCounters": [],
+        "counts": [
+          3,
+          1,
+          2,
+          -2
+        ]
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1",
+        "alice_0"
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "split-omit",
+    "mongo": {
+      "state": {
+        "clientIds": [
+          "alice",
+          "bob",
+          "alice",
+          "alice"
+        ],
+        "seqNums": [
+          0,
+          0,
+          1,
+          0
+        ],
+        "startCounterIndexes": [],
+        "startCounters": [],
+        "counts": [
+          3,
+          1,
+          2,
+          -2
+        ]
+      }
+    },
+    "decoded": {
+      "clientIds": [
+        "alice",
+        "bob",
+        "alice",
+        "alice"
+      ],
+      "seqNums": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "dictionary-omit",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1"
+        ],
+        "bunchIndices": [
+          0,
+          1,
+          2,
+          0
+        ],
+        "startCounterIndexes": [],
+        "startCounters": [],
+        "counts": [
+          3,
+          1,
+          2,
+          -2
+        ]
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "dictionary-proto",
+    "mongo": {
+      "state": {
+        "$binary": {
+          "base64": "CgdhbGljZV8wCgVib2JfMAoHYWxpY2VfMRIEAAECACoEBgIEAw==",
+          "subType": "00"
+        }
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "split-proto",
+    "mongo": {
+      "state": {
+        "$binary": {
+          "base64": "CgVhbGljZQoDYm9iEgQAAQAAGgQAAAEAMgQGAgQD",
+          "subType": "00"
+        }
+      }
+    },
+    "decoded": {
+      "clientIds": [
+        "alice",
+        "bob"
+      ],
+      "clientIndices": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "seqNums": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "split-proto-direct",
+    "mongo": {
+      "state": {
+        "$binary": {
+          "base64": "CgVhbGljZQoDYm9iEgQAAQAAGgQAAAEAMgQGAgQD",
+          "subType": "00"
+        }
+      }
+    },
+    "decoded": {
+      "clientIds": [
+        "alice",
+        "bob"
+      ],
+      "clientIndices": [
+        0,
+        1,
+        0,
+        0
+      ],
+      "seqNums": [
+        0,
+        0,
+        1,
+        0
+      ],
+      "startCounterIndexes": [],
+      "startCounters": [],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "binary-adapter",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1"
+        ],
+        "bunchIndices": {
+          "$binary": {
+            "base64": "AAAAAAEAAAACAAAAAAAAAA==",
+            "subType": "00"
+          }
+        },
+        "startCounters": {
+          "$binary": {
+            "base64": "AAAAAAAAAAAAAAAAAwAAAA==",
+            "subType": "00"
+          }
+        },
+        "counts": {
+          "$binary": {
+            "base64": "AwAAAAEAAAACAAAA/v///w==",
+            "subType": "00"
+          }
+        }
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "startCounters": [
+        0,
+        0,
+        0,
+        3
+      ],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "binary-direct",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1"
+        ],
+        "bunchIndices": {
+          "$binary": {
+            "base64": "AAAAAAEAAAACAAAAAAAAAA==",
+            "subType": "00"
+          }
+        },
+        "startCounters": {
+          "$binary": {
+            "base64": "AAAAAAAAAAAAAAAAAwAAAA==",
+            "subType": "00"
+          }
+        },
+        "counts": {
+          "$binary": {
+            "base64": "AwAAAAEAAAACAAAA/v///w==",
+            "subType": "00"
+          }
+        }
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        1,
+        2,
+        0
+      ],
+      "startCounters": [
+        0,
+        0,
+        0,
+        3
+      ],
+      "counts": [
+        3,
+        1,
+        2,
+        -2
+      ]
+    }
+  },
+  {
+    "name": "bit-adapter",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1"
+        ],
+        "bunchIndices": {
+          "$binary": {
+            "base64": "ACAACAAAAA==",
+            "subType": "00"
+          }
+        },
+        "startCounters": {
+          "$binary": {
+            "base64": "AAAAAAYA",
+            "subType": "00"
+          }
+        },
+        "counts": {
+          "$binary": {
+            "base64": "BiAABDAA",
+            "subType": "00"
+          }
+        }
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        32,
+        0,
+        8,
+        0,
+        0,
+        0
+      ],
+      "startCounters": [
+        0,
+        0,
+        0,
+        0,
+        6,
+        0
+      ],
+      "counts": [
+        6,
+        32,
+        0,
+        4,
+        48,
+        0
+      ]
+    }
+  },
+  {
+    "name": "bit-direct",
+    "mongo": {
+      "state": {
+        "bunchIds": [
+          "alice_0",
+          "bob_0",
+          "alice_1"
+        ],
+        "bunchIndices": {
+          "$binary": {
+            "base64": "ACAACAAAAA==",
+            "subType": "00"
+          }
+        },
+        "startCounters": {
+          "$binary": {
+            "base64": "AAAAAAYA",
+            "subType": "00"
+          }
+        },
+        "counts": {
+          "$binary": {
+            "base64": "BiAABDAA",
+            "subType": "00"
+          }
+        }
+      }
+    },
+    "decoded": {
+      "bunchIds": [
+        "alice_0",
+        "bob_0",
+        "alice_1"
+      ],
+      "bunchIndices": [
+        0,
+        32,
+        0,
+        8,
+        0,
+        0,
+        0
+      ],
+      "startCounters": [
+        0,
+        0,
+        0,
+        0,
+        6,
+        0
+      ],
+      "counts": [
+        6,
+        32,
+        0,
+        4,
+        48,
+        0
+      ]
+    }
+  }
+]
