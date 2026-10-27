@@ -689,3 +689,86 @@ export namespace SplitTransposedOmitSavedIdListMessage {
     /** Shape of a SplitTransposedOmitSavedIdListMessage. */
     type $Shape = SplitTransposedOmitSavedIdListMessage.$Properties;
 }
+
+/**
+ * Properties of a FlatSavedIdListMessage.
+ * @deprecated Use FlatSavedIdListMessage.$Properties instead.
+ */
+export interface IFlatSavedIdListMessage extends FlatSavedIdListMessage.$Properties {
+}
+
+/** Represents a FlatSavedIdListMessage. */
+export class FlatSavedIdListMessage {
+
+    /**
+     * Constructs a new FlatSavedIdListMessage.
+     * @param [properties] Properties to set
+     */
+    constructor(properties?: FlatSavedIdListMessage.$Properties);
+
+    /** Unknown fields preserved while decoding when enabled */
+    $unknowns?: Uint8Array[];
+
+    /** FlatSavedIdListMessage bunchIds. */
+    bunchIds: string;
+
+    /** FlatSavedIdListMessage startCounterIndexes. */
+    startCounterIndexes: number[];
+
+    /** FlatSavedIdListMessage startCounters. */
+    startCounters: number[];
+
+    /** FlatSavedIdListMessage counts. */
+    counts: number[];
+
+    /**
+     * Creates a new FlatSavedIdListMessage instance using the specified properties.
+     * @param [properties] Properties to set
+     * @returns FlatSavedIdListMessage instance
+     */
+    static create(properties: FlatSavedIdListMessage.$Shape): FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape;
+    static create(properties?: FlatSavedIdListMessage.$Properties): FlatSavedIdListMessage;
+
+    /**
+     * Encodes the specified FlatSavedIdListMessage message. Does not implicitly {@link FlatSavedIdListMessage.verify|verify} messages.
+     * @param message FlatSavedIdListMessage message or plain object to encode
+     * @param [writer] Writer to encode to
+     * @returns Writer
+     */
+    static encode(message: FlatSavedIdListMessage.$Properties, writer?: $protobuf.Writer): $protobuf.Writer;
+
+    /**
+     * Decodes a FlatSavedIdListMessage message from the specified reader or buffer.
+     * @param reader Reader or buffer to decode from
+     * @param [length] Message length if known beforehand
+     * @returns {FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape} FlatSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    static decode(reader: ($protobuf.Reader|Uint8Array), length?: number): FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape;
+}
+
+export namespace FlatSavedIdListMessage {
+
+    /** Properties of a FlatSavedIdListMessage. */
+    interface $Properties {
+
+        /** FlatSavedIdListMessage bunchIds */
+        bunchIds?: (string|null);
+
+        /** FlatSavedIdListMessage startCounterIndexes */
+        startCounterIndexes?: (number[]|null);
+
+        /** FlatSavedIdListMessage startCounters */
+        startCounters?: (number[]|null);
+
+        /** FlatSavedIdListMessage counts */
+        counts?: (number[]|null);
+
+        /** Unknown fields preserved while decoding when enabled */
+        $unknowns?: Uint8Array[];
+    }
+
+    /** Shape of a FlatSavedIdListMessage. */
+    type $Shape = FlatSavedIdListMessage.$Properties;
+}

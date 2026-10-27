@@ -1,0 +1,72 @@
+{
+  "generatedAt": "2026-10-27T21:11:19.686Z",
+  "nodeVersion": "v22.22.0",
+  "runs": 11757,
+  "trials": 200,
+  "measurement": "Single-document compression of the full {_id,state} BSON; proxy only, not WiredTiger physical storage. Timing is Node, not browser.",
+  "rows": [
+    {
+      "id": "F01",
+      "bsonBytes": 870691,
+      "gzipBytes": 127606,
+      "zstdBytes": 110254,
+      "snappyBytes": 193258,
+      "decodeLoadMedianMs": 29.188105000000178,
+      "decodeLoadP95Ms": 42.44797600000038
+    },
+    {
+      "id": "F05",
+      "bsonBytes": 342347,
+      "gzipBytes": 112452,
+      "zstdBytes": 98214,
+      "snappyBytes": 173703,
+      "decodeLoadMedianMs": 21.43089300000065,
+      "decodeLoadP95Ms": 31.387337000000116
+    },
+    {
+      "id": "Sflat-joined",
+      "bsonBytes": 212373,
+      "gzipBytes": 79710,
+      "zstdBytes": 80442,
+      "snappyBytes": 125650,
+      "decodeLoadMedianMs": 18.55448400000023,
+      "decodeLoadP95Ms": 29.405914999999368
+    },
+    {
+      "id": "Flat-F64",
+      "bsonBytes": 188212,
+      "gzipBytes": 56011,
+      "zstdBytes": 56500,
+      "snappyBytes": 82993,
+      "decodeLoadMedianMs": 17.485357000001386,
+      "decodeLoadP95Ms": 27.24910799999998
+    },
+    {
+      "id": "Flat-Varint",
+      "bsonBytes": 106574,
+      "gzipBytes": 50534,
+      "zstdBytes": 53109,
+      "snappyBytes": 70399,
+      "decodeLoadMedianMs": 18.2773159999997,
+      "decodeLoadP95Ms": 29.153261999999813
+    },
+    {
+      "id": "Flat-Proto",
+      "bsonBytes": 106507,
+      "gzipBytes": 50523,
+      "zstdBytes": 53071,
+      "snappyBytes": 70342,
+      "decodeLoadMedianMs": 17.417849000001297,
+      "decodeLoadP95Ms": 26.60057500000039
+    },
+    {
+      "id": "Proto-30",
+      "bsonBytes": 130017,
+      "gzipBytes": 56590,
+      "zstdBytes": 58670,
+      "snappyBytes": 78180,
+      "decodeLoadMedianMs": 17.368688999998994,
+      "decodeLoadP95Ms": 26.834211000001233
+    }
+  ]
+}

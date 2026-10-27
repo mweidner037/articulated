@@ -83,3 +83,14 @@ message SplitTransposedOmitSavedIdListMessage {
   // Negative count means deleted.
   repeated sint32 counts = 5;
 }
+
+// Flat: the flat JSON shape (concatenated fixed-width bunchIds, delta-encoded
+// startCounterIndexes, signed counts) as one protobuf message. 64-bit varints
+// keep the full safe-integer range; small values still take 1-2 bytes.
+message FlatSavedIdListMessage {
+  string bunchIds = 1;
+  repeated uint64 startCounterIndexes = 2;
+  repeated uint64 startCounters = 3;
+  // Negative count means deleted.
+  repeated sint64 counts = 4;
+}

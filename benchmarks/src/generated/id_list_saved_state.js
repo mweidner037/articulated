@@ -1960,6 +1960,236 @@ export const SplitTransposedOmitSavedIdListMessage = $root.SplitTransposedOmitSa
     return SplitTransposedOmitSavedIdListMessage;
 })();
 
+export const FlatSavedIdListMessage = $root.FlatSavedIdListMessage = (() => {
+
+    /**
+     * Properties of a FlatSavedIdListMessage.
+     * @typedef {Object} FlatSavedIdListMessage.$Properties
+     * @property {string|null} [bunchIds] FlatSavedIdListMessage bunchIds
+     * @property {Array.<number>|null} [startCounterIndexes] FlatSavedIdListMessage startCounterIndexes
+     * @property {Array.<number>|null} [startCounters] FlatSavedIdListMessage startCounters
+     * @property {Array.<number>|null} [counts] FlatSavedIdListMessage counts
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+
+    /**
+     * Properties of a FlatSavedIdListMessage.
+     * @exports IFlatSavedIdListMessage
+     * @interface IFlatSavedIdListMessage
+     * @augments FlatSavedIdListMessage.$Properties
+     * @deprecated Use FlatSavedIdListMessage.$Properties instead.
+     */
+
+    /**
+     * Shape of a FlatSavedIdListMessage.
+     * @typedef {FlatSavedIdListMessage.$Properties} FlatSavedIdListMessage.$Shape
+     */
+
+    /**
+     * Constructs a new FlatSavedIdListMessage.
+     * @exports FlatSavedIdListMessage
+     * @classdesc Represents a FlatSavedIdListMessage.
+     * @constructor
+     * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @property {Array.<Uint8Array>} [$unknowns] Unknown fields preserved while decoding when enabled
+     */
+    const FlatSavedIdListMessage = function (properties) {
+        this.startCounterIndexes = [];
+        this.startCounters = [];
+        this.counts = [];
+        if (properties)
+            for (let keys = $Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null && keys[i] !== "__proto__")
+                    this[keys[i]] = properties[keys[i]];
+    };
+
+    /**
+     * FlatSavedIdListMessage bunchIds.
+     * @member {string} bunchIds
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.bunchIds = "";
+
+    /**
+     * FlatSavedIdListMessage startCounterIndexes.
+     * @member {Array.<number>} startCounterIndexes
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.startCounterIndexes = $util.emptyArray;
+
+    /**
+     * FlatSavedIdListMessage startCounters.
+     * @member {Array.<number>} startCounters
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.startCounters = $util.emptyArray;
+
+    /**
+     * FlatSavedIdListMessage counts.
+     * @member {Array.<number>} counts
+     * @memberof FlatSavedIdListMessage
+     * @instance
+     */
+    FlatSavedIdListMessage.prototype.counts = $util.emptyArray;
+
+    /**
+     * Creates a new FlatSavedIdListMessage instance using the specified properties.
+     * @function create
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {FlatSavedIdListMessage.$Properties=} [properties] Properties to set
+     * @returns {FlatSavedIdListMessage} FlatSavedIdListMessage instance
+     * @type {{
+     *   (properties: FlatSavedIdListMessage.$Shape): FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape;
+     *   (properties?: FlatSavedIdListMessage.$Properties): FlatSavedIdListMessage;
+     * }}
+     */
+    FlatSavedIdListMessage.create = function(properties) {
+        return new FlatSavedIdListMessage(properties);
+    };
+
+    /**
+     * Encodes the specified FlatSavedIdListMessage message. Does not implicitly {@link FlatSavedIdListMessage.verify|verify} messages.
+     * @function encode
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {FlatSavedIdListMessage.$Properties} message FlatSavedIdListMessage message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    FlatSavedIdListMessage.encode = function (message, writer, _depth) {
+        if (!writer)
+            writer = $Writer.create();
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $util.recursionLimit)
+            throw $Error("max depth exceeded");
+        if (message.bunchIds != null && $Object.hasOwnProperty.call(message, "bunchIds") && message.bunchIds !== "")
+            writer.uint32(/* id 1, wireType 2 =*/10).string(message.bunchIds);
+        if (message.startCounterIndexes != null && message.startCounterIndexes.length)
+            writer.uint32(/* id 2, wireType 2 =*/18).uint64s(message.startCounterIndexes);
+        if (message.startCounters != null && message.startCounters.length)
+            writer.uint32(/* id 3, wireType 2 =*/26).uint64s(message.startCounters);
+        if (message.counts != null && message.counts.length)
+            writer.uint32(/* id 4, wireType 2 =*/34).sint64s(message.counts);
+        if (message.$unknowns != null && $Object.hasOwnProperty.call(message, "$unknowns"))
+            for (let i = 0; i < message.$unknowns.length; ++i)
+                writer.raw(message.$unknowns[i]);
+        return writer;
+    };
+
+    /**
+     * Decodes a FlatSavedIdListMessage message from the specified reader or buffer.
+     * @function decode
+     * @memberof FlatSavedIdListMessage
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {FlatSavedIdListMessage & FlatSavedIdListMessage.$Shape} FlatSavedIdListMessage
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    FlatSavedIdListMessage.decode = function (reader, length, _end, _depth, _target) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        if (_depth === $undefined)
+            _depth = 0;
+        if (_depth > $Reader.recursionLimit)
+            throw $Error("max depth exceeded");
+        let end, message, value;
+        if (length === $undefined)
+            end = reader.len;
+        else {
+            end = reader.pos + length;
+            if (end > reader.len)
+                throw $RangeError("index out of range");
+            length = reader.len;
+            reader.len = end;
+        }
+        message = _target || new $root.FlatSavedIdListMessage();
+        while (reader.pos < end) {
+            let start = reader.pos;
+            let tag = reader.tag();
+            if (tag === _end) {
+                _end = $undefined;
+                break;
+            }
+            let wireType = tag & 7;
+            switch (tag >>>= 3) {
+            case 1: {
+                    if (wireType !== 2)
+                        break;
+                    if ((value = reader.stringVerify()).length)
+                        message.bunchIds = value;
+                    else
+                        delete message.bunchIds;
+                    continue;
+                }
+            case 2: {
+                    if (wireType === 2) {
+                        if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                            message.startCounterIndexes = [];
+                        reader.uint64s(message.startCounterIndexes);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounterIndexes && message.startCounterIndexes.length))
+                        message.startCounterIndexes = [];
+                    message.startCounterIndexes.push(reader.uint64());
+                    continue;
+                }
+            case 3: {
+                    if (wireType === 2) {
+                        if (!(message.startCounters && message.startCounters.length))
+                            message.startCounters = [];
+                        reader.uint64s(message.startCounters);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.startCounters && message.startCounters.length))
+                        message.startCounters = [];
+                    message.startCounters.push(reader.uint64());
+                    continue;
+                }
+            case 4: {
+                    if (wireType === 2) {
+                        if (!(message.counts && message.counts.length))
+                            message.counts = [];
+                        reader.sint64s(message.counts);
+                        continue;
+                    }
+                    if (wireType !== 0)
+                        break;
+                    if (!(message.counts && message.counts.length))
+                        message.counts = [];
+                    message.counts.push(reader.sint64());
+                    continue;
+                }
+            }
+            reader.skipType(wireType, _depth, tag);
+            if (!reader.discardUnknown) {
+                $util.makeProp(message, "$unknowns", false);
+                (message.$unknowns || (message.$unknowns = [])).push(reader.raw(start, reader.pos));
+            }
+        }
+        if (length !== $undefined) {
+            if (reader.pos !== end)
+                throw $RangeError("index out of range");
+            reader.len = length;
+        }
+        if (_end !== $undefined)
+            throw $Error("missing end group");
+        return message;
+    };
+
+    return FlatSavedIdListMessage;
+})();
+
 export {
   $root as default
 };

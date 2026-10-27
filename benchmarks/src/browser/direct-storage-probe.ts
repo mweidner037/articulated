@@ -16,6 +16,7 @@ import {
   type DirectStorageFormat,
 } from "./direct-storage-formats";
 import { flatFloat64Formats } from "./flat-f64-formats";
+import { flatProtoFormat, flatVarintFormat } from "./flat-varint-formats";
 import { storageSweepFormats } from "./storage-sweep-formats";
 
 const sha256 = (value: unknown) =>
@@ -44,12 +45,15 @@ function independentDocument(
 }
 async function main() {
   const sweep = process.env.DIRECT_STORAGE_SWEEP === "1";
-  const f64 = process.env.DIRECT_STORAGE_F64 === "1";
-  const formats: DirectStorageFormat[] = f64
-    ? flatFloat64Formats
-    : sweep
-      ? storageSweepFormats
-      : directStorageFormats;
+  const varint = process.env.DIRECT_STORAGE_VARINT === "1";
+  const f64 = varint || process.env.DIRECT_STORAGE_F64 === "1";
+  const formats: DirectStorageFormat[] = varint
+    ? [...flatFloat64Formats, flatVarintFormat, flatProtoFormat]
+    : f64
+      ? flatFloat64Formats
+      : sweep
+        ? storageSweepFormats
+        : directStorageFormats;
   const expected = process.env.DIRECT_STORAGE_DBPATH;
   assert(
     expected && path.isAbsolute(expected),
@@ -318,13 +322,19 @@ async function main() {
                 }
               : {}),
             primaryCompressor: "zstd",
-            ...(f64
+            ...(varint
               ? {
-                  suite: "flat-f64",
+                  suite: "flat-varint",
                   numericEncoding:
-                    "IEEE754 binary64 little endian; full safe-integer range; no per-column schema metadata",
+                    "Flat-F64 plus protobuf uint64/sint64 packed varints (Flat-Varint per field, Flat-Proto whole message)",
                 }
-              : {}),
+              : f64
+                ? {
+                    suite: "flat-f64",
+                    numericEncoding:
+                      "IEEE754 binary64 little endian; full safe-integer range; no per-column schema metadata",
+                  }
+                : {}),
             canonicalSource: metadata,
             reusedFixturePath: fixturePath ?? null,
             sourceSavedSha256: sha256(saved),
