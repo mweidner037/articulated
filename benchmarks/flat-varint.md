@@ -9,6 +9,51 @@ Two candidates were added, both wire-compatible with protobuf `uint64`/`sint64` 
 
 PR #30's `TransposedOmitSavedIdListMessage` (repeated string IDs, uint32) is included as **Proto-30** for reference.
 
+## In plain terms, with an example
+
+Take the small example state from PR #34:
+
+```js
+{
+  bunchIds: "aB3dE5fGaB3dE5fGhJ7kL9mNaB3dE5fG",
+  startCounterIndexes: [2, 1],
+  startCounters: [20, 8],
+  counts: [3, -2, 1, 2],
+}
+```
+
+**Today (Float64).** Every number takes 8 bytes, however small, so `counts` is 32 bytes, mostly zeros:
+
+```
+3  → 00 00 00 00 00 00 08 40
+-2 → 00 00 00 00 00 00 00 c0   …and so on
+```
+
+**The suggestion (varints, as protobuf uses).** Small numbers take 1 byte, bigger ones take more. Negatives are folded in first (3→6, -2→3, 1→2, 2→4), so the same `counts` is 4 bytes: `06 03 02 04`. In the real canonical document 94% of counts are under 64 and take 1 byte; the largest, 1396, takes 2 bytes (`e8 15`).
+
+There are two ways to store that in Mongo:
+
+1. **Varint per field** (Flat-Varint below). Same document as today; only what is inside each Binary changes:
+
+   ```js
+   {
+     bunchIds: "aB3dE5fG…",
+     startCounterIndexes: Binary(02 01),
+     startCounters: Binary(14 08),
+     counts: Binary(06 03 02 04),
+   }
+   ```
+
+2. **Whole state as one protobuf message** (Flat-Proto below). Everything, IDs included, goes into one blob:
+
+   ```js
+   { state: Binary(0a 20 61 42 33 64 … 12 02 02 01 1a 02 14 08 22 04 06 03 02 04) }
+   ```
+
+   In the Mongo shell this is only bytes, which is why it only makes sense if nothing reads the saved state outside the Ecto type.
+
+**What happens on the real document:** it shrinks from 188 KB to 107 KB before compression. After Mongo compresses it, it goes from 56.5 KB to 53.1 KB with zstd (about 6% smaller) and from 83 KB to 70 KB with snappy (about 15% smaller). Compression already removes most of the Float64 zeros, so the saving shrinks. About 40 KB of the 53 KB that remain are the 8-character IDs, so changing how the numbers are stored can't move the total much further. The two storage options come out the same size. Option 1 is the safer pick because the document stays readable in Mongo.
+
 ## Result (canonical snapshot, 11,757 runs, document 0)
 
 | Format       | BSON KB | gzip KB | zstd KB | snappy KB | Node decode + IdList.load median / p95 ms |
