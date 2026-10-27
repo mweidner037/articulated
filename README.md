@@ -126,7 +126,19 @@ const savedState = list.save();
 let newList = IdList.load(savedState);
 ```
 
-See `SavedIdList` for a description of the format. It compresses well with GZIP, but you may wish to design a custom compression scheme to speed up compression and decompression.
+See `SavedIdList` for a description of the format. It is simple and compresses well with GZIP, but somewhat verbose as raw JSON.
+
+If you don't care about a simple/legible format and want something more compact (both before and after GZIP compression), use the `CompactSavedIdList` methods instead:
+
+```typescript
+// Save list state
+const compactSavedState = list.saveCompact();
+
+// Later, load from saved state
+let newList = IdList.loadCompact(compactSavedState);
+```
+
+Going further, you can save and load large IdLists more quickly (while keeping saved states compact) by using a Protobuf binary encoding instead of GZIP. See [Protobuf saved states advice](https://github.com/mweidner037/articulated/blob/master/packages/articulated/protobuf_saved_states.md).
 
 ## Use Cases
 

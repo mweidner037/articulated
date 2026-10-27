@@ -4,7 +4,7 @@
  * It describes all of the list's known ElementIds in list order, with basic compression:
  * if sequential ElementIds have the same bunchId, the same isDeleted status,
  * and sequential counters, then they are combined into a single object.
- * This format is simple and compresses well with GZIP.
+ * This format is simple and compresses well with GZIP, but somewhat verbose as raw JSON.
  * However, you may wish to design a custom compression scheme
  * (e.g., protobuf with packed ints) to speed up compression and decompression.
  *
