@@ -1,6 +1,6 @@
 import { ElementIdGenerator } from "articulated";
 import { assert } from "chai";
-import { maybeRandomString } from "maybe-random-string";
+import { DEFAULT_CHARS, maybeRandomString } from "maybe-random-string";
 import type seedrandom from "seedrandom";
 import { IdListSimple } from "../../../packages/articulated/test/id_list_simple";
 import type { TraceEdit } from "../internal/trace";
@@ -12,8 +12,8 @@ const CLIENT_ID_LENGTH = 10;
  * An IdListSimple, our simple implementation of IdList as an array of ElementIds,
  * with ids only (no chars).
  *
- * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
- * chars long (60 bit of entropy) and seqNum is base-36 encoded.
+ * Bunch ids use the form `"clientId.seqNum"`, where clientId is 10
+ * chars long (60 bits of entropy) and seqNum is base-36 encoded.
  *
  * Saved states are the SavedIdList as a JSON string.
  */
@@ -29,9 +29,11 @@ export class IdListSimpleAlgorithm implements TextAlgorithm<TraceEdit, string> {
     const clientId = maybeRandomString({
       prng,
       length: CLIENT_ID_LENGTH,
+      // nanoid's alphabet.
+      chars: DEFAULT_CHARS + "_-",
     });
     let counter = 0;
-    const newBunchId = () => `${clientId}_${(counter++).toString(36)}`;
+    const newBunchId = () => `${clientId}.${(counter++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 

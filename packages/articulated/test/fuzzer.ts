@@ -1,6 +1,6 @@
 import { expect } from "chai";
-import type { ElementId, SavedIdList } from "../src";
-import { IdList } from "../src";
+import type { CompactSavedIdList, ElementId, SavedIdList } from "../src";
+import { IdList, compactSavedIdList, uncompactSavedIdList } from "../src";
 import { IdListSimple } from "./id_list_simple";
 
 const DEBUG = false;
@@ -64,6 +64,9 @@ export class Fuzzer {
     }
     expect([...this.list.values()]).to.deep.equal([...this.simple.values()]);
     expect(this.list.save()).to.deep.equal(this.simple.save());
+    expect(uncompactSavedIdList(this.list.saveCompact())).to.deep.equal(
+      this.simple.save(),
+    );
 
     expect(this.list.knownIds.length).to.equal(this.simple.knownIds.length);
     for (let i = 0; i < this.simple.knownIds.length; i++) {
@@ -89,6 +92,9 @@ export class Fuzzer {
     // Check loaded state as well.
     expect([
       ...IdList.load(this.list.save()).valuesWithIsDeleted(),
+    ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
+    expect([
+      ...IdList.loadCompact(this.list.saveCompact()).valuesWithIsDeleted(),
     ]).to.deep.equal([...this.simple.valuesWithIsDeleted()]);
 
     if (DEBUG) console.log("checkAll passed");
@@ -169,8 +175,26 @@ export class Fuzzer {
       console.log("load");
     }
     this.mutate(
-      () => IdList.load(savedState),
+      () => {
+        const list = IdList.load(savedState);
+        // Also check that the compact saved state loads identically.
+        const compactList = IdList.loadCompact(compactSavedIdList(savedState));
+        expect([...compactList.valuesWithIsDeleted()]).to.deep.equal([
+          ...list.valuesWithIsDeleted(),
+        ]);
+        return list;
+      },
       () => this.simple.load(savedState),
+    );
+  }
+
+  loadCompact(compactSavedState: CompactSavedIdList) {
+    if (DEBUG) {
+      console.log("loadCompact");
+    }
+    this.mutate(
+      () => IdList.loadCompact(compactSavedState),
+      () => this.simple.load(uncompactSavedIdList(compactSavedState)),
     );
   }
 }
