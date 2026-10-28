@@ -1148,7 +1148,7 @@ export class IdList {
    * docs (e.g., it contains duplicate ids).
    */
   static loadCompact(compactSavedState: CompactSavedIdList) {
-    return this.load(uncompactSavedIdList(compactSavedState));
+    return IdList.load(uncompactSavedIdList(compactSavedState));
   }
 }
 

@@ -52,11 +52,11 @@ export type CompactSavedIdList = {
    * Note that this array may be shorter than bunchIds and signedCounts.
    * In typical usage, it is always empty.
    */
-  startCounterDeltas: number[];
+  readonly startCounterDeltas: number[];
   /**
    * The startCounter values corresponding to startCounterDeltas.
    */
-  startCounterValues: number[];
+  readonly startCounterValues: number[];
 };
 
 /**
@@ -102,7 +102,7 @@ export function compactSavedIdList(
 /**
  * Converts a {@link CompactSavedIdList} to a {@link SavedIdList}.
  *
- * Inverse of {@link compactSavedState}.
+ * Inverse of {@link compactSavedIdList}.
  */
 export function uncompactSavedIdList(
   compactSavedState: CompactSavedIdList,
