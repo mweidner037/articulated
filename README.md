@@ -73,7 +73,7 @@ import { nanoid } from "nanoid";
 
 // ElementIdGenerator takes a function that returns a new globally unique bunchId each time it
 // is called. A simple example is `() => crypto.randomUUID()`;
-// here is something more efficient (shorter and compresses better).
+// here is something more efficient (its bunchIds are shorter and compress better).
 const clientId = nanoid(10);
 let seqNum = 0;
 const newBunchId = () => `${clientId}.${(seqNum++).toString(36)}`;

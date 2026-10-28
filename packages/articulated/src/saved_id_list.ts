@@ -50,7 +50,7 @@ export type CompactSavedIdList = {
    * The actual startCounters appear in startCounterValues.
    *
    * Note that this array may be shorter than bunchIds and signedCounts.
-   * In typical usage, it is always empty.
+   * For typical IdList usage, it will be empty.
    */
   readonly startCounterDeltas: number[];
   /**
@@ -85,7 +85,11 @@ export function compactSavedIdList(
     const { bunchId, startCounter, count, isDeleted } = savedState[i];
 
     bunchIds.push(bunchId);
-    signedCounts.push(isDeleted ? -count : count);
+    // count = 0 shouldn't occur for outputs of IdList.save(), but it could happen
+    // for a user-written SavedIdList.
+    // Use 0 instead of -0 so it's a proper int. This won't round-trip (isDeleted becomes true),
+    // but it's okay because no actual ids are affected (since count = 0).
+    signedCounts.push(isDeleted && count !== 0 ? -count : count);
 
     const inferredStartCounter = inferredStartCounters.get(bunchId) ?? 0;
     if (inferredStartCounter !== startCounter) {
