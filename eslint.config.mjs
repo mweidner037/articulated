@@ -14,6 +14,7 @@ export default defineConfig([
     "benchmarks/src/traces/*",
     "**/tmp/",
     "benchmarks/results/",
+    "benchmarks/src/generated/",
   ]),
   {
     extends: [
