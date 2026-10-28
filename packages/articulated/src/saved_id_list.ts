@@ -30,11 +30,11 @@ export type SavedIdList = Array<{
  * at the expense of simplicity and legibility.
  *
  * In [one benchmark with a large IdList](https://github.com/mweidner037/articulated/blob/master/benchmarks/results.md#refresh-every-1000-ops),
- * CompactSavedIdList and SavedIdList compare as follows:
- * - Size as JSON: TODO
- * - Size after GZIP:
- * - Save time including GZIP:
- * - Load time including GZIP:
+ * SavedIdList and CompactSavedIdList compare as follows:
+ * - Size as JSON (kB): 876 vs 218
+ * - Size after GZIP (kB): 71.9 vs 40.3
+ * - Save time including GZIP (ms): 21.5 +- 1.3 vs 10.4 +- 0.9
+ * - Load time including GZIP (ms): 20.9 +- 0.8 vs 16.8 +- 1.2
  */
 export type CompactSavedIdList = {
   /** The bunchIds from each object in SavedIdList, as a single array. */
