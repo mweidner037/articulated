@@ -31,20 +31,20 @@ let list = IdList.new();
 
 // Insert a new ElementId at the beginning.
 // Note: Persistent (immutable) data structure! Mutators return a new IdList.
-list = list.insertAfter(null, { bunchId: "user1", counter: 0 });
+list = list.insertAfter(null, { bunchId: "asdf.7", counter: 0 });
 
 // Insert another ElementId after the first.
 list = list.insertAfter(
-  { bunchId: "user1", counter: 0 },
-  { bunchId: "user1", counter: 1 },
+  { bunchId: "asdf.7", counter: 0 },
+  { bunchId: "asdf.7", counter: 1 },
 );
 
 // Delete an ElementId (marks as deleted but keeps as known).
-list = list.delete({ bunchId: "user1", counter: 0 });
+list = list.delete({ bunchId: "asdf.7", counter: 0 });
 
 // Check if ElementIds are present/known.
-console.log(list.has({ bunchId: "user1", counter: 0 })); // false (deleted)
-console.log(list.isKnown({ bunchId: "user1", counter: 0 })); // true (known but deleted)
+console.log(list.has({ bunchId: "asdf.7", counter: 0 })); // false (deleted)
+console.log(list.isKnown({ bunchId: "asdf.7", counter: 0 })); // true (known but deleted)
 ```
 
 ## Core Concepts
@@ -53,32 +53,43 @@ console.log(list.isKnown({ bunchId: "user1", counter: 0 })); // true (known but 
 
 An `ElementId` is a globally unique identifier for a list element, composed of:
 
-- `bunchId`: A string UUID or similar globally unique ID
-- `counter`: A numeric value to distinguish ElementIds in the same bunch
+- `bunchId`: A globally unique string
+- `counter`: A numeric value to distinguish ElementIds within the same bunch
 
 For optimal compression, when inserting multiple ElementIds in a left-to-right sequence, use the same `bunchId` with sequential `counter` values. Use `ElementIdGenerator` to help with that.
 
 ```typescript
 // Example of IDs that will compress well:
-const id1 = { bunchId: "abc123", counter: 0 };
-const id2 = { bunchId: "abc123", counter: 1 };
-const id3 = { bunchId: "abc123", counter: 2 };
+const id1 = { bunchId: "qwer.123", counter: 0 };
+const id2 = { bunchId: "qwer.123", counter: 1 };
+const id3 = { bunchId: "qwer.123", counter: 2 };
 ```
 
 To automatically generate ElementIds like these when appropriate, use `ElementIdGenerator`.
 
 ```ts
 import { ElementIdGenerator } from "articulated";
+import { nanoid } from "nanoid";
 
-const generator = new ElementIdGenerator(() => crypto.randomUUID());
+// ElementIdGenerator takes a function that returns a new globally unique bunchId each time it
+// is called. A simple example is `() => crypto.randomUUID()`;
+// here is something more efficient (shorter and compresses better).
+const clientId = nanoid(10);
+let seqNum = 0;
+const newBunchId = () => `${clientId}.${(seqNum++).toString(36)}`;
+const generator = new ElementIdGenerator(newBunchId);
 
 // Specify the id you're planning to insert-after as an optimization hint.
 const id1 = generator.generateAfter(null);
 const id2 = generator.generateAfter(id1);
 const id3 = generator.generateAfter(id2);
-// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 0 },
-// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 1 },
-// { bunchId: "1747629c-eb71-4815-9424-f46844305eb5", counter: 2 }
+// { bunchId: "IRFa-VaY2b.0", counter: 0 },
+// { bunchId: "IRFa-VaY2b.0", counter: 1 },
+// { bunchId: "IRFa-VaY2b.0", counter: 2 }
+
+// Non left-to-right insertions get a new bunchId, here incrementing seqNum.
+const id4 = generator.generateAfter(id1);
+// { bunchId: "IRFa-VaY2b.1", counter: 0 }
 ```
 
 ### IdList Operations
@@ -110,8 +121,8 @@ Convert indices to cursors and back using the methods `cursorAt` and `cursorInde
 
 ```typescript
 // Insert multiple sequential ids at once
-list = list.insertAfter(null, { bunchId: "user1", counter: 0 }, 5);
-// Inserts 5 ids with bunchId="user1" and counters 0, 1, 2, 3, 4
+list = list.insertAfter(null, { bunchId: "asdf.7", counter: 0 }, 5);
+// Inserts 5 ids with bunchId="asdf.7" and counters 0, 1, 2, 3, 4
 ```
 
 #### Save and load

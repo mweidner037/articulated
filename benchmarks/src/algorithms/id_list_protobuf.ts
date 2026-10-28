@@ -1,6 +1,6 @@
 import { ElementIdGenerator, IdList } from "articulated";
 import { assert } from "chai";
-import { maybeRandomString } from "maybe-random-string";
+import { DEFAULT_CHARS, maybeRandomString } from "maybe-random-string";
 import type seedrandom from "seedrandom";
 import { SavedIdListMessage } from "../generated/id_list_protobuf";
 import type { TraceEdit } from "../internal/trace";
@@ -12,8 +12,8 @@ const MAX_UINT32 = 0xffffffff;
 /**
  * An IdList with ids only (no chars).
  *
- * Bunch ids use the form `"clientId_seqNum"`, where clientId is 10
- * chars long (60 bit of entropy) and seqNum is base-36 encoded.
+ * Bunch ids use the form `"clientId.seqNum"`, where clientId is 10
+ * chars long (60 bits of entropy) and seqNum is base-36 encoded.
  *
  * Saved states are a custom protobuf format, as described in packages/articulated/protobuf_saved_states.md.
  * Protobuf encoding uses protobufjs, with generated code in
@@ -34,9 +34,11 @@ export class IdListProtobufAlgorithm implements TextAlgorithm<
     const clientId = maybeRandomString({
       prng,
       length: CLIENT_ID_LENGTH,
+      // nanoid's alphabet.
+      chars: DEFAULT_CHARS + "_-",
     });
     let seqNum = 0;
-    const newBunchId = () => `${clientId}_${(seqNum++).toString(36)}`;
+    const newBunchId = () => `${clientId}.${(seqNum++).toString(36)}`;
     this.idGen = new ElementIdGenerator(newBunchId);
   }
 
@@ -76,20 +78,20 @@ export class IdListProtobufAlgorithm implements TextAlgorithm<
     for (let i = 0; i < bunchIds.length; i++) {
       const bunchId = bunchIds[i];
 
-      // Try to split bunchId into `${clientId}_${seqNum}`.
+      // Try to split bunchId into `${clientId}.${seqNum}`.
       // If it doesn't round-trip exactly, store the whole bunchId as the clientId.
       let clientId = bunchId;
       let seqNumInc = 0;
-      const underscore = bunchId.lastIndexOf("_");
-      if (underscore !== -1) {
-        const seqNumStr = bunchId.slice(underscore + 1);
+      const delimiter = bunchId.lastIndexOf(".");
+      if (delimiter !== -1) {
+        const seqNumStr = bunchId.slice(delimiter + 1);
         const seqNum = parseInt(seqNumStr, 36);
         if (
           seqNum >= 0 &&
           seqNum < MAX_UINT32 &&
           seqNum.toString(36) === seqNumStr
         ) {
-          clientId = bunchId.slice(0, underscore);
+          clientId = bunchId.slice(0, delimiter);
           seqNumInc = seqNum + 1;
         }
       }
@@ -133,7 +135,7 @@ export class IdListProtobufAlgorithm implements TextAlgorithm<
       bunchIds[i] =
         seqNumInc === 0
           ? clientIds[clientIndex]
-          : `${clientIds[clientIndex]}_${(seqNumInc - 1).toString(36)}`;
+          : `${clientIds[clientIndex]}.${(seqNumInc - 1).toString(36)}`;
     }
 
     this.list = IdList.loadCompact({

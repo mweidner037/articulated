@@ -11,7 +11,19 @@ export class ElementIdGenerator {
 
   /**
    * @param newBunchId A function that returns a new globally unique bunchId each time it
-   * is called. E.g., `() => crypto.randomUUID()`.
+   * is called. A simple example is `() => crypto.randomUUID()`.
+   * A more efficient approach is to create a random clientId for this ElementIdGenerator
+   * (or the whole tab) and append a sequence number. The resulting bunchIds compress better,
+   * and because there are fewer clientIds than bunchIds, you can get away with less entropy.
+   * For example:
+   * ```ts
+   * import { nanoid } from 'nanoid';
+   *
+   * // 10 chars, 60 bits of entropy.
+   * const clientId = nanoid(10);
+   * let seqNum = 0;
+   * const newBunchId = () => `${clientId}.${(seqNum++).toString(36)}`;
+   * ```
    */
   constructor(private readonly newBunchId: () => string) {}
 

@@ -9,7 +9,7 @@ message SavedIdListMessage {
   // Except, those indexes are then delta-encoded.
   repeated sint32 clientIndexDeltas = 2;
   // For each entry in the SavedIdList array, its bunchId's seqNum **plus 1**.
-  // 0 indicates a bunchId not of the form `${clientId}_${seqNum}`,
+  // 0 indicates a bunchId not of the form `${clientId}.${seqNum}`,
   // which is stored as-is in the clientId column.
   repeated uint32 seqNumIncs = 3;
   // The remaining arrays are as in CompactSavedIdList.

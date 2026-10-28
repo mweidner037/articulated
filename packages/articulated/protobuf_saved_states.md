@@ -8,7 +8,7 @@ Protobuf encoding provides an alternative to GZIP that yields similar state size
 
 Articulated does not come with a Protobuf encoding to avoid extra dependencies, but it's easy enough to set one up yourself. Here is a format that worked well in our [analysis](https://github.com/mweidner037/articulated/pull/30). Build it from the output of `IdList.saveCompact()`, or directly from `IdList.save()` for maximum efficiency.
 
-**Assumption:** Your bunchIds typically have the form `${clientId}_${seqNum}` or similar, as suggested in the [README](TODO).
+**Assumption:** Your bunchIds typically have the form `${clientId}.${seqNum}` or similar, as suggested in the [README](https://github.com/mweidner037/articulated#elementid).
 
 ```proto
 syntax = "proto3";
@@ -21,7 +21,7 @@ message SavedIdListMessage {
   // Except, those indexes are then delta-encoded.
   repeated sint32 clientIndexDeltas = 2;
   // For each entry in the SavedIdList array, its bunchId's seqNum **plus 1**.
-  // 0 indicates a bunchId not of the form `${clientId}_${seqNum}`,
+  // 0 indicates a bunchId not of the form `${clientId}.${seqNum}`,
   // which is stored as-is in the clientId column.
   repeated uint32 seqNumIncs = 3;
   // The remaining arrays are as in CompactSavedIdList.
