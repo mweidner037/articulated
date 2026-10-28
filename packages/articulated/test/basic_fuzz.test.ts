@@ -630,11 +630,12 @@ describe("IdList Fuzzer Tests", () => {
 
       // Now perform save/load cycles with operations in between
       for (let cycle = 0; cycle < 5; cycle++) {
-        // Get saved state from the current fuzzer
-        const savedState = fuzzer.list.save();
-
-        // Reload the fuzzer from the saved state
-        fuzzer.load(savedState);
+        // Reload the fuzzer from its saved state, alternating formats
+        if (cycle % 2 === 0) {
+          fuzzer.load(fuzzer.list.save());
+        } else {
+          fuzzer.loadCompact(fuzzer.list.saveCompact());
+        }
 
         fuzzer.checkAll();
 
